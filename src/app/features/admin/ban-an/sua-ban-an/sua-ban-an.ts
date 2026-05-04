@@ -1,0 +1,72 @@
+
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { QuanLyBanAnService } from '../../../../core/services/QuanLyBanAn.service';
+import { MATERIAL } from '../../../../Shared/material';
+
+@Component({
+  selector: 'app-sua-ban-an',
+  imports: [
+    MATERIAL
+  ],
+  templateUrl: './sua-ban-an.html',
+  styleUrl: './sua-ban-an.scss'
+})
+export class SuaBanAn implements OnInit{
+  banAn: any = {};
+  selectedFile?: File;
+  previewImage: string | ArrayBuffer | null = null;
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private dialogRef: MatDialogRef<SuaBanAn>,
+    private QuanLyBanAnService: QuanLyBanAnService
+  ) {}
+
+  ngOnInit() {
+  this.QuanLyBanAnService.LayBanAnTheoID(this.data.ma_ban).subscribe((res: any) => {
+    this.banAn = res.data ?? res;
+
+    // ⭐ ĐÚNG KEY: anh_ban
+    if (this.banAn.anh_ban?.length) {
+      this.previewImage = this.banAn.anh_ban[0].url;
+    } else {
+      this.previewImage = 'assets/user.jpg';
+    }
+  });
+}
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+
+      const reader = new FileReader();
+      reader.onload = e => this.previewImage = reader.result;
+      reader.readAsDataURL(file);
+    }
+  }
+
+  capNhat() {
+    const payload = {
+      ten_ban: this.banAn.ten_ban,
+      so_cho_ngoi: this.banAn.so_cho_ngoi,
+      trang_thai: this.banAn.trang_thai
+    };
+
+    this.QuanLyBanAnService.CapNhatBanAn(this.data.ma_ban, payload, this.selectedFile)
+      .subscribe({
+        next: (res) => {
+          this.dialogRef.close(true);
+        },
+        error: err => {
+          console.log(err);
+          alert("Lỗi cập nhật");
+        }
+      });
+  }
+
+  close() {
+    this.dialogRef.close(false);
+  }
+}

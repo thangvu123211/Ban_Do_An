@@ -1,0 +1,81 @@
+<header class="flex items-center justify-between bg-gray-800 px-6 h-20 shadow">
+
+  <!-- Nút thông báo -->
+  <!-- <button mat-icon-button [matMenuTriggerFor]="menu" matBadge="{{notificationCount}}" matBadgeColor="warn"
+    [matBadgeHidden]="notificationCount === 0" matBadgePosition="above after" class="text-gray-100">
+    <mat-icon>notifications</mat-icon>
+  </button> -->
+
+  <div class="hidden md:flex ml-auto mr-4">
+    <div class="flex items-center bg-gray-400 rounded-full overflow-hidden shadow-lg">
+      <!-- Icon tìm kiếm -->
+      <span class="pl-4 text-gray-400">
+        <i class="fas fa-search"></i>
+      </span>
+
+      <!-- Ô nhập -->
+      <input type="text" placeholder="Tìm kiếm..."
+        class="bg-gray-400 text-black placeholder-black focus:outline-none px-3 py-2 w-56" />
+
+      <!-- Nút tìm -->
+      <button class="bg-blue-500 hover:bg-blue-500 text-white font-medium px-4 py-2 transition-all rounded-full ">
+        Tìm kiếm
+      </button>
+    </div>
+  </div>
+
+  <!-- Nút user -->
+  <button mat-button [matMenuTriggerFor]="userMenu"
+    class="!px-3 !py-1.5 !bg-gray-800 hover:!bg-gray-700 !text-white !rounded-full !transition-all">
+    <div class="flex items-center gap-2">
+      <img class="h-8 w-8 rounded-full border border-gray-600" src="assets/user.jpg" alt="User" />
+      <span class="font-semibold text-sm">Vũ Việt Thắng</span>
+      <mat-icon class="text-gray-300 text-base leading-none">expand_more</mat-icon>
+    </div>
+  </button>
+
+  <!-- Dropdown menu người dùng -->
+  <mat-menu #userMenu="matMenu" class="!p-0 !rounded-xl !overflow-hidden !shadow-xl !min-w-[220px]">
+
+    <!-- Header nhỏ -->
+    <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+      <div class="text-gray-700 text-sm font-semibold">Xin chào, User</div>
+      <div class="text-gray-500 text-xs">vuvietthang@example.com</div>
+    </div>
+
+    <!-- Danh sách chức năng -->
+    <button mat-menu-item class="!flex !items-center !gap-3 hover:!bg-gray-100 !py-2">
+      <mat-icon class="text-gray-600">person</mat-icon>
+      <span class="text-gray-800 font-medium">Trang cá nhân</span>
+    </button>
+
+    <button mat-menu-item class="!flex !items-center !gap-3 hover:!bg-gray-100 !py-2">
+      <mat-icon class="text-gray-600">settings</mat-icon>
+      <span class="text-gray-800 font-medium">Chỉnh sửa thông tin</span>
+    </button>
+
+    <mat-divider></mat-divider>
+
+    <button mat-menu-item (click)="logout()" class="!flex !items-center !gap-3 hover:!bg-red-50 !py-2">
+      <mat-icon class="!text-red-500">logout</mat-icon>
+      <span class="!text-red-500 font-semibold">Đăng xuất</span>
+    </button>
+  </mat-menu>
+
+  <!-- Danh sách thông báo -->
+  <!-- <mat-menu #menu="matMenu" class="w-80">
+    <ng-container *ngIf="orders.length > 0; else noOrders">
+      <ng-container *ngFor="let order of orders">
+        <button mat-menu-item>
+          🪑 MAHD {{ order.maHD }} – Bàn {{ order.tenBan }} — Tổng: {{ order.tongTien || 'vừa xong' }}
+        </button>
+      </ng-container>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="clearNotifications()">🧹 Xóa tất cả</button>
+    </ng-container>
+
+    <ng-template #noOrders>
+      <button mat-menu-item disabled>Không có bàn nào gọi món</button>
+    </ng-template>
+  </mat-menu> -->
+</header>

@@ -1,0 +1,100 @@
+<!-- HEADER -->
+<div class="relative h-96 flex items-center justify-start px-10">
+    <div class="z-10">
+        <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
+        <p class="text-lg max-w-lg">
+            Đây là trang quản lý món ăn. Bạn có thể thêm, sửa hoặc xóa thông tin món ăn tại đây.
+        </p>
+
+        <button matButton="filled" class="px-4 py-2 mt-2" (click)="ThemMonAn()">
+            Thêm Mới Món Ăn
+        </button>
+    </div>
+</div>
+
+<!-- KHUNG DỮ LIỆU -->
+<div class="container mx-auto px-6 mt-10">
+
+    <mat-card class="w-full shadow-xl rounded-2xl p-6">
+
+        <!-- HEADER -->
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+
+            <h3 class="text-2xl font-semibold">
+                Danh Sách Món Ăn
+            </h3>
+
+            <button mat-flat-button (click)="ThemMonAn()">
+                Thêm mới
+            </button>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full border rounded-lg overflow-hidden text-sm">
+
+                <thead class="text-sm">
+                    <tr>
+                        <th class="px-4 py-4 text-center border">STT</th>
+                        <th class="px-4 py-4 text-center border">Ảnh Món Ăn</th>
+                        <th class="px-4 py-4 text-center border">Tên Món Ăn</th>
+                        <th class="px-4 py-4 text-center border">Giá Tiền</th>
+                        <th class="px-4 py-4 text-center border">Tên Loại Món Ăn</th>
+                        <th class="px-4 py-4 text-center border">Trạng Thái</th>
+                        <th class="px-4 py-4 text-center border">Hành động</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let monan of MonAn; let i = index">
+                        <td class="px-4 py-7 text-center border">{{ i + 1 }}</td>
+                        <td class="px-4 py-4 text-center border">
+                            <img *ngIf="monan.anh_mon_an?.length > 0" [src]="monan.anh_mon_an[0].url" alt="Ảnh món ăn"
+                                class="w-12 h-12 rounded-full object-cover mx-auto shadow" />
+
+                            <span *ngIf="!monan.anh_mon_an|| monan.anh_mon_an.length === 0"
+                                class="text-gray-500 italic">
+                                Không có ảnh
+                            </span>
+                        </td>
+                        <td class="px-4 py-7 text-center border">{{ monan.ten_mon_an }}</td>
+                        <td class="px-4 py-7 text-center border">
+                            {{ monan.gia_tien | currency:'VND':'symbol':'1.0-0':'vi-VN' }}
+                        </td>
+                        <td class="px-4 py-7 text-center border">
+                            {{ LoaiMonAnMap[monan.ma_loai_mon_an] || '---' }}
+                        </td>
+                        <td class="px-4 py-4 text-center border">
+                            <span *ngIf="monan.trang_thai == 1"
+                                class="inline-block bg-green-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">
+                                Còn bán
+                            </span>
+
+                            <span *ngIf="monan.trang_thai == 0"
+                                class="inline-block bg-red-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">
+                                Ngừng bán
+                            </span>
+                        </td>
+                        <td class="px-4 py-7 text-center border">
+                            <div class="flex justify-center gap-2">
+                                <button mat-icon-button matTooltip="Sửa" (click)="suaMonAn(monan.ma_mon_an)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button matTooltip="Xóa">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+    </mat-card>
+
+</div>
+
+
+<!-- TOAST -->
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

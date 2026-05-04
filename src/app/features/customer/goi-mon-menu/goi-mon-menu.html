@@ -1,0 +1,182 @@
+<div class="flex h-screen bg-gray-900 text-gray-100 overflow-hidden flex-col">
+
+  <!-- ================= HEADER ================= -->
+  <header class="
+    bg-gray-800 border-b border-gray-700 shrink-0
+    flex flex-col md:flex-row
+    md:h-24          <!-- ⬅️ cao hơn (từ 20 → 24) -->
+    px-4 md:px-8     <!-- ⬅️ ngang rộng hơn -->
+    py-3 md:py-0     <!-- ⬅️ dọc thoáng hơn -->
+    gap-3 md:gap-8   <!-- ⬅️ giãn khoảng cách -->
+  ">
+
+    <!-- HÀNG 1 -->
+    <div class="flex items-center justify-between w-full md:w-auto gap-4">
+
+      <!-- Logo -->
+      <div class="text-xl md:text-2xl font-bold text-yellow-400 flex items-center gap-2">
+        <mat-icon class="text-2xl md:text-3xl">restaurant</mat-icon>
+        DimSim
+      </div>
+
+      <!-- Trạng thái bàn -->
+      <div class="text-right md:text-center">
+        <span class="text-xs text-gray-400 block text-center">Bàn</span>
+        <span class="font-semibold text-white text-base">
+          {{ tenBan || 'Chưa chọn bàn' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- NÚT CHỈ HIỆN TRÊN PC -->
+    <div class="hidden md:flex items-center justify-end gap-6 flex-1">
+      <button mat-icon-button class="scale-110">
+        <mat-icon>add_shopping_cart</mat-icon>
+      </button>
+      <button mat-icon-button class="scale-110">
+        <mat-icon>support_agent</mat-icon>
+      </button>
+    </div>
+
+  </header>
+
+  <!-- ================= LOẠI MÓN ================= -->
+  <div class="mt-2 px-3">
+    <div class="flex gap-2 overflow-x-auto pb-2">
+
+      <button matButton="filled"
+        class="min-w-[150px] bg-yellow-400 text-black font-bold h-11 rounded-xl flex items-center gap-2"
+        [matMenuTriggerFor]="menuLoaiMon">
+        <mat-icon>restaurant_menu</mat-icon>
+        Loại món
+      </button>
+
+      <button matButton="filled" class="min-w-[160px] bg-blue-600 text-white h-11 rounded-xl"
+        (click)="xemDanhSachMonAnDaGoi()">
+        Món đã gọi
+      </button>
+
+      <button matButton="filled" class="min-w-[140px] bg-green-600 text-white h-11 rounded-xl">
+        Thanh toán
+      </button>
+
+      <!-- MENU -->
+      <mat-menu #menuLoaiMon="matMenu" class="!p-0 !rounded-xl !min-w-[260px]">
+        <button mat-menu-item (click)="hienThiTatCaMon()">
+          <mat-icon>menu</mat-icon>
+          Tất cả món
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item *ngFor="let loai of loaimonan" (click)="getMonAnTheoLoai(loai.ma_loai_mon_an)">
+          <mat-icon>outdoor_grill</mat-icon>
+          {{ loai.ten_loai_mon_an }}
+        </button>
+      </mat-menu>
+
+    </div>
+  </div>
+
+  <!-- ================= BODY ================= -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- ================= MENU ================= -->
+    <main class="
+    flex-1
+    p-4 md:p-6
+    overflow-y-auto
+    transition-all duration-300
+    pb-24 md:pb-6
+  ">
+
+      <h2 class="text-xl md:text-2xl font-bold text-yellow-400 mb-4">
+        {{ tieuDe }}
+      </h2>
+
+      <!-- Danh sách món -->
+      <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
+
+        <mat-card *ngFor="let mon of MonAn" class="bg-gray-800 rounded-xl overflow-hidden shadow
+             hover:scale-[1.03] transition">
+
+          <!-- Ảnh -->
+          <img [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
+            class="h-36 md:h-48 w-full object-cover">
+
+          <mat-card-content class="p-3 flex flex-col">
+
+            <!-- Tên -->
+            <h3 class="text-sm md:text-lg font-bold line-clamp-2 mb-1">
+              {{ mon.ten_mon_an }}
+            </h3>
+
+            <!-- Mô tả -->
+            <p class="text-xs md:text-sm text-gray-400 italic line-clamp-2 mb-2">
+              {{ mon.mo_ta || 'Món ăn ngon, chế biến từ nguyên liệu tươi.' }}
+            </p>
+
+            <!-- GIÁ + ICON -->
+            <div class="flex items-center justify-between mt-auto">
+
+              <!-- Giá -->
+              <span class="text-yellow-400 font-extrabold text-base md:text-xl">
+                {{ mon.gia_tien | number }} đ
+              </span>
+
+              <!-- ICON THÊM GIỎ -->
+              <button mat-icon-button class="bg-green-600 text-white
+                   hover:bg-green-700
+                   rounded-full
+                   w-10 h-10
+                   flex items-center justify-center" (click)="addToGioHang(mon)" matTooltip="Thêm vào giỏ">
+
+                <mat-icon>add_shopping_cart</mat-icon>
+              </button>
+
+            </div>
+
+          </mat-card-content>
+
+        </mat-card>
+
+      </div>
+    </main>
+
+    <!-- ================= GIỎ HÀNG ================= -->
+
+  </div>
+
+  <div class="fixed bottom-0 left-0 right-0 z-50
+         bg-gray-800 border-t border-gray-700
+         flex md:hidden">
+
+    <!-- Giỏ hàng -->
+    <button class="flex-1 py-3 flex flex-col items-center justify-center gap-1 text-yellow-400" (click)="XemGioHang()">
+
+      <div class="relative">
+        <mat-icon class="text-2xl">shopping_cart</mat-icon>
+
+        <!-- Badge -->
+        <span *ngIf="gioHang.length > 0" class="absolute -top-2 -right-2
+               bg-red-500 text-white text-xs
+               w-5 h-5 rounded-full
+               flex items-center justify-center">
+          {{ tongSoMon }}
+        </span>
+      </div>
+
+      <span class="text-xs">Giỏ hàng</span>
+    </button>
+
+    <!-- Liên hệ -->
+    <button class="flex-1 py-3 flex flex-col items-center justify-center gap-1 text-blue-400">
+      <mat-icon class="text-2xl">support_agent</mat-icon>
+      <span class="text-xs">Gọi Nhân Viên</span>
+    </button>
+  </div>
+
+  <!-- ================= TOAST ================= -->
+  <app-toast-message [message]="toastMessage" [type]="toastType" [show]="showToast"
+    class="fixed bottom-5 right-5 z-[9999]">
+  </app-toast-message>
+
+</div>

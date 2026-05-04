@@ -1,0 +1,22 @@
+<div class="text-center p-6 rounded-2xl shadow-2xl">
+  <h2 class="text-2xl font-semibold mb-4">
+    Xác Nhận
+  </h2>
+
+  <div class="mb-6 text-center">
+    {{ data.message }}
+  </div>
+
+  <div class="flex justify-center gap-3 mt-4 items-center">
+  <button matButton="filled" (click)="onYesClick()">
+    <mat-icon >check</mat-icon>Xác Nhận
+  </button>
+
+
+  <button mat-raised-button (click)="onNoClick()">
+    <mat-icon>close</mat-icon>
+    Hủy
+  </button>
+</div>
+
+</div>

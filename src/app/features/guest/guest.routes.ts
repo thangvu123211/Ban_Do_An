@@ -1,0 +1,28 @@
+import { Routes } from '@angular/router';
+import { GuestLayout } from '../../core/layouts/guest/guest-layout';
+import { HomeComponents } from './home-components/home-components';
+import { LoginComponent } from '../../pages/login/login';
+import { Register } from '../../pages/register/register';
+import { Account } from './account/account';
+import { DatBan } from './dat-ban/dat-ban';
+import { Blog } from './blog/blog';
+import { Menu } from './menu/menu';
+import { LienHe } from './lien-he/lien-he';
+
+export const guestRoutes: Routes = [
+  {
+    path: '',
+    component: GuestLayout,
+    children: [
+      { path: '', component: HomeComponents, title: 'Trang chủ' },
+      { path: 'home', component: HomeComponents, title: 'Trang chủ' },
+      { path: 'login', component: LoginComponent, title: 'Đăng nhập' },
+      { path: 'register', component: Register, title: 'Tạo tài khoản' },
+      { path: 'account', component: Account, title: 'Trang cá nhân' },
+      { path: 'datban', component: DatBan, title: 'Đặt bàn' },
+      { path: 'blog', component: Blog, title: 'Thông tin nhà hàng' },
+      { path: 'thucdon', component: Menu, title: 'Thực đơn' },
+      { path: 'lienhe', component: LienHe, title: 'Liên hệ' },
+    ],
+  },
+];

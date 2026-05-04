@@ -1,0 +1,124 @@
+<mat-toolbar color="transparent"
+  class="fixed top-0 left-0 w-full px-4 py-3 shadow-md h-20 z-50 bg-white flex justify-between">
+  <!-- LEFT: Menu + Logo -->
+  <div class="flex items-center gap-4 h-full">
+    <button mat-icon-button (click)="toggleSidebar()">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+
+  </div>
+
+  <!-- CENTER: Search -->
+  <div class="search-bar flex items-center ml-auto mr-4 gap-2">
+    <!-- Input tìm kiếm -->
+    <div class="hidden md:flex ml-auto mr-4">
+      <div class="flex items-center px-3 h-10 w-[350px] md:w-[500px]
+           rounded-full bg-gray-100 dark:bg-gray-800
+           shadow-sm border border-gray-200 dark:border-gray-700
+           transition-colors">
+        <!-- Input -->
+        <input type="text" placeholder="Tìm kiếm..." class="flex-1 bg-transparent text-gray-900 dark:text-gray-200
+             placeholder-gray-500 dark:placeholder-gray-400
+             focus:outline-none text-sm" />
+
+        <!-- Icon gọn trong input -->
+        <button class="h-8 w-8 flex items-center justify-center
+             rounded-full hover:bg-gray-200 dark:hover:bg-gray-700
+             transition ml-6">
+          <i class="fa fa-search text-gray-600 dark:text-gray-300 text-xs"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Nút Mic -->
+    <button matIconButton matTooltip="Mic">
+      <mat-icon>mic</mat-icon>
+    </button>
+
+  </div>
+
+  <!-- RIGHT: User + Notifications + Dark Mode -->
+  <div class="flex items-center gap-4 mr-10">
+    <!-- User -->
+    
+
+    <!-- Notifications -->
+    <button mat-icon-button [matMenuTriggerFor]="notifMenu" matTooltip="Thông báo">
+      <mat-icon>notifications</mat-icon>
+    </button>
+
+
+    <button [matMenuTriggerFor]="userMenu" matTooltip="Tài khoản">
+      <img [src]="previewImage" alt="User" class="h-8 w-8 rounded-full object-cover" />
+    </button>
+  </div>
+</mat-toolbar>
+
+<!-- USER MENU -->
+<mat-menu #userMenu="matMenu" class="!p-0 !rounded-xl !overflow-hidden !shadow-xl !min-w-[220px] mt-4">
+  <div class="px-4 py-3 border-b border-gray-700 text-black font-semibold">
+    Xin Chào {{ adminInfo?.ho_ten || 'Admin' }}
+  </div>
+
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+    <mat-icon class="text-black">person</mat-icon>
+    <span class="text-black">Trang Cá Nhân</span>
+  </button>
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+    <mat-icon class="text-black">print</mat-icon>
+    <span class="text-black">in Báo Cáo</span>
+  </button>
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+    <mat-icon class="text-black">chat</mat-icon>
+    <span class="text-black">Nhắn tin</span>
+  </button>
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+    <mat-icon class="text-black">g_translate</mat-icon>
+    <span class="text-black">Ngôn Ngữ</span>
+  </button>
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+    <mat-icon class="text-black">timer</mat-icon>
+    <span class="text-black">Giờ Làm</span>
+  </button>
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+    <mat-icon class="text-black">timeline</mat-icon>
+    <span class="text-black">Doanh Thu</span>
+  </button>
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+    <mat-icon class="text-black">add_notes</mat-icon>
+    <span class="text-black">Ghi Chú</span>
+  </button>
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+    <mat-icon class="text-black">settings</mat-icon>
+    <span class="text-black">Cài đặt</span>
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item (click)="logout()" class="!flex !items-center !gap-3 !py-2">
+    <mat-icon>logout</mat-icon>
+    <span class="text-red-600 font-semibold">Đăng xuất</span>
+  </button>
+</mat-menu>
+
+<!-- NOTIFICATIONS MENU -->
+<mat-menu #notifMenu="matMenu" class="!p-0 !rounded-xl !overflow-hidden !shadow-xl !min-w-[450px] mt-4">
+  <div class="px-4 py-3 border-b border-gray-700 text-black font-semibold">
+    Thông báo mới
+  </div>
+
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+    <mat-icon>notifications</mat-icon>
+    <span>Thông báo 1</span>
+  </button>
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+    <mat-icon>notifications</mat-icon>
+    <span>Thông báo 2</span>
+  </button>
+
+  <mat-divider></mat-divider>
+
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+    <mat-icon>settings</mat-icon>
+    <span>Cài đặt thông báo</span>
+  </button>
+</mat-menu>

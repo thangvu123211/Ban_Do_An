@@ -1,0 +1,99 @@
+<div class="flex items-center justify-center min-h-screen mt-24 mb-24">
+
+  <div class="flex w-[900px] rounded-3xl shadow-xl overflow-hidden">
+    <!-- Left Banner -->
+    <div
+      class="w-1/2 bg-gradient-to-b from-orange-500 to-orange-400 flex flex-col justify-center items-center text-white p-10">
+      <h1 class="text-3xl font-bold leading-snug mb-4 text-center">
+        Hãy tham gia cùng chúng tôi <br />
+        và khám phá <br />
+        <span class="underline">các tính năng mới.</span>
+      </h1>
+      <p class="text-sm mb-6 text-center">
+        Tạo tài khoản ngay bây giờ và bắt đầu quản lý <br />
+        doanh nghiệp của bạn hiệu quả hơn.
+      </p>
+      <img src="TA.png" alt="Characters" class="w-40 mt-4" />
+    </div>
+
+    <!-- Right Form (Dark Mode) -->
+    <div class="w-1/2 flex flex-col justify-center px-10 py-6">
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold">Tạo Tài Khoản</h2>
+        <p class="text-gray-300 text-sm">Vui Lòng Điền Đầy Đủ Thông Tin</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="TaoTaiKhoan()" class="flex flex-col gap-4">
+        <!-- Full Name -->
+        <label class="text-sm font-medium text-gray-300" for="hoten">Họ Tên</label>
+        <input type="text" id="hoten" placeholder="Họ Tên" formControlName="hoten"
+          class="w-full px-4 py-3 border border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400 text-white" />
+
+        <!-- Email -->
+        <label class="text-sm font-medium text-gray-300" for="email">Email</label>
+        <input type="email" id="email" placeholder="Email address" formControlName="email"
+          class="w-full px-4 py-3 border border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400 text-white" />
+
+        <!-- Password -->
+        <label class="text-sm font-medium text-gray-300" for="matkhau">Mật Khẩu</label>
+        <input type="password" id="matkhau" placeholder="Password" formControlName="matkhau"
+          class="w-full px-4 py-3 border border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400 text-white" />
+
+        <!-- Confirm Password -->
+        <label class="text-sm font-medium text-gray-300" for="confirmMatkhau">Xác Nhận Mật Khẩu</label>
+        <input type="password" id="confirmMatkhau" placeholder="Confirm Password" formControlName="confirmMatkhau"
+          class="w-full px-4 py-3 border border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400 text-white" />
+
+        <!-- Phone -->
+        <label class="text-sm font-medium text-gray-300" for="sdt">Số Điện Thoại</label>
+        <input type="text" id="sdt" placeholder="Số Điện Thoại" formControlName="sdt"
+          class="w-full px-4 py-3 border border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400 text-white" />
+
+        <!-- Password mismatch error -->
+        <div *ngIf="registerForm.get('confirmMatkhau')?.hasError('notMatched') &&
+            (registerForm.get('confirmMatkhau')?.dirty || registerForm.get('confirmMatkhau')?.touched)"
+          class="text-red-500 text-sm">
+          Mật khẩu không khớp
+        </div>
+
+        <!-- Signup Button -->
+        <button type="submit"
+          class="w-full py-3 bg-orange-500 text-white rounded-full text-lg font-aialbold hover:bg-orange-600 transition">
+          Tạo Tài Khoản
+        </button>
+      </form>
+
+      <div class="flex items-center my-6">
+        <div class="flex-grow h-px bg-gray-600"></div>
+        <span class="px-3 text-gray-400 text-sm">Or Sign Up with</span>
+        <div class="flex-grow h-px bg-gray-600"></div>
+      </div>
+
+      <div class="flex justify-center gap-3">
+        <button
+          class="flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-full hover:bg-gray-700 transition text-sm">
+          <img src="assets/Google__G__logo.svg.png" alt="Google" class="w-4 h-4" />
+          Google
+        </button>
+        <button
+          class="flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-full hover:bg-gray-700 transition text-sm">
+          <img src="assets/2023_Facebook_icon.svg.png" alt="Facebook" class="w-4 h-4" />
+          Facebook
+        </button>
+      </div>
+
+      <p class="mt-6 text-center text-gray-400 text-sm">
+        Bạn đã có tài khoản? 
+        <span (click)="goToLogin()" class="text-orange-500 font-semibold cursor-pointer">
+          Đăng Nhập
+        </span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<app-toast-message
+  [show]="toast.show"
+  [message]="toast.message"
+  [type]="toast.type">
+</app-toast-message>

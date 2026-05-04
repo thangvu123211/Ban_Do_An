@@ -1,0 +1,50 @@
+<div class="relative p-6 rounded-2xl shadow-2xl w-[500px]">
+
+  <!-- Nút đóng -->
+  <div class="flex justify-end">
+    <button mat-icon-button (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Tiêu đề -->
+  <h2 class="text-2xl font-semibold mb-8 text-center">
+    Chi tiết liên hệ
+  </h2>
+
+  <div class="space-y-4">
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Họ và tên</mat-label>
+      <input matInput [value]="data.ho_ten" readonly />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Email</mat-label>
+      <input matInput [value]="data.email" readonly />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Số điện thoại</mat-label>
+      <input matInput [value]="data.sdt || '---'" readonly />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Tiêu đề</mat-label>
+      <textarea matInput rows="2" readonly>{{ data.tieu_de }}</textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Nội dung</mat-label>
+      <textarea matInput rows="4" readonly>{{ data.noi_dung }}</textarea>
+    </mat-form-field>
+
+  </div>
+
+  <div class="flex justify-end mt-8">
+    <button mat-raised-button color="primary" (click)="close()">
+      Đóng
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,16 @@
+.active-link {
+  background: linear-gradient(to right, #ffffff, #ffffff);
+  color: #000000 !important;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+  transform: translateX(6px);
+  transition: all 0.3s ease;
+}
+
+.active-link:hover {
+  background: linear-gradient(to right, #b8b8bd, #b8b8bd);
+  box-shadow: 0 0 16px rgba(183, 183, 187, 0.6);
+}
+span {
+  transition: max-width 0.3s ease, opacity 0.3s ease;
+  display: inline-block; /* để max-width có hiệu lực */
+}

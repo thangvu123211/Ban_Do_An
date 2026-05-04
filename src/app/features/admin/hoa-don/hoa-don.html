@@ -1,0 +1,152 @@
+<div class="relative h-96 bg-gradient-to-r from-black">
+    <!-- Header content -->
+    <div class="absolute top-10 left-10 z-10 text-white">
+        <h1 class="text-5xl font-bold">Hello Admin</h1>
+        <p class="mt-4 max-w-lg">
+            Đây Là Trang Quản Lý Hóa Đơn
+        </p>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 -mt-32 flex flex-wrap lg:flex-nowrap gap-6">
+    <div class="w-full lg:w-full bg-white shadow-lg rounded-lg p-6 relative z-10">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-semibold">Trang Quản Lý Hóa Đơn </h3>
+        </div>
+
+        <!-- CHI TIẾT HÓA ĐƠN -->
+        <div *ngIf="ChiTietHoaDon.length > 0" class="mt-6">
+            <h2 class="text-2xl font-bold mb-4">Chi tiết hóa đơn</h2>
+            <table class="min-w-full border border-gray-300">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-2 border">Mã Hóa Đơn</th>
+                        <th class="px-4 py-2 border">Tên Món</th>
+                        <th class="px-4 py-2 border">Số Lượng</th>
+                        <th class="px-4 py-2 border">Đơn Giá</th>
+                        <th class="px-4 py-2 border">Thành Tiền</th>
+                        <th class="px-4 py-2 border">Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let ct of ChiTietHoaDon">
+                        <td class="px-4 py-2 border">{{ ct.MA_HD }}</td>
+                        <td class="px-4 py-2 border">{{ ct.TEN_MON }}</td>
+                        <td class="px-4 py-2 border">{{ ct.SO_LUONG }}</td>
+                        <td class="px-4 py-2 border text-right">{{ ct.DON_GIA | number }} VND</td>
+                        <td class="px-4 py-2 border text-right">{{ ct.THANH_TIEN | number }} VND</td>
+                        <td class="px-4 py-2 border text-center">
+                            <div class="flex gap-2 justify-center">
+                                <button class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded"
+                                    (click)="editCTHD(ct)">Sửa</button>
+                                <button class="bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded" (click)="xoaCTHD(ct)">Xóa
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ✅ FORM sửa CTHD -->
+            <div *ngIf="editingCTHD" class="mt-6 p-4 border rounded bg-gray-50">
+                <h3 class="text-lg font-bold mb-4">Sửa chi tiết hóa đơn</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- chọn món -->
+                    <div>
+                        <label class="block font-semibold">Món ăn:</label>
+                        <select [(ngModel)]="editingCTHD.MA_MON_AN" (change)="onMonAnChange()"
+                            class="border p-2 rounded w-full">
+                            <option *ngFor="let mon of MonAn" [value]="mon.MA_MON_AN">
+                                {{ mon.TEN_MON }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- số lượng -->
+                    <div>
+                        <label class="block font-semibold">Số lượng:</label>
+                        <input type="number" [(ngModel)]="editingCTHD.SO_LUONG" (input)="tinhTienCT()"
+                            class="border p-2 rounded w-full" />
+                    </div>
+
+                    <!-- đơn giá -->
+                    <div>
+                        <label class="block font-semibold">Đơn giá:</label>
+                        <input type="number" [(ngModel)]="editingCTHD.DON_GIA " disabled
+                            class="border p-2 rounded w-full" />
+                    </div>
+
+                    <!-- thành tiền -->
+                    <div>
+                        <label class="block font-semibold">Thành tiền:</label>
+                        <input type="number" [(ngModel)]="editingCTHD.THANH_TIEN" disabled
+                            class="border p-2 rounded w-full" />
+                    </div>
+                </div>
+
+                <div class="mt-4 flex gap-2">
+                    <button (click)="updateCTHD()" class="bg-green-500 text-white px-4 py-2 rounded">Lưu</button>
+                    <button (click)="editingCTHD=null" class="bg-gray-500 text-white px-4 py-2 rounded">Hủy</button>
+                </div>
+            </div>
+            <!-- END FORM -->
+
+            <div class="mt-6 text-right font-bold text-lg">
+                Tổng Tiền: {{ tongTienCT | number }} VND
+            </div>
+
+            <button class="bg-gray-500 text-white px-4 py-2 mt-4 rounded" (click)="quayLai()">
+                Quay Lại
+            </button>
+        </div>
+
+        <!-- Danh sách hóa đơn -->
+        <div *ngIf="!ChiTietHoaDon.length" class="p-4 ml-2 ">
+            <h2 class="text-2xl font-bold mb-4">Danh sách hóa đơn</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-300">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-4 py-2 border">#</th>
+                            <th class="px-4 py-2 border">Mã Hóa Đơn</th>
+                            <th class="px-4 py-2 border">Tên Bàn</th>
+                            <th class="px-4 py-2 border">Ngày Lập Hóa Đơn</th>
+                            <th class="px-4 py-2 border">Giờ Lập Hóa Đơn</th>
+                            <th class="px-4 py-2 border">Tổng Tiền</th>
+                            <th class="px-4 py-2 border">Mã NV Order</th>
+                            <th class="px-4 py-2 border">Trạng Thái</th>
+                            <th class="px-4 py-2 border">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let items of HoaDon; let i = index" class="hover:bg-gray-50">
+                            <td class="px-4 py-2 border text-center">{{ i + 1 }}</td>
+                            <td class="px-4 py-2 border">{{ items.MA_HD }}</td>
+                            <td class="px-4 py-2 border">{{ items.TENBAN }}</td>
+                            <td class="px-4 py-2 border">{{ items.NGAYLAPHOADON | date:'dd/MM/yyyy' }}</td>
+                            <td class="px-4 py-2 border">{{ items.GIOTAOHOADON }}</td>
+                            <td class="px-4 py-2 border text-right">{{ items.TONGTIEN | number }} VND</td>
+                            <td class="px-4 py-2 border">{{ items.HOTEN || 'Chưa xác nhận' }}</td>
+                            <td class="px-4 py-2 border text-center">
+                                <span *ngIf="items.TRANGTHAI == 1" class="text-green-600 font-semibold">Đã Xác
+                                    Nhận</span>
+                                <span *ngIf="items.TRANGTHAI == 0" class="text-red-600 font-semibold">Chưa Xác
+                                    Nhận</span>
+                                <span *ngIf="items.TRANGTHAI == 2" class="text-red-600 font-semibold">Đã Hủy</span>
+                            </td>
+                            <td class="px-4 py-2 border text-center">
+                                <div class="flex gap-2 justify-center">
+                                    <button class="bg-green-500 text-white px-2 py-1 rounded" (click)="load_chiTietHoaDon(items.MA_HD)">Xem CTHD</button>
+                                    <button class="bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded" (click)="xoaHoaDon(items.MA_HD)">Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <hr class="my-4 border-gray-300">
+    </div>
+</div>

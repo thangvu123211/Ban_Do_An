@@ -1,0 +1,31 @@
+<app-header></app-header>
+
+<main class="flex flex-col min-h-screen relative">
+  <div class="flex-1 mt-2">
+    <router-outlet></router-outlet>
+  </div>
+
+  <app-footer></app-footer>
+
+  <!-- Nút liên hệ cố định dạng hình chữ nhật dọc -->
+  <div class="fixed right-6 top-2/3 z-50">
+
+  <div
+    class="w-16 h-16 rounded-full
+           bg-[#d4af7a]
+           flex items-center justify-center
+           text-black text-2xl
+           shadow-xl
+           hover:scale-110
+           transition duration-300
+           cursor-pointer">
+
+    <i class="fas fa-robot"></i>
+
+  </div>
+
+</div>
+
+
+
+</main>

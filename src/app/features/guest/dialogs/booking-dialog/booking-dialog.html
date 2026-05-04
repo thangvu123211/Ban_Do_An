@@ -1,0 +1,84 @@
+<div class="relative p-6 bg-gray-800 datban">
+    <!-- Nút đóng -->
+    <div class="flex justify-end">
+        <button mat-icon-button (click)="close()" class="absolute right-2 hover:bg-yellow-900">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+
+
+    <!-- Bố cục -->
+    <div class="flex gap-6 mt-6 ">
+        <!-- Ảnh bàn ăn -->
+        <div>
+            <div>
+                <img *ngIf="data.table?.anh_ban?.length" [src]="data.table.anh_ban[0].url"
+                    class="w-64 h-64 md:w-72 md:h-72 object-cover rounded-lg shadow-lg">
+            </div>
+
+            <div class="flex justify-center pt-3 tooltipne">
+                <button mat-icon-button (click)="openImageModal(data.table.anh_ban[0].url) "
+                    matTooltip="Phóng to hình ảnh">
+                    <mat-icon>zoom_in</mat-icon>
+                </button>
+            </div>
+        </div>
+        <!-- Nội dung -->
+        <div class="flex-1 text-white">
+            <h2 class="text-2xl font-semibold mb-2">Xác nhận đặt bàn</h2>
+            <p class="mb-4">
+                <strong>Bàn:</strong>
+                {{ data.table ? (data.table.ten_ban || ('Bàn ' + data.table.ma_ban)) : 'Chưa chọn' }}
+            </p>
+            <p class="mb-4">
+                <strong>Ngày:</strong>
+                {{ data.ngay ? (data.ngay | date:'dd/MM/yyyy') : 'Chưa chọn' }}
+            </p>
+
+            <p class="mb-4">
+                <strong>Giờ:</strong>
+                {{ data.gio !== null ? (data.gio + ':00') : 'Chưa chọn' }}
+            </p>
+
+
+            <!-- Form nhập thông tin -->
+            <mat-form-field appearance="outline" class="w-full mb-3 rounded-2xl">
+                <mat-label>Tên khách hàng</mat-label>
+                <input matInput [(ngModel)]="TENKHACHHANG">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full mb-3 rounded-2xl">
+                <mat-label>Số điện thoại</mat-label>
+                <input matInput type="tel" [(ngModel)]="SDT">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full mb-3 rounded-2xl">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" [(ngModel)]="EMAIL">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full mb-3 rounded-2xl">
+                <mat-label>Ghi chú</mat-label>
+                <textarea matInput rows="3" placeholder="Ví dụ: Muốn ngồi gần cửa sổ , Bàn ăn riêng tư , Gia đình..."
+                    [(ngModel)]="GHICHU"></textarea>
+            </mat-form-field>
+            <div class="justify-between">
+                <strong>Nếu khách hàng trễ đặt bàn 15 phút đến 30 phút thì bàn của khách hàng sẽ tự động hủy , Cảm ơn
+                    khách hàng đã đặt bàn</strong>
+            </div>
+            <!-- Nút -->
+            <div class="flex gap-2 mt-4 justify-end">
+                <button matButton="filled" class="" (click)="confirm()">
+                    <mat-icon>check</mat-icon>
+                    Xác nhận</button>
+                <button mat-raised-button (click)="close()">
+                    <mat-icon>close</mat-icon>
+                    Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

@@ -1,0 +1,84 @@
+<div class="p-6 max-w-7xl mx-auto">
+  <h2 class="text-2xl font-bold mb-6 text-white-800">Trang chủ nhân viên</h2>
+
+  <!-- Card summary -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Hóa đơn đã xác nhận -->
+    <div class="bg-white rounded-2xl shadow p-5 flex items-center gap-4 hover:shadow-lg transition">
+      <div class="text-blue-500 text-4xl">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      <div>
+        <div class="text-3xl font-semibold text-gray-800">12</div>
+        <div class="text-sm text-gray-500">Số hóa đơn đã xác nhận</div>
+      </div>
+    </div>
+
+    <!-- Hóa đơn đang chờ -->
+    <div class="bg-white rounded-2xl shadow p-5 flex items-center gap-4 hover:shadow-lg transition">
+      <div class="text-yellow-500 text-4xl">
+        <mat-icon>hourglass_top</mat-icon>
+      </div>
+      <div>
+        <div class="text-3xl font-semibold text-gray-800">5</div>
+        <div class="text-sm text-gray-500">Số hóa đơn đang chờ</div>
+      </div>
+    </div>
+
+    <!-- Hóa đơn chờ thanh toán -->
+    <div class="bg-white rounded-2xl shadow p-5 flex items-center gap-4 hover:shadow-lg transition">
+      <div class="text-orange-500 text-4xl">
+        <mat-icon>payment</mat-icon>
+      </div>
+      <div>
+        <div class="text-3xl font-semibold text-gray-800">3</div>
+        <div class="text-sm text-gray-500">Số hóa đơn chờ thanh toán</div>
+      </div>
+    </div>
+
+    <!-- Số tiền hôm nay -->
+    <div class="bg-white rounded-2xl shadow p-5 flex items-center gap-4 hover:shadow-lg transition">
+      <div class="text-green-500 text-4xl">
+        <mat-icon>attach_money</mat-icon>
+      </div>
+      <div>
+        <div class="text-3xl font-semibold text-gray-800">2,450,000 ₫</div>
+        <div class="text-sm text-gray-500">Số tiền đã xác nhận hôm nay</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table hóa đơn -->
+  <div class="overflow-x-auto bg-white rounded-2xl shadow">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Mã hóa đơn</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Trạng thái</th>
+          <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700">Tổng tiền</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Ngày</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-6 py-4 text-sm text-gray-800">HD001</td>
+          <td class="px-6 py-4 text-sm text-gray-800">Đã xác nhận</td>
+          <td class="px-6 py-4 text-sm text-right text-gray-800">120,000 ₫</td>
+          <td class="px-6 py-4 text-sm text-gray-800">19/10/2025</td>
+        </tr>
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-6 py-4 text-sm text-gray-800">HD002</td>
+          <td class="px-6 py-4 text-sm text-gray-800">Chờ</td>
+          <td class="px-6 py-4 text-sm text-right text-gray-800">85,000 ₫</td>
+          <td class="px-6 py-4 text-sm text-gray-800">19/10/2025</td>
+        </tr>
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-6 py-4 text-sm text-gray-800">HD003</td>
+          <td class="px-6 py-4 text-sm text-gray-800">Chờ thanh toán</td>
+          <td class="px-6 py-4 text-sm text-right text-gray-800">200,000 ₫</td>
+          <td class="px-6 py-4 text-sm text-gray-800">19/10/2025</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

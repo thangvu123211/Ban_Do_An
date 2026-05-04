@@ -1,0 +1,185 @@
+<!-- phần giao diện hóa đơn ở trên -->
+
+
+
+<main class="flex-1 p-6 overflow-auto bg-gray-800 text-gray-100">
+
+    <div class="overflow-x-auto rounded-lg shadow border border-gray-700">
+        <table class="min-w-full divide-y divide-gray-700">
+            <thead class="bg-gray-700 text-gray-200">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Mã HĐ</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Bàn</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Ngày lập</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Giờ tạo</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Tổng tiền</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Trạng thái</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Hành động</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center">Chi tiết
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-700 bg-gray-800">
+                <ng-container *ngFor="let hd of HoaDon; let i = index">
+                    <tr class="hover:bg-gray-700 transition">
+                        <td class="px-6 py-3">{{ hd.MA_HD }}</td>
+                        <td class="px-6 py-3">{{ hd.TENBAN }}</td>
+                        <td class="px-6 py-3">{{ hd.NGAYLAPHOADON | date: 'dd/MM/yyyy' }}</td>
+                        <td class="px-6 py-3">{{ hd.GIOTAOHOADON }}</td>
+                        <td class="px-6 py-3 font-semibold text-green-400">{{ hd.TONGTIEN | number }} VND</td>
+
+                        <td class="px-6 py-3">
+                            <span *ngIf="hd.TRANGTHAI == 0" class="px-3 py-1 rounded bg-orange-600 text-white">Chưa xác
+                                nhận</span>
+                            <span *ngIf="hd.TRANGTHAI == 1" class="px-3 py-1 rounded bg-green-600 text-white">Đã xác
+                                nhận</span>
+                            <span *ngIf="hd.TRANGTHAI == 2" class="px-3 py-1 rounded bg-red-600 text-white">Đã
+                                hủy</span>
+                            <span *ngIf="hd.TRANGTHAI == 4" class="px-3 py-1 rounded bg-blue-600 text-white">Đã thanh
+                                toán</span>
+                        </td>
+
+                        <td class="px-6 py-3">
+                            <div class="flex gap-2 items-center">
+                                <!-- Nút Xác nhận (chỉ hiện khi TRANGTHAI = 0) -->
+                                <button *ngIf="hd.TRANGTHAI == 0"
+                                    class="bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1 rounded"
+                                    (click)="xacNhanHoaDon(hd.MA_HD)">
+                                    Xác nhận
+                                </button>
+
+                                <!-- Nút Hủy (chỉ hiện khi TRANGTHAI = 0) -->
+                                <button *ngIf="hd.TRANGTHAI == 0"
+                                    class="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded"
+                                    (click)="huyHoaDon(hd)">
+                                    Hủy
+                                </button>
+
+                                <!-- Đã xác nhận -->
+                                <span *ngIf="hd.TRANGTHAI == 1" class="text-green-500 font-semibold text-sm">
+                                    Đã xác nhận
+                                </span>
+
+                                <!-- Đã hủy -->
+                                <span *ngIf="hd.TRANGTHAI == 2" class="text-red-500 font-semibold text-sm">
+                                    Đã hủy
+                                </span>
+
+                                <!-- Đã thanh toán -->
+                                <span *ngIf="hd.TRANGTHAI == 4" class="text-blue-500 font-semibold text-sm">
+                                    Đã thanh toán
+                                </span>
+                            </div>
+                        </td>
+
+                        <td class="text-center">
+                            <button (click)="toggleChiTiet(i, hd.MA_HD)" class="p-2 rounded hover:bg-gray-600">
+                                <mat-icon>
+                                    {{ selectedIndex === i ? 'arrow_drop_up' : 'arrow_drop_down' }}
+                                </mat-icon>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- ========== Chi tiết hóa đơn ========== -->
+                    <tr *ngIf="selectedIndex === i">
+                        <td colspan="8" class="bg-gray-900 p-5 rounded-b-lg">
+                            <div *ngIf="chiTietHoaDon.length > 0; else noCT">
+                                <h3 class="text-lg font-semibold mb-3 text-green-400">
+                                    Chi tiết hóa đơn #{{ hd.MA_HD }}
+                                </h3>
+
+                                <table class="min-w-full divide-y divide-gray-700 text-sm">
+                                    <thead>
+                                        <tr class="text-gray-300">
+                                            <th class="px-3 py-2 text-left">STT</th>
+                                            <th class="px-3 py-2 text-left">Tên món</th>
+                                            <th class="px-3 py-2 text-left">Số lượng</th>
+                                            <th class="px-3 py-2 text-left">Đơn giá</th>
+                                            <th class="px-3 py-2 text-left">Thành tiền</th>
+                                            <th class="px-3 py-2 text-left">Thao tác</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let ct of chiTietHoaDon; let j = index" class="hover:bg-gray-800">
+                                            <td class="px-3 py-2">{{ j + 1 }}</td>
+
+                                            <!-- Nếu đang sửa -->
+                                            <td class="px-3 py-2" *ngIf="ct.showEdit">
+                                                <select [(ngModel)]="ct.MA_MON_AN" (change)="onMonAnChange(ct)"
+                                                    class="bg-gray-700 border border-gray-600 rounded px-2 py-1 text-sm text-white">
+                                                    <option *ngFor="let mon of MonAn" [ngValue]="mon.MA_MON_AN">
+                                                        {{ mon.TEN_MON }}
+                                                    </option>
+                                                </select>
+
+                                            </td>
+                                            <!-- Nếu không sửa -->
+                                            <td class="px-3 py-2" *ngIf="!ct.showEdit">{{ ct.TEN_MON }}</td>
+
+                                            <td class="px-3 py-2">
+                                                <input *ngIf="ct.showEdit" type="number" [(ngModel)]="ct.SO_LUONG"
+                                                    (ngModelChange)="onMonAnChange(ct)"
+                                                    class="w-16 bg-gray-700 border border-gray-600 rounded px-1 py-0.5 text-white text-sm">
+                                                <span *ngIf="!ct.showEdit">{{ ct.SO_LUONG }}</span>
+                                            </td>
+
+                                            <td class="px-3 py-2">{{ ct.DON_GIA | number }} VND</td>
+                                            <td class="px-3 py-2 text-green-400 font-semibold">{{ ct.THANH_TIEN | number
+                                                }} VND</td>
+
+                                            <td class="px-3 py-2">
+                                                <!-- Nếu đang không sửa -->
+                                                <div *ngIf="!ct.showEdit" class="flex gap-2">
+                                                    <button *ngIf="hd.TRANGTHAI == 0" (click)="toggleEdit(ct)"
+                                                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs">
+                                                        Sửa món
+                                                    </button>
+
+                                                    <button *ngIf="hd.TRANGTHAI == 0"
+                                                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">
+                                                        Hủy món
+                                                    </button>
+
+                                                    <!-- Nếu hóa đơn đã xác nhận hoặc thanh toán -->
+                                                    <span *ngIf="hd.TRANGTHAI != 0"
+                                                        class="text-gray-400 italic text-xs">
+                                                        Không thể chỉnh sửa
+                                                    </span>
+                                                </div>
+
+                                                <!-- Nếu đang ở chế độ sửa -->
+                                                <div *ngIf="ct.showEdit" class="flex gap-2">
+                                                    <button (click)="saveCTHD(ct)"
+                                                        class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs">
+                                                        Lưu
+                                                    </button>
+                                                    <button (click)="cancelEdit(ct)"
+                                                        class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                                                        Hủy
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="text-right mt-4 text-lg font-bold text-yellow-400">
+                                    Tổng tiền: {{ tongTienCT | number }} VND
+                                </div>
+                            </div>
+
+                            <ng-template #noCT>
+                                <p class="text-gray-400 italic">Không có chi tiết hóa đơn.</p>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</main>
+<app-toast-message [message]="toastMessage" [type]="toastType" [show]="showToast">
+</app-toast-message>

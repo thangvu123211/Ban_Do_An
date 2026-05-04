@@ -1,0 +1,54 @@
+mat-card {
+  background-color: #1f2937 !important; /* = bg-gray-800 */
+  color: #ffffff !important;
+  transition: background-color 0.3s ease;
+}
+
+mat-card:hover {
+  background-color: #374151 !important; /* = bg-gray-700 */
+}
+.btn-dat-mon {
+  width: 100%;
+  margin-top: 0.75rem;
+  background-color: #000000 !important; /* Ép đen */
+  color: #facc15 !important; /* Ép vàng */
+  font-weight: 600;
+  border-radius: 9999px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+  transition: all 0.25s ease-in-out;
+}
+
+.btn-dat-mon:hover {
+  background-color: #111111 !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+}
+.btn-goi-mon {
+  background-color: #16a34a !important; /* xanh đậm */
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.25s ease-in-out;
+}
+
+.btn-goi-mon:hover {
+  background-color: #15803d !important; /* xanh đậm hơn khi hover */
+  box-shadow: 0 0 10px rgba(22, 163, 74, 0.5);
+}
+
+/* ❌ Nút hủy (đỏ đậm) */
+.btn-huy-mon {
+  background-color: #dc2626 !important; /* đỏ */
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.25s ease-in-out;
+}
+
+.btn-huy-mon:hover {
+  background-color: #b91c1c !important; /* đỏ đậm hơn khi hover */
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+}
+/* Ẩn toàn bộ scrollbar nhưng vẫn cho phép cuộn */
+
+
+

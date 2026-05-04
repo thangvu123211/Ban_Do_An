@@ -1,0 +1,174 @@
+<div class="h-screen w-screen bg-gray-950 pt-20">
+
+  <mat-sidenav-container class="h-full w-full">
+
+    <!-- SIDEBAR -->
+    <mat-sidenav mode="side" opened
+      class="w-64 bg-gray-900 border-r border-gray-800 flex flex-col justify-between py-6">
+
+      <!-- Top -->
+      <div>
+
+        <!-- Profile -->
+        <div class="flex flex-col items-center mb-8">
+          <img src="assets/avatar.png" class="w-16 h-16 rounded-full border-2 border-orange-500 mb-2">
+
+          <p class="text-gray-400 text-xs uppercase">Khách Hàng</p>
+          <p class="text-white font-semibold">{{hoten}}</p>
+        </div>
+
+        <!-- Menu -->
+        <div class="flex flex-col gap-1 px-3">
+
+          <button
+            class="flex items-center gap-3 w-full px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-800 hover:text-orange-400 transition">
+
+            <mat-icon class="text-xl">person</mat-icon>
+            <span class="text-sm">Trang Cá Nhân</span>
+
+          </button>
+
+          <button
+            class="flex items-center gap-3 w-full px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-800 hover:text-orange-400 transition">
+
+            <mat-icon class="text-xl">account_balance_wallet</mat-icon>
+            <span class="text-sm">Đặt Bàn</span>
+
+          </button>
+
+          <button
+            class="flex items-center gap-3 w-full px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-800 hover:text-orange-400 transition">
+
+            <mat-icon class="text-xl">flatware</mat-icon>
+            <span class="text-sm">Đặt Đồ Ăn</span>
+
+          </button>
+
+          <button
+            class="flex items-center gap-3 w-full px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-800 hover:text-orange-400 transition">
+
+            <mat-icon class="text-xl">local_mall</mat-icon>
+            <span class="text-sm">Giỏ Hàng</span>
+
+          </button>
+
+          <button
+            class="flex items-center gap-3 w-full px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-800 hover:text-orange-400 transition">
+
+            <mat-icon class="text-xl">add_location_alt</mat-icon>
+            <span class="text-sm">Địa Chỉ</span>
+
+          </button>
+
+          <button
+            class="flex items-center gap-3 w-full px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-800 hover:text-orange-400 transition">
+
+            <mat-icon class="text-xl">notifications</mat-icon>
+            <span class="text-sm">Thông Báo</span>
+
+          </button>
+
+          <button
+            class="flex items-center gap-3 w-full px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-800 hover:text-orange-400 transition">
+
+            <mat-icon class="text-xl">card_membership</mat-icon>
+            <span class="text-sm">Đơn Hàng Đã Đặt</span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Logout -->
+      <div class="px-3">
+        <button (click)="logout()"
+          class="flex items-center gap-3 w-full px-4 py-3 text-gray-300 rounded-lg hover:bg-red-500 hover:text-white transition">
+
+          <mat-icon>logout</mat-icon>
+          <span class="text-sm">Đăng Xuất</span>
+
+        </button>
+      </div>
+
+    </mat-sidenav>
+
+
+    <!-- CONTENT -->
+    <mat-sidenav-content class="bg-gray-950 p-10 h-full">
+
+      <div class="w-full h-full bg-gray-800 rounded-2xl shadow-xl border border-gray-700 p-10">
+
+        <h1 class="text-2xl font-bold text-orange-400 mb-8">
+          Thông Tin Tài Khoản
+        </h1>
+
+        <!-- Avatar -->
+        <div class="flex items-center gap-6 mb-10">
+          <img src="assets/avatar.png" class="w-24 h-24 rounded-full border-4 border-orange-500">
+
+          <div>
+            <p class="text-gray-300 text-sm mb-2">Đổi ảnh</p>
+            <input type="file"
+              class="text-gray-300 file:bg-orange-500 file:text-white file:px-3 file:py-1 file:rounded-md file:border-0">
+          </div>
+        </div>
+
+        <!-- FORM -->
+        <form class="grid grid-cols-2 gap-6 max-w-3xl">
+
+          <!-- Họ tên -->
+          <mat-form-field appearance="outline" class="col-span-2 w-full">
+            <mat-label>Họ và Tên</mat-label>
+            <input matInput [(ngModel)]="hoten" name="hoten">
+          </mat-form-field>
+
+          <!-- Email -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" [(ngModel)]="email" name="email">
+          </mat-form-field>
+
+          <!-- SĐT -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Số điện thoại</mat-label>
+            <input matInput [(ngModel)]="sdt" name="sdt">
+          </mat-form-field>
+
+          <!-- Password -->
+          <mat-form-field appearance="outline" class="col-span-2 w-full">
+            <mat-label>Mật khẩu mới</mat-label>
+            <input matInput [(ngModel)]="mat_khau" name="password">
+          </mat-form-field>
+
+          <!-- Địa chỉ -->
+          <mat-form-field appearance="outline" class="col-span-2 w-full">
+            <mat-label>Địa chỉ</mat-label>
+            <input matInput [(ngModel)]="dia_chi" name="diachi">
+          </mat-form-field>
+
+          <!-- Button -->
+          <div class="col-span-2 flex justify-end gap-4 pt-2">
+
+            <button matButton="filled" color="warn" type="button">
+              Cập nhật
+            </button>
+
+            <button mat-raised-button color="primary" type="submit">
+              Hủy
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+
+</div>
+
+<app-toast-message *ngIf="toast.show" [message]="toast.message" [type]="toast.type">
+</app-toast-message>

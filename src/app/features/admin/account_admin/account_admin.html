@@ -1,0 +1,103 @@
+<!-- HEADER GRADIENT -->
+<div class="relative h-60">
+  <div class="p-10 z-10">
+    <h1 class="text-5xl font-bold">Hello {{ admin?.ho_ten }}</h1>
+    <p class="mt-4 max-w-lg">
+      Đây Là Trang Cá Nhân Của ADMIN
+    </p>
+  </div>
+</div>
+
+<!-- MAIN CONTAINER -->
+<div class="container mx-auto px-4 mt-6 flex flex-wrap lg:flex-nowrap gap-6">
+
+  <!-- LEFT CARD: My Account Form -->
+  <mat-card class="p-6 w-full lg:w-2/3">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl font-semibold">Trang Cá Nhân</h3>
+    </div>
+
+    <form class="space-y-6">
+
+      <!-- USER INFO -->
+      <div>
+        <h6 class="text-sm font-semibold mb-4">Thông Tin Người Dùng</h6>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div class="mt-4 w-full">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Họ Tên</mat-label>
+              <input matInput placeholder="Nhập họ tên" [(ngModel)]="admin.ho_ten" name="HOTEN">
+            </mat-form-field>
+          </div>
+
+          <div class="mt-4 w-full">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Email</mat-label>
+              <input matInput placeholder="Nhập email" [(ngModel)]="admin.email" name="EMAIL">
+            </mat-form-field>
+          </div>
+
+        </div>
+
+        <div class="pt-4 flex justify-end">
+          <button matButton="filled" (click)="capNhatAdmin()" class="px-4 py-2">
+            Cập Nhật
+          </button>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <button matButton="filled" (click)="DoiMatKhau()" class="px-4 py-2 ">
+        Đổi mật khẩu
+      </button>
+
+    </form>
+  </mat-card>
+
+  <!-- RIGHT CARD: Avatar & Info -->
+  <mat-card class="w-full lg:w-1/3 relative z-10 p-6">
+  <div class="flex flex-col items-center text-center">
+
+    <!-- Avatar -->
+    <img [src]="previewUrl" alt="Profile"
+      class="w-32 h-32 rounded-full shadow-lg border-4 border-white -mt-20 bg-gray-700 p-1" />
+
+    <!-- User Info -->
+    <p class="mt-2" style="color: var(--mat-sys-on-surface)">ADMIN</p>
+    <h3 class="mt-2 text-xl font-bold" style="color: var(--mat-sys-on-surface)">
+      {{admin?.ho_ten}}
+    </h3>
+    <p style="color: var(--mat-sys-on-surface)">{{admin?.email}}</p>
+    <p class="mt-2 text-sm" style="color: var(--mat-sys-on-surface)">
+      Admin Quản Lý Nhà Hàng Fresh Food
+    </p>
+
+    <!-- Buttons -->
+    <div class="mt-4 flex space-x-4 items-center">
+      <!-- Tham chiếu input -->
+      <input #fileInput type="file" (change)="onFileSelected($event)" hidden accept="image/*" />
+
+      <!-- Nút Material -->
+      <button mat-raised-button (click)="fileInput.click()">
+        Thay Đổi Ảnh Đại Diện
+      </button>
+
+      <!-- Lưu ảnh chỉ hiện khi chọn -->
+      <button matButton="filled" (click)="capNhatAdmin()" *ngIf="selectedFile" class="px-4 py-2">
+        Lưu Ảnh
+      </button>
+    </div>
+
+  </div>
+</mat-card>
+
+
+</div>
+
+<!-- TOAST MESSAGE -->
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

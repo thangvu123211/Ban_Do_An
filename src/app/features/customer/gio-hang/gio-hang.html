@@ -1,0 +1,80 @@
+<div class="p-6  rounded-2xl shadow-2xl w-full">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-bold text-yellow-400 flex gap-2">
+      <mat-icon>shopping_cart</mat-icon>
+      Giỏ hàng
+    </h2>
+
+    <button mat-icon-button (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Items -->
+  <div class="max-h-[50vh] overflow-y-auto space-y-3 pr-1">
+    <div *ngFor="let item of gioHang" class="flex items-center gap-3 rounded-xl p-3 border border-gray-600">
+
+      <img [src]="item.anh_mon_an?.length ? item.anh_mon_an[0].url : 'assets/no-image.png'"
+        class="w-14 h-14 rounded-lg object-cover">
+
+      <div class="flex-1">
+        <p class="text-sm font-semibold truncate">
+          {{ item.ten_mon_an }}
+        </p>
+        <span class="text-yellow-400 text-sm">
+          {{ item.gia_tien | number }} đ
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button (click)="giamSoLuong(item)">
+          <mat-icon class="text-yellow-400">remove</mat-icon>
+        </button>
+
+        <span class="w-5 text-center">{{ item.soLuong }}</span>
+
+        <button (click)="tangSoLuong(item)">
+          <mat-icon class="text-yellow-400">add</mat-icon>
+        </button>
+
+        <button (click)="removeFromGioHang(item)">
+          <mat-icon class="text-red-400">delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="border-t border-gray-700 mt-4 pt-4">
+    <div class="flex justify-between font-bold mb-3">
+      <span>Tổng tiền</span>
+      <span class="text-yellow-400">
+        {{ tongTien | number }} đ
+      </span>
+    </div>
+
+    <div class="px-4 py-2">
+      <label class="block text-sm mb-1">
+        Ghi chú cho bếp
+      </label>
+
+      <textarea rows="2" placeholder="Ví dụ: ít cay, không hành..." class="w-full text-sm rounded-xl p-3
+           outline-none resize-none
+           focus:ring-2 focus:ring-green-500  border border-gray-600">
+      </textarea>
+    </div>
+
+    <div class="flex gap-3 justify-end mt-4">
+      <button matButton="filled" (click)="goiMon()">
+        Gọi món
+      </button>
+
+      <button mat-raised-button (click)="close()">
+        Đóng
+      </button>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,70 @@
+<!-- HEADER -->
+<div class="relative h-96 flex items-center justify-start px-10">
+    <div class=" z-10">
+        <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
+        <p class="text-lg max-w-lg">
+            Đây là trang quản lý loại món ăn. Bạn có thể thêm, sửa hoặc xóa thông tin nhân viên tại đây.
+        </p>
+        <button matButton="filled" class="px-5 py-2.5 mt-4" (click)="ThemLoaiMonAn()">
+            Thêm Mới Loại Món Ăn
+        </button>
+    </div>
+</div>
+
+
+<div class="container mx-auto px-6 mt-10">
+
+    <mat-card class="w-full shadow-xl rounded-2xl p-6">
+
+        <!-- HEADER -->
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+
+            <h3 class="text-2xl font-semibold">
+                Danh Sách Loại Món Ăn
+            </h3>
+
+            <button mat-flat-button (click)="ThemLoaiMonAn()">
+                Thêm Mới
+            </button>
+        </div>
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full border rounded-lg overflow-hidden text-sm">
+
+                <thead class="text-sm">
+                    <tr>
+                        <th class="px-4 py-3 text-center border">STT</th>
+                        <th class="px-4 py-3 text-center border">Ảnh loại món ăn</th>
+                        <th class="px-4 py-3 text-center border">Tên loại món ăn</th>
+                        <th class="px-4 py-3 text-center border">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let LoaiMonAn of loaimonan; let i = index">
+                        <td class="px-4 py-7 text-center border">{{ i + 1 }}</td>
+                        <td class="px-4 py-7 text-center border">
+                            <img *ngIf="LoaiMonAn.anh_loai_mon_an_url" [src]="LoaiMonAn.anh_loai_mon_an_url"
+                                alt="Ảnh loại món ăn" class="w-14 h-14 rounded-full object-cover mx-auto shadow" />
+                            <span *ngIf="!LoaiMonAn.anh_loai_mon_an_url" class="text-gray-500 italic">Không có
+                                ảnh</span>
+                        </td>
+                        <td class="px-4 py-7 text-center border">{{ LoaiMonAn.ten_loai_mon_an }}</td>
+                        <td class="px-4 py-7 text-center border">
+                            <div class="flex justify-center gap-2">
+                                <button mat-icon-button matTooltip="Sửa" (click)="SuaLoaiMonAn(LoaiMonAn.ma_loai_mon_an)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button matTooltip="Xóa" (click)="openDialogXoa(LoaiMonAn.ma_loai_mon_an)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-card>
+</div>
+
+
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

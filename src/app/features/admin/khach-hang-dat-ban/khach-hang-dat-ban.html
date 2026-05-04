@@ -1,0 +1,107 @@
+<!-- HEADER -->
+<div class="relative h-96 flex items-center justify-start px-10">
+    <div class="z-10">
+        <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
+        <p class="text-lg max-w-lg">
+            Đây là trang quản lý đặt bàn. Bạn có thể xem khách hàng đặt bàn được gửi từ website.
+        </p>
+    </div>
+</div>
+
+<!-- KHUNG DỮ LIỆU -->
+<div class="container mx-auto px-6 mt-10">
+
+    <mat-card class="w-full shadow-xl rounded-2xl p-6">
+
+        <!-- HEADER -->
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+            <h3 class="text-2xl font-semibold">
+                Danh Sách Đặt Bàn
+            </h3>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full border rounded-lg overflow-hidden text-sm">
+
+                <thead>
+                    <tr>
+                        <th class="px-4 py-4 text-center border">STT</th>
+                        <th class="px-4 py-4 text-center border">Tên khách hàng</th>
+                        <th class="px-4 py-4 text-center border">SĐT</th>
+                        <th class="px-4 py-4 text-center border">Email</th>
+                        <th class="px-4 py-4 text-center border">Ghi chú</th>
+                        <th class="px-4 py-4 text-center border">Tên bàn ăn</th>
+                        <th class="px-4 py-4 text-center border">Ngày đặt bàn</th>
+                        <th class="px-4 py-4 text-center border">Giờ đặt bàn</th>
+                        <th class="px-4 py-4 text-center border">Trạng thái</th>
+                        <th class="px-4 py-4 text-center border">Nhân viên xác nhận</th>
+                        <th class="px-4 py-4 text-center border">Hành động</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let db of danhsachdatban; let i = index">
+                        <td class="px-4 py-6 text-center border">{{ i + 1 }}</td>
+
+                        <td class="px-4 py-6 text-center border font-medium">
+                            {{ db.ten_khach_hang }}
+                        </td>
+
+                        <td class="px-4 py-6 text-center border">
+                            {{ db.sdt }}
+                        </td>
+
+                        <td class="px-4 py-6 text-center border">
+                            {{ db.email }}
+                        </td>
+
+                        <td class="px-4 py-6 text-center border font-semibold text-cyan-600">
+                            {{ db.ghi_chu }}
+                        </td>
+
+                        <td class="px-4 py-6 text-center border max-w-md">
+                            <p class="line-clamp-3">
+                                {{ BanAnMap[db.ma_ban_an] || 'Chưa chọn' }}
+                            </p>
+                        </td>
+
+                        <td class="px-4 py-6 text-center border text-gray-500">
+                            {{ db.ngay | date:'dd/MM/yyyy' }}
+                        </td>
+                        <td class="px-4 py-6 text-center border text-gray-500">
+                            {{ db.gio }}
+                        </td>
+                        <td class="px-4 py-6 text-center border">
+                            <span [ngClass]="{
+                                'text-yellow-500 font-semibold': db.trang_thai === 'dang_xu_ly',
+                                'text-green-600 font-semibold': db.trang_thai === 'da_xac_nhan'
+                                }">
+                                {{ hienThiTrangThai(db.trang_thai) }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-6 text-center border text-gray-500">
+                            {{ NhanVienMap[db.id_nhan_vien_xac_nhan] || 'Chưa xác nhận' }}
+                        </td>
+
+                        <td class="px-4 py-7 text-center border">
+                            <div class="flex justify-center gap-2">
+                                <button mat-icon-button matTooltip="Chi tiết đặt bàn" (click)="xemChiTiet(db)">
+                                    <mat-icon>info</mat-icon>
+                                </button>
+                                <button mat-icon-button matTooltip="Xóa đặt bàn" (click)="openDialogXoa(db.id)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+    </mat-card>
+</div>
+
+
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

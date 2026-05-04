@@ -1,0 +1,106 @@
+<div class="relative p-6">
+  <!-- Nút đóng -->
+  <div class="flex justify-end">
+    <button matIconButton (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+
+  <!-- Tiêu đề -->
+  <h2 class="text-2xl font-semibold mb-8 text-center">
+    Chỉnh sửa thông tin bàn ăn
+  </h2>
+
+  <div class="flex gap-8 flex-wrap lg:flex-nowrap">
+
+    <!-- Ảnh bàn + upload -->
+    <div class="flex flex-col items-center gap-3 w-full lg:w-1/3">
+
+      <!-- Hiển thị ảnh -->
+      <div class="w-48 h-48 rounded-lg overflow-hidden shadow-md">
+        <img [src]="previewImage || 'assets/user.jpg'" alt="Ảnh bàn" class="w-full h-full object-cover" />
+      </div>
+
+      <!-- Button upload -->
+      <button matButton="filled" (click)="fileInput.click()">
+        <mat-icon>upload</mat-icon>
+        Thay ảnh
+      </button>
+
+      <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*" />
+
+    </div>
+
+    <!-- Form nhập thông tin -->
+    <div class="grid grid-cols-2 gap-4 flex-1">
+
+      <!-- Hàng 1 -->
+      <div class="flex flex-col">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Tên món ăn</mat-label>
+          <input [(ngModel)]="MonAn.ten_mon_an" matInput name="ten_mon_an" placeholder="Nhập tên món ăn" />
+        </mat-form-field>
+      </div>
+
+      <div class="flex flex-col">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Tên loại món ăn</mat-label>
+
+          <mat-select [(ngModel)]="MonAn.ma_loai_mon_an">
+
+            <mat-option *ngFor="let item of danhSachLoaiMonAn" [value]="item.ma_loai_mon_an">
+              <div class="flex items-center gap-3">
+
+                <!-- Ảnh loại món ăn -->
+                <img [src]="item.anh_loai_mon_an" class="w-8 h-8 object-cover rounded-md" />
+
+                <!-- Tên loại -->
+                <span>{{ item.ten_loai_mon_an }}</span>
+              </div>
+            </mat-option>
+
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Hàng 2 -->
+      <div class="flex flex-col">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Trạng thái</mat-label>
+          <mat-select [(ngModel)]="MonAn.trang_thai">
+            <mat-option [value]="0">Ngừng bán</mat-option>
+            <mat-option [value]="1">Còn bán</mat-option>
+
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="flex flex-col col-span-2">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Giá tiền</mat-label>
+          <input [(ngModel)]="MonAn.gia_tien" type="number" matInput placeholder="Nhập giá tiền..." />
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nút hành động -->
+  <div class="flex justify-end gap-4 mt-8">
+
+    <!-- Button Cập nhật -->
+
+    <button matButton="filled" (click)="capNhat()">
+      <mat-icon>check</mat-icon>
+      Cập nhật
+    </button>
+
+    <!-- Button Hủy -->
+
+    <button mat-raised-button (click)="close()">
+      <mat-icon>close</mat-icon>
+      Hủy
+    </button>
+
+  </div>
+</div>
