@@ -57,7 +57,8 @@ capNhat() {
     ten_mon_an: this.MonAn.ten_mon_an,
     gia_tien: this.MonAn.gia_tien,
     trang_thai: this.MonAn.trang_thai,
-    ma_loai_mon_an: this.MonAn.ma_loai_mon_an
+    ma_loai_mon_an: this.MonAn.ma_loai_mon_an,
+    mo_ta: this.MonAn.mo_ta
   };
 
   this.QuanLyMonAn.CapNhatMonAn(

@@ -6,11 +6,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastMessageComponent } from '../../Shared/toasts_message/toast-message/toast-message';
+import { MATERIAL } from '../../Shared/material';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatIconModule, MatButtonModule, ToastMessageComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule, MatButtonModule, ToastMessageComponent,MATERIAL],
   templateUrl: './register.html',
   styleUrls: ['./register.scss']
 })

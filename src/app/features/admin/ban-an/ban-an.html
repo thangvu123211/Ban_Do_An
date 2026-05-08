@@ -37,7 +37,6 @@
           <tr>
             <th class="px-4 py-4 text-center border">STT</th>
             <th class="px-4 py-4 text-center border">Ảnh bàn</th>
-            <th class="px-4 py-4 text-center border">QR Bàn Ăn</th>
             <th class="px-4 py-4 text-center border">Tên Bàn</th>
             <th class="px-4 py-4 text-center border">Số Chỗ Ngồi</th>
             <th class="px-4 py-4 text-center border">Trạng Thái</th>
@@ -58,15 +57,6 @@
 
               <span *ngIf="!items.anh_ban || items.anh_ban.length === 0" class="text-gray-500 italic">
                 Không có ảnh
-              </span>
-            </td>
-
-            <!-- QR -->
-            <td class="px-4 py-4 text-center border">
-              <img *ngIf="items.anh_qr" [src]="items.anh_qr" alt="QR" class="w-16 h-16 object-cover mx-auto shadow" />
-
-              <span *ngIf="!items.anh_qr" class="text-gray-500 italic">
-                Không có QR
               </span>
             </td>
 
@@ -98,11 +88,6 @@
                 <!-- Xóa -->
                 <button mat-icon-button matTooltip="Xóa" (click)="XoaBanAn(items.ma_ban)">
                   <mat-icon>delete</mat-icon>
-                </button>
-
-                <!-- In QR -->
-                <button mat-icon-button matTooltip="In mã QR" (click)="printQR(items.anh_qr_url,items.ten_ban)">
-                  <mat-icon>print</mat-icon>
                 </button>
 
               </div>

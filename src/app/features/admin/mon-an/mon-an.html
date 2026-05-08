@@ -40,6 +40,7 @@
                         <th class="px-4 py-4 text-center border">Tên Món Ăn</th>
                         <th class="px-4 py-4 text-center border">Giá Tiền</th>
                         <th class="px-4 py-4 text-center border">Tên Loại Món Ăn</th>
+                        <th class="px-4 py-4 text-center border">Mô tả</th>
                         <th class="px-4 py-4 text-center border">Trạng Thái</th>
                         <th class="px-4 py-4 text-center border">Hành động</th>
                     </tr>
@@ -64,6 +65,7 @@
                         <td class="px-4 py-7 text-center border">
                             {{ LoaiMonAnMap[monan.ma_loai_mon_an] || '---' }}
                         </td>
+                        <td class="px-4 py-7 text-center border">{{ monan.mo_ta }}</td>
                         <td class="px-4 py-4 text-center border">
                             <span *ngIf="monan.trang_thai == 1"
                                 class="inline-block bg-green-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">

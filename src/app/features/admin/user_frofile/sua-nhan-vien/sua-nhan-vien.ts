@@ -88,13 +88,10 @@ export class SuaNhanVien implements OnInit {
       gioi_tinh: this.NhanVien.gioi_tinh,
       ngay_sinh: this.NhanVien.ngay_sinh,
       dia_chi: this.NhanVien.dia_chi,
-      loai_nhan_vien: this.NhanVien.loai_nhan_vien
+      loai_nhan_vien: this.NhanVien.loai_nhan_vien,
+      mat_khau:this.NhanVien.mat_khau_moi
     };
 
-    // Nếu ô mật khẩu có giá trị, backend sẽ cập nhật trực tiếp
-    if (this.NhanVien.mat_khau?.trim()) {
-      updatedNhanVien.mat_khau = this.NhanVien.mat_khau;
-    }
 
     this.QuanLyNhanVienService.CapNhatNhanVien(this.data.ma_nv, updatedNhanVien, this.selectedFile)
       .subscribe({

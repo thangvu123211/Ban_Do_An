@@ -10,9 +10,8 @@ import { PhongToAnh } from '../../../Shared/phong_to_anh/phong-to-anh';
 import { MATERIAL } from '../../../Shared/material';
 import { GoiMonService } from '../../../core/services/GoiMon.Service';
 import { QuanLyBanAnService } from '../../../core/services/QuanLyBanAn.service';
-import { DanhSachMonAn } from '../../customer/danh-sach-mon-an/danh-sach-mon-an';
-import { GioHang } from '../../customer/gio-hang/gio-hang';
 import { CartService } from '../../../core/services/cart.service';
+import { ThongTinMonAn } from '../dialogs/thong-tin-mon-an/thong-tin-mon-an';
 
 
 
@@ -44,9 +43,12 @@ export class Menu implements OnInit {
   maBan: number = 0;
   tenBan: string = '';
   showGioHang: boolean = false;
-  toastMessage: string = '';
-  toastType: 'success' | 'warn' | 'error' = 'success';
-  showToast: boolean = false;
+
+  toast = {
+    show: false,
+    message: '',
+    type: 'success' as 'success' | 'warn' | 'error'
+  };
 
   MonAn: any[] = [];
   loaimonan: any[] = [];
@@ -54,15 +56,13 @@ export class Menu implements OnInit {
 
   screenWidth = window.innerWidth;
 
-  showNotification(message: string, type: 'success' | 'warn' | 'error' = 'success') {
-    this.toastMessage = message;
-    this.toastType = type;
-    this.showToast = true;
-
-    setTimeout(() => {
-      this.showToast = false;
-    }, 3000); // 3 giây tự tắt
+  showToast(message: string, type: 'success' | 'warn' | 'error') {
+    this.toast.show = true;
+    this.toast.message = message;
+    this.toast.type = type;
+    setTimeout(() => (this.toast.show = false), 3000);
   }
+
 
 
   constructor(
@@ -73,7 +73,7 @@ export class Menu implements OnInit {
     private quanliloaimonan: QuanLyLoaiMonAn,
     private quanLyBanAn: QuanLyBanAnService,
     private dialog: MatDialog,
-    private cartService: CartService
+    private cartService: CartService,
   ) { }
 
   /** Lấy tất cả món ăn */
@@ -129,9 +129,6 @@ export class Menu implements OnInit {
 
   }
 
-
-
-
   get tieuDe(): string {
 
     if (this.selectedLoai === null) return 'Tất cả món';
@@ -153,9 +150,6 @@ export class Menu implements OnInit {
     return this.gioHang.reduce((sum, i) => sum + i.gia_tien * i.soLuong, 0);
   }
 
-
-
-  /** Khi nhập trực tiếp số lượng */
   capNhatSoLuong(item: any) {
     if (item.soLuong < 1 || isNaN(item.soLuong)) {
       item.soLuong = 1;
@@ -174,115 +168,100 @@ export class Menu implements OnInit {
       }
     });
   }
-  goiMon() {
+  // goiMon() {
 
-    if (!this.maBan) {
-      this.showNotification("Chưa chọn bàn!", "warn");
-      return;
-    }
+  //   if (!this.maBan) {
+  //     this.showNotification("Chưa chọn bàn!", "warn");
+  //     return;
+  //   }
 
-    if (this.gioHang.length === 0) {
-      this.showNotification("Giỏ hàng trống!", "warn");
-      return;
-    }
+  //   if (this.gioHang.length === 0) {
+  //     this.showNotification("Giỏ hàng trống!", "warn");
+  //     return;
+  //   }
 
-    const monAns = this.gioHang.map(item => {
-      return {
-        ma_mon_an: item.ma_mon_an,
-        so_luong: item.soLuong
-      };
-    });
+  //   const monAns = this.gioHang.map(item => {
+  //     return {
+  //       ma_mon_an: item.ma_mon_an,
+  //       so_luong: item.soLuong
+  //     };
+  //   });
 
-    const body = {
-      ma_ban: this.maBan,
-      mon_ans: monAns
-    };
+  //   const body = {
+  //     ma_ban: this.maBan,
+  //     mon_ans: monAns
+  //   };
 
-    console.log("DATA GUI API:", JSON.stringify(body));
+  //   console.log("DATA GUI API:", JSON.stringify(body));
 
-    this.goiMonService.goiMon(body).subscribe({
-      next: (res: any) => {
-        console.log("API RESPONSE:", res);
+  //   this.goiMonService.goiMon(body).subscribe({
+  //     next: (res: any) => {
+  //       console.log("API RESPONSE:", res);
 
-        if (res && res.message) {
-          this.showNotification(res.message, "success");
-        } else {
-          this.showNotification("Gọi món thành công!", "success");
-        }
+  //       if (res && res.message) {
+  //         this.showNotification(res.message, "success");
+  //       } else {
+  //         this.showNotification("Gọi món thành công!", "success");
+  //       }
 
-        this.huyGioHang();
-      },
-      error: (err) => {
-        console.error("API ERROR:", err);
-        this.showNotification("Có lỗi khi gọi món!", "error");
-      }
+  //       this.huyGioHang();
+  //     },
+  //     error: (err) => {
+  //       console.error("API ERROR:", err);
+  //       this.showNotification("Có lỗi khi gọi món!", "error");
+  //     }
 
-    });
+  //   });
 
-  }
-
-
-
-  xemDanhSachMonAnDaGoi() {
-    this.dialog.open(DanhSachMonAn, {
-      width: '500px',
-      maxWidth: '110vw',
-      panelClass: 'custom-dialog',
-      //data: lienHe
-    });
-  }
-
-  XemGioHang() {
-    if (this.gioHang.length === 0) {
-      this.showNotification('Giỏ hàng trống!', 'warn');
-      return;
-    }
-
-    this.dialog.open(GioHang, {
-      width: '90vw',
-      maxWidth: '500px',
-      maxHeight: '85vh',
-      panelClass: 'gio-hang-dialog',
-      data: {
-        gioHang: this.gioHang,
-        maBan: this.maBan,
-        tenBan: this.tenBan,
-        onGoiMon: () => this.goiMon()
-      }
-    });
-  }
-
+  // }
 
   addToGioHang(mon: any): void {
-  const found = this.gioHang.find(i => i.ma_mon_an === mon.ma_mon_an);
-
-  if (found) {
-    found.soLuong += 1;
-  } else {
-    this.gioHang.push({
-      ...mon,
-      soLuong: 1
+    this.cartService.addItem({
+      id: mon.ma_mon_an,
+      ma_mon_an: mon.ma_mon_an,
+      ten_mon_an: mon.ten_mon_an,
+      gia_tien: mon.gia_tien,
+      anh_mon_an: mon.anh_mon_an
     });
+     this.showToast(`Thêm thành công món ${mon.ten_mon_an} vào giỏ hàng`, 'success');
   }
-
-  // 🔥 cập nhật badge header
-  this.cartService.setGioHang(this.gioHang);
-}
 
   get tongSoMon(): number {
     return this.gioHang.reduce((sum, i) => sum + i.soLuong, 0);
   }
 
+  //   moThongTinMon(mon: any) {
+  moThongTinMon(mon: any) {
+
+    const dialogRef = this.dialog.open(ThongTinMonAn, {
+      width: '650px',
+      maxWidth: '95vw',
+      height: '85vh',
+      panelClass: 'thong-tin-mon-dialog',
+      data: mon
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result?.success) {
+        this.showToast(result.message, 'success');
+      }
+    });
+
+  }
+
   ngOnInit() {
     this.getAllLoaiMonAn();
     this.getAllMonAn();
+
+    // 🔥 ĐỒNG BỘ GIỎ HÀNG
+    this.cartService.gioHang$.subscribe(gio => {
+      this.gioHang = gio;
+    });
+
     this.route.queryParams.subscribe(params => {
       this.maBan = Number(params['table']);
       if (this.maBan) this.getBanInfo();
     });
-
-    this.getAllMonAn();
-    this.screenWidth = window.innerWidth;
   }
   @ViewChild('scrollContainer', { static: false })
   scrollContainer!: ElementRef;

@@ -1,26 +1,33 @@
-<div class="flex items-center justify-center min-h-screen my-12 datban">
-  <div class="flex w-[900px] rounded-3xl shadow-xl overflow-hidden">
+<div class="flex items-center justify-center min-h-screen my-12 datban bg-gray-50">
+  <div class="flex w-[900px] rounded-3xl shadow-xl overflow-hidden bg-white">
 
     <!-- Left Banner -->
     <div
-      class="w-1/2 bg-gradient-to-b from-orange-500 to-orange-400 flex flex-col justify-center items-center text-white p-10">
+      class="w-1/2 bg-gradient-to-b from-green-600 to-green-500
+             flex flex-col justify-center items-center text-white p-10">
       <h1 class="text-3xl font-bold leading-snug mb-4">
         Đơn giản hóa <br />
         việc quản lí với <br />
-        bảng <span class="underline">điều khiển của chúng tôi.</span>
+        bảng <span class="underline decoration-white">điều khiển của chúng tôi.</span>
       </h1>
-      <p class="text-sm mb-6 text-center">
-        Đơn giản hóa việc quản lý thương mại điện tử của bạn với bảng điều khiển quản trị thân thiện với người dùng của
-        chúng tôi.
+
+      <p class="text-sm mb-6 text-center text-green-50">
+        Đơn giản hóa việc quản lý thương mại điện tử của bạn với bảng điều khiển quản trị thân thiện.
       </p>
+
       <img src="assets/Logo/TA.png" class="w-40 mt-4" />
     </div>
 
-    <!-- Right Form (Dark Mode) -->
-    <div class="w-1/2 flex flex-col justify-center px-10 py-12 ">
+    <!-- Right Form -->
+    <div class="w-1/2 flex flex-col justify-center px-10 py-12 bg-white text-gray-800">
+
       <div class="mb-8">
-        <h2 class="text-2xl font-bold">Chào Mừng Bạn Đã Trở Lại</h2>
-        <p class="text-gray-300 text-sm">Vui lòng đăng nhập vào tài khoản của bạn</p>
+        <h2 class="text-2xl font-bold text-gray-900">
+          Chào Mừng Bạn Trở Lại
+        </h2>
+        <p class="text-gray-500 text-sm">
+          Vui lòng đăng nhập vào tài khoản của bạn
+        </p>
       </div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
@@ -32,55 +39,77 @@
         </mat-form-field>
 
         <!-- Password -->
-
-        <div class="">
+        <div>
           <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Mật Khẩu</mat-label>
-            <input matInput [type]="loginForm.get('showPassword')?.value ? 'text' : 'password'"
+            <mat-label>Mật khẩu</mat-label>
+            <input
+              matInput
+              [type]="loginForm.get('showPassword')?.value ? 'text' : 'password'"
               formControlName="password" />
           </mat-form-field>
-          <mat-checkbox formControlName="showPassword" class="mt-2">
+
+          <mat-checkbox
+            formControlName="showPassword"
+            class="mt-2 text-sm text-gray-600">
             Hiện mật khẩu
           </mat-checkbox>
         </div>
 
         <div class="text-right">
-          <a href="#" class="text-sm text-red-400 hover:underline">Quên Mật Khẩu?</a>
+          <a href="#" class="text-sm text-green-600 hover:underline">
+            Quên mật khẩu?
+          </a>
         </div>
 
-        <button matButton="filled" class="w-full py-3">
+        <!-- Button -->
+        <button
+          matButton="filled"
+          class="w-full py-3 bg-green-600 text-white
+                 hover:bg-green-700 transition rounded-xl">
           Đăng nhập
         </button>
       </form>
 
       <!-- Divider -->
       <div class="flex items-center my-6">
-        <div class="flex-grow h-px"></div>
+        <div class="flex-grow h-px bg-gray-300"></div>
         <span class="px-3 text-gray-400 text-sm">Hoặc đăng nhập với</span>
-        <div class="flex-grow h-px bg-gray-600"></div>
+        <div class="flex-grow h-px bg-gray-300"></div>
       </div>
 
       <!-- Social Buttons -->
       <div class="flex justify-center gap-3">
         <button
-          class="flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-full hover:bg-gray-700 transition text-sm">
-          <img src="assets/Google__G__logo.svg.png" alt="Google" class="w-4 h-4" />
+          class="flex items-center gap-2 px-4 py-2
+                 border border-gray-300 rounded-full
+                 hover:bg-gray-100 transition text-sm">
+          <img src="assets/Google__G__logo.svg.png" class="w-4 h-4" />
           Google
         </button>
+
         <button
-          class="flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-full hover:bg-gray-700 transition text-sm">
-          <img src="assets/2023_Facebook_icon.svg.png" alt="Facebook" class="w-4 h-4" />
+          class="flex items-center gap-2 px-4 py-2
+                 border border-gray-300 rounded-full
+                 hover:bg-gray-100 transition text-sm">
+          <img src="assets/2023_Facebook_icon.svg.png" class="w-4 h-4" />
           Facebook
         </button>
       </div>
 
-      <p class="mt-6 text-center text-gray-400 text-sm">
-        Bạn Chưa Có Tài Khoản?
-        <span class="text-red-400 font-semibold cursor-pointer" (click)="goToRegister()">Tạo Tài Khoản</span>
+      <p class="mt-6 text-center text-gray-500 text-sm">
+        Bạn chưa có tài khoản?
+        <span
+          class="text-green-600 font-semibold cursor-pointer hover:underline"
+          (click)="goToRegister()">
+          Tạo tài khoản
+        </span>
       </p>
     </div>
   </div>
 </div>
 
-<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type">
+<app-toast-message
+  [show]="toast.show"
+  [message]="toast.message"
+  [type]="toast.type">
 </app-toast-message>

@@ -18,6 +18,7 @@ export class ThemMonAn implements OnInit {
     ten_mon_an: '',
     gia_tien: 0,
     trang_thai: '',
+    mo_ta:'',
   }
   danhSachLoaiMonAn: any[] = [];
   selectedFile: File | null = null;
@@ -38,6 +39,7 @@ export class ThemMonAn implements OnInit {
   formData.append('ten_mon_an', this.MonAn.ten_mon_an);
   formData.append('gia_tien', String(this.MonAn.gia_tien));
   formData.append('trang_thai', String(this.MonAn.trang_thai));
+  formData.append('mo_ta', String(this.MonAn.mo_ta));
 
   if (this.selectedFile) {
     formData.append('image', this.selectedFile);

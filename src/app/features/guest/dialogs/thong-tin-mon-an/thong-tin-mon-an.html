@@ -1,0 +1,65 @@
+<div class="rounded-3xl shadow-2xl w-full h-full
+            p-10 flex flex-col
+            bg-white text-gray-800">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-7">
+        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+            <mat-icon class="text-green-500 text-2xl">restaurant</mat-icon>
+            Thông tin món ăn
+        </h2>
+
+        <button mat-icon-button (click)="dialogRef.close()">
+            <mat-icon class="text-gray-500 hover:text-gray-800">close</mat-icon>
+        </button>
+    </div>
+
+    <!-- BODY -->
+    <div class="flex-1 overflow-y-auto pr-1">
+
+        <!-- IMAGE -->
+        <div class="rounded-2xl overflow-hidden border border-gray-200 shadow-md mb-6">
+            <img [src]="data.anh_mon_an?.length ? data.anh_mon_an[0].url : 'assets/no-image.png'"
+                class="w-full h-72 object-cover hover:scale-105 transition duration-300" />
+        </div>
+
+        <!-- NAME -->
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">
+            {{ data.ten_mon_an }}
+        </h2>
+
+        <!-- DESC -->
+        <p class="text-gray-600 text-sm leading-7 mb-6">
+            {{ data.mo_ta || 'Món ăn ngon, được chế biến từ nguyên liệu tươi sạch.' }}
+        </p>
+
+        <!-- PRICE BOX -->
+        <div class="flex items-center justify-between bg-gray-50
+                border border-gray-200 rounded-2xl p-5 mb-6">
+
+            <span class="text-gray-700 font-medium flex items-center gap-2">
+                <mat-icon class="text-green-500">payments</mat-icon>
+                Giá món
+            </span>
+
+            <span class="text-green-600 font-bold text-2xl">
+                {{ data.gia_tien | number }} đ
+            </span>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="border-t border-gray-200 pt-6 flex justify-end">
+        <button matButton="filled" class="px-6 bg-green-500 text-white hover:bg-green-600 mr-2" (click)="addToGioHang(data)">
+            Thêm Giỏ Hàng
+        </button>
+        <button mat-raised-button class="bg-green-500 text-white px-8 py-2 rounded-full hover:bg-green-600 transition"
+            (click)="close()">
+            Đóng
+        </button>
+
+    </div>
+</div>
+
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

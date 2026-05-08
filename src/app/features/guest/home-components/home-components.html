@@ -1,133 +1,144 @@
-<div class="relative w-full h-screen font-[Poppins] text-white">
-  <!-- Ảnh banner -->
-  <img [src]="images[currentIndex]" alt="Banner"
-    class="absolute inset-0 w-full h-full object-cover brightness-75 transition-opacity duration-1000 ease-in-out" />
+<!-- ================= HERO / BANNER ================= -->
+<div class="relative w-full h-screen font-[Poppins] text-gray-900">
+  <img
+    [src]="images[currentIndex]"
+    alt="Banner"
+    class="absolute inset-0 w-full h-full object-cover brightness-90 transition-opacity duration-1000 ease-in-out" />
 
-  <!-- Overlay -->
-  <div class="absolute inset-0 bg-black/40"></div>
+  <div class="absolute inset-0 bg-white/20"></div>
 
-  <!-- Nội dung trung tâm -->
   <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-6">
-    <h1 class="text-5xl md:text-7xl font-bold mb-4 drop-shadow-xl tracking-wide">
+    <h1 class="text-5xl md:text-7xl font-bold mb-4 drop-shadow tracking-wide">
       SWEET TREATS,
     </h1>
-    <p class="text-2xl md:text-3xl mb-8 font-light tracking-widest text-gray-200">
+
+    <p class="text-2xl md:text-3xl mb-8 font-light tracking-widest text-gray-600">
       PERFECT EATS
     </p>
-    <button
-      class="bg-gradient-to-r from-orange-500 to-amber-400 text-gray-900 font-semibold px-8 py-4 rounded-full hover:from-amber-400 hover:to-yellow-300 transition-all duration-300 shadow-lg hover:scale-105"
+
+    <!-- <button
+      class="bg-green-600 text-white font-semibold px-8 py-4 rounded-full
+             hover:bg-green-700 transition-all duration-300
+             shadow-lg hover:scale-105"
       [routerLink]="['/datban']">
       Đặt Bàn Ngay
-    </button>
+    </button> -->
   </div>
 
-  <!-- Nút điều hướng ảnh -->
-  <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-4">
-    <div *ngFor="let img of images; let i = index" (click)="goToSlide(i)"
-      class="w-10 h-10 flex justify-center items-center font-bold rounded-full cursor-pointer transition-transform duration-200"
-      [ngStyle]="{
-        backgroundColor: i === currentIndex ? '#fbbf24' : '#78350f',
-        transform: i === currentIndex ? 'scale(1.25)' : 'scale(1)'
+  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-4">
+    <div
+      *ngFor="let img of images; let i = index"
+      (click)="goToSlide(i)"
+      class="w-10 h-10 flex justify-center items-center font-bold rounded-full cursor-pointer transition-all duration-200"
+      [ngClass]="{
+        'bg-green-600 text-white scale-110': i === currentIndex,
+        'bg-white text-gray-700 border border-gray-300': i !== currentIndex
       }">
       {{ i + 1 }}
     </div>
   </div>
 </div>
 
-<section class="py-16 text-center">
+<!-- ================= DANH MỤC MÓN ĂN ================= -->
+<section class="py-16 text-center bg-gray-50">
   <div class="mx-auto px-2 md:px-6">
 
-    <h2 class="text-4xl font-bold mb-10 italic">
+    <h2 class="text-4xl font-bold mb-10 text-gray-900">
       Danh Mục Món Ăn
     </h2>
 
-    <!-- HÀNG NGANG -->
     <div class="flex items-center gap-4">
 
-      <!-- NÚT TRÁI -->
-      <button mat-icon-button (click)="scrollLeft()" class="bg-gray-800 text-amber-400
-               hover:bg-amber-400 hover:text-black
-               rounded-full shrink-0 z-10">
+      <button
+        mat-icon-button
+        (click)="scrollLeft()"
+        class="bg-white text-gray-600 border border-gray-300
+               hover:bg-gray-100 hover:text-gray-900
+               rounded-full shrink-0 z-10 shadow">
         <mat-icon>chevron_left</mat-icon>
       </button>
 
-      <!-- KHUNG CHẶN TRÀN (QUAN TRỌNG NHẤT) -->
       <div class="flex-1 overflow-hidden">
-
-        <!-- DIV SCROLL -->
-        <div #scrollContainer class="flex gap-8 overflow-x-auto scroll-smooth scrollbar-hide">
+        <div #scrollContainer class="flex gap-8 overflow-x-auto scroll-smooth scrollbar-hide py-2">
 
           <div *ngFor="let item of danhSachLoaiMonAn" class="flex-shrink-0 w-32 cursor-pointer">
-
-            <div class="w-32 h-32 mx-auto rounded-full overflow-hidden
-                     border-4 border-amber-400">
+            <div
+              class="w-32 h-32 mx-auto rounded-full overflow-hidden
+                     border-4 border-gray-300 hover:border-green-500 transition">
               <img [src]="item.anh_loai_mon_an" class="w-full h-full object-cover" />
             </div>
 
-            <p class="mt-3 font-medium text-center">
+            <p class="mt-3 font-medium text-center text-gray-700">
               {{ item.ten_loai_mon_an }}
             </p>
-
           </div>
 
         </div>
       </div>
 
-      <!-- NÚT PHẢI -->
-      <button mat-icon-button (click)="scrollRight()" class="bg-gray-800 text-amber-400
-               hover:bg-amber-400 hover:text-black
-               rounded-full shrink-0 z-10">
+      <button
+        mat-icon-button
+        (click)="scrollRight()"
+        class="bg-white text-gray-600 border border-gray-300
+               hover:bg-gray-100 hover:text-gray-900
+               rounded-full shrink-0 z-10 shadow">
         <mat-icon>chevron_right</mat-icon>
       </button>
 
     </div>
-
   </div>
 </section>
 
-<section class="py-16 border-t border-gray-700">
-  <h2 class="text-3xl md:text-4xl font-semibold text-center mb-12">
+<!-- ================= MÓN ĂN NỔI BẬT ================= -->
+<section class="py-16 bg-white border-t border-gray-200">
+  <h2 class="text-3xl md:text-4xl font-semibold text-center mb-12 text-gray-900">
     Món Ăn Nổi Bật
   </h2>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-6">
     <div *ngFor="let mon of monAnNoiBat">
       <mat-card
-        class="rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-200 flex flex-col">
-        <!-- Ảnh -->
+        class="rounded-xl overflow-hidden bg-white
+               border border-gray-200
+               shadow hover:shadow-xl transition duration-200 flex flex-col">
+
         <mat-card-header class="p-0">
-          <div class="relative w-full h-48">
-            <img [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
+          <div class="relative w-full h-48 bg-gray-100">
+            <img
+              [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
               class="w-full h-full object-cover" />
           </div>
         </mat-card-header>
 
-        <!-- Nội dung -->
         <mat-card-content class="p-4 flex flex-col flex-grow">
-          <div class="mt-4 flex items-center gap-2">
-            <h3 class="font-semibold text-lg ">
+          <div class="mt-2 flex items-center gap-2">
+            <h3 class="font-semibold text-lg text-gray-900">
               {{ mon.ten_mon_an }}
             </h3>
 
             <button mat-icon-button matTooltip="Thông tin món">
-              <mat-icon>info</mat-icon>
+              <mat-icon class="text-gray-500 hover:text-gray-900">info</mat-icon>
             </button>
           </div>
-          <p class="text-xs mt-1 line-clamp-2">
+
+          <p class="text-xs mt-1 line-clamp-2 text-gray-600">
             {{ mon.mo_ta || 'Món ăn ngon, chế biến từ nguyên liệu tươi.' }}
           </p>
 
-          <!-- Giá (đẩy sát đáy) -->
-          <div class="mt-auto pt-3 flex items-center justify-between">
-            <span class="text-amber-400 font-bold text-lg">
+          <div class="mt-auto pt-4 flex items-center justify-between">
+            <span class="text-green-600 font-bold text-lg">
               {{ mon.gia_tien | number }} đ
             </span>
 
-            <button mat-icon-button matTooltip="Thêm vào giỏ hàng">
-              <mat-icon>shopping_bag_speed</mat-icon>
+            <button
+              mat-icon-button
+              matTooltip="Thêm vào giỏ hàng"
+              class="bg-green-500 text-white rounded-full hover:bg-green-600">
+              <mat-icon>shopping_bag</mat-icon>
             </button>
           </div>
         </mat-card-content>
+
       </mat-card>
     </div>
   </div>

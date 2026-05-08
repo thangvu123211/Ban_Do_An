@@ -2,10 +2,11 @@ import { Component, OnInit, AfterViewChecked } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
 import * as AOS from 'aos';
+import { MATERIAL } from '../../../Shared/material';
 
 @Component({
   selector: 'app-blog',
-  imports: [MatCardModule, RouterLink],
+  imports: [MatCardModule ,MATERIAL],
   templateUrl: './blog.html',
   styleUrls: ['./blog.scss']  // sửa từ styleUrl => styleUrls
 })

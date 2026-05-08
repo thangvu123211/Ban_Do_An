@@ -23,12 +23,12 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./features/user/user.routes').then(m => m.userRoutes),
   },
-  {
-    path: 'customer',
-    canActivate:[],
-    data: { roles: ['customer'] },
-    loadChildren: () =>
-      import('./features/customer/customer.routes').then(m => m.customerRoutes),
-  },
+  // {
+  //   path: 'customer',
+  //   canActivate:[],
+  //   data: { roles: ['customer'] },
+  //   loadChildren: () =>
+  //     import('./features/customer/customer.routes').then(m => m.customerRoutes),
+  // },
   { path: '**', component: NotFound, title: 'Trang không tồn tại' },
 ];

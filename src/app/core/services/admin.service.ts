@@ -52,7 +52,7 @@ export class AdminService {
 
     if (selectedFile) formData.append('image', selectedFile);
 
-    return this.http.put(`${environment.apiUrl}/nhanvien/update/${ma_nv}`, formData, {
+    return this.http.patch(`${environment.apiUrl}/nhanvien/update/${ma_nv}`, formData, {
       headers: this.getAuthHeaders()
     });
   }

@@ -1,36 +1,73 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class CartService {
 
-  private gioHang: any[] = [];
+  private _gioHang$ = new BehaviorSubject<any[]>([]);
+  gioHang$ = this._gioHang$.asObservable();
 
-  private gioHangSubject = new BehaviorSubject<any[]>([]);
-  gioHang$ = this.gioHangSubject.asObservable();
+  private _tongSoMon$ = new BehaviorSubject<number>(0);
+  tongSoMon$ = this._tongSoMon$.asObservable();
 
-  private tongSoMonSubject = new BehaviorSubject<number>(0);
-  tongSoMon$ = this.tongSoMonSubject.asObservable();
-
-  setGioHang(gioHang: any[]) {
-    this.gioHang = gioHang;
-    this.emit();
+  // snapshot
+  private get gioHang() {
+    return this._gioHang$.value;
   }
 
-  getGioHang() {
-    return this.gioHang;
+  // ===== ADD =====
+  addItem(item: any) {
+    const clone = [...this.gioHang];
+    const found = clone.find(i => i.id === item.id);
+
+    if (found) {
+      found.soLuong++;
+    } else {
+      clone.push({ ...item, soLuong: 1 });
+    }
+
+    this.update(clone);
   }
 
+  getItems() {
+    return this._gioHang$.value;
+  }
+
+  // ===== TĂNG =====
+  tangSoLuong(item: any) {
+    const clone = this.gioHang.map(i =>
+      i.id === item.id ? { ...i, soLuong: i.soLuong + 1 } : i
+    );
+    this.update(clone);
+  }
+
+  // ===== GIẢM =====
+  giamSoLuong(item: any) {
+    const clone = this.gioHang
+      .map(i =>
+        i.id === item.id ? { ...i, soLuong: i.soLuong - 1 } : i
+      )
+      .filter(i => i.soLuong > 0);
+
+    this.update(clone);
+  }
+
+  // ===== REMOVE =====
+  removeItem(item: any) {
+    const clone = this.gioHang.filter(i => i.id !== item.id);
+    this.update(clone);
+  }
+
+  // ===== CLEAR =====
   clear() {
-    this.gioHang = [];
-    this.emit();
+    this._gioHang$.next([]);
+    this._tongSoMon$.next(0);
   }
 
-  private emit() {
-    this.gioHangSubject.next(this.gioHang);
-    const tong = this.gioHang.reduce((s, i) => s + i.soLuong, 0);
-    this.tongSoMonSubject.next(tong);
+  // ===== UPDATE =====
+  private update(gioHang: any[]) {
+    this._gioHang$.next(gioHang);
+    const tong = gioHang.reduce((s, i) => s + i.soLuong, 0);
+    this._tongSoMon$.next(tong);
   }
 }

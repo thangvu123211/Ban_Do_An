@@ -12,11 +12,29 @@ import { CommonModule } from '@angular/common';
     <router-outlet></router-outlet>
 
     <button
-      *ngIf="showButton"
-      (click)="scrollToTop()"
-      class="fixed bottom-8 right-8 z-50 p-4 rounded-full bg-yellow-400 text-gray-900 shadow-lg hover:bg-yellow-300 transition-all duration-300">
+  *ngIf="showButton"
+  (click)="scrollToTop()"
+  class="fixed bottom-8 right-8 z-50">
+
+  <div class="relative w-12 h-12">
+
+    <!-- pulse nền -->
+    <span class="absolute inset-0 rounded-full bg-yellow-400 animate-ping opacity-40 "></span>
+
+    <!-- nút chính -->
+    <div class="relative w-12 h-12 rounded-full
+                bg-yellow-400 text-gray-900
+                flex items-center justify-center
+                shadow-xl
+                hover:scale-110 transition">
+
       <i class="fas fa-arrow-up"></i>
-    </button>
+
+    </div>
+
+  </div>
+
+</button>
   `
 })
 export class App implements OnInit {
@@ -25,7 +43,7 @@ export class App implements OnInit {
   constructor(private router: Router, private titleService: Title) { }
 
   ngOnInit() {
-;
+    ;
   }
 
 

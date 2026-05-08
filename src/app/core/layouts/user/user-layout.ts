@@ -3,6 +3,8 @@ import { RouterOutlet } from '@angular/router';
 import { SidebarUser } from '../../../core/layouts/user/sidebar-user/sidebar-user';
 import { HeaderUser } from '../../../core/layouts/user/header-user/header-user';
 import { MATERIAL } from '../../../Shared/material';
+import { Observable } from 'rxjs';
+import { SidebarService } from '../../services/WebService/sidebar.service';
 @Component({
   selector: 'app-user-layout',
   standalone: true,
@@ -10,11 +12,15 @@ import { MATERIAL } from '../../../Shared/material';
     RouterOutlet,
     SidebarUser,
     HeaderUser,
-    MATERIAL
+    MATERIAL,
     ],
   templateUrl: './user-layout.html',
   styleUrls: ['./user-layout.scss']
 })
 export class UserLayout {
+  collapsed$!: Observable<boolean>;
   
+    constructor(private sidebarService: SidebarService) {
+      this.collapsed$ = this.sidebarService.collapsed$;
+    }
 }

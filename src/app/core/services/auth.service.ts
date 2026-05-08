@@ -77,7 +77,7 @@ export class AuthService {
     } else if (role === 'user') {
       this.router.navigate(['/user']);
     } else {
-      this.router.navigate(['/account']);
+      this.router.navigate(['/login']);
     }
   }
 }

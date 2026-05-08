@@ -54,7 +54,7 @@ export class DoiMatKhau implements OnInit {
   }
 
   const updatedData: any = {
-    mat_khau: this.admin.mat_khau
+    mat_khau: this.admin.mat_khau_moi
   };
 
   this.adminService.CapNhatNhanVien(this.admin.ma_nv, updatedData)

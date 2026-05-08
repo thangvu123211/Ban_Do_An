@@ -6,11 +6,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-message/toast-message';
 import { ConfirmDialogComponent } from '../../../Shared/dialogs/confirm-dialog/confirm-dialog';
+import { MATERIAL } from '../../../Shared/material';
 
 @Component({
   selector: 'app-xem-hoa-don',
   standalone: true,
-  imports: [CommonModule, MatIcon, FormsModule, ToastMessageComponent],
+  imports: [MATERIAL],
   templateUrl: './xem-hoa-don.html',
   styleUrls: ['./xem-hoa-don.scss']
 })

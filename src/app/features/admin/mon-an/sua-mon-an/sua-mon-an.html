@@ -75,6 +75,12 @@
           </mat-select>
         </mat-form-field>
       </div>
+      <div class="flex flex-col">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Mô tả</mat-label>
+          <input [(ngModel)]="MonAn.mo_ta" matInput name="mo_ta" placeholder="Nhập mô tả" />
+        </mat-form-field>
+      </div>
 
       <div class="flex flex-col col-span-2">
         <mat-form-field appearance="outline" class="w-full">
@@ -82,6 +88,8 @@
           <input [(ngModel)]="MonAn.gia_tien" type="number" matInput placeholder="Nhập giá tiền..." />
         </mat-form-field>
       </div>
+
+      
     </div>
   </div>
 

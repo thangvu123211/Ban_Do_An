@@ -1,19 +1,14 @@
-<div class="flex h-screen">
-  <!-- Sidebar -->
+
+<div class="flex flex-col min-h-screen ">
+  <!-- Navbar trên cùng -->
   <app-sidebar-user></app-sidebar-user>
 
-  <!-- Phần còn lại -->
-  <div class="flex flex-col flex-1">
-    <!-- Header -->
-    <header class=" shadow p-4">
-      <app-header-user></app-header-user>
-    </header>
+  <app-header-user></app-header-user>
 
-    <!-- Nội dung chính -->
-    <main class="flex-1 p-6 overflow-auto">
-      <router-outlet></router-outlet>
-    </main>
+  <!-- Nội dung chính -->
+  <main [ngStyle]="{ 'margin-left': (collapsed$ | async) ? '5rem' : '16rem' }"
+    class="flex-1 transition-all duration-300 pt-20 min-h-screen">
+    <router-outlet></router-outlet>
+  </main>
 
-    <!-- Footer -->
-  </div>
 </div>

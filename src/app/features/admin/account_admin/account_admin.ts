@@ -92,8 +92,7 @@ export class Account_admincomponent implements OnInit {
       loai_nhan_vien: this.admin.loai_nhan_vien, // ✅ phải giữ loại nhân viên
       gioi_tinh: this.admin.gioi_tinh,
       ngay_sinh: this.admin.ngay_sinh,
-      dia_chi: this.admin.dia_chi
-      // … các field khác nếu có
+      dia_chi: this.admin.dia_chi,
     };
 
     // 🔹 Nếu người dùng nhập mật khẩu mới thì thêm vào object

@@ -91,16 +91,40 @@ html {
   }
 
   @include mat.badge-overrides((background-color: rgb(255, 0, 0),
-      container-size: 10px,
+      container-shape: 16px,
+      text-size:18px,
     ));
 
-  .mat-badge-content {
-    border-radius: 50% !important;
-    min-width: 10px;
-    height: 10px;
-    line-height: 10px;
-    font-weight: 600;
+  .mat-mdc-checkbox .mat-mdc-checkbox-ripple,
+  .mat-mdc-checkbox .mdc-checkbox__ripple,
+  .mat-mdc-checkbox .mdc-checkbox__background::before {
+    display: none !important;
+    opacity: 0 !important;
   }
+
+  // /* Hover KHÔNG hiện nền tròn */
+  // .mat-mdc-checkbox:hover .mdc-checkbox__background {
+  //   background-color: transparent !important;
+  // }
+
+  /* Giữ màu xanh khi tick */
+  .mat-mdc-checkbox {
+    --mdc-checkbox-selected-icon-color: #16a34a;
+    /* green-600 */
+    --mdc-checkbox-unselected-icon-color: #16a34a;
+    --mdc-checkbox-selected-checkmark-color: #ffffff;
+  }
+
+  /* Màu chữ */
+  .mat-mdc-checkbox .mdc-form-field>label {
+    color: #15803d;
+    /* green-700 */
+  }
+
+  .mat-mdc-dialog-container .mat-mdc-dialog-surface {
+  border-radius: 24px !important;
+  overflow: hidden !important;
+}
 
 }
 

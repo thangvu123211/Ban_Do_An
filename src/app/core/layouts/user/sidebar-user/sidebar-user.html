@@ -1,28 +1,33 @@
-<aside class="w-64 h-screen bg-gray-700 flex flex-col shadow-lg ">
-  <div class="flex items-center justify-center h-20 text-xl font-bold bg-gray-600">
-    Nguyễn Văn A
+<nav [ngClass]="collapsed ? 'w-20' : 'w-64'"
+     class="fixed top-20 left-0 h-[calc(100vh-5rem)] shadow-xl transition-all duration-300">
+  
+
+  <!-- NAVIGATION -->
+  <div class="flex-1 overflow-y-auto px-2 py-5">
+    <ul class="space-y-2">
+      <li *ngFor="let item of menuItems">
+        <a [routerLink]="[item.link]" routerLinkActive="active-link" matTooltip="{{ collapsed ? item.text : '' }}"
+          matTooltipPosition="right"
+          class="flex items-center gap-3 px-3 py-2 rounded-full hover:bg-gray-800 hover:text-white transition-all duration-100 ease-in-out">
+          <!-- ICON luôn hiển thị -->
+          <mat-icon class="flex-shrink-0">{{ item.icon }}</mat-icon>
+
+          <!-- CHỮ ẩn/mở -->
+          <span class="overflow-hidden transition-all duration-300 whitespace-nowrap" 
+      [ngStyle]="{
+        'max-width': collapsed ? '0px' : '200px',
+        'opacity': collapsed ? 0 : 1
+      }">
+  {{ item.text }}
+</span>
+        </a>
+      </li>
+
+    </ul>
   </div>
 
-  <nav class="flex-1 px-2 py-4 space-y-2">
-
-    <button mat-button [routerLink]="['/user','DashBoardUser']" class="flex items-center w-full px-4 py-2 rounded hover:bg-gray-600 transition">
-      <mat-icon class="mr-3">account_box</mat-icon> Trang Nhân Viên
-    </button>
-
-    <button mat-button [routerLink]="['/user','XemHoaDon']" class="flex items-center w-full px-4 py-2 rounded hover:bg-gray-600 transition" 
-      routerLinkActive="bg-gray-600 text-white">
-      <mat-icon class="mr-3">receipt_long</mat-icon>
-      Xem hóa đơn
-    </button>
-
-    <button mat-button [routerLink]="['/user','TaoHoaDon']" class="flex items-center w-full px-4 py-2 rounded hover:bg-gray-600 transition"
-       routerLinkActive="bg-gray-600 text-white">
-      <mat-icon class="mr-3">note_add</mat-icon> Tạo hóa đơn
-    </button>
-
-    <button mat-button [routerLink]="['/user','thanh-toan']" class="flex items-center w-full px-4 py-2 rounded hover:bg-gray-600 transition">
-      <mat-icon class="mr-3">payment</mat-icon> Thanh toán
-    </button>
-
-  </nav>
-</aside>
+  <!-- FOOTER -->
+  <div class="px-4 py-3 border-t border-gray-700 text-sm text-gray-400 text-center">
+    © 2025 FRESH FOOD
+  </div>
+</nav>

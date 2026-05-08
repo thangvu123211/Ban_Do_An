@@ -10,21 +10,32 @@
   <!-- Nút liên hệ cố định dạng hình chữ nhật dọc -->
   <div class="fixed right-6 top-2/3 z-50">
 
-  <div
-    class="w-16 h-16 rounded-full
-           bg-[#d4af7a]
-           flex items-center justify-center
-           text-black text-2xl
-           shadow-xl
-           hover:scale-110
-           transition duration-300
-           cursor-pointer">
+    <div (click)="openChatBot()" class="fixed right-6 bottom-24 z-50 cursor-pointer">
 
-    <i class="fas fa-robot"></i>
+      <div class="relative w-14 h-14 flex items-center justify-center">
 
+        <!-- PULSE -->
+        <span class="absolute inline-flex h-full w-full rounded-full
+                 bg-green-400 opacity-40 animate-ping">
+        </span>
+
+        <!-- NÚT CHÍNH -->
+        <div class="relative w-14 h-14 rounded-full
+                bg-gradient-to-r from-green-500 to-green-600
+                flex items-center justify-center
+                text-white text-2xl
+                shadow-xl
+                hover:scale-110 active:scale-95
+                transition duration-300">
+
+          <mat-icon>smart_toy</mat-icon>
+
+        </div>
+
+      </div>
+
+    </div>
   </div>
-
-</div>
 
 
 

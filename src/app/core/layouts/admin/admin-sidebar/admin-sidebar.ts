@@ -3,10 +3,7 @@ import { Router,RouterModule } from '@angular/router';
 
 import { MATERIAL } from '../../../../Shared/material';
 import { SidebarService } from '../../../services/WebService/sidebar.service';
-declare interface RouteInfo {
-  path: string;
-  title: string;
-}
+
 
 @Component({
   selector: 'app-admin-sidebar',

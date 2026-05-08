@@ -18,6 +18,7 @@ export interface MonAn {
   gia_tien: number;
   trang_thai: string;
   anh_mon_an: string;
+  mo_ta:string;
 }
 
 @Component({
