@@ -25,6 +25,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatSliderModule } from "@angular/material/slider";
 import { RouterModule } from "@angular/router";
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatStepperModule } from '@angular/material/stepper';
 export const MATERIAL=[
     MatButtonModule,
     CommonModule,
@@ -53,4 +55,6 @@ export const MATERIAL=[
     MatSliderModule,
     MatIconModule,
     RouterModule,
+    MatStepperModule,
+    MatProgressSpinnerModule
 ]

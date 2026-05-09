@@ -24,8 +24,8 @@ export class QuanLyNhanVienService {
   }
 
   /** 🟩 Lấy nhân viên theo ID (có token) */
-  LayNhanVienTheoID(ma_nv: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/nhanvien/layRaThongTinNhanVien/${ma_nv}`, {
+  LayNhanVienTheoID(ma_nguoi_dung: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/nhanvien/layRaThongTinNhanVien/${ma_nguoi_dung}`, {
       headers: this.getAuthHeaders()
     });
   }
@@ -38,14 +38,14 @@ export class QuanLyNhanVienService {
   }
 
   /** 🟩 Xóa nhân viên (có token) */
-  XoaNhanVien(ma_nv: number): Observable<any> {
-    return this.http.delete(`${environment.apiUrl}/nhanvien/delete/${ma_nv}`, {
+  XoaNhanVien(ma_nguoi_dung: number): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/nhanvien/delete/${ma_nguoi_dung}`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /** 🟩 Cập nhật thông tin nhân viên (có token) */
-  CapNhatNhanVien(ma_nv: number, userData: any, selectedFile?: File): Observable<any> {
+  CapNhatNhanVien(ma_nguoi_dung: number, userData: any, selectedFile?: File): Observable<any> {
     const formData = new FormData();
 
     // Gán tất cả trường, bao gồm mat_khau nếu có
@@ -60,7 +60,7 @@ export class QuanLyNhanVienService {
       formData.append('image', selectedFile);
     }
 
-    return this.http.patch(`${environment.apiUrl}/nhanvien/update/${ma_nv}`, formData, {
+    return this.http.patch(`${environment.apiUrl}/nhanvien/update/${ma_nguoi_dung}`, formData, {
       headers: this.getAuthHeaders()
     });
   }

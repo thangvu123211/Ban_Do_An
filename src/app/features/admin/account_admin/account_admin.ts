@@ -54,8 +54,8 @@ export class Account_admincomponent implements OnInit {
     this.adminService.Laythongtinadmin(userId).subscribe({
       next: (res) => {
         this.admin = res.data ?? res;
-        this.previewUrl = this.admin?.anh_nhan_vien?.length
-          ? this.admin.anh_nhan_vien[0].url
+        this.previewUrl = this.admin?.anh_nguoi_dung?.length
+          ? this.admin.anh_nguoi_dung[0].url
           : 'assets/user.jpg';
 
         // ✅ Cập nhật cho các component khác (Navbar, v.v.)
@@ -89,7 +89,7 @@ export class Account_admincomponent implements OnInit {
     const updatedAdmin: any = {
       ho_ten: this.admin.ho_ten,
       email: this.admin.email,
-      loai_nhan_vien: this.admin.loai_nhan_vien, // ✅ phải giữ loại nhân viên
+      loai_nguoi_dung: this.admin.loai_nguoi_dung, // ✅ phải giữ loại nhân viên
       gioi_tinh: this.admin.gioi_tinh,
       ngay_sinh: this.admin.ngay_sinh,
       dia_chi: this.admin.dia_chi,
@@ -104,7 +104,7 @@ export class Account_admincomponent implements OnInit {
       updatedAdmin.mat_khau = this.admin.mat_khau_moi;
     }
 
-    this.adminService.CapNhatNhanVien(this.admin.ma_nv, updatedAdmin, this.selectedFile)
+    this.adminService.CapNhatNhanVien(this.admin.ma_nguoi_dung, updatedAdmin, this.selectedFile)
       .subscribe({
         next: (res) => {
           this.showToast('Cập nhật thành công!', 'success');
@@ -124,7 +124,7 @@ export class Account_admincomponent implements OnInit {
 
   /** 🔑 Mở dialog đổi mật khẩu */
   DoiMatKhau() {
-    if (!this.admin?.ma_nv) {
+    if (!this.admin?.ma_nguoi_dung) {
       this.showToast('Không tìm thấy ID nhân viên', 'error');
       return;
     }
@@ -133,7 +133,7 @@ export class Account_admincomponent implements OnInit {
       width: '500px',
       maxWidth: '110vw',
       panelClass: 'custom-dialog',
-      data: { ma_nv: this.admin.ma_nv }  // ✅ truyền ID nhân viên
+      data: { ma_nguoi_dung: this.admin.ma_nguoi_dung }  // ✅ truyền ID nhân viên
     });
 
     dialogRef.afterClosed().subscribe(result => {

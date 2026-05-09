@@ -1,0 +1,43 @@
+/* căn giữa toàn bộ stepper */
+::ng-deep .custom-stepper {
+  background: transparent;
+  width: fit-content;
+}
+
+/* header mỗi step */
+::ng-deep .custom-stepper .mat-horizontal-stepper-header {
+  padding: 0 12px;
+}
+
+/* icon tròn */
+::ng-deep .custom-stepper .mat-step-icon {
+  width: 36px;
+  height: 36px;
+  background-color: #e5e7eb; /* gray-200 */
+  color: #374151;
+  font-weight: 600;
+}
+
+/* active + done */
+::ng-deep .custom-stepper .mat-step-icon-selected,
+::ng-deep .custom-stepper .mat-step-icon-state-done {
+  background-color: #22c55e !important;
+  color: white !important;
+}
+
+/* label dưới icon */
+::ng-deep .custom-stepper .mat-step-label {
+  font-size: 12px;
+  margin-top: 4px;
+  color: #374151;
+}
+
+/* line nối */
+::ng-deep .custom-stepper .mat-stepper-horizontal-line {
+  border-top-width: 2px;
+  border-color: #d1d5db;
+}
+
+.readonly-stepper {
+  pointer-events: none;
+}

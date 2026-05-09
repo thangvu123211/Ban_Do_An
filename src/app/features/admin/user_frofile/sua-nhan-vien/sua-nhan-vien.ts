@@ -28,7 +28,7 @@ export class SuaNhanVien implements OnInit {
     private dialogRef: MatDialogRef<SuaNhanVien>,
     private QuanLyNhanVienService: QuanLyNhanVienService,
     @Inject(MAT_DIALOG_DATA) public data: {
-      ma_nv: number
+      ma_nguoi_dung: number
     }
   ) { }
 
@@ -41,13 +41,13 @@ export class SuaNhanVien implements OnInit {
 
 
   ngOnInit() {
-    if (this.data.ma_nv) {
-      this.loadNhanVienById(this.data.ma_nv);
+    if (this.data.ma_nguoi_dung) {
+      this.loadNhanVienById(this.data.ma_nguoi_dung);
     }
   }
 
-  loadNhanVienById(ma_nv: number) {
-  this.QuanLyNhanVienService.LayNhanVienTheoID(ma_nv).subscribe({
+  loadNhanVienById(ma_nguoi_dung: number) {
+  this.QuanLyNhanVienService.LayNhanVienTheoID(ma_nguoi_dung).subscribe({
     next: (res) => {
       this.NhanVien = res.data ?? res;
 
@@ -56,8 +56,8 @@ export class SuaNhanVien implements OnInit {
         this.NhanVien.ngay_sinh = new Date(this.NhanVien.ngay_sinh);
       }
 
-      if (this.NhanVien.anh_nhan_vien?.length) {
-        this.previewImage = this.NhanVien.anh_nhan_vien[0].url;
+      if (this.NhanVien.anh_nguoi_dung?.length) {
+        this.previewImage = this.NhanVien.anh_nguoi_dung[0].url;
       }
     }
   });
@@ -88,12 +88,12 @@ export class SuaNhanVien implements OnInit {
       gioi_tinh: this.NhanVien.gioi_tinh,
       ngay_sinh: this.NhanVien.ngay_sinh,
       dia_chi: this.NhanVien.dia_chi,
-      loai_nhan_vien: this.NhanVien.loai_nhan_vien,
+      loai_nguoi_dung: this.NhanVien.loai_nguoi_dung,
       mat_khau:this.NhanVien.mat_khau_moi
     };
 
 
-    this.QuanLyNhanVienService.CapNhatNhanVien(this.data.ma_nv, updatedNhanVien, this.selectedFile)
+    this.QuanLyNhanVienService.CapNhatNhanVien(this.data.ma_nguoi_dung, updatedNhanVien, this.selectedFile)
       .subscribe({
         next: () => {
           this.showToast('Cập nhật thành công!', 'success');

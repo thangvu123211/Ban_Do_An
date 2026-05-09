@@ -9,6 +9,7 @@ import { LoaiMonAn } from './loai-mon-an/loai-mon-an';
 import { BanAn } from './ban-an/ban-an';
 import { HoaDon } from './hoa-don/hoa-don';
 import { LienHe } from './lien-he/lien-he';
+import { MaGiamGia } from './ma-giam-gia/ma-giam-gia';
 
 export const adminRoutes: Routes = [
   {
@@ -25,6 +26,7 @@ export const adminRoutes: Routes = [
       { path: 'ban_an', component: BanAn, title: 'Quản lí bàn ăn' },
       { path: 'hoa_don', component: HoaDon, title: 'Quản lí hóa đơn' },
       { path: 'lien_he', component: LienHe, title: 'Quản lí liên hệ' },
+      { path: 'ma_giam_gia', component: MaGiamGia, title: 'Quản lí mã giảm giá' },
     ],
   },
 ];

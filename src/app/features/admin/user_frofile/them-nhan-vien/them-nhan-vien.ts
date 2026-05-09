@@ -22,7 +22,7 @@ export class ThemNhanVien implements OnInit {
     gioi_tinh: 'Nam',
     dia_chi: '',
     ngay_sinh: null,
-    loai_nhan_vien: 'user',
+    loai_nguoi_dung: 'user',
   };
 
   selectedFile: File | null = null;

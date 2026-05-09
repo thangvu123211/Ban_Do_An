@@ -34,14 +34,14 @@ export class AdminService {
   }
 
   /** 🟩 Lấy nhân viên theo ID (có xác thực) */
-  LayNhanVienTheoID(ma_nv: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/nhanvien/layRaThongTinNhanVien/${ma_nv}`, {
+  LayNhanVienTheoID(ma_nguoi_dung: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/nhanvien/layRaThongTinNhanVien/${ma_nguoi_dung}`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /** 🟩 Cập nhật thông tin nhân viên (có xác thực + có ảnh) */
-  CapNhatNhanVien(ma_nv: number, userData: any, selectedFile?: File): Observable<any> {
+  CapNhatNhanVien(ma_nguoi_dung: number, userData: any, selectedFile?: File): Observable<any> {
     const formData = new FormData();
 
     Object.entries(userData).forEach(([key, value]) => {
@@ -52,7 +52,7 @@ export class AdminService {
 
     if (selectedFile) formData.append('image', selectedFile);
 
-    return this.http.patch(`${environment.apiUrl}/nhanvien/update/${ma_nv}`, formData, {
+    return this.http.patch(`${environment.apiUrl}/nhanvien/update/${ma_nguoi_dung}`, formData, {
       headers: this.getAuthHeaders()
     });
   }

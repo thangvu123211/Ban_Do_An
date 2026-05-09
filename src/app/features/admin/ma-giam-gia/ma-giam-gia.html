@@ -1,0 +1,49 @@
+<!-- HEADER -->
+<div class="relative h-96 flex items-center justify-start px-10">
+    <div class="z-10">
+        <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
+        <p class="text-lg max-w-lg">
+            Đây là trang quản lý Mã giảm giá. Bạn có thể xem nội dung mã giảm giá được gửi từ website.
+        </p>
+    </div>
+</div>
+
+<!-- KHUNG DỮ LIỆU -->
+<div class="container mx-auto px-6 mt-10">
+
+    <mat-card class="w-full shadow-xl rounded-2xl p-6">
+
+        <!-- HEADER -->
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+            <h3 class="text-2xl font-semibold">
+                Danh Sách Liên Hệ
+            </h3>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full border rounded-lg overflow-hidden text-sm">
+
+                <thead>
+                    <tr>
+                        <th class="px-4 py-4 text-center border">STT</th>
+                        <th class="px-4 py-4 text-left border">Họ Tên</th>
+                        <th class="px-4 py-4 text-left border">Email</th>
+                        <th class="px-4 py-4 text-left border">SĐT</th>
+                        <th class="px-4 py-4 text-left border">Tiêu đề</th>
+                        <th class="px-4 py-4 text-left border">Nội dung</th>
+                        <th class="px-4 py-4 text-center border">Ngày gửi</th>
+                        <th class="px-4 py-4 text-center border">Hành động</th>
+                    </tr>
+                </thead>
+
+                
+
+            </table>
+        </div>
+
+    </mat-card>
+</div>
+
+
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

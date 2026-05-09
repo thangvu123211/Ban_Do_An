@@ -20,8 +20,17 @@ export class AuthService {
       tap((res: any) => {
         if (res.token) {
           localStorage.setItem('token', res.token);
+
           localStorage.setItem('role', res.role || '');
+
+          // 🔥 lưu full user
           localStorage.setItem('user', JSON.stringify(res.data));
+
+          // 🔥 FIX QUAN TRỌNG: lưu user id riêng
+          localStorage.setItem(
+            'ma_nguoi_dung',
+            res.data?.ma_nguoi_dung || res.data?.id
+          );
         }
       })
     );

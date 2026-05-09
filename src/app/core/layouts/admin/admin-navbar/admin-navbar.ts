@@ -39,8 +39,8 @@ export class AdminNavbar implements OnInit {
     this.authAdmin.adminInfo$.subscribe((admin) => {
       if (admin) {
         this.adminInfo = admin;
-        this.previewImage = admin?.anh_nhan_vien?.length
-          ? admin.anh_nhan_vien[0].url
+        this.previewImage = admin?.anh_nguoi_dung?.length
+          ? admin.anh_nguoi_dung[0].url
           : 'assets/user.jpg';
       }
     });
@@ -48,19 +48,19 @@ export class AdminNavbar implements OnInit {
     // Lấy token để lấy ma_nv
     const token = localStorage.getItem('token');
     const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
-    const ma_nv = payload?.id;
+    const ma_nguoi_dung = payload?.id;
 
-    if (ma_nv) {
-      this.loadNhanVienById(ma_nv);
+    if (ma_nguoi_dung) {
+      this.loadNhanVienById(ma_nguoi_dung);
     }
   }
 
-  loadNhanVienById(ma_nv: number) {
-    this.authAdmin.LayNhanVienTheoID(ma_nv).subscribe({
+  loadNhanVienById(ma_nguoi_dung: number) {
+    this.authAdmin.LayNhanVienTheoID(ma_nguoi_dung).subscribe({
       next: (res) => {
         this.adminInfo = res.data ?? res;
-        if (this.adminInfo.anh_nhan_vien?.length) {
-          this.previewImage = this.adminInfo.anh_nhan_vien[0].url;
+        if (this.adminInfo.anh_nguoi_dung?.length) {
+          this.previewImage = this.adminInfo.anh_nguoi_dung[0].url;
         }
       },
       error: (err) => {

@@ -87,14 +87,14 @@ export class KhachHangDatBan implements OnInit {
 
       if (Array.isArray(data)) {
         data.forEach((nv: any) => {
-          if (nv && nv.ma_nv) {
-            this.NhanVienMap[nv.ma_nv] = nv.ho_ten;
+          if (nv && nv.ma_nguoi_dung) {
+            this.NhanVienMap[nv.ma_nguoi_dung] = nv.ho_ten;
           }
         });
       }
-      else if (data && data.ma_nv) {
+      else if (data && data.ma_nguoi_dung) {
         // trường hợp API trả về 1 object
-        this.NhanVienMap[data.ma_nv] = data.ho_ten;
+        this.NhanVienMap[data.ma_nguoi_dung] = data.ho_ten;
       }
 
       console.log("NhanVienMap:", this.NhanVienMap);

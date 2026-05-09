@@ -51,7 +51,7 @@ export class UserFrofileComponents implements OnInit {
         // map để tạo trường mới anh_nhan_vien_url
         this.NhanVien = res.map(u => ({
           ...u,
-          anh_nhan_vien_url: u.anh_nhan_vien?.length ? u.anh_nhan_vien[0].url : null
+          anh_nguoi_dung_url: u.anh_nguoi_dung?.length ? u.anh_nguoi_dung[0].url : null
         }));
       }
     },
@@ -72,7 +72,7 @@ export class UserFrofileComponents implements OnInit {
 
   
 
-  deleteUser(ma_nv: number) {
+  deleteUser(ma_nguoi_dung: number) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: { message: 'Bạn có chắc muốn xóa nhân viên này?' }
@@ -80,7 +80,7 @@ export class UserFrofileComponents implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.showToast('Xóa nhân viên thành công.', 'success');
-        this.QuanLyNhanVienService.XoaNhanVien(ma_nv).subscribe({
+        this.QuanLyNhanVienService.XoaNhanVien(ma_nguoi_dung).subscribe({
 
           next: () => this.load_list_user(),
           error: (err) => {
@@ -93,12 +93,12 @@ export class UserFrofileComponents implements OnInit {
 
  
 
-  SuaNhanVien(ma_nv: number) {
+  SuaNhanVien(ma_nguoi_dung: number) {
     const dialogRef = this.dialog.open(SuaNhanVien, {
       width: '900px',
       maxWidth: '110vw',
       data: {
-        ma_nv
+        ma_nguoi_dung
       },
       panelClass: 'custom-dialog'
     });

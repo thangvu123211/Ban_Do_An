@@ -14,7 +14,6 @@ import { MATERIAL } from '../../../../Shared/material';
 export class DoiMatKhau implements OnInit {
 
   admin: any = {}; // 🔹 không để null, để object rỗng an toàn
-
   toast = {
     show: false,
     message: '',
@@ -24,12 +23,12 @@ export class DoiMatKhau implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<DoiMatKhau>,
     private adminService: AdminService,
-    @Inject(MAT_DIALOG_DATA) public data: { ma_nv: number }
+    @Inject(MAT_DIALOG_DATA) public data: { ma_nguoi_dung: number }
   ) { }
 
   ngOnInit(): void {
     // 🔹 Lấy thông tin nhân viên theo ID truyền vào
-    this.adminService.Laythongtinadmin(this.data.ma_nv).subscribe({
+    this.adminService.Laythongtinadmin(this.data.ma_nguoi_dung).subscribe({
       next: (res) => {
         this.admin = res.data ?? res;
       },
@@ -48,28 +47,28 @@ export class DoiMatKhau implements OnInit {
   }
 
   doiMatKhau() {
-  if (!this.admin || !this.admin.mat_khau?.trim()) {
-    this.showToast('Vui lòng nhập mật khẩu mới.', 'warn');
-    return;
+    if (!this.admin || !this.admin.mat_khau?.trim()) {
+      this.showToast('Vui lòng nhập mật khẩu mới.', 'warn');
+      return;
+    }
+
+    const updatedData: any = {
+      mat_khau: this.admin.mat_khau_moi
+    };
+
+    this.adminService.CapNhatNhanVien(this.admin.ma_nguoi_dung, updatedData)
+      .subscribe({
+        next: () => {
+          this.showToast('Đổi mật khẩu thành công!', 'success');
+          this.dialogRef.close(true);
+          this.admin.mat_khau = '';
+        },
+        error: (err) => {
+          console.error('Lỗi khi đổi mật khẩu:', err);
+          this.showToast(err.error?.error || 'Đổi mật khẩu thất bại!', 'error');
+        }
+      });
   }
-
-  const updatedData: any = {
-    mat_khau: this.admin.mat_khau_moi
-  };
-
-  this.adminService.CapNhatNhanVien(this.admin.ma_nv, updatedData)
-    .subscribe({
-      next: () => {
-        this.showToast('Đổi mật khẩu thành công!', 'success');
-        this.dialogRef.close(true);
-        this.admin.mat_khau = '';
-      },
-      error: (err) => {
-        console.error('Lỗi khi đổi mật khẩu:', err);
-        this.showToast(err.error?.error || 'Đổi mật khẩu thất bại!', 'error');
-      }
-    });
-}
 
 
   close() {

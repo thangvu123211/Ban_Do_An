@@ -2,128 +2,385 @@
             p-8 flex flex-col
             bg-white text-gray-800">
 
-  <!-- HEADER -->
-  <div class="flex justify-between items-start mb-6">
+  <!-- ================= HEADER ================= -->
+  <div class="flex items-center mb-6 gap-4 shrink-0">
 
-  <!-- LEFT -->
-  <div class="flex flex-col">
+    <div class="flex flex-col shrink-0">
+      <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+        <mat-icon class="text-xl text-green-500">shopping_cart</mat-icon>
+        Giỏ hàng
+      </h2>
 
-    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-      <mat-icon class="text-xl text-green-500">shopping_cart</mat-icon>
-      Giỏ hàng
-    </h2>
-
-    <!-- 👇 nằm dưới tiêu đề -->
-    <div class="mt-1 inline-flex items-center gap-2 text-sm mt-2">
-
-      <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium flex items-center gap-1">
+      <span class="mt-1 px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium w-fit">
         Tổng số món: {{ tongSoMon }}
       </span>
-
     </div>
 
+    <div class="flex-1 flex justify-center">
+      <mat-horizontal-stepper [selectedIndex]="currentStep" class="custom-stepper readonly-stepper">
+
+        <mat-step label="Giỏ hàng"></mat-step>
+        <mat-step label="Tạm tính"></mat-step>
+        <mat-step label="Thông tin giao hàng"></mat-step>
+        <mat-step label="Thanh toán"></mat-step>
+
+      </mat-horizontal-stepper>
+    </div>
+
+    <button mat-icon-button (click)="close()">
+      <mat-icon class="text-gray-500 hover:text-gray-800">close</mat-icon>
+    </button>
   </div>
 
-  <!-- RIGHT -->
-  <button mat-icon-button (click)="close()">
-    <mat-icon class="text-gray-500 hover:text-gray-800">close</mat-icon>
-  </button>
+  <!-- ================= CONTENT (SCROLL) ================= -->
+  <div class="flex-1 overflow-y-auto pr-2">
 
-</div>
+    <!-- STEP 0: GIỎ HÀNG -->
+    <ng-container *ngIf="currentStep === 0">
 
+      <!-- WRAPPER STEP 0 -->
+      <div class="h-full flex flex-col">
 
+        <!-- ================== GIỎ HÀNG (CUỘN) ================== -->
+        <div class="flex-1 overflow-y-auto space-y-4 pr-2">
 
+          <div *ngFor="let item of gioHang" class="flex items-center gap-4 rounded-xl p-4
+               bg-gray-50 border border-gray-200">
 
-  <!-- DANH SÁCH MÓN -->
-  <div class="flex-1 overflow-y-auto space-y-4 pr-2">
+            <img [src]="item.anh_mon_an?.length ? item.anh_mon_an[0].url : 'assets/no-image.png'"
+              class="w-20 h-20 rounded-xl object-cover border" />
 
-    <div *ngFor="let item of gioHang" class="flex items-center gap-4 rounded-xl p-4
-             bg-gray-50 border border-gray-200">
+            <div class="flex-1">
+              <p class="font-semibold text-gray-900 truncate">
+                {{ item.ten_mon_an }}
+              </p>
+              <span class="text-green-600 font-medium">
+                {{ item.gia_tien | number }} đ
+              </span>
+            </div>
 
-      <!-- Ảnh -->
-      <img [src]="item.anh_mon_an?.length ? item.anh_mon_an[0].url : 'assets/no-image.png'"
-        class="w-20 h-20 rounded-xl object-cover border border-gray-200" />
+            <div class="flex items-center gap-2">
+              <button (click)="giamSoLuong(item)">
+                <mat-icon>remove</mat-icon>
+              </button>
 
-      <!-- Thông tin -->
-      <div class="flex-1">
-        <p class="text-base font-semibold text-gray-900 truncate">
-          {{ item.ten_mon_an }}
+              <span class="w-6 text-center font-semibold">
+                {{ item.soLuong }}
+              </span>
+
+              <button (click)="tangSoLuong(item)">
+                <mat-icon>add</mat-icon>
+              </button>
+
+              <button (click)="removeFromGioHang(item)">
+                <mat-icon class="text-red-500">delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="flex justify-between font-bold mt-4">
+          <span>Tổng tiền</span>
+          <span class="text-green-600">
+            {{ tongTien | number }} đ
+          </span>
+        </div>
+
+        <!-- ================== GHI CHÚ (NẰM DƯỚI CÙNG) ================== -->
+        <div class="border-t pt-4 mt-4 bg-white">
+
+          <label class="block text-sm text-gray-600 mb-2">
+            Ghi chú cho nhà hàng
+          </label>
+
+          <textarea rows="3" placeholder="Ví dụ: ít cay, không hành..." [(ngModel)]="ghiChu" class="w-full text-sm rounded-xl border border-gray-300
+         bg-white p-3 resize-none
+         placeholder-gray-400
+         focus:border-green-500
+         focus:ring-2 focus:ring-green-500">
+          </textarea>
+
+        </div>
+
+      </div>
+    </ng-container>
+
+    <!-- STEP 1 -->
+    <ng-container *ngIf="currentStep === 1">
+      <div class="space-y-4">
+        <h3 class="text-lg font-bold">Thông tin thanh toán</h3>
+
+        <div class="flex justify-between">
+          <span>Tạm tính</span>
+          <span>{{ tongTien | number }} đ</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span>Phí giao hàng</span>
+          <span>0 đ</span>
+        </div>
+
+        <div *ngIf="ghiChu?.trim()" class="mt-4 p-4 rounded-xl bg-gray-50 border">
+          <p class="text-sm text-gray-500 mb-1">Ghi chú cho nhà hàng</p>
+          <p class="text-gray-800 italic">
+            "{{ ghiChu }}"
+          </p>
+        </div>
+
+        <hr>
+
+        <div class="flex justify-between text-lg font-bold">
+          <span>Tổng cộng</span>
+          <span class="text-green-600">
+            {{ tongTien | number }} đ
+          </span>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- STEP 2 -->
+    <ng-container *ngIf="currentStep === 2">
+
+      <!-- CHƯA ĐĂNG NHẬP -->
+      <div *ngIf="!isLoggedIn" class="flex flex-col items-center justify-center py-12 text-center">
+
+        <mat-icon class="text-6xl text-gray-400 mb-4">lock</mat-icon>
+
+        <h3 class="text-lg font-bold mb-2">
+          Vui lòng đăng nhập
+        </h3>
+
+        <p class="text-gray-600 mb-6">
+          Bạn cần đăng nhập để nhập thông tin giao hàng
         </p>
 
-        <span class="text-green-600 text-base font-medium">
-          {{ item.gia_tien | number }} đ
-        </span>
+        <button matButton="filled" class="bg-green-500 text-white px-6" (click)="goToLogin()">
+          Đăng nhập ngay
+        </button>
+
       </div>
 
-      <!-- Số lượng -->
-      <div class="flex items-center gap-2">
-        <button (click)="giamSoLuong(item)">
-          <mat-icon class="text-gray-500 hover:text-gray-900">remove</mat-icon>
-        </button>
+      <!-- ĐÃ ĐĂNG NHẬP -->
+      <div *ngIf="isLoggedIn" class="space-y-6">
 
-        <span class="w-6 text-center font-semibold text-gray-900 mb-2">
-          {{ item.soLuong }}
-        </span>
+        <h3 class="text-lg font-bold text-gray-900">
+          Thông tin giao hàng
+        </h3>
 
-        <button (click)="tangSoLuong(item)">
-          <mat-icon class="text-gray-500 hover:text-gray-900">add</mat-icon>
-        </button>
+        <!-- TÊN + SĐT -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        <button (click)="removeFromGioHang(item)">
-          <mat-icon class="text-red-500 hover:text-red-600">delete</mat-icon>
-        </button>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Tên người nhận</mat-label>
+            <input matInput placeholder="Nguyễn Văn A" [(ngModel)]="tenNguoiNhan" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Số điện thoại</mat-label>
+            <input matInput type="tel" placeholder="0123 456 789" [(ngModel)]="soDienThoai" />
+          </mat-form-field>
+
+        </div>
+
+        <!-- ĐỊA CHỈ -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Địa chỉ giao hàng</mat-label>
+          <textarea matInput rows="3" placeholder="Số nhà, tên đường, phường/xã, quận/huyện..." [(ngModel)]="diaChi">
+          </textarea>
+        </mat-form-field>
+
+        <!-- DANH SÁCH ĐỊA CHỈ ĐÃ LƯU -->
+        <div class="space-y-3 mt-2">
+
+          <div *ngFor="let dc of danhSachDiaChi" (click)="chonDiaChi(dc)" class="p-4 border rounded-xl cursor-pointer transition
+              hover:shadow-md" [ngClass]="{
+         'border-green-500 bg-green-50': selectedDiaChi?.id === dc.id,
+         'border-gray-200 bg-white': selectedDiaChi?.id !== dc.id
+       }">
+
+            <div class="flex justify-between items-center">
+
+              <div>
+                <p class="font-semibold text-gray-900">
+                  {{ dc.ho_ten }}
+                </p>
+
+                <p class="text-sm text-gray-600">
+                  📞 {{ dc.sdt }}
+                </p>
+
+                <p class="text-sm text-gray-700">
+                  📍 {{ dc.dia_chi }}
+                </p>
+              </div>
+
+              <!-- badge mặc định -->
+              <span *ngIf="dc.mac_dinh" class="text-xs px-2 py-1 rounded-full bg-green-600 text-white">
+                Mặc định
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-    </div>
+
+      <!-- NÚT THÊM ĐỊA CHỈ -->
+      <button mat-raised-button color="primary" (click)="showAddAddress = !showAddAddress">
+        + Thêm địa chỉ mới
+      </button>
+
+      <!-- FORM THÊM ĐỊA CHỈ -->
+      <div *ngIf="showAddAddress" class="mt-4 space-y-4 border p-4 rounded-xl">
+
+        <h3 class="font-bold">Thêm địa chỉ mới</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Họ tên</mat-label>
+            <input matInput [(ngModel)]="newDiaChi.ho_ten">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Số điện thoại</mat-label>
+            <input matInput [(ngModel)]="newDiaChi.sdt">
+          </mat-form-field>
+
+        </div>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Địa chỉ</mat-label>
+          <textarea matInput rows="3" [(ngModel)]="newDiaChi.dia_chi"></textarea>
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="newDiaChi.mac_dinh">
+          Đặt làm mặc định
+        </mat-checkbox>
+
+        <div class="flex gap-3">
+          <button mat-raised-button color="primary" (click)="themDiaChi()">
+            Lưu địa chỉ
+          </button>
+
+          <button mat-button (click)="showAddAddress = false">
+            Hủy
+          </button>
+        </div>
+
+      </div>
+
+    </ng-container>
+
+    <!-- STEP 3 -->
+    <ng-container *ngIf="currentStep === 3">
+
+      <div class="space-y-8">
+
+        <!-- HEADER -->
+        <div class="text-center">
+          <mat-icon class="text-green-500 leading-none" style="font-size: 64px; height: 64px; width: 64px;">
+            check_circle
+          </mat-icon>
+          <h3 class="text-xl font-bold mt-3 text-gray-900">
+            Xác nhận đơn hàng
+          </h3>
+          <p class="text-gray-500 text-sm mt-1">
+            Vui lòng kiểm tra lại thông tin trước khi thanh toán
+          </p>
+        </div>
+
+        <!-- THÔNG TIN GIAO HÀNG -->
+        <div class="rounded-2xl border bg-white p-5 space-y-2">
+          <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+            📍 Thông tin giao hàng
+          </h4>
+
+          <div class="text-sm text-gray-700 space-y-1">
+            <p><span class="font-medium">Tên:</span> {{ tenNguoiNhan }}</p>
+            <p><span class="font-medium">SĐT:</span> {{ soDienThoai }}</p>
+            <p><span class="font-medium">Địa chỉ:</span> {{ diaChi }}</p>
+
+            <p *ngIf="ghiChu" class="italic text-gray-600 pt-1">
+              <span class="font-medium not-italic">Ghi chú:</span>
+              {{ ghiChu }}
+            </p>
+          </div>
+        </div>
+
+        <!-- DANH SÁCH MÓN -->
+        <div class="rounded-2xl border bg-white p-5 space-y-4">
+          <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+            🍔 Món đã đặt
+          </h4>
+
+          <div *ngFor="let item of gioHang" class="flex justify-between items-start border-b pb-3 last:border-b-0">
+
+            <div>
+              <p class="font-medium text-gray-800">
+                {{ item.ten_mon_an }}
+              </p>
+              <p class="text-sm text-gray-500">
+                {{ item.soLuong }} × {{ item.gia_tien | number }} đ
+              </p>
+            </div>
+
+            <span class="font-semibold text-gray-800">
+              {{ item.soLuong * item.gia_tien | number }} đ
+            </span>
+          </div>
+        </div>
+
+        <!-- TỔNG THANH TOÁN -->
+        <div class="rounded-2xl border bg-green-50 p-5 flex justify-between items-center">
+          <span class="font-semibold text-gray-900">
+            Tổng thanh toán
+          </span>
+          <span class="text-2xl font-bold text-green-600">
+            {{ tongTien | number }} đ
+          </span>
+        </div>
+
+        <!-- QR THANH TOÁN -->
+        <div class="rounded-2xl border bg-white p-6 flex flex-col items-center space-y-4">
+          <h4 class="font-semibold text-gray-900">
+            Quét QR để thanh toán
+          </h4>
+
+          <div class="w-48 h-48 rounded-2xl border bg-gray-100 flex items-center justify-center">
+            <span class="text-gray-400 text-sm">QR CODE</span>
+          </div>
+
+          <p class="text-xs text-gray-500 text-center max-w-xs">
+            Sử dụng ứng dụng ngân hàng hoặc ví điện tử để quét mã QR và hoàn tất thanh toán
+          </p>
+        </div>
+
+      </div>
+
+    </ng-container>
 
   </div>
 
-  <!-- FOOTER -->
-  <div class="border-t border-gray-200 mt-6 pt-6">
+  <!-- ================= FOOTER (CỐ ĐỊNH ĐÁY) ================= -->
+  <div class="border-t pt-4 mt-4 shrink-0">
 
-    <!-- Tổng tiền -->
-    <div class="flex justify-between items-center font-bold text-lg mb-4">
-      <span class="text-gray-900">Tổng tiền</span>
-      <span class="text-green-600">
-        {{ tongTien | number }} đ
-      </span>
-    </div>
 
-    <!-- Ghi chú -->
-    <div class="mb-4">
-      <label class="block text-sm text-gray-600 mb-2">
-        Ghi chú cho nhà hàng
-      </label>
 
-      <textarea rows="3" placeholder="Ví dụ: ít cay, không hành..." class="w-full text-sm rounded-xl
-               border border-gray-300
-               bg-white
-               p-3
-               leading-5
-               align-top
-               outline-none
-               resize-none
-               placeholder-gray-400
-               focus:border-green-500
-               focus:ring-2
-               focus:ring-green-500">
-      </textarea>
-    </div>
-
-    <!-- Nút -->
-    <div class="flex gap-4 justify-end">
-      <!-- Nút chính -->
-      <button matButton="filled" class="px-6 bg-green-500 text-white hover:bg-green-600">
-        Thanh Toán
+    <div class="flex justify-end gap-4">
+      <button matButton="filled" (click)="prevStep()" [disabled]="currentStep === 0">
+        Quay lại
       </button>
 
-      <!-- Nút phụ -->
-      <button mat-raised-button class="px-6 bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
-        (click)="close()">
-        Đóng
+      <button mat-raised-button color="primary" (click)="nextStep()">
+        {{ currentStep === 3 ? 'Hoàn tất' : 'Tiếp tục' }}
       </button>
     </div>
+
   </div>
-
 </div>
 
 <app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type">

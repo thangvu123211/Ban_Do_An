@@ -54,27 +54,27 @@
             <td class="px-4 py-7 text-center border">{{ user.ho_ten }}</td>
 
             <td class="px-4 py-7 text-center border">
-              <img *ngIf="user.anh_nhan_vien_url" [src]="user.anh_nhan_vien_url" alt="Ảnh nhân viên"
+              <img *ngIf="user.anh_nguoi_dung_url" [src]="user.anh_nguoi_dung_url" alt="Ảnh nhân viên"
                 class="w-10 h-10 rounded-full object-cover mx-auto shadow" />
 
-              <span *ngIf="!user.anh_nhan_vien_url" class="text-gray-500 italic">Không có ảnh</span>
+              <span *ngIf="!user.anh_nguoi_dung_url" class="text-gray-500 italic">Không có ảnh</span>
             </td>
 
             <td class="px-4 py-7 text-center border">{{ user.gioi_tinh }}</td>
             <td class="px-4 py-7 text-center border">{{ user.ngay_sinh | date:'dd/MM/yyyy' }}</td>
             <td class="px-4 py-7 text-center border">{{ user.dia_chi }}</td>
             <td class="px-4 py-7 text-center border">{{ user.email }}</td>
-            <td class="px-4 py-7 text-center border">{{ user.loai_nhan_vien }}</td>
+            <td class="px-4 py-7 text-center border">{{ user.loai_nguoi_dung }}</td>
 
             <!-- ACTION BUTTONS -->
             <td class="px-4 py-7 text-center border">
               <div class="flex justify-center gap-2">
 
-                <button mat-icon-button matTooltip="Sửa" (click)="SuaNhanVien(user.ma_nv)">
+                <button mat-icon-button matTooltip="Sửa" (click)="SuaNhanVien(user.ma_nguoi_dung)">
                   <mat-icon>edit</mat-icon>
                 </button>
 
-                <button mat-icon-button matTooltip="Xóa" (click)="deleteUser(user.ma_nv)">
+                <button mat-icon-button matTooltip="Xóa" (click)="deleteUser(user.ma_nguoi_dung)">
                   <mat-icon>delete</mat-icon>
                 </button>
 

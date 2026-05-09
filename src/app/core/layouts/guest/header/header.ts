@@ -78,7 +78,7 @@ export class HeaderComponent implements OnInit {
       this.router.navigate(['/admin']);
     } else if (role === 'user') {
       this.router.navigate(['/user']);
-    } else {
+    } else  {
       this.router.navigate(['/login']);
     }
   }
