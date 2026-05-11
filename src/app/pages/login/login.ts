@@ -82,6 +82,7 @@ export class LoginComponent {
     this.authService.login(data).subscribe({
       next: (res: any) => {
         this.authService.redirectByRole(res.role);
+        //location.reload();
       },
       error: (err: any) => {
         console.error('❌ Lỗi đăng nhập:', err);

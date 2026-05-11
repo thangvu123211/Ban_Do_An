@@ -1,96 +1,90 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
-import { environment } from '../../../environments/environment';
-
-const KEY = 'YEU_THICH_GUEST';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment.prod';
 
 @Injectable({ providedIn: 'root' })
 export class YeuThichService {
 
-    private _yeuThich$ = new BehaviorSubject<any[]>(this.loadLocal());
-    yeuThich$ = this._yeuThich$.asObservable();
+  private STORAGE_KEY = 'yeu_thich_local';
 
-    private _tong$ = new BehaviorSubject<number>(0);
-    tongYeuThich$ = this._tong$.asObservable();
+  private _count$ = new BehaviorSubject<number>(0);
+  count$ = this._count$.asObservable();
 
-    constructor(private http: HttpClient) {
-        this.init();
+  constructor(private http: HttpClient) {}
+
+  /* ================= LOCAL ================= */
+  getLocal(): any[] {
+    return JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]');
+  }
+
+  saveLocal(list: any[]) {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
+    this._count$.next(list.length);
+  }
+
+  addLocal(mon: any) {
+    const list = this.getLocal();
+    if (!list.find(x => x.ma_mon_an === mon.ma_mon_an)) {
+      list.push(mon);
+      this.saveLocal(list);
     }
+  }
 
-    // ================= LOCAL =================
-    private loadLocal(): any[] {
-        const data = localStorage.getItem(KEY);
-        return data ? JSON.parse(data) : [];
-    }
+  removeLocal(maMonAn: number) {
+    const list = this.getLocal().filter(x => x.ma_mon_an !== maMonAn);
+    this.saveLocal(list);
+  }
 
-    private saveLocal(list: any[]) {
-        localStorage.setItem(KEY, JSON.stringify(list));
-    }
+  /* ================= DB ================= */
+  getByUser(userId: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/yeu-thich/user/${userId}`
+    );
+  }
 
-    init() {
-        const list = this.loadLocal();
-        this._yeuThich$.next(list);
-        this._tong$.next(list.length);
-    }
+  addDB(maMonAn: number) {
+    return this.http.post(`${environment.apiUrl}/yeu-thich`, {
+      ma_mon_an: maMonAn
+    }).pipe(
+      tap(() => this._count$.next(this._count$.value + 1))
+    );
+  }
 
-    isFavoriteLocal(id: number): boolean {
-        const list = this.loadLocal();
-        return list.some(i => Number(i.ma_mon_an) === Number(id));
-    }
-    getItems() {
-        return this.loadLocal();
-    }
-    toggleLocal(mon: any) {
-        let list = this.loadLocal();
-        const id = Number(mon.ma_mon_an);
+  removeDB(maMonAn: number) {
+    return this.http.delete(`${environment.apiUrl}/yeu-thich/${maMonAn}`).pipe(
+      tap(() => this._count$.next(Math.max(0, this._count$.value - 1)))
+    );
+  }
 
-        const index = list.findIndex(i => Number(i.ma_mon_an) === id);
+  loadCountFromDB(userId: number) {
+    this.getByUser(userId).subscribe(res => {
+      this._count$.next(res?.length || 0);
+    });
+  }
 
-        if (index >= 0) {
-            list.splice(index, 1);
-        } else {
-            list.push({
-                ma_mon_an: id,
-                ten_mon_an: mon.ten_mon_an,
-                gia_tien: mon.gia_tien,
-                anh_mon_an: mon.anh_mon_an
-            });
-        }
+  /* ================= SYNC LOCAL → DB ================= */
+  syncLocalToDB(userId: number) {
+  const local = this.getLocal();
 
-        this.saveLocal(list);
-        this._yeuThich$.next(list);
-        this._tong$.next(list.length);
-    }
+  if (!local || local.length === 0) {
+    this.loadCountFromDB(userId);
+    return;
+  }
 
-    removeLocal(id: number) {
-        let list = this.loadLocal();
+  // 🔥 dùng Set để tránh trùng
+  const unique = new Set(local.map(x => x.ma_mon_an));
 
-        list = list.filter(i => Number(i.ma_mon_an) !== Number(id));
+  unique.forEach(maMon => {
+    this.addDB(maMon).subscribe();
+  });
 
-        this.saveLocal(list);
-        this._yeuThich$.next(list);
-        this._tong$.next(list.length);
-    }
+  // xoá local
+  localStorage.removeItem(this.STORAGE_KEY);
 
-    // ================= BACKEND =================
-    addFavorite(userId: number, monId: number) {
-        return this.http.post(`${environment.apiUrl}/yeu-thich`, {
-            ma_nguoi_dung: userId,
-            ma_mon_an: monId
-        });
-    }
-
-    deleteFavorite(userId: number, monId: number) {
-        return this.http.delete(`${environment.apiUrl}/yeu-thich`, {
-            body: {
-                ma_nguoi_dung: Number(userId),
-                ma_mon_an: Number(monId)
-            }
-        });
-    }
-
-    getByUser(userId: number) {
-        return this.http.get(`${environment.apiUrl}/yeu-thich/user/${userId}`);
-    }
+  // 🔥 reload lại state từ DB SAU KHI SYNC
+  setTimeout(() => {
+    this.loadCountFromDB(userId);
+  }, 500);
+}
 }

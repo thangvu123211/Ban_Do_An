@@ -5,8 +5,9 @@ import { CartService } from '../../../../core/services/cart.service';
 import { GioHang } from '../../../../features/guest/gio-hang/gio-hang';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastMessageComponent } from '../../../../Shared/toasts_message/toast-message/toast-message';
-import { YeuThichService } from '../../../services/YeuThich.service';
 import { YeuThich } from '../../../../features/guest/yeu-thich/yeu-thich';
+import { YeuThichService } from '../../../services/YeuThich.service';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -21,7 +22,7 @@ import { YeuThich } from '../../../../features/guest/yeu-thich/yeu-thich';
 export class HeaderComponent implements OnInit {
 
   tongSoMon = 0;
-  tongYeuThich = 0;
+  tongYeuThich$!: Observable<number>;
 
   toast = {
     show: false,
@@ -46,11 +47,18 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.cartService.tongSoMon$.subscribe(value => {
       this.tongSoMon = value ?? 0;
+    });
+    this.tongYeuThich$ = this.yeuThichService.count$;
 
-    });
-    this.yeuThichService.tongYeuThich$.subscribe(v => {
-      this.tongYeuThich = v ?? 0;
-    });
+  const token = localStorage.getItem('token');
+  const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+  if (token && userId) {
+    this.yeuThichService.loadCountFromDB(userId);
+  } else {
+    const local = this.yeuThichService.getLocal();
+    this.yeuThichService['saveLocal']?.(local);
+  }
   }
 
   goToHome() {
@@ -80,23 +88,38 @@ export class HeaderComponent implements OnInit {
   }
 
   moYeuThich() {
-    const items = this.yeuThichService.getItems();
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-    // ❌ rỗng
-    if (!items || items.length === 0) {
-      this.showToast('Chưa có món nào trong yêu thích', 'warn');
+    // ❌ CHƯA LOGIN → LOCAL
+    if (!token) {
+      const list = this.yeuThichService.getLocal();
+
+      if (list.length === 0) {
+        this.showToast('Chưa có món yêu thích', 'warn');
+        return;
+      }
+
+      this.dialog.open(YeuThich, {
+        width: '800px',
+        data: list
+      });
       return;
     }
 
-    // ✅ có dữ liệu → mở dialog
-    this.dialog.open(YeuThich, {
-      width: '85vw',
-      maxWidth: '900px',
-      height: '80vh',
-      panelClass: 'yeu-thich-dialog',
-      data: {
-        items: items
+    // ✅ ĐÃ LOGIN → DB
+    this.yeuThichService.getByUser(userId).subscribe((res: any) => {
+      if (!res || res.length === 0) {
+        this.showToast('Chưa có món yêu thích', 'warn');
+        return;
       }
+
+      this.dialog.open(YeuThich, {
+        width: '800px',
+        data: res
+          .filter((x: any) => x.mon_an)
+          .map((x: any) => x.mon_an)
+      });
     });
   }
 

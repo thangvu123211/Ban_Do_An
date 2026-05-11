@@ -12,8 +12,9 @@ import { QuanLyBanAnService } from '../../../core/services/QuanLyBanAn.service';
 import { CartService } from '../../../core/services/cart.service';
 import { ThongTinMonAn } from '../dialogs/thong-tin-mon-an/thong-tin-mon-an';
 import { HoaDonService } from '../../../core/services/HoaDon.Service';
-import { YeuThichService } from '../../../core/services/YeuThich.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { YeuThichService } from '../../../core/services/YeuThich.service';
+import { YeuThich } from '../yeu-thich/yeu-thich';
 
 
 
@@ -30,6 +31,7 @@ export interface LoaiMonAn {
   ten_loai_mon_an: string;
   anh_loai_mon_an: string;
 }
+
 @Component({
   selector: 'app-menu',
   imports: [MATERIAL,
@@ -55,6 +57,9 @@ export class Menu implements OnInit {
   MonAn: any[] = [];
   loaimonan: any[] = [];
   tatCaMonAn: any[] = [];
+  favoriteIds = new Set<number>();
+  _loadingFav = false;
+  danhSach: any[] = [];
 
   screenWidth = window.innerWidth;
 
@@ -76,8 +81,8 @@ export class Menu implements OnInit {
     private quanLyBanAn: QuanLyBanAnService,
     private dialog: MatDialog,
     private cartService: CartService,
-    private yeuThichService: YeuThichService,
     private authService: AuthService,
+    private yeuThichService: YeuThichService,
   ) { }
 
   /** Lấy tất cả món ăn */
@@ -107,63 +112,6 @@ export class Menu implements OnInit {
 
   }
 
-  isFavorite(id: number): boolean {
-    return this.yeuThichService.isFavoriteLocal(id);
-  }
-  toggleYeuThich(mon: any) {
-    const user = this.authService.getUser();
-    const id = mon.ma_mon_an;
-
-    const isFav = this.yeuThichService.isFavoriteLocal(id);
-
-    // ================= CHƯA LOGIN =================
-    if (!user) {
-      if (isFav) {
-        this.yeuThichService.removeLocal(id);
-      } else {
-        this.yeuThichService.toggleLocal({
-          id,
-          ma_mon_an: mon.ma_mon_an,
-          ten_mon_an: mon.ten_mon_an,
-          gia_tien: mon.gia_tien,
-          anh_mon_an: mon.anh_mon_an
-        });
-      }
-
-      this.MonAn = [...this.MonAn];
-      return;
-    }
-
-    // ================= LOGIN =================
-
-    if (isFav) {
-      this.yeuThichService
-        .deleteFavorite(user.ma_nguoi_dung, id)
-        .subscribe({
-          next: () => {
-            this.yeuThichService.removeLocal(id);
-            this.MonAn = [...this.MonAn];
-          }
-        });
-
-    } else {
-      this.yeuThichService
-        .addFavorite(user.ma_nguoi_dung, id)
-        .subscribe({
-          next: () => {
-            this.yeuThichService.toggleLocal({
-              id,
-              ma_mon_an: mon.ma_mon_an,
-              ten_mon_an: mon.ten_mon_an,
-              gia_tien: mon.gia_tien,
-              anh_mon_an: mon.anh_mon_an
-            });
-
-            this.MonAn = [...this.MonAn];
-          }
-        });
-    }
-  }
 
   /** Lấy tất cả loại món ăn */
   getAllLoaiMonAn() {
@@ -292,6 +240,30 @@ export class Menu implements OnInit {
     return this.gioHang.reduce((sum, i) => sum + i.soLuong, 0);
   }
 
+  loadFavorites() {
+  const token = localStorage.getItem('token');
+  const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+  if (!token) {
+    const local = this.yeuThichService.getLocal();
+    this.danhSach = local;
+    return;
+  }
+
+  this.yeuThichService.getByUser(userId).subscribe((res: any[]) => {
+
+    // 🔥 CHUẨN HOÁ DATA
+    this.danhSach = res.map(x => ({
+      ma_mon_an: x.mon_an?.ma_mon_an,
+      ten_mon_an: x.mon_an?.ten_mon_an,
+      gia_tien: x.mon_an?.gia_tien,
+      anh_mon_an: x.mon_an?.anh_mon_an
+    }));
+
+    this.favoriteIds = new Set(res.map(x => x.MaMonAn));
+  });
+}
+
   //   moThongTinMon(mon: any) {
   moThongTinMon(mon: any) {
 
@@ -311,10 +283,47 @@ export class Menu implements OnInit {
 
   }
 
+
+  isFavorite(maMonAn: number): boolean {
+    return this.favoriteIds.has(maMonAn);
+  }
+  toggleYeuThich(mon: any) {
+    const token = localStorage.getItem('token');
+    const maMonAn = mon.ma_mon_an;
+
+    // ❌ CHƯA LOGIN → LOCAL
+    if (!token) {
+      if (this.favoriteIds.has(maMonAn)) {
+        this.yeuThichService.removeLocal(maMonAn);
+        this.favoriteIds.delete(maMonAn);
+      } else {
+        this.yeuThichService.addLocal(mon);
+        this.favoriteIds.add(maMonAn);
+      }
+      return;
+    }
+
+    // 🔥 CHỐNG CLICK NHANH GÂY DOUBLE CALL
+    if (this._loadingFav) return;
+    this._loadingFav = true;
+
+    if (this.favoriteIds.has(maMonAn)) {
+      this.yeuThichService.removeDB(maMonAn).subscribe(() => {
+        this.favoriteIds.delete(maMonAn);
+        this._loadingFav = false;
+      });
+    } else {
+      this.yeuThichService.addDB(maMonAn).subscribe(() => {
+        this.favoriteIds.add(maMonAn);
+        this._loadingFav = false;
+      });
+    }
+  }
+
   ngOnInit() {
     this.getAllLoaiMonAn();
     this.getAllMonAn();
-
+    this.loadFavorites();
     // 🔥 ĐỒNG BỘ GIỎ HÀNG
     this.cartService.gioHang$.subscribe(gio => {
       this.gioHang = gio;
@@ -324,6 +333,7 @@ export class Menu implements OnInit {
       this.maBan = Number(params['table']);
       if (this.maBan) this.getBanInfo();
     });
+
   }
   @ViewChild('scrollContainer', { static: false })
   scrollContainer!: ElementRef;

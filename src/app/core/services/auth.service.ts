@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.prod';
+import { YeuThichService } from './YeuThich.service';
 
 
 
@@ -12,29 +13,38 @@ import { environment } from '../../../environments/environment.prod';
 export class AuthService {
 
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router,private yeuThichService:YeuThichService) { }
 
   // 🔹 Đăng nhập
+  // login(data: any): Observable<any> {
+  //   return this.http.post(`${environment.apiUrl}/login`, data).pipe(
+  //     tap((res: any) => {
+  //       if (res.token) {
+  //         localStorage.setItem('token', res.token);
+  //         localStorage.setItem('role', res.role || '');
+  //         localStorage.setItem('user', JSON.stringify(res.data));
+  //       }
+  //     })
+  //   );
+  // }
+
   login(data: any): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/login`, data).pipe(
-      tap((res: any) => {
-        if (res.token) {
-          localStorage.setItem('token', res.token);
+  return this.http.post(`${environment.apiUrl}/login`, data).pipe(
+    tap((res: any) => {
+      if (res.token) {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('role', res.role || '');
+        localStorage.setItem('user', JSON.stringify(res.data));
 
-          localStorage.setItem('role', res.role || '');
+        const userId = res.data?.ma_nguoi_dung || res.data?.id;
+        localStorage.setItem('ma_nguoi_dung', userId);
 
-          // 🔥 lưu full user
-          localStorage.setItem('user', JSON.stringify(res.data));
-
-          // 🔥 FIX QUAN TRỌNG: lưu user id riêng
-          localStorage.setItem(
-            'ma_nguoi_dung',
-            res.data?.ma_nguoi_dung || res.data?.id
-          );
-        }
-      })
-    );
-  }
+        // 🔥 MERGE LOCAL → DB
+        this.yeuThichService.syncLocalToDB(userId);
+      }
+    })
+  );
+}
 
 
 

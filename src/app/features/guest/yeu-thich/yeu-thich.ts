@@ -1,19 +1,38 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MATERIAL } from '../../../Shared/material';
 
 @Component({
   selector: 'app-yeu-thich',
-  imports:[MATERIAL],
+  imports: [MATERIAL],
   templateUrl: './yeu-thich.html',
-  styleUrl: './yeu-thich.scss',
-  standalone: true
 })
-export class YeuThich {
+export class YeuThich implements OnInit {
 
-  constructor(private dialogRef: MatDialogRef<YeuThich>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+  danhSach: any[] = [];
+
+
+  constructor(
+  @Inject(MAT_DIALOG_DATA) public data: any[],
+  private dialogRef: MatDialogRef<YeuThich>
+) {
+  const uniqueMap = new Map();
+
+  (data || []).forEach(item => {
+    uniqueMap.set(item.ma_mon_an, item);
+  });
+
+  this.danhSach = Array.from(uniqueMap.values());
+}
+
   close() {
     this.dialogRef.close();
+  }
+
+  get tongSoYeuThich(): number {
+    return this.danhSach.length;
+  }
+  ngOnInit(): void {
+    console.log('danhSach:', this.danhSach);
   }
 }
