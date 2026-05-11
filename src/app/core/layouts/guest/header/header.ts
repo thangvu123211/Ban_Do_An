@@ -5,6 +5,8 @@ import { CartService } from '../../../../core/services/cart.service';
 import { GioHang } from '../../../../features/guest/gio-hang/gio-hang';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastMessageComponent } from '../../../../Shared/toasts_message/toast-message/toast-message';
+import { YeuThichService } from '../../../services/YeuThich.service';
+import { YeuThich } from '../../../../features/guest/yeu-thich/yeu-thich';
 
 
 @Component({
@@ -19,6 +21,7 @@ import { ToastMessageComponent } from '../../../../Shared/toasts_message/toast-m
 export class HeaderComponent implements OnInit {
 
   tongSoMon = 0;
+  tongYeuThich = 0;
 
   toast = {
     show: false,
@@ -30,6 +33,7 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private cartService: CartService,
     private dialog: MatDialog,
+    private yeuThichService: YeuThichService
   ) { }
 
   showToast(message: string, type: 'success' | 'warn' | 'error') {
@@ -41,7 +45,11 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.cartService.tongSoMon$.subscribe(value => {
-      this.tongSoMon = value;
+      this.tongSoMon = value ?? 0;
+
+    });
+    this.yeuThichService.tongYeuThich$.subscribe(v => {
+      this.tongYeuThich = v ?? 0;
     });
   }
 
@@ -71,6 +79,27 @@ export class HeaderComponent implements OnInit {
     });
   }
 
+  moYeuThich() {
+    const items = this.yeuThichService.getItems();
+
+    // ❌ rỗng
+    if (!items || items.length === 0) {
+      this.showToast('Chưa có món nào trong yêu thích', 'warn');
+      return;
+    }
+
+    // ✅ có dữ liệu → mở dialog
+    this.dialog.open(YeuThich, {
+      width: '85vw',
+      maxWidth: '900px',
+      height: '80vh',
+      panelClass: 'yeu-thich-dialog',
+      data: {
+        items: items
+      }
+    });
+  }
+
   goToUserPage() {
     const role = localStorage.getItem('role');
 
@@ -78,7 +107,7 @@ export class HeaderComponent implements OnInit {
       this.router.navigate(['/admin']);
     } else if (role === 'user') {
       this.router.navigate(['/user']);
-    } else  {
+    } else {
       this.router.navigate(['/login']);
     }
   }

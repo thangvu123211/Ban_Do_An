@@ -15,13 +15,13 @@ export class SidebarUser implements OnInit {
   email = '';
 
   public menuItems = [
-    { link: '/user/xem-hoa-don', icon: 'dashboard', text: 'Trang cá nhân' },
+    { link: '/user', icon: 'dashboard', text: 'Trang quản trị' },
+    { link: '/user/trang-ca-nhan', icon: 'account_circle', text: 'Trang cá nhân' },
+    { link: '/user/don-hang', icon: 'local_shipping', text: 'Đơn hàng' },
+    { link: '/user/binh-luan', icon: 'comment', text: 'Quản lý bình luận' },
+    { link: '/user/danh-gia', icon: 'stars_2', text: 'Quản lý đánh giá' },
   ];
-// { path: '', component: DashboardUser, title: 'Trang cá nhân' },
-//       { path: 'xem-hoa-don', component: XemHoaDon, title: 'Xem hóa đơn' },
-//       { path: 'tao-hoa-don', component: TaoHoaDon, title: 'Tạo hóa đơn' },
-//       { path: 'thanh-toan', component: ThanhToan, title: 'Thanh toán' },
-//     ],
+
   
 
   collapsed = false;

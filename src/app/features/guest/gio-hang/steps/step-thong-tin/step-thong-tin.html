@@ -1,0 +1,195 @@
+<div class="space-y-6">
+
+  <!-- CHƯA ĐĂNG NHẬP -->
+  <div *ngIf="!isLoggedIn" class="flex flex-col items-center justify-center py-12 text-center">
+
+    <mat-icon class="text-6xl text-gray-400 mb-4">lock</mat-icon>
+
+    <h3 class="text-lg font-bold mb-2">
+      Vui lòng đăng nhập
+    </h3>
+
+    <p class="text-gray-600 mb-6">
+      Bạn cần đăng nhập để nhập thông tin giao hàng
+    </p>
+
+    <button matButton="filled" class="bg-green-500 text-white px-6" (click)="goToLogin.emit()">
+      Đăng nhập ngay
+    </button>
+
+  </div>
+
+  <!-- ĐÃ ĐĂNG NHẬP -->
+  <div *ngIf="isLoggedIn" class="space-y-6">
+
+    <h3 class="text-lg font-bold text-gray-900">
+      Thông tin giao hàng
+    </h3>
+
+    <!-- TÊN + SĐT -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Tên người nhận</mat-label>
+        <input matInput [(ngModel)]="tenNguoiNhan" (ngModelChange)="tenNguoiNhanChange.emit($event)" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Số điện thoại</mat-label>
+        <input matInput type="tel" [(ngModel)]="soDienThoai" (ngModelChange)="soDienThoaiChange.emit($event)" />
+      </mat-form-field>
+
+    </div>
+
+    <!-- ĐỊA CHỈ HIỆN TẠI -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Địa chỉ giao hàng</mat-label>
+      <textarea matInput rows="3" [(ngModel)]="diaChi" (ngModelChange)="diaChiChange.emit($event)">
+      </textarea>
+    </mat-form-field>
+
+    <!-- DANH SÁCH ĐỊA CHỈ -->
+    <h3 class="text-lg font-bold mt-4">
+      Danh sách địa chỉ đã có
+    </h3>
+
+    <div class="space-y-3 mt-3">
+
+      <div *ngFor="let dc of danhSachDiaChi" class="p-4 border rounded-xl transition hover:shadow-md cursor-pointer"
+        [ngClass]="{
+             'border-green-500 bg-green-50': selectedDiaChi?.id === dc.id,
+             'border-gray-200 bg-white': selectedDiaChi?.id !== dc.id
+           }">
+
+        <!-- TOP -->
+        <div class="flex justify-between items-start gap-4">
+
+          <!-- INFO -->
+          <div class="space-y-1" (click)="chonDiaChi.emit(dc)">
+            <p class="font-semibold text-gray-900">
+              {{ dc.ho_ten }}
+            </p>
+
+            <p class="text-sm text-gray-600">
+              📞 {{ dc.sdt }}
+            </p>
+
+            <p class="text-sm text-gray-700">
+              📍 {{ dc.dia_chi }}
+            </p>
+          </div>
+
+          <!-- ACTION -->
+          <div class="flex flex-col items-end gap-2">
+
+            <span *ngIf="dc.mac_dinh" class="text-xs px-2 py-1 rounded-full bg-green-600 text-white">
+              Mặc định
+            </span>
+
+            <button mat-stroked-button color="primary" class="text-xs" (click)="datMacDinh.emit(dc.id)">
+              Đặt mặc định
+            </button>
+
+            <button mat-stroked-button color="accent" class="text-xs" (click)="suaDiaChi.emit(dc)">
+              Sửa
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- FORM SỬA INLINE -->
+        <div *ngIf="editingDiaChiId === dc.id" class="mt-4 p-4 border rounded-xl bg-gray-50 space-y-3">
+
+          <h4 class="font-semibold text-gray-800">
+            Chỉnh sửa địa chỉ
+          </h4>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Họ tên</mat-label>
+            <input matInput [(ngModel)]="editDiaChiForm.ho_ten">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Số điện thoại</mat-label>
+            <input matInput [(ngModel)]="editDiaChiForm.sdt">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Địa chỉ</mat-label>
+            <textarea matInput rows="3" [(ngModel)]="editDiaChiForm.dia_chi">
+            </textarea>
+          </mat-form-field>
+
+          <mat-checkbox [(ngModel)]="editDiaChiForm.mac_dinh">
+            Đặt làm mặc định
+          </mat-checkbox>
+
+          <div class="flex justify-end gap-2">
+
+            <button mat-stroked-button (click)="editingDiaChiId = null">
+              Hủy
+            </button>
+
+            <button mat-flat-button color="primary" (click)="capNhatDiaChi.emit()">
+              Lưu
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- THÊM ĐỊA CHỈ -->
+    <button matButton="filled" (click)="showAddAddressChange.emit(!showAddAddress)" class="ml-2">
+      + Thêm địa chỉ mới
+    </button>
+
+    <!-- FORM THÊM -->
+    <div *ngIf="showAddAddress" class="mt-4 space-y-4 border p-4 rounded-xl">
+
+      <h3 class="font-bold">Thêm địa chỉ mới</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Họ tên</mat-label>
+          <input matInput [(ngModel)]="newDiaChi.ho_ten">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Số điện thoại</mat-label>
+          <input matInput [(ngModel)]="newDiaChi.sdt">
+        </mat-form-field>
+
+      </div>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Địa chỉ</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="newDiaChi.dia_chi"></textarea>
+      </mat-form-field>
+
+      <mat-checkbox [(ngModel)]="newDiaChi.mac_dinh">
+        Đặt làm mặc định
+      </mat-checkbox>
+
+      <div class="flex gap-3">
+
+        <button matButton="filled" (click)="themDiaChi.emit()">
+          Lưu địa chỉ
+        </button>
+
+        <button mat-raised-button (click)="toggleAdd.emit()">
+          Hủy
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

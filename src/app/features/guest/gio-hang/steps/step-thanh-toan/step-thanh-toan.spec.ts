@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { XemHoaDon } from './xem-hoa-don';
+import { StepThanhToan } from './step-thanh-toan';
 
-describe('XemHoaDon', () => {
-  let component: XemHoaDon;
-  let fixture: ComponentFixture<XemHoaDon>;
+describe('StepThanhToan', () => {
+  let component: StepThanhToan;
+  let fixture: ComponentFixture<StepThanhToan>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [XemHoaDon]
+      imports: [StepThanhToan]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(XemHoaDon);
+    fixture = TestBed.createComponent(StepThanhToan);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

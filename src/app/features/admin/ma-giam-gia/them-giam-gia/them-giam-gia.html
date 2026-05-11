@@ -1,0 +1,79 @@
+<div class="p-6 rounded-2xl shadow-xl bg-white">
+
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold">Thêm mã giảm giá</h2>
+        <button mat-icon-button (click)="close()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <mat-form-field appearance="outline">
+            <mat-label>Mã giảm giá</mat-label>
+            <input matInput [(ngModel)]="giamGia.code">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Tên chương trình</mat-label>
+            <input matInput [(ngModel)]="giamGia.ten_chuong_trinh">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Loại giảm giá</mat-label>
+            <mat-select [(ngModel)]="giamGia.loai_giam_gia">
+                <mat-option value="percent">Phần trăm (%)</mat-option>
+                <mat-option value="fixed">Tiền mặt (đ)</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+  <mat-label>Giá trị giảm</mat-label>
+
+  <input
+    matInput
+    [value]="giaTriGiamDisplay"
+    (input)="oonGiaTriGiamInput($event.target.value)"
+    placeholder="VD: 50.000đ hoặc 10%"
+  />
+</mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Đơn tối thiểu</mat-label>
+            <input matInput [value]="donToiThieuDisplay" (input)="onDonToiThieuInput($event.target.value)"
+                placeholder="VD: 100.000đ" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Giảm tối đa</mat-label>
+            <input matInput [value]="giamToiDaDisplay" (input)="onGiamToiDaInput($event.target.value)"
+                placeholder="VD: 50.000đ" />
+        </mat-form-field>
+
+
+        <!-- Ngày bắt đầu -->
+        <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Ngày bắt đầu</mat-label>
+            <input matInput [matDatepicker]="pickerStart" [(ngModel)]="giamGia.ngay_bat_dau" name="ngaybatdau" />
+            <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+            <mat-datepicker #pickerStart></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Ngày kết thúc -->
+        <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Ngày kết thúc</mat-label>
+            <input matInput [matDatepicker]="pickerEnd" [(ngModel)]="giamGia.ngay_ket_thuc" name="ngayketthuc" />
+            <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+            <mat-datepicker #pickerEnd></mat-datepicker>
+        </mat-form-field>
+    </div>
+
+    <div class="flex justify-end gap-4 mt-6">
+        <button mat-raised-button color="primary" (click)="themGiamGia()">
+            <mat-icon>check</mat-icon>
+            Thêm
+        </button>
+        <button mat-button (click)="close()">Hủy</button>
+    </div>
+
+</div>

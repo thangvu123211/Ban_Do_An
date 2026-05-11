@@ -1,0 +1,126 @@
+<div class="space-y-8">
+
+  <!-- HEADER -->
+  <div class="text-center">
+
+    <mat-icon class="text-green-500" style="font-size: 64px;">
+      check_circle
+    </mat-icon>
+
+    <h3 class="text-xl font-bold mt-3">
+      Xác nhận đơn hàng
+    </h3>
+
+    <p class="text-gray-500 text-sm mt-1">
+      Vui lòng kiểm tra lại thông tin trước khi thanh toán
+    </p>
+
+  </div>
+
+  <!-- THÔNG TIN -->
+  <div class="rounded-2xl border bg-white p-5 space-y-2">
+
+    <h4 class="font-semibold flex gap-2">
+      📍 Thông tin giao hàng
+    </h4>
+
+    <div class="text-sm space-y-1">
+      <p><b>Tên:</b> {{ tenNguoiNhan }}</p>
+      <p><b>SĐT:</b> {{ soDienThoai }}</p>
+      <p><b>Địa chỉ:</b> {{ diaChi }}</p>
+
+      <p *ngIf="ghiChu" class="italic text-gray-600">
+        <b>Ghi chú:</b> {{ ghiChu }}
+      </p>
+    </div>
+
+  </div>
+
+  <!-- MÓN -->
+  <div class="rounded-2xl border bg-white p-5 space-y-3">
+
+    <h4 class="font-semibold">
+      🍔 Món đã đặt
+    </h4>
+
+    <div *ngFor="let item of gioHang" class="flex justify-between border-b pb-2">
+
+      <div>
+        <p class="font-medium">{{ item.ten_mon_an }}</p>
+        <p class="text-sm text-gray-500">
+          {{ item.soLuong }} × {{ item.gia_tien | number }} đ
+        </p>
+      </div>
+
+      <span class="font-bold">
+        {{ item.soLuong * item.gia_tien | number }} đ
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- ================= TỔNG TIỀN + GIẢM GIÁ ================= -->
+  <div class="rounded-2xl border bg-green-50 p-5 space-y-2">
+
+    <!-- TẠM TÍNH -->
+    <div class="flex justify-between text-gray-700">
+      <span>Tạm tính</span>
+      <span>{{ tongTien | number }} đ</span>
+    </div>
+
+    <!-- GIẢM GIÁ -->
+    <div *ngIf="maGiamGiaChon" class="flex justify-between text-red-500">
+
+      <span>Giảm giá ({{ maGiamGiaChon.code }})</span>
+
+      <span>
+        - {{ (tongTien - tongSauGiam) | number }} đ
+      </span>
+
+    </div>
+
+    <hr>
+
+    <!-- TỔNG CUỐI -->
+    <div class="flex justify-between">
+
+      <span class="font-bold">Tổng thanh toán</span>
+
+      <span class="text-green-600 text-xl font-bold">
+        {{ (tongSauGiam || tongTien) | number }} đ
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- QR -->
+  <div class="rounded-2xl border bg-white p-6 flex flex-col items-center">
+
+    <h4 class="font-semibold mb-4">
+      Quét QR để thanh toán
+    </h4>
+
+    <div class="w-48 h-48 bg-gray-100 border rounded-2xl flex items-center justify-center">
+      QR CODE
+    </div>
+
+    <p class="text-xs text-gray-500 mt-4 text-center">
+      Dùng app ngân hàng để quét mã
+    </p>
+
+  </div>
+  <div class="flex justify-end mt-6">
+
+    <button mat-flat-button color="primary" class="px-8 py-2" (click)="thanhToan.emit()">
+
+      <mat-icon class="mr-2">payments</mat-icon>
+      Thanh toán
+
+    </button>
+
+  </div>
+  
+
+</div>

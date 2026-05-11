@@ -3,8 +3,9 @@
     <div class="z-10">
         <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
         <p class="text-lg max-w-lg">
-            Đây là trang quản lý Mã giảm giá. Bạn có thể xem nội dung mã giảm giá được gửi từ website.
+            Đây là trang quản lý mã giảm giá
         </p>
+
     </div>
 </div>
 
@@ -15,35 +16,114 @@
 
         <!-- HEADER -->
         <div class="flex justify-between items-center mb-6 border-b pb-4">
+
             <h3 class="text-2xl font-semibold">
-                Danh Sách Liên Hệ
+                Danh Sách Bàn Ăn
             </h3>
+
+            <button mat-flat-button (click)="ThemGiamGia()">
+                Thêm mới
+            </button>
         </div>
 
         <!-- TABLE -->
         <div class="overflow-x-auto">
             <table class="min-w-full border rounded-lg overflow-hidden text-sm">
 
-                <thead>
+                <thead class="text-sm">
                     <tr>
                         <th class="px-4 py-4 text-center border">STT</th>
-                        <th class="px-4 py-4 text-left border">Họ Tên</th>
-                        <th class="px-4 py-4 text-left border">Email</th>
-                        <th class="px-4 py-4 text-left border">SĐT</th>
-                        <th class="px-4 py-4 text-left border">Tiêu đề</th>
-                        <th class="px-4 py-4 text-left border">Nội dung</th>
-                        <th class="px-4 py-4 text-center border">Ngày gửi</th>
+                        <th class="px-4 py-4 text-center border">Code</th>
+                        <th class="px-4 py-4 text-center border">Tên chương trình</th>
+                        <th class="px-4 py-4 text-center border">Loại</th>
+                        <th class="px-4 py-4 text-center border">Giá trị</th>
+                        <th class="px-4 py-4 text-center border">Đơn tối thiểu</th>
+                        <th class="px-4 py-4 text-center border">Giảm tối đa</th>
+                        <th class="px-4 py-4 text-center border">Hiệu lực</th>
+                        <th class="px-4 py-4 text-center border">Trạng thái</th>
                         <th class="px-4 py-4 text-center border">Hành động</th>
                     </tr>
                 </thead>
 
-                
+                <tbody>
+
+                    <tr *ngFor="let gg of danhSachGiamGia; let i = index">
+
+                        <td class="px-4 py-4 text-center border">{{ i + 1 }}</td>
+
+                        <!-- Ảnh bàn
+            <td class="px-4 py-4 text-center border">
+              <img *ngIf="items.anh_ban?.length > 0" [src]="items.anh_ban[0].url" alt="Ảnh bàn"
+                class="w-12 h-12 rounded-full object-cover mx-auto shadow" />
+
+              <span *ngIf="!items.anh_ban || items.anh_ban.length === 0" class="text-gray-500 italic">
+                Không có ảnh
+              </span>
+            </td> -->
+
+                        <td class="px-4 py-4 text-center border">{{ gg.code }}</td>
+                        <td class="px-4 py-4 text-center border">{{ gg.ten_chuong_trinh}}</td>
+                        <td class="px-4 py-4 text-center border">{{ gg.loai_giam_gia}}</td>
+                        <td class="px-4 py-4 text-center border">
+                            <span *ngIf="gg.loai_giam_gia === 'percent'">
+                                {{ gg.gia_tri_giam }} %
+                            </span>
+                            <span *ngIf="gg.loai_giam_gia !== 'percent'">
+                                {{ gg.gia_tri_giam | number }} đ
+                            </span>
+                        </td>
+                        <td class="px-4 py-4 text-center border">
+                            {{ gg.don_toi_thieu ? money.formatVND(gg.don_toi_thieu) + 'đ' : '-' }}
+                        </td>
+                        <td class="px-4 py-4 text-center border">
+                            {{ gg.giam_toi_da ? money.formatVND(gg.giam_toi_da) + 'đ' : '-' }}
+                        </td>
+                        <td class="px-4 py-4 text-center border">
+                            {{ gg.ngay_bat_dau | date:'dd/MM/yyyy' }}
+                            <br>
+                            →
+                            <br>
+                            {{ gg.ngay_ket_thuc | date:'dd/MM/yyyy' }}
+                        </td>
+                        <td class="px-4 py-4 text-center border">
+                            <span *ngIf="gg.is_active"
+                                class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
+                                Hoạt động
+                            </span>
+                            <span *ngIf="!gg.is_active" class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-600">
+                                Tắt
+                            </span>
+                        </td>
+
+
+                        <!-- ACTION BUTTONS -->
+                        <td class="px-4 py-4 text-center border">
+                            <div class="flex justify-center gap-2">
+
+                                <!-- Sửa -->
+                                <button mat-icon-button matTooltip="Sửa" (click)="SuaGiamGia(gg)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+
+                                <!-- Xóa -->
+                                <button mat-icon-button matTooltip="Xóa" (click)="XoaMaGiamGia(gg.id)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                </tbody>
 
             </table>
         </div>
 
     </mat-card>
+
 </div>
 
 
+<!-- TOAST -->
 <app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

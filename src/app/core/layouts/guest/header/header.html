@@ -102,9 +102,9 @@
   <!-- Icons bên phải -->
   <div class="flex items-center gap-4 mr-6 text-gray-700 mt-2">
 
-    <button mat-icon-button matTooltip="Tìm kiếm" class="hover:text-green-600">
+    <!-- <button mat-icon-button matTooltip="Tìm kiếm" class="hover:text-green-600">
       <mat-icon>search</mat-icon>
-    </button>
+    </button> -->
 
     <button mat-icon-button matTooltip="Trang cá nhân" class="hover:text-green-600" (click)="goToUserPage()">
       <mat-icon>person</mat-icon>
@@ -112,11 +112,16 @@
 
     <button mat-icon-button matTooltip="Giỏ hàng" [matBadge]="tongSoMon" matBadgeColor="warn"
       [matBadgeHidden]="tongSoMon === 0" class="hover:text-green-600" (click)="moGioHang()">
+
       <mat-icon>shopping_cart</mat-icon>
+
     </button>
 
-    <button mat-icon-button matTooltip="Thông báo" class="hover:text-green-600">
-      <mat-icon>notifications_active</mat-icon>
+    <button mat-icon-button [matBadge]="tongYeuThich" matBadgeColor="warn" [matBadgeHidden]="tongYeuThich === 0"
+      class="hover:text-green-600" (click)="moYeuThich()">
+
+      <mat-icon>favorite</mat-icon>
+
     </button>
 
   </div>

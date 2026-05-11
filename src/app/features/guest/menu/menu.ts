@@ -8,10 +8,12 @@ import { QuanLyLoaiMonAn } from '../../../core/services/QuanLyLoaiMonAnService';
 import { QuanLyMonAn } from '../../../core/services/QuanLyMonAn.service';
 import { PhongToAnh } from '../../../Shared/phong_to_anh/phong-to-anh';
 import { MATERIAL } from '../../../Shared/material';
-import { GoiMonService } from '../../../core/services/GoiMon.Service';
 import { QuanLyBanAnService } from '../../../core/services/QuanLyBanAn.service';
 import { CartService } from '../../../core/services/cart.service';
 import { ThongTinMonAn } from '../dialogs/thong-tin-mon-an/thong-tin-mon-an';
+import { HoaDonService } from '../../../core/services/HoaDon.Service';
+import { YeuThichService } from '../../../core/services/YeuThich.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 
 
@@ -67,13 +69,15 @@ export class Menu implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private goiMonService: GoiMonService,
+    private hoadonservice: HoaDonService,
     private route: ActivatedRoute,
     private quanlimonan: QuanLyMonAn,
     private quanliloaimonan: QuanLyLoaiMonAn,
     private quanLyBanAn: QuanLyBanAnService,
     private dialog: MatDialog,
     private cartService: CartService,
+    private yeuThichService: YeuThichService,
+    private authService: AuthService,
   ) { }
 
   /** Lấy tất cả món ăn */
@@ -101,6 +105,64 @@ export class Menu implements OnInit {
 
     });
 
+  }
+
+  isFavorite(id: number): boolean {
+    return this.yeuThichService.isFavoriteLocal(id);
+  }
+  toggleYeuThich(mon: any) {
+    const user = this.authService.getUser();
+    const id = mon.ma_mon_an;
+
+    const isFav = this.yeuThichService.isFavoriteLocal(id);
+
+    // ================= CHƯA LOGIN =================
+    if (!user) {
+      if (isFav) {
+        this.yeuThichService.removeLocal(id);
+      } else {
+        this.yeuThichService.toggleLocal({
+          id,
+          ma_mon_an: mon.ma_mon_an,
+          ten_mon_an: mon.ten_mon_an,
+          gia_tien: mon.gia_tien,
+          anh_mon_an: mon.anh_mon_an
+        });
+      }
+
+      this.MonAn = [...this.MonAn];
+      return;
+    }
+
+    // ================= LOGIN =================
+
+    if (isFav) {
+      this.yeuThichService
+        .deleteFavorite(user.ma_nguoi_dung, id)
+        .subscribe({
+          next: () => {
+            this.yeuThichService.removeLocal(id);
+            this.MonAn = [...this.MonAn];
+          }
+        });
+
+    } else {
+      this.yeuThichService
+        .addFavorite(user.ma_nguoi_dung, id)
+        .subscribe({
+          next: () => {
+            this.yeuThichService.toggleLocal({
+              id,
+              ma_mon_an: mon.ma_mon_an,
+              ten_mon_an: mon.ten_mon_an,
+              gia_tien: mon.gia_tien,
+              anh_mon_an: mon.anh_mon_an
+            });
+
+            this.MonAn = [...this.MonAn];
+          }
+        });
+    }
   }
 
   /** Lấy tất cả loại món ăn */
@@ -223,7 +285,7 @@ export class Menu implements OnInit {
       gia_tien: mon.gia_tien,
       anh_mon_an: mon.anh_mon_an
     });
-     this.showToast(`Thêm thành công món ${mon.ten_mon_an} vào giỏ hàng`, 'success');
+    this.showToast(`Thêm thành công món ${mon.ten_mon_an} vào giỏ hàng`, 'success');
   }
 
   get tongSoMon(): number {

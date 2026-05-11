@@ -65,4 +65,12 @@ export class DiaChiService {
       this.getHeaders()
     );
   }
+
+  SetDiaChiMacDinh(id: number): Observable<any> {
+  return this.http.patch(
+    `${environment.apiUrl}/dia-chi/${id}/mac-dinh`,
+    {},
+    this.getHeaders()
+  );
+}
 }
