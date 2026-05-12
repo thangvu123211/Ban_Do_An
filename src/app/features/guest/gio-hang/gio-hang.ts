@@ -127,6 +127,12 @@ export class GioHang implements OnInit {
   // ================= INIT =================
   ngOnInit() {
 
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    // =========================
+    // 👤 USER INFO
+    // =========================
     if (this.isLoggedIn) {
       const user = this.authService.getUser();
       this.tenNguoiNhan = user?.ho_ten || '';
@@ -134,21 +140,75 @@ export class GioHang implements OnInit {
       this.diaChi = user?.dia_chi || '';
     }
 
-    this.cartService.gioHang$.subscribe(gio => {
-      this.gioHang = gio;
+    // =========================
+    // 🛒 CART STREAM (LOCAL + DB)
+    // =========================
+    this.cartService.count$.subscribe(value => {
+      // badge header nếu cần
+    });
+
+    this.cartService.getLocal(); // đảm bảo init local
+
+    // =========================
+    // 🔄 LOAD CART DATA
+    // =========================
+    if (this.isLoggedIn) {
+
+      // 🔥 LOGIN → merge local → DB
+      this.cartService.syncLocalToDB(userId);
+
+      // load DB cart
+      this.loadCartFromDB(userId);
+
+    } else {
+
+      // ❌ GUEST → LOCAL
+      const local = this.cartService.getLocal();
+      this.gioHang = local;
       this.tinhTong();
 
-      if (gio.length === 0 && !this.isCheckoutDone) {
+      if (local.length === 0 && !this.isCheckoutDone) {
+        this.dialogRef.close();
+      }
+    }
+
+    // =========================
+    // 📍 ADDRESS
+    // =========================
+    if (this.isLoggedIn) {
+      this.newDiaChi.ma_nguoi_dung = userId;
+      this.loadDiaChi();
+    }
+
+    // =========================
+    // 🎁 VOUCHER
+    // =========================
+    this.loadGiamGia();
+  }
+
+  loadCartFromDB(userId: number) {
+    this.cartService.getByUser(userId).subscribe(res => {
+
+      this.gioHang = (res || []).map(x => {
+
+        const mon = x.mon_an?.[0]; // 👈 QUAN TRỌNG
+
+        return {
+          ma_mon_an: x.ma_mon_an,
+          soLuong: x.so_luong,
+
+          ten_mon_an: mon?.ten_mon_an || '',
+          gia_tien: mon?.gia_tien || 0,
+          anh_mon_an: mon?.anh_mon_an?.[0]?.url || ''
+        };
+      });
+
+      this.tinhTong();
+
+      if (this.gioHang.length === 0 && !this.isCheckoutDone) {
         this.dialogRef.close();
       }
     });
-
-    if (this.isLoggedIn) {
-      const maNguoiDung = Number(localStorage.getItem('ma_nguoi_dung'));
-      this.newDiaChi.ma_nguoi_dung = maNguoiDung;
-      this.loadDiaChi();
-    }
-    this.loadGiamGia();
   }
   isVoucherValid(v: any): boolean {
     if (!v?.don_toi_thieu) return true;
@@ -158,15 +218,137 @@ export class GioHang implements OnInit {
 
   // ================= CART =================
   tangSoLuong(item: any) {
-    this.cartService.tangSoLuong(item);
+
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    // =========================
+    // ❌ GUEST → LOCAL
+    // =========================
+    if (!token) {
+
+      const list = this.cartService.getLocal();
+
+      const found = list.find(x => x.ma_mon_an === item.ma_mon_an);
+
+      if (found) found.soLuong += 1;
+
+      this.gioHang = [...list]; // 🔥 update UI ngay
+      this.cartService.saveLocal(list);
+
+      this.tinhTong();
+      return;
+    }
+
+    // =========================
+    // 🔥 LOGIN → DB
+    // =========================
+    const newQty = item.soLuong + 1;
+
+    item.soLuong = newQty; // 🔥 UI update ngay
+    this.tinhTong();
+
+    this.cartService.updateDB(item.ma_mon_an, newQty)
+      .subscribe(() => {
+        this.cartService.loadCountFromDB(userId);
+      });
   }
 
   giamSoLuong(item: any) {
-    this.cartService.giamSoLuong(item);
+
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    // =========================
+    // ❌ GUEST → LOCAL
+    // =========================
+    if (!token) {
+
+      const list = this.cartService.getLocal();
+
+      const found = list.find(x => x.ma_mon_an === item.ma_mon_an);
+
+      if (!found) return;
+
+      found.soLuong -= 1;
+
+      const newList = found.soLuong <= 0
+        ? list.filter(x => x.ma_mon_an !== item.ma_mon_an)
+        : list;
+
+      this.gioHang = [...newList]; // 🔥 update UI ngay
+      this.cartService.saveLocal(newList);
+
+      this.tinhTong();
+      return;
+    }
+
+    // =========================
+    // 🔥 LOGIN → DB
+    // =========================
+    const newQty = item.soLuong - 1;
+
+    if (newQty <= 0) {
+
+      this.gioHang = this.gioHang.filter(x => x.ma_mon_an !== item.ma_mon_an);
+
+      this.cartService.deleteDB(item.ma_mon_an).subscribe(() => {
+        this.cartService.loadCountFromDB(userId);
+      });
+
+    } else {
+
+      item.soLuong = newQty; // 🔥 UI update ngay
+      this.tinhTong();
+
+      this.cartService.updateDB(item.ma_mon_an, newQty)
+        .subscribe(() => {
+          this.cartService.loadCountFromDB(userId);
+        });
+    }
   }
 
   removeFromGioHang(item: any) {
-    this.cartService.removeItem(item);
+
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    // =========================
+    // ❌ CHƯA LOGIN → LOCAL
+    // =========================
+    if (!token) {
+
+      const list = this.cartService.getLocal()
+        .filter(x => x.ma_mon_an !== item.ma_mon_an);
+
+      this.cartService.saveLocal(list);
+
+      this.gioHang = list;
+      this.tinhTong();
+
+      return;
+    }
+
+    // =========================
+    // 🔥 LOGIN → DB
+    // =========================
+    this.cartService.deleteDB(item.ma_mon_an).subscribe({
+
+      next: () => {
+
+        // 🔥 update UI ngay lập tức
+        this.gioHang = this.gioHang.filter(x => x.ma_mon_an !== item.ma_mon_an);
+
+        this.tinhTong();
+
+        // 🔥 sync badge header
+        this.cartService.loadCountFromDB(userId);
+      },
+
+      error: (err) => {
+        console.error('Xóa thất bại:', err);
+      }
+    });
   }
 
   tinhTong() {
@@ -181,7 +363,6 @@ export class GioHang implements OnInit {
   get tongSoMon(): number {
     return this.gioHang.reduce((s, i) => s + i.soLuong, 0);
   }
-
   // ================= STEP =================
   nextStep() {
 
@@ -201,7 +382,6 @@ export class GioHang implements OnInit {
       this.currentStep--;
     }
   }
-
   // ================= ADDRESS =================
   loadDiaChi() {
     const maNguoiDung = Number(localStorage.getItem('ma_nguoi_dung'));
@@ -286,6 +466,8 @@ export class GioHang implements OnInit {
   }
   thanhToan() {
 
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
     const monAns = this.gioHang.map(i => ({
       ma_mon_an: i.ma_mon_an,
       so_luong: i.soLuong,
@@ -307,12 +489,26 @@ export class GioHang implements OnInit {
 
         this.showToast('Thanh toán thành công!', 'success');
 
-        this.isCheckoutDone = true;   // ✅ THÊM DÒNG NÀY
+        this.isCheckoutDone = true;
 
-        this.cartService.clear();
+        // =========================
+        // 🧹 CLEAR GIỎ HÀNG DB (1 LẦN DUY NHẤT)
+        // =========================
+        this.cartService.clearDB(userId).subscribe({
+          next: () => {
+            this.gioHang = [];
+            this.tinhTong();
+            this.cartService.loadCountFromDB(userId);
+          },
+          error: (err) => {
+            console.error('Clear cart lỗi:', err);
+          }
+        });
 
-        this.currentStep = 4;         // 👉 HIỆN STEP 4
-
+        // =========================
+        // UI
+        // =========================
+        this.currentStep = 4;
       },
 
       error: () => {
@@ -339,8 +535,6 @@ export class GioHang implements OnInit {
 
     return Math.max(total, 0);
   }
-
-
 
   // ================= UI =================
   showToast(message: string, type: any) {

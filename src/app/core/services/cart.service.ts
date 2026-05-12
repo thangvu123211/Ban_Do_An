@@ -1,73 +1,121 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, tap } from 'rxjs';
+import { environment } from '../../../environments/environment.prod';
+import { forkJoin, } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class CartService {
 
-  private _gioHang$ = new BehaviorSubject<any[]>([]);
-  gioHang$ = this._gioHang$.asObservable();
+  private STORAGE_KEY = 'gio_hang_local';
 
-  private _tongSoMon$ = new BehaviorSubject<number>(0);
-  tongSoMon$ = this._tongSoMon$.asObservable();
+  private _count$ = new BehaviorSubject<number>(0);
+  count$ = this._count$.asObservable();
 
-  // snapshot
-  private get gioHang() {
-    return this._gioHang$.value;
+  private emitLocalCount(list: any[]) {
+    this._count$.next(this.total(list));
+  }
+  constructor(private http: HttpClient) { }
+
+  /* ================= LOCAL ================= */
+
+  getLocal(): any[] {
+    return JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]');
   }
 
-  // ===== ADD =====
-  addItem(item: any) {
-    const clone = [...this.gioHang];
-    const found = clone.find(i => i.id === item.id);
+  saveLocal(list: any[]) {
+  localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
+  this.emitLocalCount(list); // 🔥 realtime
+}
 
-    if (found) {
-      found.soLuong++;
-    } else {
-      clone.push({ ...item, soLuong: 1 });
+  private total(list: any[]) {
+    return list.reduce((s, i) => s + i.soLuong, 0);
+  }
+
+  addLocal(mon: any) {
+    const list = this.getLocal();
+    const found = list.find(x => x.ma_mon_an === mon.ma_mon_an);
+
+    if (found) found.soLuong += 1;
+    else list.push({ ...mon, soLuong: 1 });
+
+    this.saveLocal(list);
+  }
+
+  removeLocal(maMonAn: number) {
+    const list = this.getLocal().filter(x => x.ma_mon_an !== maMonAn);
+    this.saveLocal(list);
+  }
+
+  clearLocal() {
+    localStorage.removeItem(this.STORAGE_KEY);
+    this._count$.next(0);
+  }
+
+  /* ================= DB ================= */
+
+  getByUser(userId: number) {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/gio-hang/user/${userId}`
+    );
+  }
+
+  addDB(maMonAn: number, soLuong: number) {
+    return this.http.post(`${environment.apiUrl}/gio-hang`, {
+      ma_mon_an: maMonAn,
+      so_luong: soLuong
+    });
+  }
+
+  updateDB(maMonAn: number, soLuong: number) {
+    return this.http.put(`${environment.apiUrl}/gio-hang/${maMonAn}`, {
+      so_luong: soLuong
+    });
+  }
+
+  deleteDB(maMonAn: number) {
+    return this.http.delete(`${environment.apiUrl}/gio-hang/${maMonAn}`);
+  }
+
+  clearDB(userId: number) {
+  return this.http.delete(
+    `${environment.apiUrl}/gio-hang/clear`
+  );
+}
+
+  loadCountFromDB(userId: number) {
+    this.getByUser(userId).subscribe(res => {
+      const total = res.reduce((s, i) => s + i.so_luong, 0);
+      this._count$.next(total);
+    });
+  }
+
+  /* ================= SYNC ================= */
+
+  syncLocalToDB(userId: number) {
+    const local = this.getLocal();
+    if (!local.length) {
+      this.loadCountFromDB(userId);
+      return;
     }
 
-    this.update(clone);
-  }
+    const map = new Map<number, number>();
 
-  getItems() {
-    return this._gioHang$.value;
-  }
+    local.forEach(i => {
+      map.set(i.ma_mon_an, (map.get(i.ma_mon_an) || 0) + i.soLuong);
+    });
 
-  // ===== TĂNG =====
-  tangSoLuong(item: any) {
-    const clone = this.gioHang.map(i =>
-      i.id === item.id ? { ...i, soLuong: i.soLuong + 1 } : i
+    const requests = Array.from(map.entries()).map(([maMon, soLuong]) =>
+      this.addDB(maMon, soLuong)
     );
-    this.update(clone);
-  }
 
-  // ===== GIẢM =====
-  giamSoLuong(item: any) {
-    const clone = this.gioHang
-      .map(i =>
-        i.id === item.id ? { ...i, soLuong: i.soLuong - 1 } : i
-      )
-      .filter(i => i.soLuong > 0);
-
-    this.update(clone);
-  }
-
-  // ===== REMOVE =====
-  removeItem(item: any) {
-    const clone = this.gioHang.filter(i => i.id !== item.id);
-    this.update(clone);
-  }
-
-  // ===== CLEAR =====
-  clear() {
-    this._gioHang$.next([]);
-    this._tongSoMon$.next(0);
-  }
-
-  // ===== UPDATE =====
-  private update(gioHang: any[]) {
-    this._gioHang$.next(gioHang);
-    const tong = gioHang.reduce((s, i) => s + i.soLuong, 0);
-    this._tongSoMon$.next(tong);
+    return forkJoin(requests).pipe(
+      tap({
+        next: () => {
+          this.clearLocal();
+          this.loadCountFromDB(userId);
+        },
+        error: (err) => console.error(err)
+      })
+    );
   }
 }

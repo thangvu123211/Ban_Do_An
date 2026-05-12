@@ -4,6 +4,7 @@ import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.prod';
 import { YeuThichService } from './YeuThich.service';
+import { CartService } from './cart.service';
 
 
 
@@ -13,7 +14,12 @@ import { YeuThichService } from './YeuThich.service';
 export class AuthService {
 
 
-  constructor(private http: HttpClient, private router: Router,private yeuThichService:YeuThichService) { }
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private yeuThichService:YeuThichService,
+    private cartService:CartService,
+  ) { }
 
   // 🔹 Đăng nhập
   // login(data: any): Observable<any> {
@@ -41,6 +47,9 @@ export class AuthService {
 
         // 🔥 MERGE LOCAL → DB
         this.yeuThichService.syncLocalToDB(userId);
+        this.cartService.syncLocalToDB(userId)?.subscribe(() => {
+          console.log('SYNC CART DONE');
+        });
       }
     })
   );

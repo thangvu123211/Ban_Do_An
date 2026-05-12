@@ -5,7 +5,7 @@ import { CartService } from '../../../../core/services/cart.service';
 import { ToastMessageComponent } from '../../../../Shared/toasts_message/toast-message/toast-message';
 import { BinhLuanService } from '../../../../core/services/BinhLuan.service';
 import { FormsModule } from '@angular/forms';
-
+import { WebsocketService } from '../../../../core/services/websocket.service';
 @Component({
   selector: 'app-thong-tin-mon-an',
   standalone: true,
@@ -37,11 +37,37 @@ export class ThongTinMonAn implements OnInit {
     public dialogRef: MatDialogRef<ThongTinMonAn>,
     private cartService: CartService,
     private binhLuanService: BinhLuanService,
+    private wsService: WebsocketService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
   ngOnInit(): void {
     this.loadBinhLuan();
+    this.loadBinhLuan();
+
+    // join room realtime
+    this.wsService.connect(this.data.ma_mon_an);
+
+    // listen event
+    this.wsService.messages$.subscribe((msg: any) => {
+
+      if (msg.type === 'new_binh_luan') {
+        this.binhLuans.unshift(msg.payload);
+      }
+
+      if (msg.type === 'update_binh_luan') {
+        const index = this.binhLuans.findIndex(x => x.id === msg.payload.id);
+        if (index !== -1) this.binhLuans[index] = msg.payload;
+      }
+
+      if (msg.type === 'delete_binh_luan') {
+        this.binhLuans = this.binhLuans.filter(x => x.id != msg.payload.id);
+      }
+
+    });
+  }
+  ngOnDestroy(): void {
+    this.wsService.disconnect();
   }
 
   // ================= TAB =================
@@ -66,17 +92,44 @@ export class ThongTinMonAn implements OnInit {
 
   // ================= GIỎ HÀNG =================
   addToGioHang(mon: any): void {
-    this.cartService.addItem({
-      id: mon.ma_mon_an,
+
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    const item = {
       ma_mon_an: mon.ma_mon_an,
       ten_mon_an: mon.ten_mon_an,
       gia_tien: mon.gia_tien,
       anh_mon_an: mon.anh_mon_an
-    });
+    };
 
-    this.dialogRef.close({
-      success: true,
-      message: `Thêm thành công món ${mon.ten_mon_an} vào giỏ hàng`
+    // =========================
+    // ❌ GUEST → LOCAL
+    // =========================
+    if (!token) {
+
+      this.cartService.addLocal(item);
+
+      this.dialogRef.close({
+        success: true,
+        message: `Đã thêm ${mon.ten_mon_an} vào giỏ hàng`
+      });
+
+      return;
+    }
+
+    // =========================
+    // 🔥 LOGIN → DB
+    // =========================
+    this.cartService.addDB(mon.ma_mon_an, 1).subscribe(() => {
+
+      this.cartService.loadCountFromDB(userId);
+
+      this.dialogRef.close({
+        success: true,
+        message: `Đã thêm ${mon.ten_mon_an} vào giỏ hàng`
+      });
+
     });
   }
 

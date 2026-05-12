@@ -30,7 +30,7 @@ export class HoaDonService {
   // ================= THÊM HÓA ĐƠN (BẠN CẦN CÁI NÀY) =================
   taoHoaDon(data: DatHoaDonRequest): Observable<any> {
     return this.http.post(
-      `${environment.apiUrl}/hoa-don/dat-do-an`,
+      `${environment.apiUrl}/hoa-don`,
       data
     );
   }

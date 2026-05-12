@@ -45,19 +45,47 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.cartService.tongSoMon$.subscribe(value => {
-      this.tongSoMon = value ?? 0;
-    });
-    this.tongYeuThich$ = this.yeuThichService.count$;
 
     const token = localStorage.getItem('token');
     const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
+    if (!token) {
+      this.cartService.saveLocal(this.cartService.getLocal());
+
+      this.cartService.count$.subscribe(v => {
+        this.tongSoMon = v;
+      });
+
+      return;
+    }
+
+    // 🔥 LOGIN
+    this.cartService.loadCountFromDB(userId);
+
+    this.cartService.count$.subscribe(v => {
+      this.tongSoMon = v;
+    });
+
+
+    // =========================
+    // 🔥 LOGIN → DB
+    // =========================
+    this.cartService.loadCountFromDB(userId);
+
+    this.cartService.count$.subscribe(value => {
+      this.tongSoMon = value ?? 0;
+    });
+
+    // =========================
+    // YEUTHICH (giữ nguyên)
+    // =========================
+    this.tongYeuThich$ = this.yeuThichService.count$;
+
     if (token && userId) {
       this.yeuThichService.loadCountFromDB(userId);
     } else {
-      const local = this.yeuThichService.getLocal();
-      this.yeuThichService['saveLocal']?.(local);
+      const localFav = this.yeuThichService.getLocal();
+      this.yeuThichService['saveLocal']?.(localFav);
     }
   }
 
@@ -70,20 +98,52 @@ export class HeaderComponent implements OnInit {
   }
 
   moGioHang() {
-    const items = this.cartService.getItems();
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-    // ❌ Giỏ trống → báo toast, KHÔNG mở dialog
-    if (!items || items.length === 0) {
-      this.showToast('Không có gì trong giỏ hàng', 'warn');
+    // ❌ CHƯA LOGIN → LOCAL
+    if (!token) {
+      const list = this.cartService.getLocal();
+
+      if (!list || list.length === 0) {
+        this.showToast('Không có gì trong giỏ hàng', 'warn');
+        return;
+      }
+
+      this.dialog.open(GioHang, {
+        width: '85vw',
+        maxWidth: '900px',
+        height: '80vh',
+        panelClass: 'gio-hang-dialog',
+        data: list
+      });
+
       return;
     }
 
-    // ✅ Có món → mở giỏ
-    this.dialog.open(GioHang, {
-      width: '85vw',
-      maxWidth: '900px',
-      height: '80vh',
-      panelClass: 'gio-hang-dialog'
+    // ✅ LOGIN → DB
+    this.cartService.getByUser(userId).subscribe((res: any[]) => {
+
+      if (!res || res.length === 0) {
+        this.showToast('Không có gì trong giỏ hàng', 'warn');
+        return;
+      }
+
+      const list = res.map(x => ({
+        ma_mon_an: x.mon_an?.ma_mon_an,
+        ten_mon_an: x.mon_an?.ten_mon_an,
+        gia_tien: x.mon_an?.gia_tien,
+        soLuong: x.so_luong,
+        anh_mon_an: x.mon_an?.anh_mon_an
+      }));
+
+      this.dialog.open(GioHang, {
+        width: '85vw',
+        maxWidth: '900px',
+        height: '80vh',
+        panelClass: 'gio-hang-dialog',
+        data: list
+      });
     });
   }
 

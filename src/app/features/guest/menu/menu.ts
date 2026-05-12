@@ -112,7 +112,6 @@ export class Menu implements OnInit {
 
   }
 
-
   /** Lấy tất cả loại món ăn */
   getAllLoaiMonAn() {
     this.quanliloaimonan.LayTatCaLoaiMonAn().subscribe({
@@ -139,27 +138,14 @@ export class Menu implements OnInit {
 
   }
 
-  get tieuDe(): string {
-
-    if (this.selectedLoai === null) return 'Tất cả món';
-
-    const loai = this.loaimonan.find(
-      l => l.ma_loai_mon_an === this.selectedLoai
-    );
-
-    return loai ? loai.ten_loai_mon_an : 'Món ăn';
-
-  }
   hienThiTatCaMon() {
     this.selectedLoai = null;
     this.MonAn = [...this.tatCaMonAn];
   }
-
   /** Tính tổng tiền (getter) */
   get tongTien(): number {
     return this.gioHang.reduce((sum, i) => sum + i.gia_tien * i.soLuong, 0);
   }
-
   capNhatSoLuong(item: any) {
     if (item.soLuong < 1 || isNaN(item.soLuong)) {
       item.soLuong = 1;
@@ -168,111 +154,58 @@ export class Menu implements OnInit {
   huyGioHang() {
     this.gioHang = [];
   }
-  getBanInfo() {
-    this.quanLyBanAn.LayBanAnTheoID(this.maBan).subscribe({
-      next: (res: any) => {
-        this.tenBan = res.data.ten_ban;
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    });
+
+addToGioHang(mon: any) {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    this.cartService.addLocal(mon);
+    return;
   }
-  // goiMon() {
 
-  //   if (!this.maBan) {
-  //     this.showNotification("Chưa chọn bàn!", "warn");
-  //     return;
-  //   }
+  const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-  //   if (this.gioHang.length === 0) {
-  //     this.showNotification("Giỏ hàng trống!", "warn");
-  //     return;
-  //   }
-
-  //   const monAns = this.gioHang.map(item => {
-  //     return {
-  //       ma_mon_an: item.ma_mon_an,
-  //       so_luong: item.soLuong
-  //     };
-  //   });
-
-  //   const body = {
-  //     ma_ban: this.maBan,
-  //     mon_ans: monAns
-  //   };
-
-  //   console.log("DATA GUI API:", JSON.stringify(body));
-
-  //   this.goiMonService.goiMon(body).subscribe({
-  //     next: (res: any) => {
-  //       console.log("API RESPONSE:", res);
-
-  //       if (res && res.message) {
-  //         this.showNotification(res.message, "success");
-  //       } else {
-  //         this.showNotification("Gọi món thành công!", "success");
-  //       }
-
-  //       this.huyGioHang();
-  //     },
-  //     error: (err) => {
-  //       console.error("API ERROR:", err);
-  //       this.showNotification("Có lỗi khi gọi món!", "error");
-  //     }
-
-  //   });
-
-  // }
-
-  addToGioHang(mon: any): void {
-    this.cartService.addItem({
-      id: mon.ma_mon_an,
-      ma_mon_an: mon.ma_mon_an,
-      ten_mon_an: mon.ten_mon_an,
-      gia_tien: mon.gia_tien,
-      anh_mon_an: mon.anh_mon_an
-    });
-    this.showToast(`Thêm thành công món ${mon.ten_mon_an} vào giỏ hàng`, 'success');
-  }
+  this.cartService.addDB(mon.ma_mon_an, 1).subscribe(() => {
+    this.cartService.loadCountFromDB(userId);
+  });
+}
 
   get tongSoMon(): number {
     return this.gioHang.reduce((sum, i) => sum + i.soLuong, 0);
   }
 
   loadFavorites() {
-  const token = localStorage.getItem('token');
-  const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-  // ❌ CHƯA LOGIN → LOCAL
-  if (!token) {
-    const local = this.yeuThichService.getLocal();
-    this.danhSach = local;
+    // ❌ CHƯA LOGIN → LOCAL
+    if (!token) {
+      const local = this.yeuThichService.getLocal();
+      this.danhSach = local;
 
-    // 🔥 QUAN TRỌNG: set lại favoriteIds
-    this.favoriteIds = new Set(local.map(x => x.ma_mon_an));
+      // 🔥 QUAN TRỌNG: set lại favoriteIds
+      this.favoriteIds = new Set(local.map(x => x.ma_mon_an));
 
-    return;
+      return;
+    }
+
+    // 🔥 LOGIN → DB
+    this.yeuThichService.getByUser(userId).subscribe((res: any[]) => {
+
+      this.danhSach = res.map(x => ({
+        ma_mon_an: x.mon_an?.ma_mon_an,
+        ten_mon_an: x.mon_an?.ten_mon_an,
+        gia_tien: x.mon_an?.gia_tien,
+        anh_mon_an: x.mon_an?.anh_mon_an
+      }));
+
+      // 🔥 fix luôn case undefined + đồng bộ kiểu number
+      this.favoriteIds = new Set(
+        res.map(x => Number(x.mon_an?.ma_mon_an))
+      );
+    });
   }
 
-  // 🔥 LOGIN → DB
-  this.yeuThichService.getByUser(userId).subscribe((res: any[]) => {
-
-    this.danhSach = res.map(x => ({
-      ma_mon_an: x.mon_an?.ma_mon_an,
-      ten_mon_an: x.mon_an?.ten_mon_an,
-      gia_tien: x.mon_an?.gia_tien,
-      anh_mon_an: x.mon_an?.anh_mon_an
-    }));
-
-    // 🔥 fix luôn case undefined + đồng bộ kiểu number
-    this.favoriteIds = new Set(
-      res.map(x => Number(x.mon_an?.ma_mon_an))
-    );
-  });
-}
-
-  //   moThongTinMon(mon: any) {
   moThongTinMon(mon: any) {
 
     const dialogRef = this.dialog.open(ThongTinMonAn, {
@@ -291,79 +224,68 @@ export class Menu implements OnInit {
 
   }
 
-
   isFavorite(maMonAn: number): boolean {
     return this.favoriteIds.has(maMonAn);
   }
   toggleYeuThich(mon: any) {
-  const token = localStorage.getItem('token');
-  const maMonAn = mon.ma_mon_an;
+    const token = localStorage.getItem('token');
+    const maMonAn = mon.ma_mon_an;
 
-  const tenMon = mon.ten_mon_an || 'món ăn';
+    const tenMon = mon.ten_mon_an || 'món ăn';
 
-  // ❌ CHƯA LOGIN → LOCAL
-  if (!token) {
-    if (this.favoriteIds.has(maMonAn)) {
-      this.yeuThichService.removeLocal(maMonAn);
-      this.favoriteIds.delete(maMonAn);
-
-      this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
-    } else {
-      this.yeuThichService.addLocal(mon);
-      this.favoriteIds.add(maMonAn);
-
-      this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
-    }
-    return;
-  }
-
-  // 🔥 CHỐNG CLICK NHANH
-  if (this._loadingFav) return;
-  this._loadingFav = true;
-
-  if (this.favoriteIds.has(maMonAn)) {
-    this.yeuThichService.removeDB(maMonAn).subscribe({
-      next: () => {
+    // ❌ CHƯA LOGIN → LOCAL
+    if (!token) {
+      if (this.favoriteIds.has(maMonAn)) {
+        this.yeuThichService.removeLocal(maMonAn);
         this.favoriteIds.delete(maMonAn);
-        this._loadingFav = false;
 
         this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
-      },
-      error: () => {
-        this._loadingFav = false;
-        this.showToast(`Không thể bỏ yêu thích ${tenMon}`, 'error');
-      }
-    });
-  } else {
-    this.yeuThichService.addDB(maMonAn).subscribe({
-      next: () => {
+      } else {
+        this.yeuThichService.addLocal(mon);
         this.favoriteIds.add(maMonAn);
-        this._loadingFav = false;
 
         this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
-      },
-      error: () => {
-        this._loadingFav = false;
-        this.showToast(`Không thể thêm ${tenMon}`, 'error');
       }
-    });
+      return;
+    }
+
+    // 🔥 CHỐNG CLICK NHANH
+    if (this._loadingFav) return;
+    this._loadingFav = true;
+
+    if (this.favoriteIds.has(maMonAn)) {
+      this.yeuThichService.removeDB(maMonAn).subscribe({
+        next: () => {
+          this.favoriteIds.delete(maMonAn);
+          this._loadingFav = false;
+
+          this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
+        },
+        error: () => {
+          this._loadingFav = false;
+          this.showToast(`Không thể bỏ yêu thích ${tenMon}`, 'error');
+        }
+      });
+    } else {
+      this.yeuThichService.addDB(maMonAn).subscribe({
+        next: () => {
+          this.favoriteIds.add(maMonAn);
+          this._loadingFav = false;
+
+          this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
+        },
+        error: () => {
+          this._loadingFav = false;
+          this.showToast(`Không thể thêm ${tenMon}`, 'error');
+        }
+      });
+    }
   }
-}
 
   ngOnInit() {
     this.getAllLoaiMonAn();
     this.getAllMonAn();
     this.loadFavorites();
-    // 🔥 ĐỒNG BỘ GIỎ HÀNG
-    this.cartService.gioHang$.subscribe(gio => {
-      this.gioHang = gio;
-    });
-
-    this.route.queryParams.subscribe(params => {
-      this.maBan = Number(params['table']);
-      if (this.maBan) this.getBanInfo();
-    });
-
   }
   @ViewChild('scrollContainer', { static: false })
   scrollContainer!: ElementRef;
