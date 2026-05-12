@@ -50,15 +50,15 @@ export class HeaderComponent implements OnInit {
     });
     this.tongYeuThich$ = this.yeuThichService.count$;
 
-  const token = localStorage.getItem('token');
-  const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-  if (token && userId) {
-    this.yeuThichService.loadCountFromDB(userId);
-  } else {
-    const local = this.yeuThichService.getLocal();
-    this.yeuThichService['saveLocal']?.(local);
-  }
+    if (token && userId) {
+      this.yeuThichService.loadCountFromDB(userId);
+    } else {
+      const local = this.yeuThichService.getLocal();
+      this.yeuThichService['saveLocal']?.(local);
+    }
   }
 
   goToHome() {
@@ -101,7 +101,9 @@ export class HeaderComponent implements OnInit {
       }
 
       this.dialog.open(YeuThich, {
-        width: '800px',
+        width: '85vw',
+        maxWidth: '900px',
+        height: '80vh',
         data: list
       });
       return;
@@ -115,7 +117,9 @@ export class HeaderComponent implements OnInit {
       }
 
       this.dialog.open(YeuThich, {
-        width: '800px',
+        width: '85vw',
+        maxWidth: '900px',
+        height: '80vh',
         data: res
           .filter((x: any) => x.mon_an)
           .map((x: any) => x.mon_an)

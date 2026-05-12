@@ -65,13 +65,10 @@
         </div>
 
         <!-- ===== COMMENT ===== -->
-        <div *ngIf="activeTab === 'comment'" class="space-y-4">
+        <div *ngIf="activeTab === 'comment'" class="flex flex-col h-full">
 
-            <!-- INPUT -->
-
-
-            <!-- LIST -->
-            <div class="space-y-3">
+            <!-- LIST (scroll) -->
+            <div class="flex-1 overflow-y-auto space-y-3 pr-2">
 
                 <div *ngFor="let c of binhLuans" class="p-4 rounded-2xl bg-gray-50 border hover:shadow-sm transition">
 
@@ -90,9 +87,11 @@
                 </div>
 
             </div>
-            <div class="flex gap-2">
 
-                <input [(ngModel)]="noiDungBinhLuan" placeholder="Viết bình luận..."
+            <!-- INPUT (sticky bottom) -->
+            <div class="flex gap-2 p-3 border-t bg-white sticky bottom-0">
+
+                <input [(ngModel)]="noiDungBinhLuan" placeholder="Viết bình luận..." (keyup.enter)="guiBinhLuan()"
                     class="flex-1 border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none" />
 
                 <button mat-flat-button color="primary" (click)="guiBinhLuan()">

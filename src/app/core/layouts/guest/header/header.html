@@ -117,8 +117,9 @@
 
     </button>
 
-    <button mat-icon-button [matBadge]="tongYeuThich$ | async" matBadgeColor="warn" 
-      class="hover:text-green-600" matTooltip="Trang yêu thích" (click)="moYeuThich()">
+    <button mat-icon-button [matBadge]="(tongYeuThich$ | async) || null"
+      [matBadgeHidden]="(tongYeuThich$ | async) === 0" matBadgeColor="warn" class="hover:text-green-600"
+      matTooltip="Trang yêu thích" (click)="moYeuThich()">
 
       <mat-icon>favorite</mat-icon>
 

@@ -94,7 +94,7 @@ export class AuthService {
     if (role === 'admin') {
       this.router.navigate(['/admin']);
     } else if (role === 'user') {
-      this.router.navigate(['/user']);
+      this.router.navigate(['']);
     } else {
       this.router.navigate(['/login']);
     }

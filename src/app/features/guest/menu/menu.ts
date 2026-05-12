@@ -244,15 +244,20 @@ export class Menu implements OnInit {
   const token = localStorage.getItem('token');
   const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
+  // ❌ CHƯA LOGIN → LOCAL
   if (!token) {
     const local = this.yeuThichService.getLocal();
     this.danhSach = local;
+
+    // 🔥 QUAN TRỌNG: set lại favoriteIds
+    this.favoriteIds = new Set(local.map(x => x.ma_mon_an));
+
     return;
   }
 
+  // 🔥 LOGIN → DB
   this.yeuThichService.getByUser(userId).subscribe((res: any[]) => {
 
-    // 🔥 CHUẨN HOÁ DATA
     this.danhSach = res.map(x => ({
       ma_mon_an: x.mon_an?.ma_mon_an,
       ten_mon_an: x.mon_an?.ten_mon_an,
@@ -260,7 +265,10 @@ export class Menu implements OnInit {
       anh_mon_an: x.mon_an?.anh_mon_an
     }));
 
-    this.favoriteIds = new Set(res.map(x => x.MaMonAn));
+    // 🔥 fix luôn case undefined + đồng bộ kiểu number
+    this.favoriteIds = new Set(
+      res.map(x => Number(x.mon_an?.ma_mon_an))
+    );
   });
 }
 
@@ -288,37 +296,59 @@ export class Menu implements OnInit {
     return this.favoriteIds.has(maMonAn);
   }
   toggleYeuThich(mon: any) {
-    const token = localStorage.getItem('token');
-    const maMonAn = mon.ma_mon_an;
+  const token = localStorage.getItem('token');
+  const maMonAn = mon.ma_mon_an;
 
-    // ❌ CHƯA LOGIN → LOCAL
-    if (!token) {
-      if (this.favoriteIds.has(maMonAn)) {
-        this.yeuThichService.removeLocal(maMonAn);
-        this.favoriteIds.delete(maMonAn);
-      } else {
-        this.yeuThichService.addLocal(mon);
-        this.favoriteIds.add(maMonAn);
-      }
-      return;
-    }
+  const tenMon = mon.ten_mon_an || 'món ăn';
 
-    // 🔥 CHỐNG CLICK NHANH GÂY DOUBLE CALL
-    if (this._loadingFav) return;
-    this._loadingFav = true;
-
+  // ❌ CHƯA LOGIN → LOCAL
+  if (!token) {
     if (this.favoriteIds.has(maMonAn)) {
-      this.yeuThichService.removeDB(maMonAn).subscribe(() => {
+      this.yeuThichService.removeLocal(maMonAn);
+      this.favoriteIds.delete(maMonAn);
+
+      this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
+    } else {
+      this.yeuThichService.addLocal(mon);
+      this.favoriteIds.add(maMonAn);
+
+      this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
+    }
+    return;
+  }
+
+  // 🔥 CHỐNG CLICK NHANH
+  if (this._loadingFav) return;
+  this._loadingFav = true;
+
+  if (this.favoriteIds.has(maMonAn)) {
+    this.yeuThichService.removeDB(maMonAn).subscribe({
+      next: () => {
         this.favoriteIds.delete(maMonAn);
         this._loadingFav = false;
-      });
-    } else {
-      this.yeuThichService.addDB(maMonAn).subscribe(() => {
+
+        this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
+      },
+      error: () => {
+        this._loadingFav = false;
+        this.showToast(`Không thể bỏ yêu thích ${tenMon}`, 'error');
+      }
+    });
+  } else {
+    this.yeuThichService.addDB(maMonAn).subscribe({
+      next: () => {
         this.favoriteIds.add(maMonAn);
         this._loadingFav = false;
-      });
-    }
+
+        this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
+      },
+      error: () => {
+        this._loadingFav = false;
+        this.showToast(`Không thể thêm ${tenMon}`, 'error');
+      }
+    });
   }
+}
 
   ngOnInit() {
     this.getAllLoaiMonAn();
