@@ -10,7 +10,7 @@ export const userRoutes: Routes = [
     component: UserLayout,
     children: [
       { path: '', component: DashboardUser, title: 'Trang cá nhân' },
-      { path: 'user/don-hang', component: DonHang, title: 'Đơn hàng' },
+      { path: 'don-hang', component: DonHang, title: 'Đơn hàng' },
     ],
   },
 ];

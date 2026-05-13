@@ -1,1 +1,120 @@
-<p>don-hang works!</p>
+<!-- <div class="hoa-don-container">
+  <h2>Danh sách hóa đơn</h2>
+
+  <div *ngIf="loading">Đang tải dữ liệu...</div>
+
+  <table *ngIf="!loading" class="table">
+    <thead>
+      <tr>
+        <th>Mã HD</th>
+        <th>Khách hàng</th>
+        <th>SĐT</th>
+        <th>Địa chỉ</th>
+        <th>Ngày</th>
+        <th>Tổng tiền</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let hd of hoaDons">
+        <td>{{ hd.ma_hd }}</td>
+        <td>{{ hd.ho_ten }}</td>
+        <td>{{ hd.sdt }}</td>
+        <td>{{ hd.dia_chi }}</td>
+        <td>{{ hd.ngay | date:'dd/MM/yyyy HH:mm' }}</td> -->
+<!-- <td>{{ hd.tong_tien | number }} đ</td>
+        <td>
+          <span class="badge">{{ hd.trang_thai }}</span>
+        </td>
+        <td>
+          <button
+            *ngIf="hd.trang_thai !== 'da_giao' && hd.trang_thai !== 'da_huy'"
+            (click)="huyHoaDon(hd.ma_hd)">
+            Hủy
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>  -->
+
+<!-- HEADER -->
+<div class="relative h-96 flex items-center justify-start px-10">
+    <div class=" z-10">
+        <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
+        <p class="text-lg max-w-lg">
+            Đây là trang quản lý đơn hàng. Bạn có thể xem trạng thái giao hàng ở đây.
+        </p>
+    </div>
+</div>
+
+
+<div class="container mx-auto px-6 mt-10">
+
+    <mat-card class="w-full shadow-xl rounded-2xl p-6">
+
+        <!-- HEADER -->
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+
+            <h3 class="text-2xl font-semibold">
+                Danh Sách Nhân Viên
+            </h3>
+
+            <button mat-flat-button>
+                Thêm Mới
+            </button>
+        </div>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full border rounded-lg overflow-hidden text-sm">
+
+                <thead class="text-sm">
+                    <tr>
+                        <th class="px-4 py-3 text-center border">Mã đơn hàng</th>
+                        <th class="px-4 py-3 text-center border">Tên khách hàng</th>
+                        <th class="px-4 py-3 text-center border">SĐT</th>
+                        <th class="px-4 py-3 text-center border">Địa chỉ</th>
+                        <th class="px-4 py-3 text-center border">Ngày</th>
+                        <th class="px-4 py-3 text-center border">Tổng tiền</th>
+                        <th class="px-4 py-3 text-center border">trạng thái</th>
+                        <th class="px-4 py-3 text-center border">Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let hd of hoaDons">
+
+                        <td class="px-4 py-7 text-center border">{{ hd.ma_hd }}</td>
+                        <td class="px-4 py-7 text-center border">{{ hd.ho_ten }}</td>
+                        <td class="px-4 py-7 text-center border">{{ hd.sdt }}</td>
+                        <td class="px-4 py-7 text-center border">{{ hd.dia_chi }}</td>
+                        <td class="px-4 py-7 text-center border">{{ hd.ngay | date:'dd/MM/yyyy' }}</td>
+                        <td class="px-4 py-7 text-center border">{{ hd.tong_tien }}</td>
+                        <td class="px-4 py-7 text-center border">{{ hd.trang_thai }}</td>
+                        <td class="px-4 py-7 text-center border">
+                            <div class="flex justify-center gap-2">
+
+                                <button mat-icon-button matTooltip="Thông tin đơn hàng" (click)="ThongTinDonHang(hd)">
+                                    <mat-icon>delivery_truck_speed</mat-icon>
+                                </button>
+
+                                <button mat-icon-button matTooltip="Xóa">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </mat-card>
+
+</div>

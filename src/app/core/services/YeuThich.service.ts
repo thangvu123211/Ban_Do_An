@@ -11,7 +11,7 @@ export class YeuThichService {
   private _count$ = new BehaviorSubject<number>(0);
   count$ = this._count$.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /* ================= LOCAL ================= */
   getLocal(): any[] {
@@ -22,18 +22,34 @@ export class YeuThichService {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
     this._count$.next(list.length);
   }
+  initLocalState() {
+    const local = this.getLocal();
+    this._count$.next(local.length);
+  }
+  initState() {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    const local = this.getLocal();
+    this._count$.next(local.length);
+  }
+}
 
   addLocal(mon: any) {
     const list = this.getLocal();
+
     if (!list.find(x => x.ma_mon_an === mon.ma_mon_an)) {
       list.push(mon);
       this.saveLocal(list);
+      this._count$.next(list.length); // 🔥 FIX QUAN TRỌNG
     }
   }
 
   removeLocal(maMonAn: number) {
     const list = this.getLocal().filter(x => x.ma_mon_an !== maMonAn);
+
     this.saveLocal(list);
+    this._count$.next(list.length); // 🔥 FIX QUAN TRỌNG
   }
 
   /* ================= DB ================= */
@@ -65,26 +81,26 @@ export class YeuThichService {
 
   /* ================= SYNC LOCAL → DB ================= */
   syncLocalToDB(userId: number) {
-  const local = this.getLocal();
+    const local = this.getLocal();
 
-  if (!local || local.length === 0) {
-    this.loadCountFromDB(userId);
-    return;
+    if (!local || local.length === 0) {
+      this.loadCountFromDB(userId);
+      return;
+    }
+
+    // 🔥 dùng Set để tránh trùng
+    const unique = new Set(local.map(x => x.ma_mon_an));
+
+    unique.forEach(maMon => {
+      this.addDB(maMon).subscribe();
+    });
+
+    // xoá local
+    localStorage.removeItem(this.STORAGE_KEY);
+
+    // 🔥 reload lại state từ DB SAU KHI SYNC
+    setTimeout(() => {
+      this.loadCountFromDB(userId);
+    }, 500);
   }
-
-  // 🔥 dùng Set để tránh trùng
-  const unique = new Set(local.map(x => x.ma_mon_an));
-
-  unique.forEach(maMon => {
-    this.addDB(maMon).subscribe();
-  });
-
-  // xoá local
-  localStorage.removeItem(this.STORAGE_KEY);
-
-  // 🔥 reload lại state từ DB SAU KHI SYNC
-  setTimeout(() => {
-    this.loadCountFromDB(userId);
-  }, 500);
-}
 }

@@ -16,10 +16,10 @@ export class SidebarUser implements OnInit {
 
   public menuItems = [
     { link: '/user', icon: 'dashboard', text: 'Trang quản trị' },
-    { link: '/user/trang-ca-nhan', icon: 'account_circle', text: 'Trang cá nhân' },
+    //{ link: '/user/trang-ca-nhan', icon: 'account_circle', text: 'Trang cá nhân' },
     { link: '/user/don-hang', icon: 'local_shipping', text: 'Đơn hàng' },
-    { link: '/user/binh-luan', icon: 'comment', text: 'Quản lý bình luận' },
-    { link: '/user/danh-gia', icon: 'stars_2', text: 'Quản lý đánh giá' },
+    //{ link: '/user/binh-luan', icon: 'comment', text: 'Quản lý bình luận' },
+    //{ link: '/user/danh-gia', icon: 'stars_2', text: 'Quản lý đánh giá' },
   ];
 
   

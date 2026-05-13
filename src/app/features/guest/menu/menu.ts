@@ -160,6 +160,7 @@ addToGioHang(mon: any) {
 
   if (!token) {
     this.cartService.addLocal(mon);
+    this.showToast('Đã thêm vào giỏ hàng', 'success');
     return;
   }
 
@@ -167,6 +168,7 @@ addToGioHang(mon: any) {
 
   this.cartService.addDB(mon.ma_mon_an, 1).subscribe(() => {
     this.cartService.loadCountFromDB(userId);
+    this.showToast('Đã thêm vào giỏ hàng', 'success');
   });
 }
 

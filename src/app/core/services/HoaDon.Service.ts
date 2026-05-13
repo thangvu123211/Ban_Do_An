@@ -23,9 +23,7 @@ export interface DatHoaDonRequest {
 })
 export class HoaDonService {
 
-  constructor(private http: HttpClient) {}
-
-
+  constructor(private http: HttpClient) { }
 
   // ================= THÊM HÓA ĐƠN (BẠN CẦN CÁI NÀY) =================
   taoHoaDon(data: DatHoaDonRequest): Observable<any> {
@@ -33,5 +31,36 @@ export class HoaDonService {
       `${environment.apiUrl}/hoa-don`,
       data
     );
+  }
+
+  getAllHoaDon(): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/hoa-don`);
+  }
+
+  // 🔹 Lấy hóa đơn theo ID
+  getHoaDonById(id: number): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/${id}`);
+  }
+
+  // 🔹 Lấy hóa đơn theo trạng thái
+  getHoaDonByTrangThai(trangThai: string): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/hoa-don/trang-thai?trang_thai=${trangThai}`);
+  }
+
+  // 🔹 Cập nhật trạng thái hóa đơn
+  updateTrangThai(id: number, trangThai: string): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/${id}/hoa-don/trang-thai`, {
+      trang_thai: trangThai
+    });
+  }
+
+  // 🔹 Hủy hóa đơn
+  huyHoaDon(id: number): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/${id}/hoa-don/huy`, {});
+  }
+
+  // 🔹 Xóa hóa đơn
+  xoaHoaDon(id: number): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/hoa-don/${id}`);
   }
 }

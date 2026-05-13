@@ -49,43 +49,24 @@ export class HeaderComponent implements OnInit {
     const token = localStorage.getItem('token');
     const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-    if (!token) {
+    // ================= CART =================
+    if (token && userId) {
+      this.cartService.loadCountFromDB(userId);
+    } else {
       this.cartService.saveLocal(this.cartService.getLocal());
-
-      this.cartService.count$.subscribe(v => {
-        this.tongSoMon = v;
-      });
-
-      return;
     }
 
-    // 🔥 LOGIN
-    this.cartService.loadCountFromDB(userId);
-
     this.cartService.count$.subscribe(v => {
-      this.tongSoMon = v;
+      this.tongSoMon = v ?? 0;
     });
 
-
-    // =========================
-    // 🔥 LOGIN → DB
-    // =========================
-    this.cartService.loadCountFromDB(userId);
-
-    this.cartService.count$.subscribe(value => {
-      this.tongSoMon = value ?? 0;
-    });
-
-    // =========================
-    // YEUTHICH (giữ nguyên)
-    // =========================
+    // ================= YEUTHICH =================
     this.tongYeuThich$ = this.yeuThichService.count$;
 
     if (token && userId) {
       this.yeuThichService.loadCountFromDB(userId);
     } else {
-      const localFav = this.yeuThichService.getLocal();
-      this.yeuThichService['saveLocal']?.(localFav);
+      this.yeuThichService.initState(); // 🔥 FIX QUAN TRỌNG
     }
   }
 
