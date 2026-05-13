@@ -41,7 +41,7 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let LoaiMonAn of loaimonan; let i = index">
-                        <td class="px-4 py-7 text-center border">{{ i + 1 }}</td>
+                        <td class="px-4 py-7 text-center border">{{ LoaiMonAn.ma_loai_mon_an }}</td>
                         <td class="px-4 py-7 text-center border">
                             <img *ngIf="LoaiMonAn.anh_loai_mon_an_url" [src]="LoaiMonAn.anh_loai_mon_an_url"
                                 alt="Ảnh loại món ăn" class="w-14 h-14 rounded-full object-cover mx-auto shadow" />

@@ -29,9 +29,21 @@
   <!-- Nút hành động -->
   <div class="flex justify-end gap-4 mt-8">
     <!-- Button Thêm mới -->
-    <button matButton="filled" (click)="doiMatKhau()">
-      <mat-icon>check</mat-icon>
-      Đổi mật khẩu
+    <button matButton="filled" (click)="doiMatKhau()" [disabled]="isLoading"
+      class="flex items-center gap-2 justify-center">
+      <!-- ICON loading -->
+      <mat-icon *ngIf="isLoading" class="animate-spin">
+        refresh
+      </mat-icon>
+
+      <!-- ICON bình thường -->
+      <mat-icon *ngIf="!isLoading">
+        check
+      </mat-icon>
+
+      <span>
+        {{ isLoading ? 'Đang cập nhật...' : 'Đổi mật khẩu' }}
+      </span>
     </button>
 
     <button mat-raised-button (click)="close()">

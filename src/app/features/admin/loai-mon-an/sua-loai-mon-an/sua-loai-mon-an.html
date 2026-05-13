@@ -53,15 +53,18 @@
 
     <!-- Button Cập nhật -->
 
-    <button matButton="filled"  (click)="CapNhatLoaiMonAn()">
-      <mat-icon >check</mat-icon>
-      Cập nhật
+    <button matButton="filled" (click)="CapNhatLoaiMonAn()" [disabled]="isLoading" class="btn-loading">
+      <mat-icon *ngIf="!isLoading">check</mat-icon>
+
+      <mat-icon *ngIf="isLoading" class="spin">autorenew</mat-icon>
+
+      {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật' }}
     </button>
 
     <!-- Button Hủy -->
 
     <button mat-raised-button (click)="close()">
-      <mat-icon >close</mat-icon>
+      <mat-icon>close</mat-icon>
       Hủy
     </button>
 

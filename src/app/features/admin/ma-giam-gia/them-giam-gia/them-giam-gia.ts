@@ -34,6 +34,8 @@ export class ThemGiamGia {
     ngay_ket_thuc: null as Date | null,
     is_active: true
   };
+
+  isLoading = false;
   giaTriGiamDisplay = '';
   donToiThieuDisplay = '';
   giamToiDaDisplay = '';
@@ -41,12 +43,13 @@ export class ThemGiamGia {
 
   // ===== ACTION =====
   themGiamGia() {
+    this.isLoading = true;
+
     const formData = new FormData();
 
     Object.entries(this.giamGia).forEach(([key, value]) => {
       if (value === null || value === undefined) return;
 
-      // 🚨 FIX DATE
       if (value instanceof Date) {
         formData.append(key, value.toISOString());
       } else {
@@ -55,8 +58,14 @@ export class ThemGiamGia {
     });
 
     this.giamGiaService.ThemGiamGia(formData).subscribe({
-      next: () => this.dialogRef.close(true),
-      error: () => this.dialogRef.close(false)
+      next: () => {
+        this.isLoading = false;
+        this.dialogRef.close(true);
+      },
+      error: () => {
+        this.isLoading = false;
+        this.dialogRef.close(false);
+      }
     });
   }
 

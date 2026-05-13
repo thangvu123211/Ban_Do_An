@@ -61,6 +61,12 @@ export class Menu implements OnInit {
   _loadingFav = false;
   danhSach: any[] = [];
 
+  sortPrice: 'asc' | 'desc' | '' = '';
+  openSort = false;
+
+  selectedLoaiName: string = '';
+
+
   screenWidth = window.innerWidth;
 
   showToast(message: string, type: 'success' | 'warn' | 'error') {
@@ -87,6 +93,9 @@ export class Menu implements OnInit {
 
   /** Lấy tất cả món ăn */
   getAllMonAn() {
+    this.selectedLoai = null;
+    this.selectedLoaiName = ''; // 👈 THÊM DÒNG NÀY
+    this.sortPrice = '';
 
     this.quanlimonan.LayTatCaMonAn().subscribe({
       next: (res: any) => {
@@ -98,18 +107,26 @@ export class Menu implements OnInit {
             anh_mon_an_url: u.anh_mon_an
           }));
 
-          // hiển thị tất cả món
           this.MonAn = [...this.tatCaMonAn];
-
         }
 
       },
       error: (err) => {
         console.error(err);
       }
-
     });
+  }
 
+  sortMonAn() {
+    if (!this.MonAn) return;
+
+    if (this.sortPrice === 'asc') {
+      this.MonAn.sort((a, b) => a.gia_tien - b.gia_tien);
+    }
+
+    if (this.sortPrice === 'desc') {
+      this.MonAn.sort((a, b) => b.gia_tien - a.gia_tien);
+    }
   }
 
   /** Lấy tất cả loại món ăn */
@@ -128,14 +145,14 @@ export class Menu implements OnInit {
   }
 
   /** Lấy món ăn theo loại */
-  getMonAnTheoLoai(loaiId: number) {
+  getMonAnTheoLoai(loaiId: number, tenLoai?: string) {
 
     this.selectedLoai = loaiId;
+    this.selectedLoaiName = tenLoai || '';
 
     this.MonAn = this.tatCaMonAn.filter(
       mon => mon.ma_loai_mon_an === loaiId
     );
-
   }
 
   hienThiTatCaMon() {
@@ -155,22 +172,22 @@ export class Menu implements OnInit {
     this.gioHang = [];
   }
 
-addToGioHang(mon: any) {
-  const token = localStorage.getItem('token');
+  addToGioHang(mon: any) {
+    const token = localStorage.getItem('token');
 
-  if (!token) {
-    this.cartService.addLocal(mon);
-    this.showToast('Đã thêm vào giỏ hàng', 'success');
-    return;
+    if (!token) {
+      this.cartService.addLocal(mon);
+      this.showToast('Đã thêm vào giỏ hàng', 'success');
+      return;
+    }
+
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    this.cartService.addDB(mon.ma_mon_an, 1).subscribe(() => {
+      this.cartService.loadCountFromDB(userId);
+      this.showToast('Đã thêm vào giỏ hàng', 'success');
+    });
   }
-
-  const userId = Number(localStorage.getItem('ma_nguoi_dung'));
-
-  this.cartService.addDB(mon.ma_mon_an, 1).subscribe(() => {
-    this.cartService.loadCountFromDB(userId);
-    this.showToast('Đã thêm vào giỏ hàng', 'success');
-  });
-}
 
   get tongSoMon(): number {
     return this.gioHang.reduce((sum, i) => sum + i.soLuong, 0);
@@ -283,6 +300,8 @@ addToGioHang(mon: any) {
       });
     }
   }
+
+
 
   ngOnInit() {
     this.getAllLoaiMonAn();

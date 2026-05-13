@@ -1,0 +1,103 @@
+<div class="relative p-6">
+
+    <!-- Nút đóng -->
+    <button (click)="close()" class="absolute right-3 top-3 text-gray-400 hover:text-red-500 transition-colors">
+        <mat-icon>close</mat-icon>
+    </button>
+
+    <!-- Tiêu đề -->
+    <div class="text-center mb-8">
+        <h2 class="text-2xl font-semibold flex items-center justify-center gap-2">
+            <mat-icon class="text-blue-500">receipt_long</mat-icon>
+            Chỉnh sửa thông tin đơn hàng
+        </h2>
+        <p class="text-sm text-gray-500 mt-1">
+            Mã đơn hàng: <span class="font-medium text-gray-700">#{{ donHang.ma_hd }}</span>
+        </p>
+    </div>
+
+    <div class="flex gap-8 flex-wrap lg:flex-nowrap">
+
+        <!-- Form nhập thông tin -->
+        <div class="grid grid-cols-2 gap-4 flex-1">
+
+            <!-- Tên khách hàng -->
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Tên khách hàng</mat-label>
+                <input matInput [(ngModel)]="donHang.ho_ten" readonly>
+            </mat-form-field>
+
+            <!-- Số điện thoại -->
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Số điện thoại</mat-label>
+                <input matInput [(ngModel)]="donHang.sdt" readonly>
+            </mat-form-field>
+
+            <!-- Địa chỉ (chiếm 2 cột) -->
+            <mat-form-field appearance="outline" class="w-full col-span-2">
+                <mat-label>Địa chỉ</mat-label>
+                <input matInput [(ngModel)]="donHang.dia_chi">
+            </mat-form-field>
+
+            <!-- Ngày -->
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Ngày</mat-label>
+                <input matInput [value]="formatNgay(donHang.ngay)" readonly>
+            </mat-form-field>
+
+            <!-- Tổng tiền -->
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Tổng tiền</mat-label>
+                <input matInput [value]="money.formatVND(donHang.tong_tien) + ' đ'" readonly>
+            </mat-form-field>
+
+            <!-- Ghi chú (chiếm 2 cột) -->
+            <mat-form-field appearance="outline" class="w-full col-span-2">
+                <mat-label>Ghi chú</mat-label>
+                <textarea matInput rows="3" [(ngModel)]="donHang.ghi_chu" readonly>
+                </textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full ">
+                <mat-label>Trạng thái</mat-label>
+                <mat-select [(ngModel)]="donHang.trang_thai">
+                    <mat-option value="cho_xac_nhan">Chờ xác nhận</mat-option>
+                    <mat-option value="dang_chuan_bi">Đang chuẩn bị</mat-option>
+                    <mat-option value="dang_giao">Đang giao</mat-option>
+                    <mat-option value="da_giao">Đã giao</mat-option>
+                    <mat-option value="da_huy">Đã hủy</mat-option>
+                    <mat-option value="da_thanh_toan">Đã thanh toán</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </div>
+    </div>
+
+    <!-- Nút hành động -->
+    <div class="flex justify-end gap-4 mt-8">
+        <button matButton="filled" color="primary" (click)="capNhatHoaDon()" [disabled]="isLoading"
+            class="relative flex items-center justify-center gap-2">
+
+            <!-- SPINNER -->
+            <mat-icon *ngIf="isLoading" class="animate-spin">
+                refresh
+            </mat-icon>
+
+            <!-- ICON BÌNH THƯỜNG -->
+            <mat-icon *ngIf="!isLoading">
+                check
+            </mat-icon>
+
+            <!-- TEXT -->
+            <span>
+                {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật' }}
+            </span>
+
+        </button>
+
+        <button mat-stroked-button color="warn" (click)="close()">
+            <mat-icon>close</mat-icon>
+            Hủy
+        </button>
+    </div>
+</div>

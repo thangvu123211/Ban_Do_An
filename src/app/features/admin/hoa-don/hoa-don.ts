@@ -1,174 +1,123 @@
-import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // cần cho [(ngModel)]
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../Shared/dialogs/confirm-dialog/confirm-dialog';
+import { MATERIAL } from '../../../Shared/material';
+import { HoaDonService } from '../../../core/services/HoaDon.Service';
+import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-message/toast-message';
+import { SuaHoaDon } from './sua-hoa-don/sua-hoa-don';
 
 @Component({
   selector: 'app-hoa-don',
   standalone: true, // dùng standalone
-  imports: [CommonModule, FormsModule], // thêm FormsModule để binding input
+  imports: [MATERIAL, ToastMessageComponent], // thêm FormsModule để binding input
   templateUrl: './hoa-don.html',
   styleUrls: ['./hoa-don.scss']
 })
 export class HoaDon implements OnInit {
-  HoaDon: any[] = [];
-  ChiTietHoaDon: any[] = [];
-  tongTienCT: number = 0;
-  MonAn: any[] = [];
-  editingCTHD: any = null; // lưu CTHD đang sửa
-  selectedCT: any = null;
-  donGia: number = 0;
 
-  constructor(private http: HttpClient, private dialog: MatDialog) { }
+  hoaDons: any[] = [];
+  loading = false;
 
-  // Lấy danh sách hóa đơn
-  load_listHoaDon() {
-    this.http.get<any>('http://localhost:3000/api/admin/listHoaDon').subscribe({
-      next: (res) => {
-        this.HoaDon = res.HoaDon;
-        console.log('Hóa Đơn:', this.HoaDon);
-        this.tinhTongTien();
-      },
-      error: (err) => console.error('Lỗi lấy Hóa Đơn', err)
-    });
-  }
+  expandedHoaDonId: number | null = null;
 
-  // Lấy chi tiết hóa đơn theo MA_HD
-  load_chiTietHoaDon(mahd: number) {
-    this.http.get<any[]>(`http://localhost:3000/api/admin/chitiethoadon/${mahd}`).subscribe({
-      next: (res) => {
-        this.ChiTietHoaDon = res;
-        console.log("Chi tiết hóa đơn:", this.ChiTietHoaDon);
+  toast = {
+    show: false,
+    message: '',
+    type: 'success' as 'success' | 'warn' | 'error'
+  };
 
-        // tính lại tổng tiền mỗi lần load chi tiết
-        this.tinhTongTien();
-      }
-    });
-  }
+  constructor(
+    private hoaDonService: HoaDonService,
+    private dialog: MatDialog) { }
 
-
-  // Lấy danh sách món ăn
-  load_listMonAn() {
-    this.http.get<any>('http://localhost:3000/api/admin/list_MonAn').subscribe({
-      next: (res) => {
-        this.MonAn = res.MonAn;
-        console.log('Món Ăn:', this.MonAn);
-      },
-      error: (err) => console.error('Lỗi lấy Món Ăn', err)
-    });
-  }
-
-  // Chọn CTHD để sửa
-  editCTHD(ct: any) {
-    this.editingCTHD = { ...ct };
-    console.log("CTHD đang sửa:", this.editingCTHD);
-  }
-
-  // Khi chọn món → update đơn giá + thành tiền
-  onMonAnChange() {
-    const mon = this.MonAn.find(m => m.MA_MON_AN == this.editingCTHD.MA_MON_AN);
-    if (mon) {
-      this.editingCTHD.DON_GIA = mon.GIA;   // ✅ lấy GIA từ bảng món ăn, gán cho DON_GIA
-      this.tinhTienCT();
-    }
-  }
-
-  // Tính lại thành tiền
-  tinhTienCT() {
-    this.editingCTHD.THANH_TIEN = this.editingCTHD.SO_LUONG * this.editingCTHD.DON_GIA;
-  }
-
-  // Gọi API cập nhật CTHD
-  updateCTHD() {
-    const body = {
-      MA_MON_AN: this.editingCTHD.MA_MON_AN,
-      SO_LUONG: this.editingCTHD.SO_LUONG
-    };
-
-    this.http.put(
-      `http://localhost:3000/api/admin/updateCTHD/${this.editingCTHD.MA_CT}`,
-      body
-    ).subscribe({
-      next: (res: any) => {
-        console.log("✅ Cập nhật thành công:", res);
-
-        // reload chi tiết hóa đơn
-        this.load_chiTietHoaDon(this.editingCTHD.MA_HD);
-
-        // reload danh sách hóa đơn để cập nhật tổng tiền
-        this.load_listHoaDon();
-
-        // clear form edit
-        this.editingCTHD = null;
-      },
-      error: (err) => console.error("❌ Lỗi cập nhật:", err)
-    });
-  }
-  xoaHoaDon(maHD: number) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '350px',
-      data: { message: `Bạn có chắc chắn muốn xóa hóa đơn #${maHD} không?` }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // Gọi API backend để xóa
-        this.http.delete(`http://localhost:3000/api/admin/deleteHoaDon/${maHD}`).subscribe({
-          next: () => {
-            this.HoaDon = this.HoaDon.filter(hd => hd.MA_HD !== maHD);
-          },
-          error: err => {
-            console.error('Lỗi khi xóa hóa đơn:', err);
-          }
-        });
-      }
-    });
-  }
-  xoaCTHD(cthd: any) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '350px',
-      data: { message: `Bạn có chắc chắn muốn xóa món #${cthd.TEN_MON} trong hóa đơn #${cthd.MA_HD} không?` }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.http.delete(`http://localhost:3000/api/admin/deleteCTHD/${cthd.MA_CT}`)
-          .subscribe({
-            next: (res: any) => {
-              console.log(`✅ Xóa CTHD #${cthd.MA_CT} thành công`);
-
-              // Reload chi tiết hóa đơn
-              this.load_chiTietHoaDon(cthd.MA_HD);
-
-              // Reload danh sách hóa đơn để cập nhật tổng tiền
-              this.load_listHoaDon();
-            },
-            error: err => console.error('❌ Lỗi khi xóa CTHD:', err)
-          });
-      }
-    });
-  }
-
-  // Tính tổng tiền CTHD
-  tinhTongTien() {
-    this.tongTienCT = this.ChiTietHoaDon.reduce((sum, item) => sum + Number(item.THANH_TIEN), 0);
-  }
-  startEdit(cthd: any) {
-    this.editingCTHD = { ...cthd };  // ✅ copy lại cả MA_CT
-    console.log("Đang sửa CTHD:", this.editingCTHD);
-  }
-  // Quay lại danh sách hóa đơn
-  quayLai() {
-    this.ChiTietHoaDon = [];
-    this.tongTienCT = 0;
-    this.editingCTHD = null;
-    this.tinhTongTien();
+  showToast(message: string, type: 'success' | 'warn' | 'error') {
+    this.toast.show = true;
+    this.toast.message = message;
+    this.toast.type = type;
+    setTimeout(() => this.toast.show = false, 3000);
   }
 
   ngOnInit(): void {
-    this.load_listHoaDon();
-    this.load_listMonAn();
+    this.loadHoaDons();
   }
+  loadHoaDons() {
+    this.loading = true;
+    this.hoaDonService.getAllHoaDon().subscribe({
+      next: (res: any) => {
+        this.hoaDons = res.data; // backend trả { data: [...] }
+        this.loading = false;
+
+      },
+      error: () => {
+        this.showToast('Lỗi không thể tải tất cả đơn hàng', 'error');
+      }
+    });
+  }
+
+  SuaDonHang(donHang: any) {
+    const dialogRef = this.dialog.open(SuaHoaDon, {
+      width: '900px',
+      maxWidth: '110vw',
+      data: donHang,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.showToast('Cập nhật đơn hàng thành công', 'success');
+        this.loadHoaDons();
+      } else if (result === false) {
+        this.showToast('Bạn đã hủy sửa đơn hàng', 'warn');
+      }
+    });
+  }
+
+  trangThaiMap: Record<string, { label: string; classes: string }> = {
+    cho_xac_nhan: {
+      label: 'Chờ xác nhận',
+      classes: 'bg-yellow-100 text-yellow-700'
+    },
+    dang_chuan_bi: {
+      label: 'Đang chuẩn bị',
+      classes: 'bg-blue-100 text-blue-700'
+    },
+    dang_giao: {
+      label: 'Đang giao',
+      classes: 'bg-indigo-100 text-indigo-700'
+    },
+    da_giao: {
+      label: 'Đã giao',
+      classes: 'bg-green-100 text-green-700'
+    },
+    da_thanh_toan: {
+      label: 'Đã thanh toán',
+      classes: 'bg-emerald-100 text-emerald-700'
+    },
+    da_huy: {
+      label: 'Đã hủy',
+      classes: 'bg-red-100 text-red-700'
+    }
+  };
+
+  toggleExpand(ma_hd: number) {
+    this.expandedHoaDonId =
+      this.expandedHoaDonId === ma_hd ? null : ma_hd;
+  }
+
+  // ThongTinDonHang(hoaDon: any) {
+  //   this.dialog.open(ThongTinDonHang, {
+  //     width: '1000px',
+  //     maxWidth: '95vw',
+  //     height: '85vh',
+  //     data: hoaDon
+  //   });
+  // }
+
+  // huyHoaDon(id: number) {
+  //   if (!confirm('Bạn có chắc muốn hủy hóa đơn này?')) return;
+
+  //   this.hoaDonService.huyHoaDon(id).subscribe(() => {
+  //     this.loadHoaDons();
+  //   });
+  // }
+
 }

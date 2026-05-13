@@ -56,5 +56,6 @@ export const MATERIAL=[
     MatIconModule,
     RouterModule,
     MatStepperModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    
 ]

@@ -12,7 +12,7 @@ import { MATERIAL } from '../../../../Shared/material';
   styleUrls: ['./doi-mat-khau.scss']
 })
 export class DoiMatKhau implements OnInit {
-
+  isLoading = false;
   admin: any = {}; // 🔹 không để null, để object rỗng an toàn
   toast = {
     show: false,
@@ -47,28 +47,41 @@ export class DoiMatKhau implements OnInit {
   }
 
   doiMatKhau() {
-    if (!this.admin || !this.admin.mat_khau?.trim()) {
-      this.showToast('Vui lòng nhập mật khẩu mới.', 'warn');
-      return;
-    }
-
-    const updatedData: any = {
-      mat_khau: this.admin.mat_khau_moi
-    };
-
-    this.adminService.CapNhatNhanVien(this.admin.ma_nguoi_dung, updatedData)
-      .subscribe({
-        next: () => {
-          this.showToast('Đổi mật khẩu thành công!', 'success');
-          this.dialogRef.close(true);
-          this.admin.mat_khau = '';
-        },
-        error: (err) => {
-          console.error('Lỗi khi đổi mật khẩu:', err);
-          this.showToast(err.error?.error || 'Đổi mật khẩu thất bại!', 'error');
-        }
-      });
+  if (!this.admin?.mat_khau_moi?.trim()) {
+    this.showToast('Vui lòng nhập mật khẩu mới.', 'warn');
+    return;
   }
+
+  this.isLoading = true;
+
+  const updatedData: any = {
+    mat_khau: this.admin.mat_khau_moi
+  };
+
+  this.adminService.CapNhatNhanVien(
+    this.admin.ma_nguoi_dung,
+    updatedData
+  ).subscribe({
+    next: () => {
+      this.isLoading = false;
+
+      this.showToast('Đổi mật khẩu thành công!', 'success');
+
+      setTimeout(() => {
+        this.dialogRef.close(true);
+      }, 500);
+    },
+    error: (err) => {
+      this.isLoading = false;
+
+      console.error(err);
+      this.showToast(
+        err.error?.error || 'Đổi mật khẩu thất bại!',
+        'error'
+      );
+    }
+  });
+}
 
 
   close() {

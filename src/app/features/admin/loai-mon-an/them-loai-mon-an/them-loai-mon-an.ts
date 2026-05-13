@@ -13,6 +13,7 @@ export class ThemLoaiMonAn implements OnInit {
   LoaiMonAn: any = {
     ten_loai_mon_an: '',
   };
+  isLoading = false;
   selectedFile: File | null = null;
   previewUrl: string | null = null;
   constructor(
@@ -24,16 +25,26 @@ export class ThemLoaiMonAn implements OnInit {
 
   }
   addLoaiMonAn() {
+    this.isLoading = true;
+
     const formData = new FormData();
+
     Object.entries(this.LoaiMonAn).forEach(([key, value]) =>
       formData.append(key, value as string)
     );
-    if (this.selectedFile) formData.append('image', this.selectedFile);
+
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
 
     this.QuanLyLoaiMonAn.ThemLoaiMonAn(formData).subscribe({
-      next: (res) => {
+      next: () => {
+        this.isLoading = false;
         this.dialogRef.close(true);
-        return;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.dialogRef.close(false);
       }
     });
   }

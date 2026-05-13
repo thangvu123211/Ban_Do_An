@@ -98,13 +98,23 @@
   <div class="flex justify-end gap-4 mt-8">
     <!-- Button Thêm mới -->
 
-    <button matButton="filled" (click)="capNhatNhanVien()">
-      <mat-icon >check</mat-icon> Cập nhật
+    <button matButton="filled" (click)="capNhatNhanVien()" [disabled]="loading" class="min-w-[140px]">
+      <span class="flex items-center gap-2 justify-center">
+
+        <!-- icon bình thường -->
+        <mat-icon *ngIf="!loading">check</mat-icon>
+
+        <!-- spinner -->
+        <mat-spinner *ngIf="loading" diameter="18"></mat-spinner>
+
+        {{ loading ? 'Đang cập nhật...' : 'Cập nhật' }}
+
+      </span>
     </button>
 
     <!-- Button Hủy -->
     <button mat-raised-button (click)="close()">
-      <mat-icon >close</mat-icon>Hủy
+      <mat-icon>close</mat-icon>Hủy
     </button>
   </div>
 </div>

@@ -15,11 +15,12 @@ export class SuaMonAn implements OnInit {
   selectedFile?: File;
   previewImage: string | ArrayBuffer | null = null;
   danhSachLoaiMonAn: any[] = [];
+  isLoading = false;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<SuaMonAn>,
     private QuanLyMonAn: QuanLyMonAn,
-    private QuanLyLoaiMonAn:QuanLyLoaiMonAn
+    private QuanLyLoaiMonAn: QuanLyLoaiMonAn
   ) { }
 
   ngOnInit() {
@@ -41,41 +42,47 @@ export class SuaMonAn implements OnInit {
 
 
 
-onFileSelected(event: any) {
-  const file = event.target.files[0];
-  if (file) {
-    this.selectedFile = file;
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
 
-    const reader = new FileReader();
-    reader.onload = e => this.previewImage = reader.result;
-    reader.readAsDataURL(file);
-  }
-}
-
-capNhat() {
-  const payload = {
-    ten_mon_an: this.MonAn.ten_mon_an,
-    gia_tien: this.MonAn.gia_tien,
-    trang_thai: this.MonAn.trang_thai,
-    ma_loai_mon_an: this.MonAn.ma_loai_mon_an,
-    mo_ta: this.MonAn.mo_ta
-  };
-
-  this.QuanLyMonAn.CapNhatMonAn(
-    this.data.ma_mon_an,
-    payload,
-    this.selectedFile
-  ).subscribe({
-    next: () => this.dialogRef.close(true),
-    error: err => {
-      console.error(err);
-      alert('Cập nhật món ăn thất bại');
+      const reader = new FileReader();
+      reader.onload = e => this.previewImage = reader.result;
+      reader.readAsDataURL(file);
     }
-  });
-}
-
-
-close() {
-  this.dialogRef.close(false);
-}
   }
+
+  capNhat() {
+    this.isLoading = true;
+
+    const payload = {
+      ten_mon_an: this.MonAn.ten_mon_an,
+      gia_tien: this.MonAn.gia_tien,
+      trang_thai: this.MonAn.trang_thai,
+      ma_loai_mon_an: this.MonAn.ma_loai_mon_an,
+      mo_ta: this.MonAn.mo_ta
+    };
+
+    this.QuanLyMonAn.CapNhatMonAn(
+      this.data.ma_mon_an,
+      payload,
+      this.selectedFile
+    ).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.dialogRef.close(true);
+      },
+      error: err => {
+        console.error(err);
+        this.isLoading = false;
+        alert('Cập nhật món ăn thất bại');
+      }
+    });
+  }
+
+
+  close() {
+    this.dialogRef.close(false);
+  }
+}

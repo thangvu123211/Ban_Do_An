@@ -47,10 +47,11 @@
           <mat-label>
             Tên loại món ăn
           </mat-label>
-          <input matInput [(ngModel)]="LoaiMonAn.ten_loai_mon_an" name="ten_loai_mon_an" placeholder="Nhập tên loại món ăn" />
+          <input matInput [(ngModel)]="LoaiMonAn.ten_loai_mon_an" name="ten_loai_mon_an"
+            placeholder="Nhập tên loại món ăn" />
         </mat-form-field>
       </div>
-      
+
     </div>
 
 
@@ -58,9 +59,12 @@
 
   <!-- Nút hành động -->
   <div class="flex justify-end gap-4 mt-8">
-    <button matButton="filled" (click)="addLoaiMonAn()">
-      <mat-icon>check</mat-icon>
-      Thêm mới
+    <button matButton="filled" (click)="addLoaiMonAn()" [disabled]="isLoading" class="btn-loading">
+      <mat-icon *ngIf="!isLoading">check</mat-icon>
+
+      <mat-icon *ngIf="isLoading" class="spin">autorenew</mat-icon>
+
+      {{ isLoading ? 'Đang thêm...' : 'Thêm mới' }}
     </button>
 
     <button mat-raised-button (click)="close()">

@@ -89,7 +89,7 @@
         </mat-form-field>
       </div>
 
-      
+
     </div>
   </div>
 
@@ -98,9 +98,12 @@
 
     <!-- Button Cập nhật -->
 
-    <button matButton="filled" (click)="capNhat()">
-      <mat-icon>check</mat-icon>
-      Cập nhật
+    <button matButton="filled" (click)="capNhat()" [disabled]="isLoading" class="btn-loading">
+      <mat-icon *ngIf="!isLoading">check</mat-icon>
+
+      <mat-icon *ngIf="isLoading" class="spin">autorenew</mat-icon>
+
+      {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật' }}
     </button>
 
     <!-- Button Hủy -->

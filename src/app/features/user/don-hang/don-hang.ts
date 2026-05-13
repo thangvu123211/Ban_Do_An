@@ -13,6 +13,7 @@ import { ThongTinDonHang } from '../dialogs/thong-tin-don-hang/thong-tin-don-han
 export class DonHang implements OnInit {
   hoaDons: any[] = [];
   loading = false;
+  expandedHoaDonId: number | null = null;
 
   constructor(
     private hoaDonService: HoaDonService,
@@ -23,7 +24,7 @@ export class DonHang implements OnInit {
   }
   loadHoaDons() {
     this.loading = true;
-    this.hoaDonService.getAllHoaDon().subscribe({
+    this.hoaDonService.getHoaDonCuaUser().subscribe({
       next: (res: any) => {
         this.hoaDons = res.data; // backend trả { data: [...] }
         this.loading = false;
@@ -42,6 +43,38 @@ export class DonHang implements OnInit {
       height: '85vh',
       data: hoaDon
     });
+  }
+
+  trangThaiMap: Record<string, { label: string; classes: string }> = {
+    cho_xac_nhan: {
+      label: 'Chờ xác nhận',
+      classes: 'bg-yellow-100 text-yellow-700'
+    },
+    dang_chuan_bi: {
+      label: 'Đang chuẩn bị',
+      classes: 'bg-blue-100 text-blue-700'
+    },
+    dang_giao: {
+      label: 'Đang giao',
+      classes: 'bg-indigo-100 text-indigo-700'
+    },
+    da_giao: {
+      label: 'Đã giao',
+      classes: 'bg-green-100 text-green-700'
+    },
+    da_thanh_toan: {
+      label: 'Đã thanh toán',
+      classes: 'bg-emerald-100 text-emerald-700'
+    },
+    da_huy: {
+      label: 'Đã hủy',
+      classes: 'bg-red-100 text-red-700'
+    }
+  };
+
+  toggleExpand(ma_hd: number) {
+    this.expandedHoaDonId =
+      this.expandedHoaDonId === ma_hd ? null : ma_hd;
   }
 
   huyHoaDon(id: number) {

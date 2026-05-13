@@ -78,9 +78,19 @@
 
   <!-- Nút hành động -->
   <div class="flex justify-end gap-4 mt-8">
-    <button matButton="filled" (click)="addBanAn()">
-      <mat-icon>check</mat-icon>
-      Thêm mới
+    <button matButton="filled" (click)="addBanAn()" [disabled]="isLoading"
+      class="flex items-center gap-2 justify-center">
+      <mat-icon *ngIf="isLoading" class="animate-spin">
+        refresh
+      </mat-icon>
+
+      <mat-icon *ngIf="!isLoading">
+        check
+      </mat-icon>
+
+      <span>
+        {{ isLoading ? 'Đang thêm...' : 'Thêm mới' }}
+      </span>
     </button>
 
     <button mat-raised-button (click)="close()">

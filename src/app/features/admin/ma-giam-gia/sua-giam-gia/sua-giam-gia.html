@@ -24,9 +24,7 @@
     <!-- Loại -->
     <mat-form-field appearance="outline">
       <mat-label>Loại giảm giá</mat-label>
-      <mat-select
-        [(ngModel)]="giamGia.loai_giam_gia"
-        (selectionChange)="onLoaiGiamGiaChange()">
+      <mat-select [(ngModel)]="giamGia.loai_giam_gia" (selectionChange)="onLoaiGiamGiaChange()">
         <mat-option value="percent">Phần trăm (%)</mat-option>
         <mat-option value="fixed">Tiền mặt (đ)</mat-option>
       </mat-select>
@@ -35,30 +33,21 @@
     <!-- Giá trị giảm -->
     <mat-form-field appearance="outline">
       <mat-label>Giá trị giảm</mat-label>
-      <input
-        matInput
-        [value]="giaTriGiamDisplay"
-        (input)="onGiaTriGiamInput($event.target.value)"
+      <input matInput [value]="giaTriGiamDisplay" (input)="onGiaTriGiamInput($event.target.value)"
         placeholder="VD: 10% hoặc 50.000đ">
     </mat-form-field>
 
     <!-- Đơn tối thiểu -->
     <mat-form-field appearance="outline">
       <mat-label>Đơn tối thiểu</mat-label>
-      <input
-        matInput
-        [value]="donToiThieuDisplay"
-        (input)="onDonToiThieuInput($event.target.value)"
+      <input matInput [value]="donToiThieuDisplay" (input)="onDonToiThieuInput($event.target.value)"
         placeholder="VD: 100.000đ">
     </mat-form-field>
 
     <!-- Giảm tối đa -->
     <mat-form-field appearance="outline">
       <mat-label>Giảm tối đa</mat-label>
-      <input
-        matInput
-        [value]="giamToiDaDisplay"
-        (input)="onGiamToiDaInput($event.target.value)"
+      <input matInput [value]="giamToiDaDisplay" (input)="onGiamToiDaInput($event.target.value)"
         placeholder="VD: 50.000đ">
     </mat-form-field>
 
@@ -90,9 +79,12 @@
   </div>
 
   <div class="flex justify-end gap-4 mt-6">
-    <button mat-raised-button color="primary" (click)="capNhat()">
-      <mat-icon>save</mat-icon>
-      Lưu
+    <button mat-raised-button color="primary" (click)="capNhat()" [disabled]="isLoading" class="btn-loading">
+      <mat-icon *ngIf="!isLoading">save</mat-icon>
+
+      <mat-icon *ngIf="isLoading" class="spin">autorenew</mat-icon>
+
+      {{ isLoading ? 'Đang lưu...' : 'Lưu' }}
     </button>
     <button mat-button (click)="close()">Hủy</button>
   </div>

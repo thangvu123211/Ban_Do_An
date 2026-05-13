@@ -17,6 +17,7 @@ export class SuaGiamGia {
   giaTriGiamDisplay = '';
   donToiThieuDisplay = '';
   giamToiDaDisplay = '';
+  isLoading = false;
 
   constructor(
     private dialogRef: MatDialogRef<SuaGiamGia>,
@@ -80,54 +81,39 @@ export class SuaGiamGia {
   }
 
   capNhat() {
+  this.isLoading = true;
+
   const formData = new FormData();
 
-  // ⚠️ KEY PHẢI ĐÚNG snake_case
   formData.append('code', this.giamGia.code);
   formData.append('ten_chuong_trinh', this.giamGia.ten_chuong_trinh);
   formData.append('loai_giam_gia', this.giamGia.loai_giam_gia);
   formData.append('gia_tri_giam', String(this.giamGia.gia_tri_giam));
   formData.append('don_toi_thieu', String(this.giamGia.don_toi_thieu));
   formData.append('giam_toi_da', String(this.giamGia.giam_toi_da));
-  formData.append(
-    'gioi_han_su_dung',
-    this.giamGia.gioi_han_su_dung != null
-      ? String(this.giamGia.gioi_han_su_dung)
-      : ''
-  );
-  formData.append(
-    'gioi_han_moi_user',
-    String(this.giamGia.gioi_han_moi_user)
-  );
+  formData.append('gioi_han_su_dung', String(this.giamGia.gioi_han_su_dung));
+  formData.append('gioi_han_moi_user', String(this.giamGia.gioi_han_moi_user));
 
-  // ✅ DATE RFC3339
-  formData.append(
-    'ngay_bat_dau',
-    this.formatDateRFC3339(this.giamGia.ngay_bat_dau)
-  );
-  formData.append(
-    'ngay_ket_thuc',
-    this.formatDateRFC3339(this.giamGia.ngay_ket_thuc)
-  );
+  formData.append('ngay_bat_dau', this.formatDateRFC3339(this.giamGia.ngay_bat_dau));
+  formData.append('ngay_ket_thuc', this.formatDateRFC3339(this.giamGia.ngay_ket_thuc));
 
-  // ✅ BOOL → string
   formData.append('is_active', this.giamGia.is_active ? 'true' : 'false');
 
-  // 🔍 DEBUG (giữ lại để test)
-  for (const pair of formData.entries()) {
-    console.log(pair[0], pair[1]);
-  }
-
-  this.giamGiaService
-    .CapNhatGiamGia(this.giamGia.id, formData)
+  this.giamGiaService.CapNhatGiamGia(this.giamGia.id, formData)
     .subscribe({
-      next: () => this.dialogRef.close(true),
-      error: () => this.dialogRef.close(false)
+      next: () => {
+        this.isLoading = false;
+        this.dialogRef.close(true);
+      },
+      error: () => {
+        this.isLoading = false;
+        this.dialogRef.close(false);
+      }
     });
 }
-formatDateRFC3339(date: any): string {
-  return new Date(date).toISOString();
-}
+  formatDateRFC3339(date: any): string {
+    return new Date(date).toISOString();
+  }
 
   close() {
     this.dialogRef.close(false);

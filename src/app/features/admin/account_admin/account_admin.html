@@ -44,8 +44,19 @@
         </div>
 
         <div class="pt-4 flex justify-end">
-          <button matButton="filled" (click)="capNhatAdmin()" class="px-4 py-2">
-            Cập Nhật
+          <button matButton="filled" (click)="capNhatAdmin()" [disabled]="isLoading"
+            class="px-4 py-2 flex items-center gap-2">
+            <mat-icon *ngIf="isLoading" class="animate-spin">
+              refresh
+            </mat-icon>
+
+            <mat-icon *ngIf="!isLoading">
+              check
+            </mat-icon>
+
+            <span>
+              {{ isLoading ? 'Đang cập nhật...' : 'Cập Nhật' }}
+            </span>
           </button>
         </div>
       </div>
@@ -61,40 +72,40 @@
 
   <!-- RIGHT CARD: Avatar & Info -->
   <mat-card class="w-full lg:w-1/3 relative z-10 p-6">
-  <div class="flex flex-col items-center text-center">
+    <div class="flex flex-col items-center text-center">
 
-    <!-- Avatar -->
-    <img [src]="previewUrl" alt="Profile"
-      class="w-32 h-32 rounded-full shadow-lg border-4 border-white -mt-20 bg-gray-700 p-1" />
+      <!-- Avatar -->
+      <img [src]="previewUrl" alt="Profile"
+        class="w-32 h-32 rounded-full shadow-lg border-4 border-white -mt-20 bg-gray-700 p-1" />
 
-    <!-- User Info -->
-    <p class="mt-2" style="color: var(--mat-sys-on-surface)">ADMIN</p>
-    <h3 class="mt-2 text-xl font-bold" style="color: var(--mat-sys-on-surface)">
-      {{admin?.ho_ten}}
-    </h3>
-    <p style="color: var(--mat-sys-on-surface)">{{admin?.email}}</p>
-    <p class="mt-2 text-sm" style="color: var(--mat-sys-on-surface)">
-      Admin Quản Lý Nhà Hàng Fresh Food
-    </p>
+      <!-- User Info -->
+      <p class="mt-2" style="color: var(--mat-sys-on-surface)">ADMIN</p>
+      <h3 class="mt-2 text-xl font-bold" style="color: var(--mat-sys-on-surface)">
+        {{admin?.ho_ten}}
+      </h3>
+      <p style="color: var(--mat-sys-on-surface)">{{admin?.email}}</p>
+      <p class="mt-2 text-sm" style="color: var(--mat-sys-on-surface)">
+        Admin Quản Lý Nhà Hàng Fresh Food
+      </p>
 
-    <!-- Buttons -->
-    <div class="mt-4 flex space-x-4 items-center">
-      <!-- Tham chiếu input -->
-      <input #fileInput type="file" (change)="onFileSelected($event)" hidden accept="image/*" />
+      <!-- Buttons -->
+      <div class="mt-4 flex space-x-4 items-center">
+        <!-- Tham chiếu input -->
+        <input #fileInput type="file" (change)="onFileSelected($event)" hidden accept="image/*" />
 
-      <!-- Nút Material -->
-      <button mat-raised-button (click)="fileInput.click()">
-        Thay Đổi Ảnh Đại Diện
-      </button>
+        <!-- Nút Material -->
+        <button mat-raised-button (click)="fileInput.click()">
+          Thay Đổi Ảnh Đại Diện
+        </button>
 
-      <!-- Lưu ảnh chỉ hiện khi chọn -->
-      <button matButton="filled" (click)="capNhatAdmin()" *ngIf="selectedFile" class="px-4 py-2">
-        Lưu Ảnh
-      </button>
+        <!-- Lưu ảnh chỉ hiện khi chọn -->
+        <button matButton="filled" (click)="capNhatAdmin()" *ngIf="selectedFile" class="px-4 py-2">
+          Lưu Ảnh
+        </button>
+      </div>
+
     </div>
-
-  </div>
-</mat-card>
+  </mat-card>
 
 
 </div>

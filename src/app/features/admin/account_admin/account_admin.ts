@@ -16,7 +16,7 @@ export class Account_admincomponent implements OnInit {
   admin: any = null;
   selectedFile?: File;
   previewUrl: string = 'assets/user.jpg';
-
+  isLoading = false;
   toast = {
     show: false,
     message: '',
@@ -80,46 +80,54 @@ export class Account_admincomponent implements OnInit {
 
   /** ✅ Cập nhật thông tin admin */
   capNhatAdmin() {
-    if (!this.admin) {
-      this.showToast('Không tìm thấy thông tin nhân viên.', 'error');
+  if (!this.admin) {
+    this.showToast('Không tìm thấy thông tin nhân viên.', 'error');
+    return;
+  }
+
+  this.isLoading = true;
+
+  const updatedAdmin: any = {
+    ho_ten: this.admin.ho_ten,
+    email: this.admin.email,
+    loai_nguoi_dung: this.admin.loai_nguoi_dung,
+    gioi_tinh: this.admin.gioi_tinh,
+    ngay_sinh: this.admin.ngay_sinh,
+    dia_chi: this.admin.dia_chi,
+  };
+
+  if (this.admin.mat_khau_moi) {
+    if (this.admin.mat_khau_moi !== this.admin.xac_nhan_mat_khau_moi) {
+      this.isLoading = false;
+      this.showToast('Mật khẩu xác nhận không khớp!', 'error');
       return;
     }
-
-    // 🔹 Tạo object mới chứa tất cả field cần giữ hoặc update
-    const updatedAdmin: any = {
-      ho_ten: this.admin.ho_ten,
-      email: this.admin.email,
-      loai_nguoi_dung: this.admin.loai_nguoi_dung, // ✅ phải giữ loại nhân viên
-      gioi_tinh: this.admin.gioi_tinh,
-      ngay_sinh: this.admin.ngay_sinh,
-      dia_chi: this.admin.dia_chi,
-    };
-
-    // 🔹 Nếu người dùng nhập mật khẩu mới thì thêm vào object
-    if (this.admin.mat_khau_moi) {
-      if (this.admin.mat_khau_moi !== this.admin.xac_nhan_mat_khau_moi) {
-        this.showToast('Mật khẩu xác nhận không khớp!', 'error');
-        return;
-      }
-      updatedAdmin.mat_khau = this.admin.mat_khau_moi;
-    }
-
-    this.adminService.CapNhatNhanVien(this.admin.ma_nguoi_dung, updatedAdmin, this.selectedFile)
-      .subscribe({
-        next: (res) => {
-          this.showToast('Cập nhật thành công!', 'success');
-          this.loadAdmin();
-          this.selectedFile = undefined;
-
-          const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-          if (fileInput) fileInput.value = '';
-        },
-        error: (err) => {
-          console.error('Lỗi khi cập nhật:', err);
-          this.showToast('Cập nhật thất bại!', 'error');
-        }
-      });
+    updatedAdmin.mat_khau = this.admin.mat_khau_moi;
   }
+
+  this.adminService.CapNhatNhanVien(
+    this.admin.ma_nguoi_dung,
+    updatedAdmin,
+    this.selectedFile
+  ).subscribe({
+    next: () => {
+      this.isLoading = false;
+
+      this.showToast('Cập nhật thành công!', 'success');
+
+      this.loadAdmin();
+      this.selectedFile = undefined;
+
+      const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    },
+
+    error: () => {
+      this.isLoading = false;
+      this.showToast('Cập nhật thất bại!', 'error');
+    }
+  });
+}
 
 
   /** 🔑 Mở dialog đổi mật khẩu */

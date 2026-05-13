@@ -98,14 +98,21 @@
         </mat-form-field>
       </div>
 
-      
+
 
     </div>
   </div>
   <div class="flex justify-end gap-4 mt-8">
-    <button matButton="filled" (click)="addMonAn()">
-      <mat-icon>check</mat-icon>
-      Thêm mới
+    <button matButton="filled" (click)="addMonAn()" [disabled]="loading" class="min-w-[140px]">
+      <span class="flex items-center gap-2 justify-center">
+
+        <mat-icon *ngIf="!loading">check</mat-icon>
+
+        <mat-spinner *ngIf="loading" diameter="18"></mat-spinner>
+
+        {{ loading ? 'Đang thêm...' : 'Thêm mới' }}
+
+      </span>
     </button>
 
     <button mat-raised-button (click)="close()">

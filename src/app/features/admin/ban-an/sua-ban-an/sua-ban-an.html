@@ -74,9 +74,19 @@
 
     <!-- Button Cập nhật -->
 
-    <button matButton="filled" (click)="capNhat()">
-      <mat-icon>check</mat-icon>
-      Cập nhật
+    <button matButton="filled" (click)="capNhat()" [disabled]="isLoading"
+      class="flex items-center gap-2 justify-center">
+      <mat-icon *ngIf="isLoading" class="animate-spin">
+        refresh
+      </mat-icon>
+
+      <mat-icon *ngIf="!isLoading">
+        check
+      </mat-icon>
+
+      <span>
+        {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật' }}
+      </span>
     </button>
 
     <!-- Button Hủy -->

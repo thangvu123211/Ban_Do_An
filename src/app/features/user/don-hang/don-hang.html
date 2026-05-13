@@ -1,120 +1,181 @@
-<!-- <div class="hoa-don-container">
-  <h2>Danh sách hóa đơn</h2>
-
-  <div *ngIf="loading">Đang tải dữ liệu...</div>
-
-  <table *ngIf="!loading" class="table">
-    <thead>
-      <tr>
-        <th>Mã HD</th>
-        <th>Khách hàng</th>
-        <th>SĐT</th>
-        <th>Địa chỉ</th>
-        <th>Ngày</th>
-        <th>Tổng tiền</th>
-        <th>Trạng thái</th>
-        <th>Thao tác</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let hd of hoaDons">
-        <td>{{ hd.ma_hd }}</td>
-        <td>{{ hd.ho_ten }}</td>
-        <td>{{ hd.sdt }}</td>
-        <td>{{ hd.dia_chi }}</td>
-        <td>{{ hd.ngay | date:'dd/MM/yyyy HH:mm' }}</td> -->
-<!-- <td>{{ hd.tong_tien | number }} đ</td>
-        <td>
-          <span class="badge">{{ hd.trang_thai }}</span>
-        </td>
-        <td>
-          <button
-            *ngIf="hd.trang_thai !== 'da_giao' && hd.trang_thai !== 'da_huy'"
-            (click)="huyHoaDon(hd.ma_hd)">
-            Hủy
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>  -->
-
-<!-- HEADER -->
 <div class="relative h-96 flex items-center justify-start px-10">
-    <div class=" z-10">
-        <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
-        <p class="text-lg max-w-lg">
-            Đây là trang quản lý đơn hàng. Bạn có thể xem trạng thái giao hàng ở đây.
-        </p>
-    </div>
+  <div class=" z-10">
+    <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
+    <p class="text-lg max-w-lg">
+      Đây là trang quản lý đơn hàng. Bạn có thể xem tất cả đơn hàng ở đây
+    </p>
+  </div>
 </div>
 
 
 <div class="container mx-auto px-6 mt-10">
 
-    <mat-card class="w-full shadow-xl rounded-2xl p-6">
+  <mat-card class="w-full shadow-xl rounded-2xl p-6">
 
-        <!-- HEADER -->
-        <div class="flex justify-between items-center mb-6 border-b pb-4">
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-6 border-b pb-4">
 
-            <h3 class="text-2xl font-semibold">
-                Danh Sách Nhân Viên
-            </h3>
+      <h3 class="text-2xl font-semibold">
+        Danh Sách đơn hàng
+      </h3>
 
-            <button mat-flat-button>
-                Thêm Mới
-            </button>
-        </div>
+      <button matButton="filled">
+        <mat-icon>card_travel</mat-icon>
+        Giỏ hàng của bạn
+      </button>
+    </div>
 
-        <!-- TABLE -->
-        <div class="overflow-x-auto">
-            <table class="min-w-full border rounded-lg overflow-hidden text-sm">
+    <!-- TABLE -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full border rounded-lg overflow-hidden text-sm">
 
-                <thead class="text-sm">
-                    <tr>
-                        <th class="px-4 py-3 text-center border">Mã đơn hàng</th>
-                        <th class="px-4 py-3 text-center border">Tên khách hàng</th>
-                        <th class="px-4 py-3 text-center border">SĐT</th>
-                        <th class="px-4 py-3 text-center border">Địa chỉ</th>
-                        <th class="px-4 py-3 text-center border">Ngày</th>
-                        <th class="px-4 py-3 text-center border">Tổng tiền</th>
-                        <th class="px-4 py-3 text-center border">trạng thái</th>
-                        <th class="px-4 py-3 text-center border">Thao tác</th>
-                    </tr>
-                </thead>
+        <thead class="text-sm">
+          <tr>
+            <th class="px-4 py-3 text-center border">Mã đơn hàng</th>
+            <th class="px-4 py-3 text-center border">Tên khách hàng</th>
+            <th class="px-4 py-3 text-center border">SĐT</th>
+            <th class="px-4 py-3 text-center border">Địa chỉ</th>
+            <th class="px-4 py-3 text-center border">Ngày</th>
+            <th class="px-4 py-3 text-center border">Tổng tiền</th>
+            <th class="px-4 py-3 text-center border">Ghi chú</th>
+            <th class="px-4 py-3 text-center border">trạng thái</th>
+            <th class="px-4 py-3 text-center border">Thao tác</th>
+          </tr>
+        </thead>
 
-                <tbody>
+        <tbody>
+          <ng-container *ngFor="let hd of hoaDons">
 
-                    <tr *ngFor="let hd of hoaDons">
+            <!-- ===== DÒNG HÓA ĐƠN ===== -->
+            <tr>
+              <td class="px-4 py-7 text-center border">{{ hd.ma_hd }}</td>
+              <td class="px-4 py-7 text-center border">{{ hd.ho_ten }}</td>
+              <td class="px-4 py-7 text-center border">{{ hd.sdt }}</td>
+              <td class="px-4 py-7 text-center border">{{ hd.dia_chi }}</td>
+              <td class="px-4 py-7 text-center border">
+                {{ hd.ngay | date:'dd/MM/yyyy' }}
+              </td>
+              <td class="px-4 py-7 text-center border">
+                {{ hd.tong_tien | number }} đ
+              </td>
 
-                        <td class="px-4 py-7 text-center border">{{ hd.ma_hd }}</td>
-                        <td class="px-4 py-7 text-center border">{{ hd.ho_ten }}</td>
-                        <td class="px-4 py-7 text-center border">{{ hd.sdt }}</td>
-                        <td class="px-4 py-7 text-center border">{{ hd.dia_chi }}</td>
-                        <td class="px-4 py-7 text-center border">{{ hd.ngay | date:'dd/MM/yyyy' }}</td>
-                        <td class="px-4 py-7 text-center border">{{ hd.tong_tien }}</td>
-                        <td class="px-4 py-7 text-center border">{{ hd.trang_thai }}</td>
-                        <td class="px-4 py-7 text-center border">
-                            <div class="flex justify-center gap-2">
+              <!-- GHI CHÚ (an toàn null) -->
+              <td class="px-4 py-7 text-center border text-gray-600 italic">
+                {{ hd.ghi_chu || '—' }}
+              </td>
 
-                                <button mat-icon-button matTooltip="Thông tin đơn hàng" (click)="ThongTinDonHang(hd)">
-                                    <mat-icon>delivery_truck_speed</mat-icon>
-                                </button>
+              <!-- TRẠNG THÁI -->
+              <td class="px-4 py-7 text-center border">
+                <span *ngIf="trangThaiMap[hd.trang_thai]; else unknownStatus"
+                  class="px-3 py-1 rounded-full text-sm font-semibold" [ngClass]="trangThaiMap[hd.trang_thai].classes">
+                  {{ trangThaiMap[hd.trang_thai].label }}
+                </span>
 
-                                <button mat-icon-button matTooltip="Xóa">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
+                <ng-template #unknownStatus>
+                  <span class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-600">
+                    Không xác định
+                  </span>
+                </ng-template>
+              </td>
 
-                            </div>
+              <!-- THAO TÁC -->
+              <td class="px-4 py-7 text-center border">
+                <div class="flex justify-center gap-2">
+                  <button mat-icon-button matTooltip="Thông tin đơn hàng" (click)="ThongTinDonHang(hd)">
+                    <mat-icon>info</mat-icon>
+                  </button>
+
+                  <button mat-icon-button matTooltip="Xem chi tiết" (click)="toggleExpand(hd.ma_hd)">
+                    <mat-icon>
+                      {{ expandedHoaDonId === hd.ma_hd ? 'expand_less' : 'expand_more' }}
+                    </mat-icon>
+                  </button>
+
+                  <button mat-icon-button matTooltip="Hủy đơn hàng">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- ===== DÒNG CHI TIẾT (FIX colspan = 9) ===== -->
+            <tr *ngIf="expandedHoaDonId === hd.ma_hd" class="bg-gray-100">
+              <td colspan="9" class="px-8 py-6">
+
+                <div class="bg-white rounded-2xl border shadow-sm p-6 space-y-5">
+
+                  <!-- HEADER -->
+                  <div class="flex justify-between items-center border-b pb-3">
+                    <h4 class="text-xl font-bold text-gray-800">
+                      Chi tiết đơn hàng #{{ hd.ma_hd }}
+                    </h4>
+
+                    <span *ngIf="trangThaiMap[hd.trang_thai]" class="px-3 py-1 rounded-full text-sm font-semibold"
+                      [ngClass]="trangThaiMap[hd.trang_thai].classes">
+                      {{ trangThaiMap[hd.trang_thai].label }}
+                    </span>
+                  </div>
+
+                  <!-- BẢNG CHI TIẾT -->
+                  <table class="w-full text-base border rounded-xl overflow-hidden">
+                    <thead class="bg-gray-200 text-gray-700">
+                      <tr>
+                        <th class="px-4 py-3 border text-center">Mã món</th>
+                        <th class="px-4 py-3 border text-left">Tên món</th>
+                        <th class="px-4 py-3 border text-center">Số lượng</th>
+                        <th class="px-4 py-3 border text-right">Đơn giá</th>
+                        <th class="px-4 py-3 border text-right">Thành tiền</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr *ngFor="let ct of hd.chi_tiet_hoa_dons" class="hover:bg-gray-50 transition">
+                        <td class="px-4 py-3 border text-center">
+                          {{ ct.ma_mon_an }}
                         </td>
 
-                    </tr>
+                        <td class="px-4 py-3 border">
+                          <div class="font-semibold">
+                            {{ ct.mon_an?.ten_mon_an || '---' }}
+                          </div>
+                          <div *ngIf="ct.ghi_chu" class="text-sm text-gray-500 italic">
+                            Ghi chú: {{ ct.ghi_chu }}
+                          </div>
+                        </td>
 
-                </tbody>
-            </table>
-        </div>
+                        <td class="px-4 py-3 border text-center font-semibold">
+                          x{{ ct.so_luong }}
+                        </td>
 
-    </mat-card>
+                        <td class="px-4 py-3 border text-right">
+                          {{ ct.don_gia | number }} đ
+                        </td>
+
+                        <td class="px-4 py-3 border text-right font-bold text-green-600">
+                          {{ ct.thanh_tien | number }} đ
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <!-- TỔNG TIỀN -->
+                  <div class="flex justify-between items-center bg-green-50 rounded-xl px-6 py-4 text-lg font-bold">
+                    <span>Tổng tiền</span>
+                    <span class="text-green-600">
+                      {{ hd.tong_tien | number }} đ
+                    </span>
+                  </div>
+
+                </div>
+
+              </td>
+            </tr>
+
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+  </mat-card>
 
 </div>

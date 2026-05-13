@@ -465,7 +465,11 @@ export class GioHang implements OnInit {
     });
   }
   thanhToan() {
-
+    this.tongSauGiam = this.tinhTienSauGiam();
+    if (!this.tongSauGiam || this.tongSauGiam < 0 || isNaN(this.tongSauGiam)) {
+      this.showToast('Tổng tiền không hợp lệ', 'error');
+      return;
+    }
     const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
     const monAns = this.gioHang.map(i => ({
@@ -480,7 +484,7 @@ export class GioHang implements OnInit {
       dia_chi: this.diaChi,
       ghi_chu: this.ghiChu,
       mon_ans: monAns,
-      tong_tien: this.tongSauGiam
+      tong_tien: Number(this.tongSauGiam ?? this.tongTien)
     };
 
     this.hoadonservice.taoHoaDon(request).subscribe({
@@ -523,14 +527,15 @@ export class GioHang implements OnInit {
     if (!this.maGiamGiaChon) return this.tongTien;
 
     const v = this.maGiamGiaChon;
-    let total = this.tongTien;
+
+    let total = Number(this.tongTien) || 0;
 
     if (v.loai_giam_gia === 'percent') {
-      total = total - (total * v.gia_tri_giam) / 100;
+      total = total - (total * Number(v.gia_tri_giam || 0)) / 100;
     }
 
     if (v.loai_giam_gia === 'fixed') {
-      total = total - v.gia_tri_giam;
+      total = total - Number(v.gia_tri_giam || 0);
     }
 
     return Math.max(total, 0);
@@ -545,5 +550,8 @@ export class GioHang implements OnInit {
   close() {
     this.dialogRef.close();
   }
-
+  goToDonHang() {
+    this.dialogRef.close();
+    this.router.navigate(['/user/don-hang']);
+  }
 }

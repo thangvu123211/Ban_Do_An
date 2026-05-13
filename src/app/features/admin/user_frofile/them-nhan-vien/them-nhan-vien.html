@@ -114,9 +114,15 @@
   <!-- Nút hành động -->
   <div class="flex justify-end gap-4 mt-8">
     <!-- Button Thêm mới -->
-    <button matButton="filled" (click)="addNhanVien()">
-      <mat-icon>check</mat-icon>
-      Thêm mới
+    <button matButton="filled" (click)="addNhanVien()" [disabled]="loading" class="relative min-w-[120px]">
+      <span class="flex items-center gap-2">
+        <mat-icon *ngIf="!loading">check</mat-icon>
+
+        <!-- spinner -->
+        <mat-spinner *ngIf="loading" diameter="18"></mat-spinner>
+
+        {{ loading ? 'Đang xử lý...' : 'Thêm mới' }}
+      </span>
     </button>
 
     <!-- Button Hủy -->

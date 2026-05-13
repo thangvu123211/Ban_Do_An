@@ -14,8 +14,8 @@ import { MATERIAL } from '../../../../Shared/material';
 })
 export class ThemBanAn implements OnInit {
 
-  seatNumbers: number[] = Array.from({length: 10}, (_, i) => i + 1);
-
+  seatNumbers: number[] = Array.from({ length: 10 }, (_, i) => i + 1);
+  isLoading = false;
   BanAn: any = {
     ten_ban: '',
     so_cho_ngoi: 1,
@@ -50,16 +50,27 @@ export class ThemBanAn implements OnInit {
 
   // ✅ Gửi form thêm nhân viên
   addBanAn() {
+    this.isLoading = true;
+
     const formData = new FormData();
+
     Object.entries(this.BanAn).forEach(([key, value]) =>
       formData.append(key, value as string)
     );
-    if (this.selectedFile) formData.append('image', this.selectedFile);
+
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
 
     this.QuanLyBanAnService.ThemBanAn(formData).subscribe({
       next: (res) => {
+        this.isLoading = false;
+
         this.dialogRef.close(true);
-        return;
+      },
+
+      error: () => {
+        this.isLoading = false;
       }
     });
   }

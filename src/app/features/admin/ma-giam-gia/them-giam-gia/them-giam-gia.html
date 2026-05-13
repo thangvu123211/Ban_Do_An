@@ -28,15 +28,11 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-  <mat-label>Giá trị giảm</mat-label>
+            <mat-label>Giá trị giảm</mat-label>
 
-  <input
-    matInput
-    [value]="giaTriGiamDisplay"
-    (input)="oonGiaTriGiamInput($event.target.value)"
-    placeholder="VD: 50.000đ hoặc 10%"
-  />
-</mat-form-field>
+            <input matInput [value]="giaTriGiamDisplay" (input)="oonGiaTriGiamInput($event.target.value)"
+                placeholder="VD: 50.000đ hoặc 10%" />
+        </mat-form-field>
 
         <mat-form-field appearance="outline">
             <mat-label>Đơn tối thiểu</mat-label>
@@ -69,9 +65,12 @@
     </div>
 
     <div class="flex justify-end gap-4 mt-6">
-        <button mat-raised-button color="primary" (click)="themGiamGia()">
-            <mat-icon>check</mat-icon>
-            Thêm
+        <button mat-raised-button color="primary" (click)="themGiamGia()" [disabled]="isLoading" class="btn-loading">
+            <mat-icon *ngIf="!isLoading">check</mat-icon>
+
+            <mat-icon *ngIf="isLoading" class="spin">autorenew</mat-icon>
+
+            {{ isLoading ? 'Đang xử lý...' : 'Thêm' }}
         </button>
         <button mat-button (click)="close()">Hủy</button>
     </div>

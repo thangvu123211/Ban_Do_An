@@ -17,7 +17,7 @@ export class SuaNhanVien implements OnInit {
   NhanVien: any = {};
   selectedFile?: File;
   previewImage: string | ArrayBuffer | null = null;
-
+loading = false;
   toast = {
     show: false,
     message: '',
@@ -80,31 +80,36 @@ export class SuaNhanVien implements OnInit {
 
   // ✅ Cập nhật nhân viên
   capNhatNhanVien() {
-    if (!this.NhanVien) return;
+  if (!this.NhanVien) return;
 
-    const updatedNhanVien: any = {
-      ho_ten: this.NhanVien.ho_ten,
-      email: this.NhanVien.email,
-      gioi_tinh: this.NhanVien.gioi_tinh,
-      ngay_sinh: this.NhanVien.ngay_sinh,
-      dia_chi: this.NhanVien.dia_chi,
-      loai_nguoi_dung: this.NhanVien.loai_nguoi_dung,
-      mat_khau:this.NhanVien.mat_khau_moi
-    };
+  this.loading = true;
 
+  const updatedNhanVien: any = {
+    ho_ten: this.NhanVien.ho_ten,
+    email: this.NhanVien.email,
+    gioi_tinh: this.NhanVien.gioi_tinh,
+    ngay_sinh: this.NhanVien.ngay_sinh,
+    dia_chi: this.NhanVien.dia_chi,
+    loai_nguoi_dung: this.NhanVien.loai_nguoi_dung,
+    mat_khau: this.NhanVien.mat_khau_moi
+  };
 
-    this.QuanLyNhanVienService.CapNhatNhanVien(this.data.ma_nguoi_dung, updatedNhanVien, this.selectedFile)
-      .subscribe({
-        next: () => {
-          this.showToast('Cập nhật thành công!', 'success');
-          this.dialogRef.close(true);
-        },
-        error: (err) => {
-          console.error('Lỗi khi cập nhật:', err);
-          this.showToast(err.error?.error || 'Cập nhật thất bại!', 'error');
-        }
-      });
-  }
+  this.QuanLyNhanVienService.CapNhatNhanVien(
+    this.data.ma_nguoi_dung,
+    updatedNhanVien,
+    this.selectedFile
+  ).subscribe({
+    next: () => {
+      this.loading = false;
+      this.showToast('Cập nhật thành công!', 'success');
+      this.dialogRef.close(true);
+    },
+    error: (err) => {
+      this.loading = false;
+      this.showToast(err.error?.error || 'Cập nhật thất bại!', 'error');
+    }
+  });
+}
 
 
 

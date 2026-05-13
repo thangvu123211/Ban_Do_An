@@ -11,59 +11,64 @@
       </p>
     </div>
 
-    <button
-      (click)="close()"
-      class="w-9 h-9 rounded-full flex items-center justify-center
-             hover:bg-gray-100 text-gray-500 hover:text-black transition"
-    >
+    <button (click)="close()" class="w-9 h-9 rounded-full flex items-center justify-center
+             hover:bg-gray-100 text-gray-500 hover:text-black transition">
       ✕
     </button>
   </div>
 
   <!-- STEPPER -->
   <div class="px-8 py-6 border-b">
-    <div class="flex items-center justify-between">
+
+    <!-- ❌ ĐÃ HỦY -->
+    <div *ngIf="isHuy()" class="bg-red-50 border border-red-300 rounded-xl
+              px-6 py-4 text-center">
+      <p class="text-red-600 font-bold text-lg">
+        ❌ Đơn hàng đã bị hủy
+      </p>
+      <p class="text-sm text-red-500 mt-1">
+        Đơn hàng này đã bị hủy và không thể tiếp tục xử lý
+      </p>
+    </div>
+
+    <!-- ✅ ĐÃ THANH TOÁN -->
+    <div *ngIf="isThanhToan()" class="bg-emerald-50 border border-emerald-300 rounded-xl
+              px-6 py-4 text-center">
+      <p class="text-emerald-700 font-bold text-lg">
+        💰 Đơn hàng đã thanh toán
+      </p>
+      <p class="text-sm text-emerald-600 mt-1">
+        Thanh toán đã được xác nhận thành công
+      </p>
+    </div>
+
+    <!-- 🔄 STEPPER BÌNH THƯỜNG -->
+    <div *ngIf="!isHuy() && !isThanhToan()" class="flex items-center justify-between">
+
       <ng-container *ngFor="let step of steps; let i = index">
 
         <div class="flex flex-col items-center flex-1">
-          <div
-            class="w-5 h-5 rounded-full flex items-center justify-center mb-2"
-            [ngClass]="
-              isActive(step.key)
-                ? 'bg-green-500'
-                : 'bg-gray-300'
-            "
-          >
-            <div
-              *ngIf="isActive(step.key)"
-              class="w-2 h-2 bg-white rounded-full"
-            ></div>
+          <div class="w-5 h-5 rounded-full flex items-center justify-center mb-2"
+            [ngClass]="isActive(step.key) ? 'bg-green-500' : 'bg-gray-300'">
+            <div *ngIf="isActive(step.key)" class="w-2 h-2 bg-white rounded-full"></div>
           </div>
 
-          <span
-            class="text-xs"
-            [ngClass]="
-              isActive(step.key)
+          <span class="text-xs" [ngClass]="isActive(step.key)
                 ? 'text-green-600 font-semibold'
-                : 'text-gray-400'
-            "
-          >
+                : 'text-gray-400'">
             {{ step.label }}
           </span>
         </div>
 
-        <div
-          *ngIf="i < steps.length - 1"
-          class="flex-1 h-[3px] -mt-4 rounded"
-          [ngClass]="
-            isActive(steps[i + 1].key)
-              ? 'bg-green-500'
-              : 'bg-gray-200'
-          "
-        ></div>
+        <div *ngIf="i < steps.length - 1" class="flex-1 h-[3px] -mt-4 rounded" [ngClass]="isActive(steps[i + 1].key)
+             ? 'bg-green-500'
+             : 'bg-gray-200'">
+        </div>
 
       </ng-container>
+
     </div>
+
   </div>
 
   <!-- CONTENT -->
@@ -94,13 +99,11 @@
           Món đã đặt
         </h3>
 
-        <div
-          *ngFor="let item of hoaDon.chi_tiet_hoa_dons"
-          class="flex justify-between items-start py-3 border-b last:border-b-0"
-        >
+        <div *ngFor="let item of hoaDon.chi_tiet_hoa_dons"
+          class="flex justify-between items-start py-3 border-b last:border-b-0">
           <div>
             <p class="font-medium text-gray-900">
-              Món #{{ item.ma_mon_an }}
+              {{ item.mon_an.ten_mon_an }}
             </p>
             <p *ngIf="item.ghi_chu" class="text-xs text-gray-500">
               Ghi chú: {{ item.ghi_chu }}
@@ -117,10 +120,8 @@
       </div>
 
       <!-- TỔNG TIỀN -->
-      <div
-        class="flex justify-between items-center
-               bg-green-50 rounded-xl p-4 text-lg font-bold"
-      >
+      <div class="flex justify-between items-center
+               bg-green-50 rounded-xl p-4 text-lg font-bold">
         <span>Tổng tiền</span>
         <span class="text-green-600">
           {{ hoaDon.tong_tien | number }}đ
@@ -139,11 +140,9 @@
         </h3>
 
         <div class="flex items-center gap-3">
-          <div
-            class="w-12 h-12 rounded-full bg-green-500
+          <div class="w-12 h-12 rounded-full bg-green-500
                    flex items-center justify-center
-                   text-white font-bold"
-          >
+                   text-white font-bold">
             NV
           </div>
 
@@ -163,12 +162,26 @@
 
       <!-- MAP (GIỮ NGUYÊN) -->
       <div class="flex-1">
-        <iframe
-          class="w-full h-full"
-          src="https://maps.google.com/maps?q=ho%20chi%20minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
-        ></iframe>
+        <iframe class="w-full h-full"
+          src="https://maps.google.com/maps?q=ho%20chi%20minh&t=&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
       </div>
 
     </div>
+  </div>
+
+  <div class="border-t bg-white px-6 py-4 flex justify-end items-center gap-3">
+
+    <!-- NÚT ĐẶT LẠI -->
+    <button  class="px-4 py-2 rounded-full border border-gray-300 text-gray-700
+           hover:bg-gray-100 transition active:scale-95">
+      🔁 Đặt lại
+    </button>
+
+    <!-- NÚT ĐÁNH GIÁ -->
+    <button  class="px-4 py-2 rounded-full bg-green-500 text-white font-medium shadow
+           hover:bg-green-600 transition active:scale-95">
+      ⭐ Đánh giá
+    </button>
+
   </div>
 </div>

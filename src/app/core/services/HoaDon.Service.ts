@@ -49,9 +49,10 @@ export class HoaDonService {
 
   // 🔹 Cập nhật trạng thái hóa đơn
   updateTrangThai(id: number, trangThai: string): Observable<any> {
-    return this.http.put(`${environment.apiUrl}/${id}/hoa-don/trang-thai`, {
-      trang_thai: trangThai
-    });
+    return this.http.put(
+      `${environment.apiUrl}/hoa-don/${id}/trang-thai`,
+      { trang_thai: trangThai }
+    );
   }
 
   // 🔹 Hủy hóa đơn
@@ -62,5 +63,24 @@ export class HoaDonService {
   // 🔹 Xóa hóa đơn
   xoaHoaDon(id: number): Observable<any> {
     return this.http.delete(`${environment.apiUrl}/hoa-don/${id}`);
+  }
+
+  //LayHoaDonCuaNguoiDung
+  getHoaDonCuaUser(): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}/hoa-don/user`
+    );
+  }
+
+  updateHoaDon(id: number, data: {
+    ho_ten: string;
+    sdt: string;
+    dia_chi: string;
+    ghi_chu?: string;
+  }): Observable<any> {
+    return this.http.put(
+      `${environment.apiUrl}/hoa-don/${id}`,
+      data
+    );
   }
 }

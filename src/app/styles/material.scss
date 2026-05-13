@@ -122,9 +122,14 @@ html {
   }
 
   .mat-mdc-dialog-container .mat-mdc-dialog-surface {
-  border-radius: 24px !important;
-  overflow: hidden !important;
-}
+    border-radius: 24px !important;
+    overflow: hidden !important;
+  }
+
+  //mau datetimeppacke
+  .mat-mdc-button:not(:disabled) {
+    color: rgb(0 0 0);
+  }
 
 }
 

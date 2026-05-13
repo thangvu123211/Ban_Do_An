@@ -6,7 +6,10 @@
 
       <div class="flex justify-between items-center mb-6 pr-4">
         <h2 class="text-2xl font-bold text-gray-900 pr-6">
-          Danh mục món ăn
+          Danh mục món ăn:
+          <span class="text-green-600">
+            {{ selectedLoaiName || 'Tất cả món ăn' }}
+          </span>
         </h2>
       </div>
 
@@ -24,7 +27,7 @@
           <div #scrollContainer class="flex gap-8 overflow-x-auto scroll-smooth scrollbar-hide py-2">
 
             <div *ngFor="let loai of loaimonan" class="flex-shrink-0 w-32 cursor-pointer"
-              (click)="getMonAnTheoLoai(loai.ma_loai_mon_an)">
+              (click)="getMonAnTheoLoai(loai.ma_loai_mon_an, loai.ten_loai_mon_an)">
 
               <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 transition"
                 [class.border-green-500]="selectedLoai === loai.ma_loai_mon_an"
@@ -56,87 +59,136 @@
     </div>
   </section>
 
+  <div class="flex justify-end items-center gap-3 pr-4 mt-6">
+
+    <!-- NÚT TẤT CẢ -->
+    <button (click)="getAllMonAn()" class="px-4 py-2 rounded-full bg-green-500 text-white font-medium shadow
+           hover:bg-green-600 transition active:scale-95">
+      Tất cả món ăn
+    </button>
+
+    <!-- CUSTOM DROPDOWN -->
+    <div class="relative" (click)="openSort = !openSort">
+
+      <!-- BUTTON HIỂN THỊ -->
+      <button class="flex items-center justify-between gap-3 w-56 px-4 py-2 rounded-full
+             border border-gray-300 bg-white shadow-sm
+             hover:border-green-500 transition">
+        <span class="text-gray-700">
+          {{
+          sortPrice === 'asc'
+          ? 'Giá: Thấp → Cao'
+          : sortPrice === 'desc'
+          ? 'Giá: Cao → Thấp'
+          : 'Sắp xếp giá'
+          }}
+        </span>
+
+        <span class="text-gray-500">▼</span>
+      </button>
+
+      <!-- DROPDOWN MENU -->
+      <div *ngIf="openSort"
+        class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+
+        <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer" (click)="sortPrice='asc'; sortMonAn(); openSort=false">
+          Giá: Thấp → Cao
+        </div>
+
+        <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer" (click)="sortPrice='desc'; sortMonAn(); openSort=false">
+          Giá: Cao → Thấp
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+
   <!-- ===== DANH SÁCH MÓN ===== -->
-  <section class="py-16">
-    <div class="flex justify-between items-center mb-6 pr-4 ml-7">
+  <section class="py-6">
+    <div class="flex justify-between items-center mb-6 px-6">
+      <h2 class="text-2xl font-bold text-gray-900">
+        Món ăn theo loại:
+        <span class="text-green-600">
+          {{ selectedLoaiName || 'Tất cả món ăn' }}
+        </span>
+      </h2>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-6">
 
       <div *ngFor="let mon of MonAn">
-  <mat-card class="rounded-xl bg-white border border-gray-200 shadow hover:shadow-xl transition duration-200 flex flex-col h-[420px]">
+        <mat-card class="h-full flex flex-col rounded-2xl overflow-hidden border border-gray-100
+               shadow-sm hover:shadow-xl transition duration-300 bg-white">
 
-    <!-- ẢNH -->
-    <mat-card-header class="p-0">
-      <div class="relative w-full h-60 bg-gray-100 overflow-hidden">
+          <!-- IMAGE -->
+          <div class="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
 
-        <!-- IMAGE -->
-        <img
-          [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
-          class="w-full h-full object-cover"
-        />
+            <img [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
+              class="w-full h-full object-cover hover:scale-105 transition duration-300" />
 
-        <!-- ❤️ ICON TRÁI TIM (FIX CHẮC CHẮN KHÔNG MẤT) -->
-        <button
-          type="button"
-          (click)="toggleYeuThich(mon)"
-          class="absolute top-2 right-2 z-50 w-10 h-10 rounded-full bg-white shadow flex items-center justify-center hover:scale-110 transition"
-        >
-          <span
-            class="text-xl leading-none transition-colors duration-200"
-            [class.text-red-500]="isFavorite(mon.ma_mon_an)"
-            [class.text-gray-400]="!isFavorite(mon.ma_mon_an)"
-          >
-            {{ isFavorite(mon.ma_mon_an) ? '❤️' : '🤍' }}
-          </span>
-        </button>
+            <!-- FAVORITE -->
+            <button type="button" (click)="toggleYeuThich(mon)" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 shadow
+                   flex items-center justify-center hover:scale-110 transition">
 
+              <span class="text-lg" [class.text-red-500]="isFavorite(mon.ma_mon_an)"
+                [class.text-gray-400]="!isFavorite(mon.ma_mon_an)">
+                {{ isFavorite(mon.ma_mon_an) ? '❤️' : '🤍' }}
+              </span>
+            </button>
+          </div>
+
+          <!-- CONTENT -->
+          <mat-card-content class="p-4 flex flex-col flex-1">
+
+            <!-- NAME + INFO BUTTON -->
+            <div class="flex items-center justify-between gap-2 mt-2">
+
+              <div class="flex items-center gap-2 min-w-0">
+
+                <h3 class="font-semibold text-lg text-gray-900"> {{ mon.ten_mon_an }} </h3>
+
+                <!-- NÚT I GIỮ NGUYÊN + TO HƠN -->
+                <button mat-icon-button matTooltip="Thông tin món" (click)="moThongTinMon(mon)"> <mat-icon
+                    class="text-gray-500 hover:text-gray-900"> info </mat-icon> </button>
+
+              </div>
+
+            </div>
+
+            <!-- DESCRIPTION -->
+            <p class="text-sm text-gray-500 mt-3 line-clamp-2">
+              {{ mon.mo_ta || 'Món ăn được chế biến từ nguyên liệu tươi ngon.' }}
+            </p>
+
+            <!-- PRICE + STAR + BUTTON -->
+            <div class="mt-auto pt-5 flex items-center justify-between">
+
+              <div>
+                <div class="text-green-600 font-bold text-xl">
+                  {{ mon.gia_tien | number }} đ
+                </div>
+
+                <div class="text-l text-yellow-500 mt-1">
+                  ★★★★☆ (4.8)
+                </div>
+              </div>
+
+              <button (click)="addToGioHang(mon)" class="w-11 h-11 rounded-full bg-green-500 hover:bg-green-600
+             text-white flex items-center justify-center shadow-md
+             active:scale-95 transition" matTooltip="Thêm vào giỏ hàng">
+
+                <mat-icon>add_shopping_cart</mat-icon>
+              </button>
+
+            </div>
+
+          </mat-card-content>
+
+        </mat-card>
       </div>
-    </mat-card-header>
-
-    <!-- NỘI DUNG -->
-    <mat-card-content class="p-4 flex flex-col flex-grow">
-
-      <div class="mt-2 flex items-center gap-2">
-        <h3 class="font-semibold text-lg text-gray-900">
-          {{ mon.ten_mon_an }}
-        </h3>
-
-        <!-- INFO BUTTON -->
-        <button mat-icon-button matTooltip="Thông tin món" (click)="moThongTinMon(mon)">
-          <mat-icon class="text-gray-500 hover:text-gray-900">
-            info
-          </mat-icon>
-        </button>
-      </div>
-
-      <!-- MÔ TẢ -->
-      <p class="text-xs text-gray-600 mt-1 line-clamp-2">
-        {{ mon.mo_ta || 'Món ăn ngon, chế biến từ nguyên liệu tươi.' }}
-      </p>
-
-      <!-- GIÁ + GIỎ HÀNG -->
-      <div class="mt-auto pt-4 flex items-center justify-between">
-
-        <span class="text-green-600 font-bold text-lg">
-          {{ mon.gia_tien | number }} đ
-        </span>
-
-        <button
-          mat-icon-button
-          matTooltip="Thêm vào giỏ hàng"
-          class="bg-green-500 text-white rounded-full"
-          (click)="addToGioHang(mon)"
-        >
-          <mat-icon>shopping_bag</mat-icon>
-        </button>
-
-      </div>
-
-    </mat-card-content>
-
-  </mat-card>
-</div>
 
     </div>
   </section>

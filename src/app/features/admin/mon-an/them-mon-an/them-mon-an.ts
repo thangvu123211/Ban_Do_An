@@ -18,8 +18,9 @@ export class ThemMonAn implements OnInit {
     ten_mon_an: '',
     gia_tien: 0,
     trang_thai: '',
-    mo_ta:'',
+    mo_ta: '',
   }
+  loading = false;
   danhSachLoaiMonAn: any[] = [];
   selectedFile: File | null = null;
   previewUrl: string | null = null;
@@ -33,34 +34,36 @@ export class ThemMonAn implements OnInit {
   ) { }
 
   addMonAn() {
-  const formData = new FormData();
+    this.loading = true;
 
-  formData.append('ma_loai_mon_an', String(this.MonAn.ma_loai_mon_an));
-  formData.append('ten_mon_an', this.MonAn.ten_mon_an);
-  formData.append('gia_tien', String(this.MonAn.gia_tien));
-  formData.append('trang_thai', String(this.MonAn.trang_thai));
-  formData.append('mo_ta', String(this.MonAn.mo_ta));
+    const formData = new FormData();
 
-  if (this.selectedFile) {
-    formData.append('image', this.selectedFile);
-  }
+    formData.append('ma_loai_mon_an', String(this.MonAn.ma_loai_mon_an));
+    formData.append('ten_mon_an', this.MonAn.ten_mon_an);
+    formData.append('gia_tien', String(this.MonAn.gia_tien));
+    formData.append('trang_thai', String(this.MonAn.trang_thai));
+    formData.append('mo_ta', String(this.MonAn.mo_ta));
 
-  this.QuanLyMonAn.ThemMonAn(formData).subscribe({
-    next: (res: any) => {
-      console.log('Thêm món ăn thành công:', res);
-
-      // backend trả { data: [...] }
-      if (res?.data) {
-        this.dialogRef.close(res.data); // trả danh sách mới cho component cha
-      } else {
-        this.dialogRef.close(true);
-      }
-    },
-    error: (err) => {
-      console.error('Lỗi thêm món ăn', err);
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
     }
-  });
-}
+
+    this.QuanLyMonAn.ThemMonAn(formData).subscribe({
+      next: (res: any) => {
+        this.loading = false;
+
+        if (res?.data) {
+          this.dialogRef.close(res.data);
+        } else {
+          this.dialogRef.close(true);
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Lỗi thêm món ăn', err);
+      }
+    });
+  }
 
 
   chonAnh(input: HTMLInputElement) {
@@ -78,11 +81,11 @@ export class ThemMonAn implements OnInit {
     this.dialogRef.close(false);
   }
   onGiaTienChange(event: any) {
-  const raw = this.moneyFormat.rawNumber(event.target.value);
-  this.MonAn.gia_tien = raw;
+    const raw = this.moneyFormat.rawNumber(event.target.value);
+    this.MonAn.gia_tien = raw;
 
-  event.target.value = this.moneyFormat.formatVND(raw);
-}
+    event.target.value = this.moneyFormat.formatVND(raw);
+  }
 
   ngOnInit(): void {
     this.QuanLyLoaiMonAn.LayTatCaLoaiMonAn().subscribe((res: any) => {

@@ -24,6 +24,7 @@ export class ThemNhanVien implements OnInit {
     ngay_sinh: null,
     loai_nguoi_dung: 'user',
   };
+  loading = false;
 
   selectedFile: File | null = null;
   previewUrl: string | null = null;
@@ -53,19 +54,27 @@ export class ThemNhanVien implements OnInit {
 
   // ✅ Gửi form thêm nhân viên
   addNhanVien() {
-    const formData = new FormData();
-    Object.entries(this.NhanVien).forEach(([key, value]) =>
-      formData.append(key, value as string)
-    );
-    if (this.selectedFile) formData.append('image', this.selectedFile);
+  this.loading = true;
 
-    this.QuanLyNhanVienService.ThemNhanVien(formData).subscribe({
-      next: (res) => {
-        this.dialogRef.close(true);
-        return;
-      }
-    });
+  const formData = new FormData();
+  Object.entries(this.NhanVien).forEach(([key, value]) =>
+    formData.append(key, value as string)
+  );
+
+  if (this.selectedFile) {
+    formData.append('image', this.selectedFile);
   }
+
+  this.QuanLyNhanVienService.ThemNhanVien(formData).subscribe({
+    next: () => {
+      this.loading = false;
+      this.dialogRef.close(true);
+    },
+    error: () => {
+      this.loading = false;
+    }
+  });
+}
 
   close() {
     this.dialogRef.close(false);

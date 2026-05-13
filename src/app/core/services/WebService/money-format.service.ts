@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -15,4 +16,5 @@ export class MoneyFormatService {
   rawNumber(value: string): number {
     return Number(value.replace(/\D/g, ''));
   }
+
 }

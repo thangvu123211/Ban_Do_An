@@ -16,6 +16,7 @@ export class SuaBanAn implements OnInit{
   banAn: any = {};
   selectedFile?: File;
   previewImage: string | ArrayBuffer | null = null;
+  isLoading = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -48,23 +49,28 @@ export class SuaBanAn implements OnInit{
   }
 
   capNhat() {
-    const payload = {
-      ten_ban: this.banAn.ten_ban,
-      so_cho_ngoi: this.banAn.so_cho_ngoi,
-      trang_thai: this.banAn.trang_thai
-    };
+  this.isLoading = true;
 
-    this.QuanLyBanAnService.CapNhatBanAn(this.data.ma_ban, payload, this.selectedFile)
-      .subscribe({
-        next: (res) => {
-          this.dialogRef.close(true);
-        },
-        error: err => {
-          console.log(err);
-          alert("Lỗi cập nhật");
-        }
-      });
-  }
+  const payload = {
+    ten_ban: this.banAn.ten_ban,
+    so_cho_ngoi: this.banAn.so_cho_ngoi,
+    trang_thai: this.banAn.trang_thai
+  };
+
+  this.QuanLyBanAnService
+    .CapNhatBanAn(this.data.ma_ban, payload, this.selectedFile)
+    .subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        console.log(err);
+        this.isLoading = false;
+        alert("Lỗi cập nhật");
+      }
+    });
+}
 
   close() {
     this.dialogRef.close(false);
