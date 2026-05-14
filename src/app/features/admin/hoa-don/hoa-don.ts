@@ -5,6 +5,7 @@ import { MATERIAL } from '../../../Shared/material';
 import { HoaDonService } from '../../../core/services/HoaDon.Service';
 import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-message/toast-message';
 import { SuaHoaDon } from './sua-hoa-don/sua-hoa-don';
+import { WebsocketService } from '../../../core/services/websocket.service';
 
 @Component({
   selector: 'app-hoa-don',
@@ -28,7 +29,9 @@ export class HoaDon implements OnInit {
 
   constructor(
     private hoaDonService: HoaDonService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private wsService: WebsocketService
+  ) { }
 
   showToast(message: string, type: 'success' | 'warn' | 'error') {
     this.toast.show = true;
@@ -39,6 +42,7 @@ export class HoaDon implements OnInit {
 
   ngOnInit(): void {
     this.loadHoaDons();
+    this.connectRealtime();
   }
   loadHoaDons() {
     this.loading = true;
@@ -52,6 +56,44 @@ export class HoaDon implements OnInit {
         this.showToast('Lỗi không thể tải tất cả đơn hàng', 'error');
       }
     });
+  }
+
+  connectRealtime() {
+    this.wsService.connect(0); // tham số không dùng, giữ cho đúng interface
+
+    this.wsService.messages$.subscribe((msg: any) => {
+
+      switch (msg.type) {
+
+        case 'new_hoa_don':
+          this.hoaDons = [msg.payload, ...this.hoaDons];
+          this.showToast('Có đơn hàng mới', 'success');
+          break;
+
+        case 'update_trang_thai_hoa_don': {
+          const index = this.hoaDons.findIndex(
+            h => h.ma_hd === msg.payload.ma_hd
+          );
+          if (index !== -1) {
+            this.hoaDons[index].trang_thai = msg.payload.trang_thai;
+          }
+          break;
+        }
+
+        case 'cancel_hoa_don': {
+          const index = this.hoaDons.findIndex(
+            h => h.ma_hd === msg.payload.ma_hd
+          );
+          if (index !== -1) {
+            this.hoaDons[index].trang_thai = 'da_huy';
+          }
+          break;
+        }
+      }
+    });
+  }
+  ngOnDestroy() {
+    this.wsService.disconnect();
   }
 
   SuaDonHang(donHang: any) {

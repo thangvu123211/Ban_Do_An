@@ -3,6 +3,8 @@ import { HoaDonService } from '../../../core/services/HoaDon.Service';
 import { MATERIAL } from '../../../Shared/material';
 import { MatDialog } from '@angular/material/dialog';
 import { ThongTinDonHang } from '../dialogs/thong-tin-don-hang/thong-tin-don-hang';
+import { WebsocketService } from '../../../core/services/websocket.service';
+
 
 @Component({
   selector: 'app-don-hang',
@@ -17,10 +19,12 @@ export class DonHang implements OnInit {
 
   constructor(
     private hoaDonService: HoaDonService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private wsService: WebsocketService) { }
 
   ngOnInit(): void {
     this.loadHoaDons();
+    this.connectRealtime();
   }
   loadHoaDons() {
     this.loading = true;
@@ -34,6 +38,44 @@ export class DonHang implements OnInit {
         alert('Không thể tải hóa đơn');
       }
     });
+  }
+
+  connectRealtime() {
+    this.wsService.connect(0);
+
+    this.wsService.messages$.subscribe((msg: any) => {
+
+      switch (msg.type) {
+
+        case 'new_hoa_don_user':
+          this.hoaDons = [msg.payload, ...this.hoaDons];
+          break;
+
+        case 'update_trang_thai_hoa_don_user': {
+          const index = this.hoaDons.findIndex(
+            h => h.ma_hd === msg.payload.ma_hd
+          );
+          if (index !== -1) {
+            this.hoaDons[index].trang_thai = msg.payload.trang_thai;
+          }
+          break;
+        }
+
+        case 'cancel_hoa_don_user': {
+          const index = this.hoaDons.findIndex(
+            h => h.ma_hd === msg.payload.ma_hd
+          );
+          if (index !== -1) {
+            this.hoaDons[index].trang_thai = 'da_huy';
+          }
+          break;
+        }
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.wsService.disconnect();
   }
 
   ThongTinDonHang(hoaDon: any) {

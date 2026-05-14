@@ -483,8 +483,10 @@ export class GioHang implements OnInit {
       sdt: this.soDienThoai,
       dia_chi: this.diaChi,
       ghi_chu: this.ghiChu,
-      mon_ans: monAns,
-      tong_tien: Number(this.tongSauGiam ?? this.tongTien)
+
+      code_giam_gia: this.maGiamGiaChon?.code || null, // ⭐ QUAN TRỌNG
+
+      mon_ans: monAns
     };
 
     this.hoadonservice.taoHoaDon(request).subscribe({
