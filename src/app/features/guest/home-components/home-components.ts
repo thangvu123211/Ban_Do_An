@@ -4,12 +4,18 @@ import { QuanLyLoaiMonAn } from '../../../core/services/QuanLyLoaiMonAnService';
 import { QuanLyMonAn } from '../../../core/services/QuanLyMonAn.service';
 import { MATERIAL } from '../../../Shared/material';
 import { ViewChild, ElementRef } from '@angular/core';
+import { CartService } from '../../../core/services/cart.service';
+import { YeuThichService } from '../../../core/services/YeuThich.service';
+import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-message/toast-message';
+import { ThongTinMonAn } from '../dialogs/thong-tin-mon-an/thong-tin-mon-an';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-home-components',
   imports: [
 
-    MATERIAL
+    MATERIAL,
+    ToastMessageComponent
   ],
   templateUrl: './home-components.html',
   styleUrls: ['./home-components.scss']
@@ -24,49 +30,63 @@ export class HomeComponents implements OnInit, OnDestroy {
 
   danhSachLoaiMonAn: any[] = [];
   monAnNoiBat: any[] = [];
+  danhSach: any[] = [];
 
-  constructor(
-    private QuanLyLoaiMonAn: QuanLyLoaiMonAn,
-    private quanLyMonAn: QuanLyMonAn
-  ) { }
+  favoriteIds = new Set<number>();
+  _loadingFav = false;
+
+
+  toast = {
+    show: false,
+    message: '',
+    type: 'success' as 'success' | 'warn' | 'error'
+  };
 
   currentIndex = 0;
   private intervalId: any;
 
-  ngOnInit() {
-    // ✅ Khởi tạo hiệu ứng AOS
-    AOS.init({
-      duration: 1000,  // thời gian animation (ms)
-      once: false,      // ✅ chạy nhiều lần
-      mirror: true,     // ✅ animation chạy khi scroll lên và xuống
-      offset: 100,      // khoảng cách trước khi trigger animation
-    });
+  constructor(
+    private QuanLyLoaiMonAn: QuanLyLoaiMonAn,
+    private quanLyMonAn: QuanLyMonAn,
+    private cartService: CartService,
+    private yeuThichService: YeuThichService,
+    private dialog: MatDialog,
+  ) { }
 
-    this.startAutoSlide();
+  showToast(message: string, type: 'success' | 'warn' | 'error') {
+    this.toast.show = true;
+    this.toast.message = message;
+    this.toast.type = type;
+    setTimeout(() => (this.toast.show = false), 3000);
+  }
+
+
+
+  ngOnInit() {
+
+
+    // this.startAutoSlide();
     this.loadLoaiMonAn();
     this.loadMonAnNoiBat();
+    this.loadFavorites()
   }
 
-  // ✅ Cập nhật lại hiệu ứng AOS khi ảnh tự động đổi
-  ngAfterViewChecked() {
-    AOS.refresh();
-  }
 
-  startAutoSlide() {
-    this.intervalId = setInterval(() => {
-      this.nextSlide();
-    }, 4000); // đổi ảnh sau 4 giây
-  }
+  // startAutoSlide() {
+  //   this.intervalId = setInterval(() => {
+  //     this.nextSlide();
+  //   }, 4000); // đổi ảnh sau 4 giây
+  // }
 
-  nextSlide() {
-    this.currentIndex = (this.currentIndex + 1) % this.images.length;
-  }
+  // nextSlide() {
+  //   this.currentIndex = (this.currentIndex + 1) % this.images.length;
+  // }
 
-  goToSlide(index: number) {
-    this.currentIndex = index;
-    clearInterval(this.intervalId);
-    this.startAutoSlide();
-  }
+  // goToSlide(index: number) {
+  //   this.currentIndex = index;
+  //   clearInterval(this.intervalId);
+  //   this.startAutoSlide();
+  // }
 
   loadLoaiMonAn() {
     this.QuanLyLoaiMonAn.LayTatCaLoaiMonAn().subscribe({
@@ -78,6 +98,113 @@ export class HomeComponents implements OnInit, OnDestroy {
       }
     });
   }
+
+    loadFavorites() {
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    // ❌ CHƯA LOGIN → LOCAL
+    if (!token) {
+      const local = this.yeuThichService.getLocal();
+      this.danhSach = local;
+
+      // 🔥 QUAN TRỌNG: set lại favoriteIds
+      this.favoriteIds = new Set(local.map(x => x.ma_mon_an));
+
+      return;
+    }
+
+    // 🔥 LOGIN → DB
+    this.yeuThichService.getByUser(userId).subscribe((res: any[]) => {
+
+      this.danhSach = res.map(x => ({
+        ma_mon_an: x.mon_an?.ma_mon_an,
+        ten_mon_an: x.mon_an?.ten_mon_an,
+        gia_tien: x.mon_an?.gia_tien,
+        anh_mon_an: x.mon_an?.anh_mon_an
+      }));
+
+      // 🔥 fix luôn case undefined + đồng bộ kiểu number
+      this.favoriteIds = new Set(
+        res.map(x => Number(x.mon_an?.ma_mon_an))
+      );
+    });
+  }
+
+  isFavorite(maMonAn: number): boolean {
+    return this.favoriteIds.has(maMonAn);
+  }
+  toggleYeuThich(mon: any) {
+    const token = localStorage.getItem('token');
+    const maMonAn = mon.ma_mon_an;
+
+    const tenMon = mon.ten_mon_an || 'món ăn';
+
+    // ❌ CHƯA LOGIN → LOCAL
+    if (!token) {
+      if (this.favoriteIds.has(maMonAn)) {
+        this.yeuThichService.removeLocal(maMonAn);
+        this.favoriteIds.delete(maMonAn);
+
+        this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
+      } else {
+        this.yeuThichService.addLocal(mon);
+        this.favoriteIds.add(maMonAn);
+
+        this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
+      }
+      return;
+    }
+
+    // 🔥 CHỐNG CLICK NHANH
+    if (this._loadingFav) return;
+    this._loadingFav = true;
+
+    if (this.favoriteIds.has(maMonAn)) {
+      this.yeuThichService.removeDB(maMonAn).subscribe({
+        next: () => {
+          this.favoriteIds.delete(maMonAn);
+          this._loadingFav = false;
+
+          this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
+        },
+        error: () => {
+          this._loadingFav = false;
+          this.showToast(`Không thể bỏ yêu thích ${tenMon}`, 'error');
+        }
+      });
+    } else {
+      this.yeuThichService.addDB(maMonAn).subscribe({
+        next: () => {
+          this.favoriteIds.add(maMonAn);
+          this._loadingFav = false;
+
+          this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
+        },
+        error: () => {
+          this._loadingFav = false;
+          this.showToast(`Không thể thêm ${tenMon}`, 'error');
+        }
+      });
+    }
+  }
+
+  addToGioHang(mon: any) {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      this.cartService.addLocal(mon);
+      this.showToast('Đã thêm vào giỏ hàng', 'success');
+      return;
+    }
+
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    this.cartService.addDB(mon.ma_mon_an, 1).subscribe(() => {
+      this.cartService.loadCountFromDB(userId);
+      this.showToast('Đã thêm vào giỏ hàng', 'success');
+    });
+  }
   loadMonAnNoiBat() {
     this.quanLyMonAn.LayTatCaMonAn().subscribe({
       next: (res: any) => {
@@ -87,6 +214,24 @@ export class HomeComponents implements OnInit, OnDestroy {
       },
       error: (err) => console.error(err)
     });
+  }
+
+  moThongTinMon(mon: any) {
+
+    const dialogRef = this.dialog.open(ThongTinMonAn, {
+      width: '650px',
+      maxWidth: '95vw',
+      height: '85vh',
+      panelClass: 'thong-tin-mon-dialog',
+      data: mon
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result?.success) {
+        this.showToast(result.message, 'success');
+      }
+    });
+
   }
 
   ngOnDestroy() {

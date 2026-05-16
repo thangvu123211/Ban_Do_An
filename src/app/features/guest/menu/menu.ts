@@ -79,15 +79,11 @@ export class Menu implements OnInit {
 
 
   constructor(
-    private http: HttpClient,
-    private hoadonservice: HoaDonService,
-    private route: ActivatedRoute,
+
     private quanlimonan: QuanLyMonAn,
     private quanliloaimonan: QuanLyLoaiMonAn,
-    private quanLyBanAn: QuanLyBanAnService,
     private dialog: MatDialog,
     private cartService: CartService,
-    private authService: AuthService,
     private yeuThichService: YeuThichService,
   ) { }
 

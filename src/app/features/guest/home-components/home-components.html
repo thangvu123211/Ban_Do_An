@@ -1,47 +1,134 @@
 <!-- ================= HERO / BANNER ================= -->
-<div class="relative w-full h-screen font-[Poppins] text-gray-900">
-  <img
-    [src]="images[currentIndex]"
-    alt="Banner"
-    class="absolute inset-0 w-full h-full object-cover brightness-90 transition-opacity duration-1000 ease-in-out" />
+<!-- ================= HERO / BANNER ================= -->
+<!-- ================= HERO / BANNER ================= -->
+<section class="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-green-100">
 
-  <div class="absolute inset-0 bg-white/20"></div>
+  <!-- Background decorations (full width) -->
+  <div class="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-green-200/30"></div>
+  <div class="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-green-200/20"></div>
 
-  <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-6">
-    <h1 class="text-5xl md:text-7xl font-bold mb-4 drop-shadow tracking-wide">
-      SWEET TREATS,
-    </h1>
+  <!-- CONTENT CONTAINER (MATCH HEADER) -->
+  <div class="relative max-w-7xl mx-auto px-4 md:px-6 pt-28 pb-20">
+    <div class="grid items-center gap-12 lg:grid-cols-2 text-center lg:text-left">
 
-    <p class="text-2xl md:text-3xl mb-8 font-light tracking-widest text-gray-600">
-      PERFECT EATS
-    </p>
+      <!-- ================= CONTENT ================= -->
+      <div class="flex flex-col gap-6">
 
-    <!-- <button
-      class="bg-green-600 text-white font-semibold px-8 py-4 rounded-full
-             hover:bg-green-700 transition-all duration-300
-             shadow-lg hover:scale-105"
-      [routerLink]="['/datban']">
-      Đặt Bàn Ngay
-    </button> -->
-  </div>
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 w-fit">
+          <span class="text-lg">🎉</span>
+          <span class="font-semibold text-green-700">
+            Giảm 30% cho đơn đầu tiên
+          </span>
+        </div>
 
-  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-4">
-    <div
-      *ngFor="let img of images; let i = index"
-      (click)="goToSlide(i)"
-      class="w-10 h-10 flex justify-center items-center font-bold rounded-full cursor-pointer transition-all duration-200"
-      [ngClass]="{
-        'bg-green-600 text-white scale-110': i === currentIndex,
-        'bg-white text-gray-700 border border-gray-300': i !== currentIndex
-      }">
-      {{ i + 1 }}
+        <!-- Title -->
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
+          Đặt món ngon,
+          <span class="text-green-600">giao nhanh</span><br />
+          tận nơi
+        </h1>
+
+        <!-- Description -->
+        <p class="max-w-xl text-lg text-gray-600">
+          Khám phá hàng ngàn món ăn từ các nhà hàng yêu thích.
+          Giao hàng nhanh chóng trong 30 phút, đảm bảo nóng hổi và tươi ngon.
+        </p>
+
+        <!-- Buttons -->
+        <div class="flex flex-wrap items-center gap-4">
+          <button
+            class="flex items-center gap-2 rounded-full bg-green-600 px-8 py-4 text-white font-semibold hover:bg-green-700 transition">
+            Đặt ngay
+            <mat-icon class="text-white">arrow_forward</mat-icon>
+          </button>
+
+          <button
+            class="rounded-full border border-green-300 px-8 py-4 font-semibold text-green-700 hover:bg-green-50 transition">
+            Xem thực đơn
+          </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="mt-6 flex flex-wrap gap-8">
+
+          <div class="flex items-center gap-3">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+              <mat-icon class="text-green-600">restaurant</mat-icon>
+            </div>
+            <div>
+              <p class="text-2xl font-bold">1000+</p>
+              <p class="text-sm text-gray-600">Món ăn</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+              <mat-icon class="text-green-600">store</mat-icon>
+            </div>
+            <div>
+              <p class="text-2xl font-bold">50+</p>
+              <p class="text-sm text-gray-600">Nhà hàng</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+              <mat-icon class="text-green-600">schedule</mat-icon>
+            </div>
+            <div>
+              <p class="text-2xl font-bold">30 phút</p>
+              <p class="text-sm text-gray-600">Giao hàng</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================= IMAGE ================= -->
+      <div class="relative flex justify-center lg:justify-end">
+
+        <div class="relative">
+
+          <!-- Main Image -->
+          <div class="relative h-72 w-72 md:h-96 md:w-96 lg:h-[420px] lg:w-[420px]
+                      overflow-hidden rounded-full bg-green-200/30">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=600&fit=crop"
+              alt="Món ăn ngon" class="w-full h-full object-cover" />
+          </div>
+
+          <!-- Rating -->
+          <div class="absolute -left-6 top-1/4 flex items-center gap-2 rounded-xl bg-white p-3 shadow-lg">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100">
+              <mat-icon class="text-yellow-500">star</mat-icon>
+            </div>
+            <div>
+              <p class="text-sm font-semibold">4.9</p>
+              <p class="text-xs text-gray-500">10k+ đánh giá</p>
+            </div>
+          </div>
+
+          <!-- Delivery -->
+          <div class="absolute -right-6 bottom-1/4 flex items-center gap-2 rounded-xl bg-white p-3 shadow-lg">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+              <mat-icon class="text-green-600">schedule</mat-icon>
+            </div>
+            <div>
+              <p class="text-sm font-semibold">Giao nhanh</p>
+              <p class="text-xs text-gray-500">Chỉ từ 15 phút</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </div>
-</div>
+</section>
 
 <!-- ================= DANH MỤC MÓN ĂN ================= -->
-<section class="py-16 text-center bg-gray-50">
-  <div class="mx-auto px-2 md:px-6">
+<section class="py-16 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 text-center">
 
     <h2 class="text-4xl font-bold mb-10 text-gray-900">
       Danh Mục Món Ăn
@@ -49,21 +136,20 @@
 
     <div class="flex items-center gap-4">
 
-      <button
-        mat-icon-button
-        (click)="scrollLeft()"
-        class="bg-white text-gray-600 border border-gray-300
+      <!-- NÚT TRÁI -->
+      <button mat-icon-button (click)="scrollLeft()" class="bg-white text-gray-600 border border-gray-300
                hover:bg-gray-100 hover:text-gray-900
-               rounded-full shrink-0 z-10 shadow">
+               rounded-full shrink-0 shadow">
         <mat-icon>chevron_left</mat-icon>
       </button>
 
+      <!-- KHUNG SCROLL -->
       <div class="flex-1 overflow-hidden">
         <div #scrollContainer class="flex gap-8 overflow-x-auto scroll-smooth scrollbar-hide py-2">
 
           <div *ngFor="let item of danhSachLoaiMonAn" class="flex-shrink-0 w-32 cursor-pointer">
-            <div
-              class="w-32 h-32 mx-auto rounded-full overflow-hidden
+
+            <div class="w-32 h-32 mx-auto rounded-full overflow-hidden
                      border-4 border-gray-300 hover:border-green-500 transition">
               <img [src]="item.anh_loai_mon_an" class="w-full h-full object-cover" />
             </div>
@@ -76,12 +162,10 @@
         </div>
       </div>
 
-      <button
-        mat-icon-button
-        (click)="scrollRight()"
-        class="bg-white text-gray-600 border border-gray-300
+      <!-- NÚT PHẢI -->
+      <button mat-icon-button (click)="scrollRight()" class="bg-white text-gray-600 border border-gray-300
                hover:bg-gray-100 hover:text-gray-900
-               rounded-full shrink-0 z-10 shadow">
+               rounded-full shrink-0 shadow">
         <mat-icon>chevron_right</mat-icon>
       </button>
 
@@ -91,55 +175,175 @@
 
 <!-- ================= MÓN ĂN NỔI BẬT ================= -->
 <section class="py-16 bg-white border-t border-gray-200">
-  <h2 class="text-3xl md:text-4xl font-semibold text-center mb-12 text-gray-900">
-    Món Ăn Nổi Bật
-  </h2>
+  <div class="max-w-7xl mx-auto px-4 md:px-6">
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-6">
-    <div *ngFor="let mon of monAnNoiBat">
-      <mat-card
-        class="rounded-xl overflow-hidden bg-white
-               border border-gray-200
-               shadow hover:shadow-xl transition duration-200 flex flex-col">
+    <h2 class="text-3xl md:text-4xl font-semibold text-center mb-12 text-gray-900">
+      Món Ăn Nổi Bật
+    </h2>
 
-        <mat-card-header class="p-0">
-          <div class="relative w-full h-48 bg-gray-100">
-            <img
-              [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
-              class="w-full h-full object-cover" />
-          </div>
-        </mat-card-header>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-        <mat-card-content class="p-4 flex flex-col flex-grow">
-          <div class="mt-2 flex items-center gap-2">
-            <h3 class="font-semibold text-lg text-gray-900">
-              {{ mon.ten_mon_an }}
-            </h3>
+      <div *ngFor="let mon of monAnNoiBat">
 
-            <button mat-icon-button matTooltip="Thông tin món">
-              <mat-icon class="text-gray-500 hover:text-gray-900">info</mat-icon>
-            </button>
-          </div>
+        <mat-card
+            class="h-full flex flex-col rounded-2xl overflow-hidden border border-gray-100
+                   shadow-sm hover:shadow-xl transition duration-300 bg-white">
 
-          <p class="text-xs mt-1 line-clamp-2 text-gray-600">
-            {{ mon.mo_ta || 'Món ăn ngon, chế biến từ nguyên liệu tươi.' }}
-          </p>
+            <!-- IMAGE -->
+            <div class="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
+              <img
+                [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
+                class="w-full h-full object-cover hover:scale-105 transition duration-300" />
 
-          <div class="mt-auto pt-4 flex items-center justify-between">
-            <span class="text-green-600 font-bold text-lg">
-              {{ mon.gia_tien | number }} đ
-            </span>
+              <button type="button" (click)="toggleYeuThich(mon)"
+                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 shadow
+                       flex items-center justify-center hover:scale-110 transition">
+                <span class="text-lg"
+                  [class.text-red-500]="isFavorite(mon.ma_mon_an)"
+                  [class.text-gray-400]="!isFavorite(mon.ma_mon_an)">
+                  {{ isFavorite(mon.ma_mon_an) ? '❤️' : '🤍' }}
+                </span>
+              </button>
+            </div>
 
-            <button
-              mat-icon-button
-              matTooltip="Thêm vào giỏ hàng"
-              class="bg-green-500 text-white rounded-full hover:bg-green-600">
-              <mat-icon>shopping_bag</mat-icon>
-            </button>
-          </div>
-        </mat-card-content>
+            <!-- CONTENT -->
+            <mat-card-content class="p-4 flex flex-col flex-1">
 
-      </mat-card>
+              <div class="flex items-center justify-between gap-2 mt-2">
+                <h3 class="font-semibold text-lg text-gray-900">
+                  {{ mon.ten_mon_an }}
+                </h3>
+
+                <button mat-icon-button matTooltip="Thông tin món"
+                  (click)="moThongTinMon(mon)">
+                  <mat-icon class="text-gray-500 hover:text-gray-900">
+                    info
+                  </mat-icon>
+                </button>
+              </div>
+
+              <p class="text-sm text-gray-500 mt-3 line-clamp-2">
+                {{ mon.mo_ta || 'Món ăn được chế biến từ nguyên liệu tươi ngon.' }}
+              </p>
+
+              <div class="mt-auto pt-5 flex items-center justify-between">
+                <div>
+                  <div class="text-green-600 font-bold text-xl">
+                    {{ mon.gia_tien | number }} đ
+                  </div>
+                  <div class="text-l text-yellow-500 mt-1">
+                    ★★★★☆ (4.8)
+                  </div>
+                </div>
+
+                <button (click)="addToGioHang(mon)"
+                  class="w-11 h-11 rounded-full bg-green-500 hover:bg-green-600
+                         text-white flex items-center justify-center shadow-md
+                         active:scale-95 transition"
+                  matTooltip="Thêm vào giỏ hàng">
+                  <mat-icon>add_shopping_cart</mat-icon>
+                </button>
+              </div>
+
+            </mat-card-content>
+          </mat-card>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= WHY CHOOSE US ================= -->
+<section class="bg-white py-20">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 text-center">
+
+    <!-- TITLE -->
+    <p class="uppercase text-sm tracking-widest text-green-600 mb-3">
+      Tại sao chọn FoodHub?
+    </p>
+
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+      Trải nghiệm dịch vụ đặt đồ ăn tuyệt vời nhất
+    </h2>
+
+    <p class="max-w-2xl mx-auto text-gray-600 mb-14">
+      FoodHub mang đến sự tiện lợi, nhanh chóng và an tâm trong từng đơn hàng.
+    </p>
+
+    <!-- FEATURES -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+      <!-- ITEM -->
+      <div
+        class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
+        <div
+          class="w-12 h-12 flex items-center justify-center rounded-full
+                 bg-green-100 text-green-600 mb-4 text-xl">
+          🛒
+        </div>
+        <h3 class="font-semibold text-lg text-gray-900 mb-2">
+          Đặt hàng dễ dàng
+        </h3>
+        <p class="text-gray-600 text-sm leading-relaxed">
+          Chỉ với vài thao tác đơn giản, món ngon đã sẵn sàng đến tay bạn.
+        </p>
+      </div>
+
+      <!-- ITEM -->
+      <div
+        class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
+        <div
+          class="w-12 h-12 flex items-center justify-center rounded-full
+                 bg-green-100 text-green-600 mb-4 text-xl">
+          🚀
+        </div>
+        <h3 class="font-semibold text-lg text-gray-900 mb-2">
+          Giao hàng siêu tốc
+        </h3>
+        <p class="text-gray-600 text-sm leading-relaxed">
+          Đảm bảo giao hàng trong 30 phút hoặc hoàn tiền cho bạn.
+        </p>
+      </div>
+
+      <!-- ITEM -->
+      <div
+        class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
+        <div
+          class="w-12 h-12 flex items-center justify-center rounded-full
+                 bg-green-100 text-green-600 mb-4 text-xl">
+          🔒
+        </div>
+        <h3 class="font-semibold text-lg text-gray-900 mb-2">
+          Thanh toán an toàn
+        </h3>
+        <p class="text-gray-600 text-sm leading-relaxed">
+          Hỗ trợ nhiều phương thức thanh toán với bảo mật cao.
+        </p>
+      </div>
+
+      <!-- ITEM -->
+      <div
+        class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
+        <div
+          class="w-12 h-12 flex items-center justify-center rounded-full
+                 bg-green-100 text-green-600 mb-4 text-xl">
+          💬
+        </div>
+        <h3 class="font-semibold text-lg text-gray-900 mb-2">
+          Hỗ trợ 24/7
+        </h3>
+        <p class="text-gray-600 text-sm leading-relaxed">
+          Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ bạn mọi lúc.
+        </p>
+      </div>
+
     </div>
   </div>
 </section>
+
+  <app-toast-message
+    [show]="toast.show"
+    [message]="toast.message"
+    [type]="toast.type">
+  </app-toast-message>

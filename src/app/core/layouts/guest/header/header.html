@@ -1,131 +1,94 @@
 <!-- 🔹 Top bar -->
-<div class="bg-gray-100 text-sm py-2 px-6 md:px-12
-         flex justify-between items-center
-         fixed top-0 w-full z-[60] text-gray-700">
-  <div>
-    Hotline đặt bàn:
-    <span class="font-semibold text-gray-900">0933924075</span>
-    <span class="ml-1">(8:30–21:30, tất cả các ngày trong tuần)</span>
-  </div>
+<div class="bg-gray-100 text-sm py-2
+            fixed top-0 w-full z-[60] text-gray-700">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 flex justify-between items-center">
+    <div>
+      Hotline đặt bàn:
+      <span class="font-semibold text-gray-900">0933924075</span>
+      <span class="ml-1">(8:30–21:30, tất cả các ngày trong tuần)</span>
+    </div>
 
-  <a [routerLink]="['/lienhe']" class="
-      relative
-      text-gray-800
-      after:content-['']
-      after:absolute
-      after:left-0
-      after:-bottom-1
-      after:w-0
-      after:h-[2px]
-      after:bg-green-600
-      after:transition-all
-      after:duration-300
-      hover:after:w-full
-      hover:text-green-600
-    ">
-    Liên hệ
-  </a>
+    <a
+      [routerLink]="['/lienhe']"
+      class="relative text-gray-800
+             after:absolute after:left-0 after:-bottom-1
+             after:w-0 after:h-[2px] after:bg-green-600
+             after:transition-all after:duration-300
+             hover:after:w-full hover:text-green-600">
+      Liên hệ
+    </a>
+  </div>
 </div>
 
 <!-- 🔹 Header chính -->
-<mat-toolbar class="custom-toolbar mat-elevation-z6
-         fixed w-full z-50
-         px-6 md:px-16 py-4
-         flex items-center justify-between
-         bg-white" style="top: 0; margin-top: 32px;">
+<mat-toolbar
+  class="custom-toolbar mat-elevation-z6
+         fixed w-full z-50 bg-white"
+  style="top: 32px">
 
-  <!-- Logo -->
-  <div class="flex items-center mt-3">
-    <img src="assets/Logo/logomoi4.png" alt="Logo" class="h-[145px] md:h-[190px] w-auto" />
-  </div>
+  <!-- KHUNG GIỮA -->
+  <div class="max-w-7xl mx-auto w-full px-4 md:px-6
+              flex items-center justify-between">
 
-  <!-- Menu trung tâm -->
-  <nav class="hidden md:flex items-center justify-center
-           gap-8 text-lg font-semibold tracking-wide
-           text-gray-800" style="font-family: 'Inter', sans-serif;">
+    <!-- Logo -->
+    <div class="flex items-center">
+      <img
+        src="assets/Logo/logomoi4.png"
+        alt="Logo"
+        class="h-[110px] md:h-[140px] w-auto" />
+    </div>
 
-    <!-- ITEM -->
-    <a [routerLink]="['/home']" class="
-        relative cursor-pointer
-        transition-colors duration-300
-        hover:text-green-600
-        after:absolute after:left-0 after:-bottom-1
-        after:w-0 after:h-[2px]
-        after:bg-green-600
-        after:transition-all after:duration-300
-        hover:after:w-full
-      ">
-      Trang chủ
-    </a>
+    <!-- Menu -->
+    <nav
+      class="hidden md:flex items-center gap-8
+             text-lg font-semibold tracking-wide
+             text-gray-800"
+      style="font-family: 'Inter', sans-serif">
 
-    <a [routerLink]="['/blog']" class="relative cursor-pointer transition-colors duration-300
-             hover:text-green-600
-             after:absolute after:left-0 after:-bottom-1
-             after:w-0 after:h-[2px]
-             after:bg-green-600
-             after:transition-all after:duration-300
-             hover:after:w-full">
-      Thông tin
-    </a>
+      <a [routerLink]="['/home']" class="nav-item">Trang chủ</a>
+      <a [routerLink]="['/blog']" class="nav-item">Thông tin</a>
+      <a [routerLink]="['/lienhe']" class="nav-item">Liên hệ</a>
+      <a [routerLink]="['/datban']" class="nav-item">Đặt bàn</a>
+      <a [routerLink]="['/thucdon']" class="nav-item">Thực đơn</a>
 
-    <a [routerLink]="['/lienhe']" class="relative cursor-pointer transition-colors duration-300
-             hover:text-green-600
-             after:absolute after:left-0 after:-bottom-1
-             after:w-0 after:h-[2px]
-             after:bg-green-600
-             after:transition-all after:duration-300
-             hover:after:w-full">
-      Liên hệ
-    </a>
+    </nav>
 
-    <a [routerLink]="['/datban']" class="relative cursor-pointer transition-colors duration-300
-             hover:text-green-600
-             after:absolute after:left-0 after:-bottom-1
-             after:w-0 after:h-[2px]
-             after:bg-green-600
-             after:transition-all after:duration-300
-             hover:after:w-full">
-      Đặt bàn
-    </a>
+    <!-- Icons -->
+    <div class="flex items-center gap-4 text-gray-700">
 
-    <a [routerLink]="['/thucdon']" class="relative cursor-pointer transition-colors duration-300
-             hover:text-green-600
-             after:absolute after:left-0 after:-bottom-1
-             after:w-0 after:h-[2px]
-             after:bg-green-600
-             after:transition-all after:duration-300
-             hover:after:w-full">
-      Thực đơn
-    </a>
-  </nav>
+      <button mat-icon-button matTooltip="Trang cá nhân"
+              class="hover:text-green-600"
+              (click)="goToUserPage()">
+        <mat-icon>person</mat-icon>
+      </button>
 
-  <!-- Icons bên phải -->
-  <div class="flex items-center gap-4 mr-6 text-gray-700 mt-2">
+      <button mat-icon-button
+              matTooltip="Giỏ hàng"
+              [matBadge]="tongSoMon"
+              matBadgeColor="warn"
+              [matBadgeHidden]="tongSoMon === 0"
+              class="hover:text-green-600"
+              (click)="moGioHang()">
+        <mat-icon>shopping_cart</mat-icon>
+      </button>
 
-    <!-- <button mat-icon-button matTooltip="Tìm kiếm" class="hover:text-green-600">
-      <mat-icon>search</mat-icon>
-    </button> -->
+      <button mat-icon-button
+              matTooltip="Trang yêu thích"
+              [matBadge]="(tongYeuThich$ | async) || null"
+              [matBadgeHidden]="(tongYeuThich$ | async) === 0"
+              matBadgeColor="warn"
+              class="hover:text-green-600"
+              (click)="moYeuThich()">
+        <mat-icon>favorite</mat-icon>
+      </button>
 
-    <button mat-icon-button matTooltip="Trang cá nhân" class="hover:text-green-600" (click)="goToUserPage()">
-      <mat-icon>person</mat-icon>
-    </button>
-
-    <button mat-icon-button matTooltip="Giỏ hàng" [matBadge]="tongSoMon" matBadgeColor="warn"
-      [matBadgeHidden]="tongSoMon === 0" class="hover:text-green-600" (click)="moGioHang()">
-
-      <mat-icon>shopping_cart</mat-icon>
-
-    </button>
-
-    <button mat-icon-button [matBadge]="(tongYeuThich$ | async) || null"
-      [matBadgeHidden]="(tongYeuThich$ | async) === 0" matBadgeColor="warn" class="hover:text-green-600"
-      matTooltip="Trang yêu thích" (click)="moYeuThich()">
-
-      <mat-icon>favorite</mat-icon>
-
-    </button>
+    </div>
 
   </div>
-
 </mat-toolbar>
-<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>
+
+<app-toast-message
+  [show]="toast.show"
+  [message]="toast.message"
+  [type]="toast.type">
+</app-toast-message>
