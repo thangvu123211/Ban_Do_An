@@ -48,7 +48,7 @@
 
                 <tbody>
                     <tr *ngFor="let monan of MonAn; let i = index">
-                        <td class="px-4 py-7 text-center border">{{ i + 1 }}</td>
+                        <td class="px-4 py-7 text-center border">{{ monan.ma_mon_an }}</td>
                         <td class="px-4 py-4 text-center border">
                             <img *ngIf="monan.anh_mon_an?.length > 0" [src]="monan.anh_mon_an[0].url" alt="Ảnh món ăn"
                                 class="w-12 h-12 rounded-full object-cover mx-auto shadow" />

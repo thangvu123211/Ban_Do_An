@@ -85,30 +85,25 @@ export class Menu implements OnInit {
     private dialog: MatDialog,
     private cartService: CartService,
     private yeuThichService: YeuThichService,
+    private route: ActivatedRoute
   ) { }
 
   /** Lấy tất cả món ăn */
   getAllMonAn() {
     this.selectedLoai = null;
-    this.selectedLoaiName = ''; // 👈 THÊM DÒNG NÀY
+    this.selectedLoaiName = '';
     this.sortPrice = '';
 
     this.quanlimonan.LayTatCaMonAn().subscribe({
       next: (res: any) => {
+        this.tatCaMonAn = res.data;
 
-        if (Array.isArray(res.data)) {
-
-          this.tatCaMonAn = res.data.map((u: MonAn) => ({
-            ...u,
-            anh_mon_an_url: u.anh_mon_an
-          }));
-
+        // nếu đang filter từ Home → giữ filter
+        if (this.selectedLoai) {
+          this.applyFilterAfterLoad();
+        } else {
           this.MonAn = [...this.tatCaMonAn];
         }
-
-      },
-      error: (err) => {
-        console.error(err);
       }
     });
   }
@@ -303,6 +298,26 @@ export class Menu implements OnInit {
     this.getAllLoaiMonAn();
     this.getAllMonAn();
     this.loadFavorites();
+
+    this.route.queryParams.subscribe(params => {
+      const loai = params['loai'];
+      const ten = params['ten'];
+
+      if (loai) {
+        this.selectedLoai = +loai;
+        this.selectedLoaiName = ten;
+
+        // 🔥 gọi lại filter SAU khi data load xong
+        this.applyFilterAfterLoad();
+      }
+    });
+  }
+  applyFilterAfterLoad() {
+    if (!this.tatCaMonAn?.length) return;
+
+    this.MonAn = this.tatCaMonAn.filter(
+      mon => mon.ma_loai_mon_an === this.selectedLoai
+    );
   }
   @ViewChild('scrollContainer', { static: false })
   scrollContainer!: ElementRef;
@@ -320,8 +335,4 @@ export class Menu implements OnInit {
       behavior: 'smooth'
     });
   }
-
 }
-
-
-

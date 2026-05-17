@@ -28,7 +28,7 @@ export class DatBan implements OnInit {
   selectedHour: number | null = null;
   selectedTableId: number | null = null;
   readonly panelOpenState = signal(false);
-
+  minDate!: Date;
 
 
   // state toast
@@ -55,7 +55,9 @@ export class DatBan implements OnInit {
 
   ngOnInit(): void {
     this.loadBanAn();
-
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    this.minDate = today;
   }
 
 

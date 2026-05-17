@@ -9,6 +9,8 @@ import { YeuThichService } from '../../../core/services/YeuThich.service';
 import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-message/toast-message';
 import { ThongTinMonAn } from '../dialogs/thong-tin-mon-an/thong-tin-mon-an';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { QuanLyGiamGiaService } from '../../../core/services/QuanLyGiamGia';
 
 @Component({
   selector: 'app-home-components',
@@ -42,6 +44,8 @@ export class HomeComponents implements OnInit, OnDestroy {
     type: 'success' as 'success' | 'warn' | 'error'
   };
 
+  danhSachGiamGia: any[] = [];
+
   currentIndex = 0;
   private intervalId: any;
 
@@ -51,6 +55,8 @@ export class HomeComponents implements OnInit, OnDestroy {
     private cartService: CartService,
     private yeuThichService: YeuThichService,
     private dialog: MatDialog,
+    private router: Router,
+    private giamGiaService: QuanLyGiamGiaService
   ) { }
 
   showToast(message: string, type: 'success' | 'warn' | 'error') {
@@ -58,6 +64,26 @@ export class HomeComponents implements OnInit, OnDestroy {
     this.toast.message = message;
     this.toast.type = type;
     setTimeout(() => (this.toast.show = false), 3000);
+  }
+
+  goToMenuByLoai(loai: any) {
+    this.router.navigate(['/thucdon'], {
+      queryParams: {
+        loai: loai.ma_loai_mon_an,
+        ten: loai.ten_loai_mon_an
+      }
+    });
+  }
+
+  loadGiamGia() {
+    this.giamGiaService.LayTatCaGiamGia().subscribe({
+      next: (res: any) => {
+        this.danhSachGiamGia = (res.data || []).filter((x: any) => x.is_active);
+      },
+      error: (err) => {
+        console.error('Lỗi load mã giảm giá', err);
+      }
+    });
   }
 
 
@@ -68,7 +94,14 @@ export class HomeComponents implements OnInit, OnDestroy {
     // this.startAutoSlide();
     this.loadLoaiMonAn();
     this.loadMonAnNoiBat();
-    this.loadFavorites()
+    this.loadFavorites();
+    this.loadGiamGia();
+  }
+
+  copyCode(code: string) {
+    navigator.clipboard.writeText(code).then(() => {
+      this.showToast(`Đã copy mã code `,'success');
+    });
   }
 
 
@@ -99,7 +132,7 @@ export class HomeComponents implements OnInit, OnDestroy {
     });
   }
 
-    loadFavorites() {
+  loadFavorites() {
     const token = localStorage.getItem('token');
     const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
@@ -240,18 +273,18 @@ export class HomeComponents implements OnInit, OnDestroy {
     }
   }
 
-  @ViewChild('scrollContainer', { static: false })
-  scrollContainer!: ElementRef;
+  @ViewChild('homeScrollContainer', { static: false })
+  homeScrollContainer!: ElementRef;
 
   scrollLeft() {
-    this.scrollContainer.nativeElement.scrollBy({
+    this.homeScrollContainer.nativeElement.scrollBy({
       left: -300,
       behavior: 'smooth'
     });
   }
 
   scrollRight() {
-    this.scrollContainer.nativeElement.scrollBy({
+    this.homeScrollContainer.nativeElement.scrollBy({
       left: 300,
       behavior: 'smooth'
     });

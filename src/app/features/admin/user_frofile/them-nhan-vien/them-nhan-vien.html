@@ -1,136 +1,164 @@
-<div class="relative p-6">
-  <!-- Nút đóng -->
+<form #nvForm="ngForm" class="relative p-6">
+
+  <!-- ===== NÚT ĐÓNG ===== -->
   <div class="flex justify-end">
-    <button matIconButton (click)="close()" class="flex items-center ">
-      <mat-icon>
-        close
-      </mat-icon>
+    <button matIconButton type="button" (click)="close()">
+      <mat-icon>close</mat-icon>
     </button>
   </div>
 
-
-  <!-- Tiêu đề -->
+  <!-- ===== TIÊU ĐỀ ===== -->
   <h2 class="text-2xl font-semibold mb-8 text-center">
     Thêm Mới Nhân Viên
   </h2>
 
   <div class="flex gap-8 flex-wrap lg:flex-nowrap">
-    <!-- Upload ảnh -->
+
+    <!-- ===== UPLOAD ẢNH (KHÔNG VALIDATE) ===== -->
     <div class="flex flex-col items-center gap-3 w-full lg:w-1/3">
-      <div
-        class="w-full h-48 border-2 border-dashed rounded-lg  cursor-pointer hover:border-cyan-400 transition overflow-hidden relative flex items-center justify-center"
+      <div class="w-full h-48 border-2 border-dashed rounded-lg cursor-pointer flex items-center justify-center"
         (click)="chonAnh(fileInput)">
         <ng-container *ngIf="!previewUrl; else daCoAnh">
-          <div class="flex flex-col items-center justify-center">
-            <mat-icon class="text-2xl mb-2 text-cyan-400 leading-none">cloud_upload</mat-icon>
-            <p class="text-sm font-medium text-gray-400">Chưa chọn ảnh</p>
+          <div class="flex flex-col items-center">
+            <mat-icon class="text-2xl text-cyan-400">cloud_upload</mat-icon>
+            <p class="text-sm text-gray-400">Chưa chọn ảnh</p>
           </div>
         </ng-container>
+
         <ng-template #daCoAnh>
-          <img [src]="previewUrl" alt="Preview" class="w-full h-full object-cover rounded-lg" />
+          <img [src]="previewUrl" class="w-full h-full object-cover rounded-lg" />
         </ng-template>
       </div>
 
-      <div class="text-xs text-gray-400 mt-2 text-center italic">
-        Hỗ trợ: JPEG, JPG, PNG &nbsp; | &nbsp; Dung lượng tối đa: 25MB
-      </div>
-
-      <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*" />
+      <input #fileInput type="file" hidden accept="image/*" (change)="onFileSelected($event)" />
     </div>
 
-    <!-- Form nhập -->
+    <!-- ===== FORM ===== -->
     <div class="grid grid-cols-2 gap-4 flex-1">
-      <!-- Họ tên -->
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Họ Tên</mat-label>
-          <input matInput [(ngModel)]="NhanVien.ho_ten" name="ho_ten">
-        </mat-form-field>
-      </div>
 
+      <!-- HỌ TÊN -->
+      <mat-form-field appearance="outline">
+        <mat-label>Họ tên</mat-label>
+        <input matInput [(ngModel)]="NhanVien.ho_ten" name="ho_ten" required minlength="2" #hoTen="ngModel" />
 
-      <!-- Giới tính -->
-      <div class="flex flex-col relative">
+        <mat-error *ngIf="hoTen.touched && hoTen.errors?.['required']">
+          Họ tên không được để trống
+        </mat-error>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Giới tính</mat-label>
-          <mat-select [(ngModel)]="NhanVien.gioi_tinh" name="gioi_tinh">
-            <mat-option value="Nam">Nam</mat-option>
-            <mat-option value="Nữ">Nữ</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+        <mat-error *ngIf="hoTen.touched && hoTen.errors?.['minlength']">
+          Họ tên phải ≥ 2 ký tự
+        </mat-error>
+      </mat-form-field>
 
-      <!-- Ngày sinh -->
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Ngày sinh</mat-label>
+      <!-- GIỚI TÍNH -->
+      <mat-form-field appearance="outline">
+        <mat-label>Giới tính</mat-label>
+        <mat-select [(ngModel)]="NhanVien.gioi_tinh" name="gioi_tinh" required #gioiTinh="ngModel">
+          <mat-option value="Nam">Nam</mat-option>
+          <mat-option value="Nữ">Nữ</mat-option>
+        </mat-select>
 
-          <input matInput [matDatepicker]="picker" [(ngModel)]="NhanVien.ngay_sinh" name="ngay_sinh" />
+        <mat-error *ngIf="gioiTinh.touched && gioiTinh.errors?.['required']">
+          Vui lòng chọn giới tính
+        </mat-error>
+      </mat-form-field>
 
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </div>
+      <!-- NGÀY SINH -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Ngày sinh</mat-label>
 
-      <!-- Địa chỉ -->
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Địa chỉ</mat-label>
-          <input matInput [(ngModel)]="NhanVien.dia_chi" name="dia_chi">
-        </mat-form-field>
-      </div>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="NhanVien.ngay_sinh" name="ngay_sinh" required
+          [max]="maxNgaySinh" #ngaySinh="ngModel" />
 
-      <!-- Email -->
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Email</mat-label>
-          <input matInput [(ngModel)]="NhanVien.email" name="email" placeholder="example@email.com" autocomplete="off">
-        </mat-form-field>
-      </div>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
 
-      <!-- Mật khẩu -->
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Mật khẩu</mat-label>
-          <input matInput [(ngModel)]="NhanVien.mat_khau" name="mat_khau" autocomplete="new-password">
-        </mat-form-field>
-      </div>
+        <!-- REQUIRED -->
+        <mat-error *ngIf="ngaySinh.touched && ngaySinh.errors?.['required']">
+          Ngày sinh không được để trống
+        </mat-error>
 
-      <!-- Loại nhân viên -->
-      <div class="flex flex-col col-span-2">
+        <!-- LỚN HƠN HIỆN TẠI -->
+        <mat-error *ngIf="ngaySinh.touched && ngaySinh.errors?.['max']">
+          Ngày sinh phải nhỏ hơn ngày hiện tại
+        </mat-error>
+      </mat-form-field>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Loại nhân viên</mat-label>
-          <mat-select [(ngModel)]="NhanVien.loai_nguoi_dung" name="loai_nguoi_dung">
-            <mat-option value="admin">Admin</mat-option>
-            <mat-option value="user">User</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+      <!-- ĐỊA CHỈ -->
+      <!-- <mat-form-field appearance="outline">
+        <mat-label>Địa chỉ</mat-label>
+        <input
+          matInput
+          [(ngModel)]="NhanVien.dia_chi"
+          name="dia_chi"
+          required
+          #diaChi="ngModel"
+        />
+
+        <mat-error *ngIf="diaChi.touched && diaChi.errors?.['required']">
+          Địa chỉ không được để trống
+        </mat-error>
+      </mat-form-field> -->
+
+      <!-- EMAIL -->
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput [(ngModel)]="NhanVien.email" name="email" required email #email="ngModel" />
+
+        <mat-error *ngIf="email.touched && email.errors?.['required']">
+          Email không được để trống
+        </mat-error>
+
+        <mat-error *ngIf="email.touched && email.errors?.['email']">
+          Email không đúng định dạng
+        </mat-error>
+      </mat-form-field>
+
+      <!-- MẬT KHẨU -->
+      <mat-form-field appearance="outline" class="col-span-2">
+        <mat-label>Mật khẩu</mat-label>
+        <input matInput type="password" [(ngModel)]="NhanVien.mat_khau" name="mat_khau" required minlength="6"
+          #matKhau="ngModel" />
+
+        <mat-error *ngIf="matKhau.touched && matKhau.errors?.['required']">
+          Mật khẩu không được để trống
+        </mat-error>
+
+        <mat-error *ngIf="matKhau.touched && matKhau.errors?.['minlength']">
+          Mật khẩu tối thiểu 6 ký tự
+        </mat-error>
+      </mat-form-field>
+
+      <!-- LOẠI NHÂN VIÊN -->
+      <mat-form-field appearance="outline" class="col-span-2">
+        <mat-label>Loại nhân viên</mat-label>
+        <mat-select [(ngModel)]="NhanVien.loai_nguoi_dung" name="loai_nguoi_dung" required #loaiNV="ngModel">
+          <mat-option value="admin">Admin</mat-option>
+          <mat-option value="user">User</mat-option>
+        </mat-select>
+
+        <mat-error *ngIf="loaiNV.touched && loaiNV.errors?.['required']">
+          Vui lòng chọn loại nhân viên
+        </mat-error>
+      </mat-form-field>
+
     </div>
   </div>
 
-  <!-- Nút hành động -->
+  <!-- ===== ACTION ===== -->
   <div class="flex justify-end gap-4 mt-8">
-    <!-- Button Thêm mới -->
-    <button matButton="filled" (click)="addNhanVien()" [disabled]="loading" class="relative min-w-[120px]">
-      <span class="flex items-center gap-2">
-        <mat-icon *ngIf="!loading">check</mat-icon>
 
-        <!-- spinner -->
-        <mat-spinner *ngIf="loading" diameter="18"></mat-spinner>
 
-        {{ loading ? 'Đang xử lý...' : 'Thêm mới' }}
-      </span>
+    <button matButton="filled" type="button" (click)="addNhanVien()" [disabled]="nvForm.invalid || loading"
+      class="flex items-center gap-2">
+      <mat-icon *ngIf="loading" class="animate-spin">refresh</mat-icon>
+      <mat-icon *ngIf="!loading">check</mat-icon>
+      {{ loading ? 'Đang thêm...' : 'Thêm mới' }}
     </button>
 
-    <!-- Button Hủy -->
-
-    <button mat-raised-button (click)="close()">
-      <mat-icon>close</mat-icon>
+    <button mat-raised-button type="button" (click)="close()">
       Hủy
     </button>
   </div>
 
-</div>
+</form>

@@ -1,101 +1,112 @@
-<div class="relative p-6 rounded-2xl shadow-2xl">
-  <!-- Nút đóng -->
+<form #banAnForm="ngForm" class="relative p-6 rounded-2xl shadow-2xl">
+
+  <!-- ===== NÚT ĐÓNG ===== -->
   <div class="flex justify-end">
-    <button matIconButton (click)="close()" class="flex items-center ">
-      <mat-icon>
-        close
-      </mat-icon>
+    <button matIconButton type="button" (click)="close()">
+      <mat-icon>close</mat-icon>
     </button>
   </div>
 
-
-  <!-- Tiêu đề -->
+  <!-- ===== TIÊU ĐỀ ===== -->
   <h2 class="text-2xl font-semibold mb-8 text-center">
     Thêm Mới Bàn Ăn
   </h2>
 
   <div class="flex gap-8 flex-wrap lg:flex-nowrap">
-    <!-- Upload ảnh -->
+
+    <!-- ===== UPLOAD ẢNH ===== -->
     <div class="flex flex-col items-center gap-3 w-full lg:w-1/3">
-      <div
-        class="w-full h-48 border-2 border-dashed cursor-pointer hover:border-cyan-400 transition overflow-hidden relative flex items-center justify-center"
+
+      <div class="w-full h-48 border-2 border-dashed cursor-pointer flex items-center justify-center"
         (click)="chonAnh(fileInput)">
+
         <ng-container *ngIf="!previewUrl; else daCoAnh">
-          <div class="flex flex-col items-center justify-center">
-            <mat-icon class="text-2xl mb-2 text-cyan-400 leading-none">cloud_upload</mat-icon>
-            <p class="text-sm font-medium text-gray-400">Chưa chọn ảnh</p>
+          <div class="flex flex-col items-center">
+            <mat-icon class="text-2xl mb-2 text-cyan-400">cloud_upload</mat-icon>
+            <p class="text-sm text-gray-400">Chưa chọn ảnh</p>
           </div>
         </ng-container>
+
         <ng-template #daCoAnh>
-          <img [src]="previewUrl" alt="Preview" class="w-full h-full object-cover rounded-lg" />
+          <img [src]="previewUrl" class="w-full h-full object-cover rounded-lg" />
         </ng-template>
+
       </div>
 
-      <div class="text-xs text-gray-400 mt-2 text-center italic">
-        Hỗ trợ: JPEG, JPG, PNG &nbsp; | &nbsp; Dung lượng tối đa: 25MB
-      </div>
-
-      <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*" />
+      <input #fileInput type="file" hidden accept="image/*" (change)="onFileSelected($event)" />
     </div>
 
-    <!-- Form nhập -->
+    <!-- ===== FORM ===== -->
     <div class="grid grid-cols-1 gap-4 flex-1">
-      <!-- Tên Bàn Ăn -->
-      <div class="flex flex-col gap-1">
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>
-            Tên bàn
-          </mat-label>
-          <input matInput [(ngModel)]="BanAn.ten_ban" name="ten_ban" placeholder="Nhập tên bàn ăn" />
-        </mat-form-field>
-      </div>
+      <!-- TÊN BÀN -->
+      <mat-form-field appearance="outline">
+        <mat-label>Tên bàn</mat-label>
 
-      <!-- Trạng Thái -->
-      <div class="flex flex-col gap-1">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Trạng thái</mat-label>
-          <mat-select [(ngModel)]="BanAn.trang_thai" name="trang_thai">
-            <mat-option value="0">Hết bàn</mat-option>
-            <mat-option value="1">Còn bàn</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+        <input matInput name="ten_ban" [(ngModel)]="BanAn.ten_ban" required minlength="2" #tenBan="ngModel" />
 
-      <!-- Số Chỗ Ngồi -->
-      <div class="flex flex-col gap-1">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Số chỗ ngồi</mat-label>
-          <mat-select [(ngModel)]="BanAn.so_cho_ngoi" name="so_cho_ngoi">
-            <mat-option *ngFor="let n of seatNumbers" [value]="n">{{n}} chỗ</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+        <mat-error *ngIf="tenBan.touched && tenBan.errors?.['required']">
+          Tên bàn không được để trống
+        </mat-error>
+
+        <mat-error *ngIf="tenBan.touched && tenBan.errors?.['minlength']">
+          Tên bàn phải từ 2 ký tự
+        </mat-error>
+      </mat-form-field>
+
+      <!-- TRẠNG THÁI -->
+      <mat-form-field appearance="outline">
+        <mat-label>Trạng thái</mat-label>
+
+        <mat-select name="trang_thai" [(ngModel)]="BanAn.trang_thai" required #trangThai="ngModel">
+
+          <mat-option [value]="1">Còn bàn</mat-option>
+          <mat-option [value]="0">Hết bàn</mat-option>
+
+        </mat-select>
+
+        <mat-error *ngIf="trangThai.touched && trangThai.errors?.['required']">
+          Vui lòng chọn trạng thái
+        </mat-error>
+      </mat-form-field>
+
+      <!-- SỐ CHỖ NGỒI -->
+      <mat-form-field appearance="outline">
+        <mat-label>Số chỗ ngồi</mat-label>
+
+        <mat-select name="so_cho_ngoi" [(ngModel)]="BanAn.so_cho_ngoi" required #soCho="ngModel">
+
+          <mat-option *ngFor="let n of seatNumbers" [value]="n">
+            {{ n }} chỗ
+          </mat-option>
+
+        </mat-select>
+
+        <mat-error *ngIf="soCho.touched && soCho.errors?.['required']">
+          Vui lòng chọn số chỗ ngồi
+        </mat-error>
+      </mat-form-field>
+
     </div>
-
-
   </div>
 
-  <!-- Nút hành động -->
+  <!-- ===== ACTION ===== -->
   <div class="flex justify-end gap-4 mt-8">
-    <button matButton="filled" (click)="addBanAn()" [disabled]="isLoading"
-      class="flex items-center gap-2 justify-center">
-      <mat-icon *ngIf="isLoading" class="animate-spin">
-        refresh
-      </mat-icon>
 
-      <mat-icon *ngIf="!isLoading">
-        check
-      </mat-icon>
+    <button matButton="filled" type="button" (click)="addBanAn()" [disabled]="banAnForm.invalid || isLoading">
 
-      <span>
-        {{ isLoading ? 'Đang thêm...' : 'Thêm mới' }}
-      </span>
+      <mat-icon *ngIf="!isLoading">check</mat-icon>
+      <mat-icon *ngIf="isLoading" class="animate-spin">refresh</mat-icon>
+
+      {{ isLoading ? 'Đang thêm...' : 'Thêm mới' }}
+
     </button>
 
-    <button mat-raised-button (click)="close()">
+    <button mat-raised-button type="button" (click)="close()">
       <mat-icon>close</mat-icon>
       Hủy
     </button>
+
   </div>
-</div>
+
+</form>

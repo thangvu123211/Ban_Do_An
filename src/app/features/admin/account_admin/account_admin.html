@@ -19,43 +19,37 @@
       <h3 class="text-xl font-semibold">Trang Cá Nhân</h3>
     </div>
 
-    <form class="space-y-6">
+    <form #f="ngForm" class="space-y-6">
 
-      <!-- USER INFO -->
+      <!-- ================= THÔNG TIN NGƯỜI DÙNG ================= -->
       <div>
         <h6 class="text-sm font-semibold mb-4">Thông Tin Người Dùng</h6>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <div class="mt-4 w-full">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Họ Tên</mat-label>
-              <input matInput placeholder="Nhập họ tên" [(ngModel)]="admin.ho_ten" name="HOTEN">
-            </mat-form-field>
-          </div>
+          <!-- ===== HỌ TÊN ===== -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Họ Tên</mat-label>
+            <input matInput placeholder="Nhập họ tên" [(ngModel)]="admin.ho_ten" name="ho_ten" />
+          </mat-form-field>
 
-          <div class="mt-4 w-full">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Email</mat-label>
-              <input matInput placeholder="Nhập email" [(ngModel)]="admin.email" name="EMAIL">
-            </mat-form-field>
-          </div>
+          <!-- ===== EMAIL ===== -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="Nhập email" [(ngModel)]="admin.email" name="email" />
+          </mat-form-field>
 
         </div>
 
+        <!-- ===== BUTTON SUBMIT ===== -->
         <div class="pt-4 flex justify-end">
-          <button matButton="filled" (click)="capNhatAdmin()" [disabled]="isLoading"
+          <button matButton="filled" (click)="capNhatAdmin()" [disabled]="f.invalid || isLoading"
             class="px-4 py-2 flex items-center gap-2">
-            <mat-icon *ngIf="isLoading" class="animate-spin">
-              refresh
-            </mat-icon>
-
-            <mat-icon *ngIf="!isLoading">
-              check
-            </mat-icon>
+            <mat-icon *ngIf="isLoading" class="animate-spin">refresh</mat-icon>
+            <mat-icon *ngIf="!isLoading">check</mat-icon>
 
             <span>
-              {{ isLoading ? 'Đang cập nhật...' : 'Cập Nhật' }}
+              {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật' }}
             </span>
           </button>
         </div>
@@ -63,7 +57,7 @@
 
       <mat-divider></mat-divider>
 
-      <button matButton="filled" (click)="DoiMatKhau()" class="px-4 py-2 ">
+      <button matButton="filled" type="button" (click)="DoiMatKhau()">
         Đổi mật khẩu
       </button>
 

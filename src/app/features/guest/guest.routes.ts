@@ -8,6 +8,8 @@ import { DatBan } from './dat-ban/dat-ban';
 import { Blog } from './blog/blog';
 import { Menu } from './menu/menu';
 import { LienHe } from './lien-he/lien-he';
+import { Hello } from './hello/hello';
+import { DoiTacWebsite } from './doi-tac-website/doi-tac-website';
 
 export const guestRoutes: Routes = [
   {
@@ -23,6 +25,8 @@ export const guestRoutes: Routes = [
       { path: 'blog', component: Blog, title: 'Thông tin nhà hàng' },
       { path: 'thucdon', component: Menu, title: 'Thực đơn' },
       { path: 'lienhe', component: LienHe, title: 'Liên hệ' },
+      { path: 'test', component: Hello, title: 'test' },
+      { path: 'doi_tac', component: DoiTacWebsite, title: 'Đối tác website' },
     ],
   },
 ];

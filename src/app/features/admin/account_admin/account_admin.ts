@@ -8,7 +8,7 @@ import { MATERIAL } from '../../../Shared/material';
 @Component({
   selector: 'app-account',
   standalone: true,
-  imports: [ToastMessageComponent,MATERIAL],
+  imports: [ToastMessageComponent, MATERIAL],
   templateUrl: './account_admin.html',
   styleUrls: ['./account_admin.scss']
 })
@@ -80,54 +80,86 @@ export class Account_admincomponent implements OnInit {
 
   /** ✅ Cập nhật thông tin admin */
   capNhatAdmin() {
-  if (!this.admin) {
-    this.showToast('Không tìm thấy thông tin nhân viên.', 'error');
-    return;
-  }
-
-  this.isLoading = true;
-
-  const updatedAdmin: any = {
-    ho_ten: this.admin.ho_ten,
-    email: this.admin.email,
-    loai_nguoi_dung: this.admin.loai_nguoi_dung,
-    gioi_tinh: this.admin.gioi_tinh,
-    ngay_sinh: this.admin.ngay_sinh,
-    dia_chi: this.admin.dia_chi,
-  };
-
-  if (this.admin.mat_khau_moi) {
-    if (this.admin.mat_khau_moi !== this.admin.xac_nhan_mat_khau_moi) {
-      this.isLoading = false;
-      this.showToast('Mật khẩu xác nhận không khớp!', 'error');
+    if (!this.validateAdmin()) {
       return;
     }
-    updatedAdmin.mat_khau = this.admin.mat_khau_moi;
+
+    this.isLoading = true;
+
+    const updatedAdmin: any = {
+      ho_ten: this.admin.ho_ten,
+      email: this.admin.email,
+      loai_nguoi_dung: this.admin.loai_nguoi_dung,
+      gioi_tinh: this.admin.gioi_tinh,
+      ngay_sinh: this.admin.ngay_sinh,
+      dia_chi: this.admin.dia_chi,
+    };
+
+    if (this.admin.mat_khau_moi) {
+      if (this.admin.mat_khau_moi !== this.admin.xac_nhan_mat_khau_moi) {
+        this.isLoading = false;
+        this.showToast('Mật khẩu xác nhận không khớp!', 'error');
+        return;
+      }
+      updatedAdmin.mat_khau = this.admin.mat_khau_moi;
+    }
+
+    this.adminService.CapNhatNhanVien(
+      this.admin.ma_nguoi_dung,
+      updatedAdmin,
+      this.selectedFile
+    ).subscribe({
+      next: () => {
+        this.isLoading = false;
+
+        this.showToast('Cập nhật thành công!', 'success');
+
+        this.loadAdmin();
+        this.selectedFile = undefined;
+
+        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+      },
+
+      error: () => {
+        this.isLoading = false;
+        this.showToast('Cập nhật thất bại!', 'error');
+      }
+    });
   }
 
-  this.adminService.CapNhatNhanVien(
-    this.admin.ma_nguoi_dung,
-    updatedAdmin,
-    this.selectedFile
-  ).subscribe({
-    next: () => {
-      this.isLoading = false;
-
-      this.showToast('Cập nhật thành công!', 'success');
-
-      this.loadAdmin();
-      this.selectedFile = undefined;
-
-      const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-      if (fileInput) fileInput.value = '';
-    },
-
-    error: () => {
-      this.isLoading = false;
-      this.showToast('Cập nhật thất bại!', 'error');
+  validateAdmin(): boolean {
+    if (!this.admin) {
+      this.showToast('Không có dữ liệu admin', 'error');
+      return false;
     }
-  });
-}
+
+    // ===== HỌ TÊN =====
+    if (!this.admin.ho_ten || this.admin.ho_ten.trim() === '') {
+      this.showToast('Họ tên không được để trống', 'warn');
+      return false;
+    }
+
+    if (this.admin.ho_ten.trim().length < 3) {
+      this.showToast('Họ tên phải có ít nhất 3 ký tự', 'warn');
+      return false;
+    }
+
+    // ===== EMAIL =====
+    if (!this.admin.email || this.admin.email.trim() === '') {
+      this.showToast('Email không được để trống', 'warn');
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.admin.email)) {
+      this.showToast('Email không đúng định dạng', 'warn');
+      return false;
+    }
+
+
+    return true;
+  }
 
 
   /** 🔑 Mở dialog đổi mật khẩu */

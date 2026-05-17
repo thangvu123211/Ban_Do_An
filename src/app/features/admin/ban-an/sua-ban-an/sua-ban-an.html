@@ -1,11 +1,11 @@
-<div class="relative p-6">
+<form #editBanForm="ngForm" class="relative p-6">
+
   <!-- Nút đóng -->
   <div class="flex justify-end">
-    <button matIconButton (click)="close()">
+    <button matIconButton type="button" (click)="close()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
-
 
   <!-- Tiêu đề -->
   <h2 class="text-2xl font-semibold mb-8 text-center">
@@ -14,87 +14,111 @@
 
   <div class="flex gap-8 flex-wrap lg:flex-nowrap">
 
-    <!-- Ảnh bàn + upload -->
+    <!-- Ảnh -->
     <div class="flex flex-col items-center gap-3 w-full lg:w-1/3">
 
-      <!-- Hiển thị ảnh -->
       <div class="w-48 h-48 rounded-lg overflow-hidden shadow-md">
-        <img [src]="previewImage || 'assets/user.jpg'" alt="Ảnh bàn" class="w-full h-full object-cover" />
+        <img [src]="previewImage || 'assets/user.jpg'"
+             class="w-full h-full object-cover" />
       </div>
 
-      <!-- Button upload -->
-      <button matButton="filled" (click)="fileInput.click()">
+      <button matButton="filled" type="button" (click)="fileInput.click()">
         <mat-icon>upload</mat-icon>
         Thay ảnh
       </button>
 
-      <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*" />
-
+      <input #fileInput type="file"
+             hidden
+             accept="image/*"
+             (change)="onFileSelected($event)" />
     </div>
 
-    <!-- Form nhập thông tin -->
+    <!-- FORM -->
     <div class="grid grid-cols-1 gap-4 flex-1">
 
-      <!-- Tên bàn -->
-      <div class="flex flex-col gap-1">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>
-            Tên bàn
-          </mat-label>
-          <input matInput [(ngModel)]="banAn.ten_ban">
-        </mat-form-field>
-      </div>
+      <!-- TÊN BÀN -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Tên bàn</mat-label>
 
-      <!-- Số chỗ ngồi -->
-      <div class="flex flex-col gap-1">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>
-            Số chỗ ngồi
-          </mat-label>
-          <input matInput [(ngModel)]="banAn.so_cho_ngoi" type="number">
-        </mat-form-field>
-      </div>
+        <input matInput
+               name="ten_ban"
+               [(ngModel)]="banAn.ten_ban"
+               required
+               minlength="2"
+               #tenBan="ngModel" />
 
-      <!-- Trạng thái -->
-      <div class="flex flex-col gap-1">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Trạng thái</mat-label>
-          <mat-select [(ngModel)]="banAn.trang_thai">
-            <mat-option [value]="0">Hết bàn</mat-option>
-            <mat-option [value]="1">Còn bàn</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+        <mat-error *ngIf="tenBan.touched && tenBan.errors?.['required']">
+          Tên bàn không được để trống
+        </mat-error>
+
+        <mat-error *ngIf="tenBan.touched && tenBan.errors?.['minlength']">
+          Tên bàn phải từ 2 ký tự
+        </mat-error>
+      </mat-form-field>
+
+      <!-- SỐ CHỖ NGỒI -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Số chỗ ngồi</mat-label>
+
+        <input matInput
+               type="number"
+               name="so_cho_ngoi"
+               [(ngModel)]="banAn.so_cho_ngoi"
+               required
+               min="1"
+               #soCho="ngModel" />
+
+        <mat-error *ngIf="soCho.touched && soCho.errors?.['required']">
+          Vui lòng nhập số chỗ ngồi
+        </mat-error>
+
+        <mat-error *ngIf="soCho.touched && soCho.errors?.['min']">
+          Số chỗ ngồi phải lớn hơn 0
+        </mat-error>
+      </mat-form-field>
+
+      <!-- TRẠNG THÁI -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Trạng thái</mat-label>
+
+        <mat-select name="trang_thai"
+                    [(ngModel)]="banAn.trang_thai"
+                    required
+                    #trangThai="ngModel">
+
+          <mat-option [value]="1">Còn bàn</mat-option>
+          <mat-option [value]="0">Hết bàn</mat-option>
+
+        </mat-select>
+
+        <mat-error *ngIf="trangThai.touched && trangThai.errors?.['required']">
+          Vui lòng chọn trạng thái
+        </mat-error>
+      </mat-form-field>
 
     </div>
   </div>
 
-  <!-- Nút hành động -->
+  <!-- ACTION -->
   <div class="flex justify-end gap-4 mt-8">
 
-    <!-- Button Cập nhật -->
+    <button matButton="filled"
+            type="button"
+            (click)="capNhat()"
+            [disabled]="editBanForm.invalid || isLoading">
 
-    <button matButton="filled" (click)="capNhat()" [disabled]="isLoading"
-      class="flex items-center gap-2 justify-center">
-      <mat-icon *ngIf="isLoading" class="animate-spin">
-        refresh
-      </mat-icon>
+      <mat-icon *ngIf="isLoading" class="animate-spin">refresh</mat-icon>
+      <mat-icon *ngIf="!isLoading">check</mat-icon>
 
-      <mat-icon *ngIf="!isLoading">
-        check
-      </mat-icon>
+      {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật' }}
 
-      <span>
-        {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật' }}
-      </span>
     </button>
 
-    <!-- Button Hủy -->
-
-    <button mat-raised-button (click)="close()">
+    <button mat-raised-button type="button" (click)="close()">
       <mat-icon>close</mat-icon>
       Hủy
     </button>
 
   </div>
-</div>
+
+</form>

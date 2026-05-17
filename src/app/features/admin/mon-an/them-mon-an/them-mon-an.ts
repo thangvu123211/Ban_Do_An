@@ -19,7 +19,10 @@ export class ThemMonAn implements OnInit {
     gia_tien: 0,
     trang_thai: '',
     mo_ta: '',
+  
   }
+  giaTienDisplay: string = '';
+
   loading = false;
   danhSachLoaiMonAn: any[] = [];
   selectedFile: File | null = null;
@@ -29,7 +32,7 @@ export class ThemMonAn implements OnInit {
     private dialogRef: MatDialogRef<ThemMonAn>,
     private QuanLyMonAn: QuanLyMonAn,
     private QuanLyLoaiMonAn: QuanLyLoaiMonAn,
-    private moneyFormat: MoneyFormatService,
+    private money: MoneyFormatService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
@@ -80,12 +83,16 @@ export class ThemMonAn implements OnInit {
   close() {
     this.dialogRef.close(false);
   }
-  onGiaTienChange(event: any) {
-    const raw = this.moneyFormat.rawNumber(event.target.value);
-    this.MonAn.gia_tien = raw;
+  onGiaTienInput(event: any) {
+  const value = event.target.value;
 
-    event.target.value = this.moneyFormat.formatVND(raw);
-  }
+  // convert raw number
+  const raw = this.money.rawNumber(value);
+  this.MonAn.gia_tien = raw;
+
+  // format lại
+  this.giaTienDisplay = this.money.formatVND(raw);
+}
 
   ngOnInit(): void {
     this.QuanLyLoaiMonAn.LayTatCaLoaiMonAn().subscribe((res: any) => {

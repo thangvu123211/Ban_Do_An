@@ -17,7 +17,8 @@ export class SuaNhanVien implements OnInit {
   NhanVien: any = {};
   selectedFile?: File;
   previewImage: string | ArrayBuffer | null = null;
-loading = false;
+  maxNgaySinh!: Date;
+  loading = false;
   toast = {
     show: false,
     message: '',
@@ -44,24 +45,28 @@ loading = false;
     if (this.data.ma_nguoi_dung) {
       this.loadNhanVienById(this.data.ma_nguoi_dung);
     }
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    today.setDate(today.getDate() - 1);
+    this.maxNgaySinh = today;
   }
 
   loadNhanVienById(ma_nguoi_dung: number) {
-  this.QuanLyNhanVienService.LayNhanVienTheoID(ma_nguoi_dung).subscribe({
-    next: (res) => {
-      this.NhanVien = res.data ?? res;
+    this.QuanLyNhanVienService.LayNhanVienTheoID(ma_nguoi_dung).subscribe({
+      next: (res) => {
+        this.NhanVien = res.data ?? res;
 
-      // 🔥 CHỈ THÊM 2 DÒNG NÀY
-      if (this.NhanVien.ngay_sinh) {
-        this.NhanVien.ngay_sinh = new Date(this.NhanVien.ngay_sinh);
-      }
+        // 🔥 CHỈ THÊM 2 DÒNG NÀY
+        if (this.NhanVien.ngay_sinh) {
+          this.NhanVien.ngay_sinh = new Date(this.NhanVien.ngay_sinh);
+        }
 
-      if (this.NhanVien.anh_nguoi_dung?.length) {
-        this.previewImage = this.NhanVien.anh_nguoi_dung[0].url;
+        if (this.NhanVien.anh_nguoi_dung?.length) {
+          this.previewImage = this.NhanVien.anh_nguoi_dung[0].url;
+        }
       }
-    }
-  });
-}
+    });
+  }
 
   // ✅ Chọn ảnh mới
   onFileSelected(event: any) {
@@ -80,36 +85,40 @@ loading = false;
 
   // ✅ Cập nhật nhân viên
   capNhatNhanVien() {
-  if (!this.NhanVien) return;
+    if (!this.NhanVien) return;
 
-  this.loading = true;
+    this.loading = true;
 
-  const updatedNhanVien: any = {
-    ho_ten: this.NhanVien.ho_ten,
-    email: this.NhanVien.email,
-    gioi_tinh: this.NhanVien.gioi_tinh,
-    ngay_sinh: this.NhanVien.ngay_sinh,
-    dia_chi: this.NhanVien.dia_chi,
-    loai_nguoi_dung: this.NhanVien.loai_nguoi_dung,
-    mat_khau: this.NhanVien.mat_khau_moi
-  };
+    const updatedNhanVien: any = {
+      ho_ten: this.NhanVien.ho_ten,
+      email: this.NhanVien.email,
+      gioi_tinh: this.NhanVien.gioi_tinh,
+      ngay_sinh: this.NhanVien.ngay_sinh,
+      dia_chi: this.NhanVien.dia_chi,
+      loai_nhan_vien: this.NhanVien.loai_nguoi_dung
+    };
 
-  this.QuanLyNhanVienService.CapNhatNhanVien(
-    this.data.ma_nguoi_dung,
-    updatedNhanVien,
-    this.selectedFile
-  ).subscribe({
-    next: () => {
-      this.loading = false;
-      this.showToast('Cập nhật thành công!', 'success');
-      this.dialogRef.close(true);
-    },
-    error: (err) => {
-      this.loading = false;
-      this.showToast(err.error?.error || 'Cập nhật thất bại!', 'error');
+    // ✅ CHỈ THÊM KHI CÓ NHẬP
+    if (this.NhanVien.mat_khau_moi?.trim()) {
+      updatedNhanVien.mat_khau = this.NhanVien.mat_khau_moi;
     }
-  });
-}
+
+    this.QuanLyNhanVienService.CapNhatNhanVien(
+      this.data.ma_nguoi_dung,
+      updatedNhanVien,
+      this.selectedFile
+    ).subscribe({
+      next: () => {
+        this.loading = false;
+        this.showToast('Cập nhật thành công!', 'success');
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.showToast(err.error?.error || 'Cập nhật thất bại!', 'error');
+      }
+    });
+  }
 
 
 

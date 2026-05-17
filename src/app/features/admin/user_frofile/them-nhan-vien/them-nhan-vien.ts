@@ -14,6 +14,8 @@ import { MATERIAL } from '../../../../Shared/material';
   styleUrls: ['./them-nhan-vien.scss'],
 })
 export class ThemNhanVien implements OnInit {
+  today = new Date();
+  maxNgaySinh!: Date;
   // ✅ Đặt tên class khác với tên biến để tránh xung đột
   NhanVien: any = {
     ho_ten: '',
@@ -35,7 +37,13 @@ export class ThemNhanVien implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+     const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    today.setDate(today.getDate() - 1);
+
+    this.maxNgaySinh = today;
+  }
 
   // ✅ Mở chọn file ảnh
   chonAnh(input: HTMLInputElement) {

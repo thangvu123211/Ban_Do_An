@@ -1,117 +1,166 @@
-<div class="relative p-6">
-  <!-- Nút đóng -->
+<form #editMonForm="ngForm" class="relative p-6">
+
+  <!-- NÚT ĐÓNG -->
   <div class="flex justify-end">
     <button matIconButton (click)="close()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 
-
-  <!-- Tiêu đề -->
+  <!-- TIÊU ĐỀ -->
   <h2 class="text-2xl font-semibold mb-8 text-center">
-    Chỉnh sửa thông tin bàn ăn
+    Chỉnh sửa món ăn
   </h2>
 
   <div class="flex gap-8 flex-wrap lg:flex-nowrap">
 
-    <!-- Ảnh bàn + upload -->
+    <!-- ẢNH -->
     <div class="flex flex-col items-center gap-3 w-full lg:w-1/3">
 
-      <!-- Hiển thị ảnh -->
       <div class="w-48 h-48 rounded-lg overflow-hidden shadow-md">
-        <img [src]="previewImage || 'assets/user.jpg'" alt="Ảnh bàn" class="w-full h-full object-cover" />
+        <img [src]="previewImage || 'assets/user.jpg'" class="w-full h-full object-cover" />
       </div>
 
-      <!-- Button upload -->
       <button matButton="filled" (click)="fileInput.click()">
         <mat-icon>upload</mat-icon>
         Thay ảnh
       </button>
 
-      <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*" />
-
+      <input #fileInput type="file" hidden (change)="onFileSelected($event)" />
     </div>
 
-    <!-- Form nhập thông tin -->
+    <!-- FORM -->
     <div class="grid grid-cols-2 gap-4 flex-1">
 
-      <!-- Hàng 1 -->
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Tên món ăn</mat-label>
-          <input [(ngModel)]="MonAn.ten_mon_an" matInput name="ten_mon_an" placeholder="Nhập tên món ăn" />
-        </mat-form-field>
-      </div>
+      <!-- TÊN MÓN -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Tên món ăn</mat-label>
 
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Tên loại món ăn</mat-label>
+        <input
+          matInput
+          [(ngModel)]="MonAn.ten_mon_an"
+          name="ten_mon_an"
+          required
+          minlength="2"
+          #tenMon="ngModel"
+        />
 
-          <mat-select [(ngModel)]="MonAn.ma_loai_mon_an">
+        <mat-error *ngIf="tenMon.touched && tenMon.errors?.['required']">
+          Tên món không được để trống
+        </mat-error>
 
-            <mat-option *ngFor="let item of danhSachLoaiMonAn" [value]="item.ma_loai_mon_an">
-              <div class="flex items-center gap-3">
+        <mat-error *ngIf="tenMon.touched && tenMon.errors?.['minlength']">
+          Tên món phải ≥ 2 ký tự
+        </mat-error>
+      </mat-form-field>
 
-                <!-- Ảnh loại món ăn -->
-                <img [src]="item.anh_loai_mon_an" class="w-8 h-8 object-cover rounded-md" />
+      <!-- LOẠI MÓN -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Loại món ăn</mat-label>
 
-                <!-- Tên loại -->
-                <span>{{ item.ten_loai_mon_an }}</span>
-              </div>
-            </mat-option>
+        <mat-select
+          [(ngModel)]="MonAn.ma_loai_mon_an"
+          name="ma_loai_mon_an"
+          required
+          #loaiMon="ngModel"
+        >
+          <mat-option *ngFor="let item of danhSachLoaiMonAn"
+                      [value]="item.ma_loai_mon_an">
+            {{ item.ten_loai_mon_an }}
+          </mat-option>
+        </mat-select>
 
-          </mat-select>
-        </mat-form-field>
-      </div>
+        <mat-error *ngIf="loaiMon.touched && loaiMon.errors?.['required']">
+          Vui lòng chọn loại món ăn
+        </mat-error>
+      </mat-form-field>
 
-      <!-- Hàng 2 -->
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Trạng thái</mat-label>
-          <mat-select [(ngModel)]="MonAn.trang_thai">
-            <mat-option [value]="0">Ngừng bán</mat-option>
-            <mat-option [value]="1">Còn bán</mat-option>
+      <!-- TRẠNG THÁI -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Trạng thái</mat-label>
 
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Mô tả</mat-label>
-          <input [(ngModel)]="MonAn.mo_ta" matInput name="mo_ta" placeholder="Nhập mô tả" />
-        </mat-form-field>
-      </div>
+        <mat-select
+          [(ngModel)]="MonAn.trang_thai"
+          name="trang_thai"
+          required
+          #trangThai="ngModel"
+        >
+          <mat-option [value]="0">Ngừng bán</mat-option>
+          <mat-option [value]="1">Còn bán</mat-option>
+        </mat-select>
 
-      <div class="flex flex-col col-span-2">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Giá tiền</mat-label>
-          <input [(ngModel)]="MonAn.gia_tien" type="number" matInput placeholder="Nhập giá tiền..." />
-        </mat-form-field>
-      </div>
+        <mat-error *ngIf="trangThai.touched && trangThai.errors?.['required']">
+          Vui lòng chọn trạng thái
+        </mat-error>
+      </mat-form-field>
 
+      <!-- MÔ TẢ -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Mô tả</mat-label>
+
+        <input
+          matInput
+          [(ngModel)]="MonAn.mo_ta"
+          name="mo_ta"
+          required
+          minlength="5"
+          #moTa="ngModel"
+        />
+
+        <mat-error *ngIf="moTa.touched && moTa.errors?.['required']">
+          Vui lòng nhập mô tả
+        </mat-error>
+
+        <mat-error *ngIf="moTa.touched && moTa.errors?.['minlength']">
+          Mô tả tối thiểu 5 ký tự
+        </mat-error>
+      </mat-form-field>
+
+      <!-- GIÁ TIỀN -->
+      <mat-form-field appearance="outline" class="w-full col-span-2">
+        <mat-label>Giá tiền</mat-label>
+
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="MonAn.gia_tien"
+          name="gia_tien"
+          required
+          min="1"
+          #giaTien="ngModel"
+        />
+
+        <mat-error *ngIf="giaTien.touched && giaTien.errors?.['required']">
+          Vui lòng nhập giá tiền
+        </mat-error>
+
+        <mat-error *ngIf="giaTien.touched && giaTien.errors?.['min']">
+          Giá tiền phải lớn hơn 0
+        </mat-error>
+      </mat-form-field>
 
     </div>
   </div>
 
-  <!-- Nút hành động -->
+  <!-- BUTTON -->
   <div class="flex justify-end gap-4 mt-8">
 
-    <!-- Button Cập nhật -->
 
-    <button matButton="filled" (click)="capNhat()" [disabled]="isLoading" class="btn-loading">
-      <mat-icon *ngIf="!isLoading">check</mat-icon>
 
-      <mat-icon *ngIf="isLoading" class="spin">autorenew</mat-icon>
+    <button matButton="filled" type="button" (click)="capNhat()"  [disabled]="editMonForm.invalid || isLoading">
 
-      {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật' }}
-    </button>
+        <mat-icon *ngIf="!isLoading">check</mat-icon>
+        <mat-icon *ngIf="isLoading" class="animate-spin">refresh</mat-icon>
 
-    <!-- Button Hủy -->
+        {{ isLoading ? 'Đang cập nhật món ăn...' : 'Cập nhật món ăn' }}
 
-    <button mat-raised-button (click)="close()">
+      </button>
+
+    <button mat-raised-button type="button" (click)="close()">
       <mat-icon>close</mat-icon>
       Hủy
     </button>
 
   </div>
-</div>
+
+</form>

@@ -37,13 +37,13 @@
 
         <!-- Buttons -->
         <div class="flex flex-wrap items-center gap-4">
-          <button
+          <button routerLink="/datban"
             class="flex items-center gap-2 rounded-full bg-green-600 px-8 py-4 text-white font-semibold hover:bg-green-700 transition">
-            Đặt ngay
+            Đặt bàn ngay
             <mat-icon class="text-white">arrow_forward</mat-icon>
           </button>
 
-          <button
+          <button routerLink="/thucdon"
             class="rounded-full border border-green-300 px-8 py-4 font-semibold text-green-700 hover:bg-green-50 transition">
             Xem thực đơn
           </button>
@@ -127,45 +127,61 @@
 </section>
 
 <!-- ================= DANH MỤC MÓN ĂN ================= -->
-<section class="py-16 bg-gray-50">
-  <div class="max-w-7xl mx-auto px-4 md:px-6 text-center">
+<section class="py-14 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 md:px-6">
 
-    <h2 class="text-4xl font-bold mb-10 text-gray-900">
-      Danh Mục Món Ăn
-    </h2>
+    <!-- HEADER -->
+    <div class="text-center mb-8">
+      <h2 class="text-2xl font-semibold text-gray-900">
+        Danh mục món ăn
+      </h2>
 
+      <p class="text-sm text-gray-500 mt-1">
+        Chọn món theo từng danh mục để đặt nhanh hơn
+      </p>
+    </div>
+
+    <!-- SCROLL AREA -->
     <div class="flex items-center gap-4">
 
-      <!-- NÚT TRÁI -->
-      <button mat-icon-button (click)="scrollLeft()" class="bg-white text-gray-600 border border-gray-300
-               hover:bg-gray-100 hover:text-gray-900
-               rounded-full shrink-0 shadow">
+      <!-- LEFT -->
+      <button mat-icon-button (click)="scrollLeft()" class="bg-white border border-gray-200 text-gray-600
+               hover:bg-green-50 hover:text-green-700
+               rounded-full shadow-sm shrink-0 transition">
+
         <mat-icon>chevron_left</mat-icon>
       </button>
 
-      <!-- KHUNG SCROLL -->
+      <!-- LIST -->
       <div class="flex-1 overflow-hidden">
-        <div #scrollContainer class="flex gap-8 overflow-x-auto scroll-smooth scrollbar-hide py-2">
+        <div #homeScrollContainer class="flex gap-8 overflow-x-auto scroll-smooth scrollbar-hide py-2">
 
-          <div *ngFor="let item of danhSachLoaiMonAn" class="flex-shrink-0 w-32 cursor-pointer">
+          <div *ngFor="let item of danhSachLoaiMonAn" (click)="goToMenuByLoai(item)"
+            class="flex-shrink-0 w-28 cursor-pointer group">
 
-            <div class="w-32 h-32 mx-auto rounded-full overflow-hidden
-                     border-4 border-gray-300 hover:border-green-500 transition">
+            <!-- IMAGE -->
+            <div class="w-28 h-28 mx-auto rounded-full overflow-hidden
+                        border-2 border-gray-200
+                        group-hover:border-green-500 transition">
+
               <img [src]="item.anh_loai_mon_an" class="w-full h-full object-cover" />
             </div>
 
-            <p class="mt-3 font-medium text-center text-gray-700">
+            <!-- TEXT -->
+            <p class="mt-3 text-sm text-gray-600 text-center group-hover:text-green-700 transition">
               {{ item.ten_loai_mon_an }}
             </p>
+
           </div>
 
         </div>
       </div>
 
-      <!-- NÚT PHẢI -->
-      <button mat-icon-button (click)="scrollRight()" class="bg-white text-gray-600 border border-gray-300
-               hover:bg-gray-100 hover:text-gray-900
-               rounded-full shrink-0 shadow">
+      <!-- RIGHT -->
+      <button mat-icon-button (click)="scrollRight()" class="bg-white border border-gray-200 text-gray-600
+               hover:bg-green-50 hover:text-green-700
+               rounded-full shadow-sm shrink-0 transition">
+
         <mat-icon>chevron_right</mat-icon>
       </button>
 
@@ -177,80 +193,92 @@
 <section class="py-16 bg-white border-t border-gray-200">
   <div class="max-w-7xl mx-auto px-4 md:px-6">
 
-    <h2 class="text-3xl md:text-4xl font-semibold text-center mb-12 text-gray-900">
-      Món Ăn Nổi Bật
-    </h2>
+    <!-- HEADER (STYLE GIỐNG VOUCHER) -->
+    <div class="text-center mb-10">
 
+      <h2 class="text-2xl font-semibold text-gray-900">
+        Món ăn nổi bật
+      </h2>
+
+      <p class="text-sm text-gray-500 mt-2">
+        Khám phá các món được yêu thích nhất trong thực đơn
+      </p>
+
+    </div>
+
+    <!-- GRID -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
       <div *ngFor="let mon of monAnNoiBat">
 
-        <mat-card
-            class="h-full flex flex-col rounded-2xl overflow-hidden border border-gray-100
+        <mat-card class="h-full flex flex-col rounded-2xl overflow-hidden border border-gray-100
                    shadow-sm hover:shadow-xl transition duration-300 bg-white">
 
-            <!-- IMAGE -->
-            <div class="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
-              <img
-                [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
-                class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+          <!-- IMAGE -->
+          <div class="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
+            <img [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
+              class="w-full h-full object-cover hover:scale-105 transition duration-300" />
 
-              <button type="button" (click)="toggleYeuThich(mon)"
-                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 shadow
-                       flex items-center justify-center hover:scale-110 transition">
-                <span class="text-lg"
-                  [class.text-red-500]="isFavorite(mon.ma_mon_an)"
-                  [class.text-gray-400]="!isFavorite(mon.ma_mon_an)">
-                  {{ isFavorite(mon.ma_mon_an) ? '❤️' : '🤍' }}
-                </span>
+            <button type="button" (click)="toggleYeuThich(mon)" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 shadow
+                     flex items-center justify-center hover:scale-110 transition">
+
+              <span class="text-lg" [class.text-red-500]="isFavorite(mon.ma_mon_an)"
+                [class.text-gray-400]="!isFavorite(mon.ma_mon_an)">
+
+                {{ isFavorite(mon.ma_mon_an) ? '❤️' : '🤍' }}
+              </span>
+
+            </button>
+          </div>
+
+          <!-- CONTENT -->
+          <mat-card-content class="p-4 flex flex-col flex-1">
+
+            <div class="flex items-center justify-between gap-2 mt-2">
+
+              <h3 class="font-semibold text-lg text-gray-900">
+                {{ mon.ten_mon_an }}
+              </h3>
+
+              <button mat-icon-button matTooltip="Thông tin món" (click)="moThongTinMon(mon)">
+                <mat-icon class="text-gray-500 hover:text-gray-900">
+                  info
+                </mat-icon>
               </button>
+
             </div>
 
-            <!-- CONTENT -->
-            <mat-card-content class="p-4 flex flex-col flex-1">
+            <p class="text-sm text-gray-500 mt-3 line-clamp-2">
+              {{ mon.mo_ta || 'Món ăn được chế biến từ nguyên liệu tươi ngon.' }}
+            </p>
 
-              <div class="flex items-center justify-between gap-2 mt-2">
-                <h3 class="font-semibold text-lg text-gray-900">
-                  {{ mon.ten_mon_an }}
-                </h3>
+            <div class="mt-auto pt-5 flex items-center justify-between">
 
-                <button mat-icon-button matTooltip="Thông tin món"
-                  (click)="moThongTinMon(mon)">
-                  <mat-icon class="text-gray-500 hover:text-gray-900">
-                    info
-                  </mat-icon>
-                </button>
-              </div>
-
-              <p class="text-sm text-gray-500 mt-3 line-clamp-2">
-                {{ mon.mo_ta || 'Món ăn được chế biến từ nguyên liệu tươi ngon.' }}
-              </p>
-
-              <div class="mt-auto pt-5 flex items-center justify-between">
-                <div>
-                  <div class="text-green-600 font-bold text-xl">
-                    {{ mon.gia_tien | number }} đ
-                  </div>
-                  <div class="text-l text-yellow-500 mt-1">
-                    ★★★★☆ (4.8)
-                  </div>
+              <div>
+                <div class="text-green-600 font-bold text-xl">
+                  {{ mon.gia_tien | number }} đ
                 </div>
 
-                <button (click)="addToGioHang(mon)"
-                  class="w-11 h-11 rounded-full bg-green-500 hover:bg-green-600
-                         text-white flex items-center justify-center shadow-md
-                         active:scale-95 transition"
-                  matTooltip="Thêm vào giỏ hàng">
-                  <mat-icon>add_shopping_cart</mat-icon>
-                </button>
+                <div class="text-sm text-yellow-500 mt-1">
+                  ★★★★☆ (4.8)
+                </div>
               </div>
 
-            </mat-card-content>
-          </mat-card>
+              <button (click)="addToGioHang(mon)" class="w-11 h-11 rounded-full bg-green-500 hover:bg-green-600
+                       text-white flex items-center justify-center shadow-md
+                       active:scale-95 transition" matTooltip="Thêm vào giỏ hàng">
+
+                <mat-icon>add_shopping_cart</mat-icon>
+              </button>
+
+            </div>
+
+          </mat-card-content>
+        </mat-card>
 
       </div>
-    </div>
 
+    </div>
   </div>
 </section>
 
@@ -275,10 +303,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
       <!-- ITEM -->
-      <div
-        class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
-        <div
-          class="w-12 h-12 flex items-center justify-center rounded-full
+      <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
+        <div class="w-12 h-12 flex items-center justify-center rounded-full
                  bg-green-100 text-green-600 mb-4 text-xl">
           🛒
         </div>
@@ -291,10 +317,8 @@
       </div>
 
       <!-- ITEM -->
-      <div
-        class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
-        <div
-          class="w-12 h-12 flex items-center justify-center rounded-full
+      <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
+        <div class="w-12 h-12 flex items-center justify-center rounded-full
                  bg-green-100 text-green-600 mb-4 text-xl">
           🚀
         </div>
@@ -307,10 +331,8 @@
       </div>
 
       <!-- ITEM -->
-      <div
-        class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
-        <div
-          class="w-12 h-12 flex items-center justify-center rounded-full
+      <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
+        <div class="w-12 h-12 flex items-center justify-center rounded-full
                  bg-green-100 text-green-600 mb-4 text-xl">
           🔒
         </div>
@@ -323,10 +345,8 @@
       </div>
 
       <!-- ITEM -->
-      <div
-        class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
-        <div
-          class="w-12 h-12 flex items-center justify-center rounded-full
+      <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition text-left">
+        <div class="w-12 h-12 flex items-center justify-center rounded-full
                  bg-green-100 text-green-600 mb-4 text-xl">
           💬
         </div>
@@ -342,8 +362,105 @@
   </div>
 </section>
 
-  <app-toast-message
-    [show]="toast.show"
-    [message]="toast.message"
-    [type]="toast.type">
-  </app-toast-message>
+<section class="py-16 bg-green-50">
+  <div class="max-w-6xl mx-auto px-4">
+
+    <!-- HEADER -->
+    <div class="mb-10">
+      <h2 class="text-3xl font-bold text-green-800">
+        Ưu đãi & Mã giảm giá
+      </h2>
+      <p class="text-green-700/70 mt-1">
+        Chọn mã và sử dụng ngay khi đặt món
+      </p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid md:grid-cols-2 gap-5">
+
+      <div *ngFor="let gg of danhSachGiamGia"
+        class="relative bg-white border border-green-100 rounded-2xl shadow-sm hover:shadow-lg transition overflow-hidden">
+
+        <!-- GREEN SIDE ACCENT -->
+        <div class="absolute left-0 top-0 h-full w-1.5 bg-green-600"></div>
+
+        <div class="p-6 pl-7 flex flex-col gap-5">
+
+          <!-- TOP -->
+          <div class="flex items-start justify-between">
+
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">
+                {{ gg.ten_chuong_trinh }}
+              </h3>
+
+              <p class="text-sm text-green-700 mt-1">
+                HSD: {{ gg.ngay_ket_thuc | date:'dd/MM/yyyy' }}
+              </p>
+            </div>
+
+            <!-- DISCOUNT -->
+            <div class="text-right">
+              <div class="text-2xl font-extrabold text-green-700">
+                {{ gg.loai_giam_gia === 'percent'
+                ? '-' + gg.gia_tri_giam + '%'
+                : '-' + (gg.gia_tri_giam | number) + 'đ'
+                }}
+              </div>
+              <div class="text-xs text-green-500 font-medium">
+                GIẢM GIÁ
+              </div>
+            </div>
+
+          </div>
+
+          <!-- CODE BOX -->
+          <div class="flex items-center justify-between bg-green-50 border border-green-100 rounded-xl px-4 py-3">
+
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-green-600">CODE</span>
+
+              <span class="font-mono font-bold tracking-widest text-green-900">
+                {{ gg.code }}
+              </span>
+            </div>
+
+            <button (click)="copyCode(gg.code)" class="px-4 py-1.5 rounded-lg bg-green-600 text-white text-sm font-medium
+                     hover:bg-green-700 active:scale-95 transition">
+              Copy
+            </button>
+
+          </div>
+
+          <!-- INFO -->
+          <div class="flex justify-between text-sm text-gray-600">
+
+            <div>
+              Đơn tối thiểu:
+              <span class="font-semibold text-green-800">
+                {{ gg.don_toi_thieu | number }}đ
+              </span>
+            </div>
+
+            <div *ngIf="gg.giam_toi_da">
+              Giảm tối đa:
+              <span class="font-semibold text-green-800">
+                {{ gg.giam_toi_da | number }}đ
+              </span>
+            </div>
+
+            <div *ngIf="gg.is_active" class="text-green-700 font-semibold">
+              Active
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type">
+</app-toast-message>

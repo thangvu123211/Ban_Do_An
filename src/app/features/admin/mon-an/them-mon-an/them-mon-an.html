@@ -1,123 +1,148 @@
-<div class="relative p-6 rounded-2xl shadow-2xl">
-  <!-- Nút đóng -->
-  <div class="flex justify-end">
-    <button matIconButton (click)="close()" class="flex items-center ">
-      <mat-icon>
-        close
-      </mat-icon>
-    </button>
-  </div>
-
-
-  <!-- Tiêu đề -->
-  <h2 class="text-2xl font-semibold mb-8 text-center">
-    Thêm Mới Món Ăn
-  </h2>
-
-  <div class="flex gap-8 flex-wrap lg:flex-nowrap">
-    <!-- Upload ảnh -->
-    <div class="flex flex-col items-center gap-3 w-full lg:w-1/3">
-      <div
-        class="w-full h-48 border-2 border-dashed cursor-pointer hover:border-cyan-400 transition overflow-hidden relative flex items-center justify-center"
-        (click)="chonAnh(fileInput)">
-        <ng-container *ngIf="!previewUrl; else daCoAnh">
-          <div class="flex flex-col items-center justify-center">
-            <mat-icon class="text-2xl mb-2 text-cyan-400 leading-none">cloud_upload</mat-icon>
-            <p class="text-sm font-medium text-gray-400">Chưa chọn ảnh</p>
-          </div>
-        </ng-container>
-        <ng-template #daCoAnh>
-          <img [src]="previewUrl" alt="Preview" class="w-full h-full object-cover rounded-lg" />
-        </ng-template>
-      </div>
-
-      <div class="text-xs text-gray-400 mt-2 text-center italic">
-        Hỗ trợ: JPEG, JPG, PNG &nbsp; | &nbsp; Dung lượng tối đa: 25MB
-      </div>
-
-      <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*" />
+<form #monAnForm="ngForm" (ngSubmit)="addMonAn()">
+  <div class="relative p-6 rounded-2xl shadow-2xl">
+    <!-- Nút đóng -->
+    <div class="flex justify-end">
+      <button matIconButton (click)="close()" class="flex items-center ">
+        <mat-icon>
+          close
+        </mat-icon>
+      </button>
     </div>
 
-    <!-- Form nhập -->
-    <div class="grid grid-cols-2 gap-4 flex-1">
 
-      <!-- Hàng 1 -->
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Tên món ăn</mat-label>
-          <input [(ngModel)]="MonAn.ten_mon_an" matInput name="ten_mon_an" placeholder="Nhập tên món ăn" />
-        </mat-form-field>
+    <!-- Tiêu đề -->
+    <h2 class="text-2xl font-semibold mb-8 text-center">
+      Thêm Mới Món Ăn
+    </h2>
+
+    <div class="flex gap-8 flex-wrap lg:flex-nowrap">
+      <!-- Upload ảnh -->
+      <div class="flex flex-col items-center gap-3 w-full lg:w-1/3">
+        <div
+          class="w-full h-48 border-2 border-dashed cursor-pointer hover:border-cyan-400 transition overflow-hidden relative flex items-center justify-center"
+          (click)="chonAnh(fileInput)">
+          <ng-container *ngIf="!previewUrl; else daCoAnh">
+            <div class="flex flex-col items-center justify-center">
+              <mat-icon class="text-2xl mb-2 text-cyan-400 leading-none">cloud_upload</mat-icon>
+              <p class="text-sm font-medium text-gray-400">Chưa chọn ảnh</p>
+            </div>
+          </ng-container>
+          <ng-template #daCoAnh>
+            <img [src]="previewUrl" alt="Preview" class="w-full h-full object-cover rounded-lg" />
+          </ng-template>
+        </div>
+
+        <div class="text-xs text-gray-400 mt-2 text-center italic">
+          Hỗ trợ: JPEG, JPG, PNG &nbsp; | &nbsp; Dung lượng tối đa: 25MB
+        </div>
+
+        <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*" />
       </div>
 
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Tên loại món ăn</mat-label>
+      <!-- Form nhập -->
+      <div class="grid grid-cols-2 gap-4 flex-1">
 
-          <mat-select [(ngModel)]="MonAn.ma_loai_mon_an" name="ma_loai_mon_an">
+        <!-- Hàng 1 -->
+        <div class="flex flex-col">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Tên món ăn</mat-label>
+            <input matInput [(ngModel)]="MonAn.ten_mon_an" name="ten_mon_an" required #tenMon="ngModel"
+              placeholder="Nhập tên món ăn" />
 
-            <mat-option *ngFor="let item of danhSachLoaiMonAn" [value]="item.ma_loai_mon_an">
-              <div class="flex items-center gap-3">
+            <mat-error *ngIf="tenMon.touched && tenMon.invalid">
+              Vui lòng nhập tên món ăn
+            </mat-error>
+          </mat-form-field>
+        </div>
 
-                <!-- Ảnh loại món ăn -->
-                <img [src]="item.anh_loai_mon_an" class="w-8 h-8 object-cover rounded-md" />
+        <div class="flex flex-col">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Tên loại món ăn</mat-label>
 
-                <!-- Tên loại -->
-                <span>{{ item.ten_loai_mon_an }}</span>
-              </div>
-            </mat-option>
+            <mat-select [(ngModel)]="MonAn.ma_loai_mon_an" name="ma_loai_mon_an" required #loaiMon="ngModel">
 
-          </mat-select>
-        </mat-form-field>
+              <mat-option *ngFor="let item of danhSachLoaiMonAn" [value]="item.ma_loai_mon_an">
+                <div class="flex items-center gap-3">
+                  <img [src]="item.anh_loai_mon_an" class="w-8 h-8 object-cover rounded-md" />
+                  <span>{{ item.ten_loai_mon_an }}</span>
+                </div>
+              </mat-option>
+
+            </mat-select>
+
+            <mat-error *ngIf="loaiMon.touched && loaiMon.invalid">
+              Vui lòng chọn loại món ăn
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Hàng 2 -->
+        <div class="flex flex-col">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Trạng thái</mat-label>
+
+            <mat-select [(ngModel)]="MonAn.trang_thai" name="trang_thai" required #trangThai="ngModel">
+
+              <mat-option [value]="0">Ngừng bán</mat-option>
+              <mat-option [value]="1">Còn bán</mat-option>
+
+            </mat-select>
+
+            <mat-error *ngIf="trangThai.touched && trangThai.invalid">
+              Vui lòng chọn trạng thái
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flex flex-col">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Mô tả</mat-label>
+
+            <input matInput [(ngModel)]="MonAn.mo_ta" name="mo_ta" required minlength="5"
+              placeholder="Nhập mô tả món ăn" #moTa="ngModel" />
+
+            <mat-error *ngIf="moTa.touched && moTa.errors?.['required']">
+              Mô tả không được để trống
+            </mat-error>
+
+            <mat-error *ngIf="moTa.touched && moTa.errors?.['minlength']">
+              Mô tả phải ≥ 5 ký tự
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="flex flex-col col-span-2">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Giá tiền</mat-label>
+
+            <input matInput type="text" name="gia_tien" [(ngModel)]="giaTienDisplay" required
+              (input)="onGiaTienInput($event)" #giaTien="ngModel" placeholder="Nhập giá tiền..." />
+
+            <mat-error *ngIf="giaTien.touched && giaTien.errors?.['required']">
+              Vui lòng nhập giá tiền
+            </mat-error>
+
+            <mat-error *ngIf="MonAn.gia_tien <= 0">
+              Giá tiền phải lớn hơn 0
+            </mat-error>
+          </mat-form-field>
+        </div>
       </div>
-
-      <!-- Hàng 2 -->
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Trạng thái</mat-label>
-          <mat-select [(ngModel)]="MonAn.trang_thai">
-            <mat-option [value]="0">Ngừng bán</mat-option>
-            <mat-option [value]="1">Còn bán</mat-option>
-
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Mô tả</mat-label>
-          <input [(ngModel)]="MonAn.mo_ta" matInput name="mo_ta" placeholder="Nhập mô tả món ăn" />
-        </mat-form-field>
-      </div>
-
-      <div class="flex flex-col col-span-2">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Giá tiền</mat-label>
-
-          <input matInput type="text" name="gia_tien" placeholder="Nhập giá tiền..."
-            (input)="onGiaTienChange($event)" />
-
-        </mat-form-field>
-      </div>
-
-
-
     </div>
-  </div>
-  <div class="flex justify-end gap-4 mt-8">
-    <button matButton="filled" (click)="addMonAn()" [disabled]="loading" class="min-w-[140px]">
-      <span class="flex items-center gap-2 justify-center">
+    <div class="flex justify-end gap-4 mt-8">
+
+      <button matButton="filled" type="button" (click)="addMonAn()"  [disabled]="monAnForm.invalid || loading">
 
         <mat-icon *ngIf="!loading">check</mat-icon>
+        <mat-icon *ngIf="loading" class="animate-spin">refresh</mat-icon>
 
-        <mat-spinner *ngIf="loading" diameter="18"></mat-spinner>
+        {{ loading ? 'Đang thêm mới món ăn...' : 'Thêm mới món ăn' }}
 
-        {{ loading ? 'Đang thêm...' : 'Thêm mới' }}
+      </button>
 
-      </span>
-    </button>
-
-    <button mat-raised-button (click)="close()">
-      <mat-icon>close</mat-icon>
-      Hủy
-    </button>
+      <button mat-raised-button (click)="close()">
+        <mat-icon>close</mat-icon>
+        Hủy
+      </button>
+    </div>
   </div>
-</div>
+</form>

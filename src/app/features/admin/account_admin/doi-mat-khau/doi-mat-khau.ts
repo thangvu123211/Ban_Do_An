@@ -20,6 +20,8 @@ export class DoiMatKhau implements OnInit {
     type: 'success' as 'success' | 'warn' | 'error'
   };
 
+  error: string = '';
+
   constructor(
     private dialogRef: MatDialogRef<DoiMatKhau>,
     private adminService: AdminService,
@@ -39,6 +41,38 @@ export class DoiMatKhau implements OnInit {
     });
   }
 
+  validate(): boolean {
+    this.error = '';
+
+    const password = this.admin?.mat_khau_moi?.trim();
+
+    if (!password) {
+      this.error = 'Vui lòng nhập mật khẩu mới';
+      return false;
+    }
+
+    if (password.length < 6) {
+      this.error = 'Mật khẩu phải có ít nhất 6 ký tự';
+      return false;
+    }
+
+    if (password.length > 32) {
+      this.error = 'Mật khẩu không được vượt quá 32 ký tự';
+      return false;
+    }
+
+    // ❗ OPTIONAL – nếu muốn mạnh hơn
+    /*
+    const strongRegex = /^(?=.*[A-Za-z])(?=.*\d).+$/;
+    if (!strongRegex.test(password)) {
+      this.error = 'Mật khẩu phải gồm chữ và số';
+      return false;
+    }
+    */
+
+    return true;
+  }
+
   showToast(message: string, type: 'success' | 'warn' | 'error') {
     this.toast.show = true;
     this.toast.message = message;
@@ -47,41 +81,41 @@ export class DoiMatKhau implements OnInit {
   }
 
   doiMatKhau() {
-  if (!this.admin?.mat_khau_moi?.trim()) {
-    this.showToast('Vui lòng nhập mật khẩu mới.', 'warn');
-    return;
-  }
 
-  this.isLoading = true;
-
-  const updatedData: any = {
-    mat_khau: this.admin.mat_khau_moi
-  };
-
-  this.adminService.CapNhatNhanVien(
-    this.admin.ma_nguoi_dung,
-    updatedData
-  ).subscribe({
-    next: () => {
-      this.isLoading = false;
-
-      this.showToast('Đổi mật khẩu thành công!', 'success');
-
-      setTimeout(() => {
-        this.dialogRef.close(true);
-      }, 500);
-    },
-    error: (err) => {
-      this.isLoading = false;
-
-      console.error(err);
-      this.showToast(
-        err.error?.error || 'Đổi mật khẩu thất bại!',
-        'error'
-      );
+    if (!this.validate()) {
+      return;
     }
-  });
-}
+
+    this.isLoading = true;
+
+    const updatedData: any = {
+      mat_khau: this.admin.mat_khau_moi
+    };
+
+    this.adminService.CapNhatNhanVien(
+      this.admin.ma_nguoi_dung,
+      updatedData
+    ).subscribe({
+      next: () => {
+        this.isLoading = false;
+
+        this.showToast('Đổi mật khẩu thành công!', 'success');
+
+        setTimeout(() => {
+          this.dialogRef.close(true);
+        }, 500);
+      },
+      error: (err) => {
+        this.isLoading = false;
+
+        console.error(err);
+        this.showToast(
+          err.error?.error || 'Đổi mật khẩu thất bại!',
+          'error'
+        );
+      }
+    });
+  }
 
 
   close() {
