@@ -21,18 +21,7 @@ export class AuthService {
     private cartService: CartService,
   ) { }
 
-  // 🔹 Đăng nhập
-  // login(data: any): Observable<any> {
-  //   return this.http.post(`${environment.apiUrl}/login`, data).pipe(
-  //     tap((res: any) => {
-  //       if (res.token) {
-  //         localStorage.setItem('token', res.token);
-  //         localStorage.setItem('role', res.role || '');
-  //         localStorage.setItem('user', JSON.stringify(res.data));
-  //       }
-  //     })
-  //   );
-  // }
+
 
   login(data: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}/login`, data).pipe(
@@ -120,5 +109,13 @@ export class AuthService {
     mat_khau_moi: string;
   }): Observable<any> {
     return this.http.post(`${environment.apiUrl}/auth/reset-password`, data);
+  }
+
+  registerSendOtp(data: any): Observable<any> {
+  return this.http.post(`${environment.apiUrl}/register`, data);
+}
+
+  verifyRegisterOtp(data: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/auth/verify-register-otp`, data);
   }
 }

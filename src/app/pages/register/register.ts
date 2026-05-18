@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastMessageComponent } from '../../Shared/toasts_message/toast-message/toast-message';
@@ -11,14 +14,20 @@ import { MATERIAL } from '../../Shared/material';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatIconModule, MatButtonModule, ToastMessageComponent,MATERIAL],
+  imports: [CommonModule, ReactiveFormsModule, ToastMessageComponent, MATERIAL],
   templateUrl: './register.html',
   styleUrls: ['./register.scss']
 })
 export class Register {
-  registerForm: FormGroup;
 
-  // ✅ Biến toast (giống login)
+  registerForm: FormGroup;
+  isLoading = false;
+  isOtpLoading = false;
+
+  step: number = 1;
+  otp: string = '';
+  pendingData: any = {};
+
   toast = {
     show: false,
     message: '',
@@ -36,85 +45,101 @@ export class Register {
       sdt: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
       matkhau: ['', [Validators.required, Validators.minLength(6)]],
       confirmMatkhau: ['', Validators.required]
-    }, { validators: this.passwordMatchValidator });
+    }, {
+      validators: this.passwordMatchValidator,
+      updateOn: 'change'
+    });
   }
 
-  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.get('matkhau');
-    const confirm = control.get('confirmMatkhau');
+  // ✅ PASSWORD MATCH VALIDATOR (CHUẨN)
+  passwordMatchValidator(group: any) {
+    const pass = group.get('matkhau');
+    const confirm = group.get('confirmMatkhau');
 
-    if (password && confirm && password.value !== confirm.value) {
+    if (!pass || !confirm) return null;
+
+    const passValue = pass.value;
+    const confirmValue = confirm.value;
+
+    if (passValue !== confirmValue) {
       confirm.setErrors({ notMatched: true });
-      return { notMatched: true };
     } else {
-      confirm?.setErrors(null);
-      return null;
+      if (confirm.errors) {
+        delete confirm.errors['notMatched'];
+        if (Object.keys(confirm.errors).length === 0) {
+          confirm.setErrors(null);
+        }
+      }
     }
+
+    return null;
   }
 
+  // ======================
+  // TOAST
+  // ======================
   showToast(message: string, type: 'success' | 'warn' | 'error') {
     this.toast = { show: true, message, type };
-    setTimeout(() => this.toast.show = false, 3000); // ẩn sau 3s
+    setTimeout(() => this.toast.show = false, 3000);
   }
 
+  // ======================
+  // STEP 1: SEND OTP
+  // ======================
   TaoTaiKhoan() {
-    if (this.registerForm.invalid) {
-      const controls = this.registerForm.controls;
+    this.registerForm.markAllAsTouched();
+    if (this.registerForm.invalid) return;
 
-      if (controls['hoten'].invalid) {
-        this.showToast('Họ tên không được để trống và chỉ chứa chữ cái!', 'warn');
-        return;
-      }
+    this.isLoading = true;
 
-      if (controls['email'].invalid) {
-        this.showToast('Email không hợp lệ! Ví dụ: example@gmail.com', 'warn');
-        return;
-      }
-
-      if (controls['matkhau'].invalid) {
-        this.showToast('Mật khẩu tối thiểu 6 ký tự, gồm chữ hoa, thường, số và ký tự đặc biệt!', 'warn');
-        return;
-      }
-
-      if (controls['confirmMatkhau'].invalid ||
-        controls['matkhau'].value !== controls['confirmMatkhau'].value) {
-        this.showToast('Mật khẩu xác nhận không khớp!', 'warn');
-        return;
-      }
-
-      if (controls['sdt'].invalid) {
-        this.showToast('Số điện thoại phải gồm 10-11 số, bắt đầu bằng 0!', 'warn');
-        return;
-      }
-    }
-
-    // ✅ Lấy giá trị từ form
     const { hoten, email, sdt, matkhau } = this.registerForm.value;
 
-    // ✅ Đúng format backend Go đang yêu cầu
-    const data = {
-      name: hoten,
-      email: email,
-      password: matkhau,
-      sdt: sdt
+    this.pendingData = {
+      ho_ten: hoten,
+      email: email.trim().toLowerCase(),
+      mat_khau: matkhau,
+      so_dien_thoai: sdt
     };
 
-    // ✅ Gọi API
-    this.authService.register(data).subscribe({
+    this.authService.registerSendOtp(this.pendingData).subscribe({
       next: () => {
-        // ✅ Không lấy message từ backend nữa → luôn hiển thị tiếng Việt
-        this.showToast('Tạo tài khoản thành công!', 'success');
-        
-        setTimeout(() => this.router.navigate(['/login']), 1000);
+        this.step = 2;
+        this.showToast('Đã gửi OTP', 'success');
+        this.isLoading = false;
       },
       error: (err) => {
-        console.error(err);
-        // ✅ Gọi lỗi tiếng Việt luôn
-        this.showToast('Đăng ký thất bại! Email có thể đã tồn tại!', 'error');
+        this.showToast(err.error?.error || 'Gửi OTP thất bại', 'error');
+        this.isLoading = false;
       }
     });
   }
 
+  // ======================
+  // STEP 2: VERIFY OTP
+  // ======================
+  verifyOtp() {
+    if (!this.otp) {
+      this.showToast('Vui lòng nhập OTP', 'warn');
+      return;
+    }
+
+    this.isOtpLoading = true;
+
+    this.authService.verifyRegisterOtp({
+      email: this.pendingData.email,
+      otp: this.otp
+    }).subscribe({
+      next: () => {
+        this.showToast('Đăng ký thành công', 'success');
+        this.isOtpLoading = false;
+        setTimeout(() => this.router.navigate(['/login']), 1000);
+      },
+      error: (err) => {
+        this.showToast(err.error?.error || 'OTP sai hoặc hết hạn', 'error');
+        this.isOtpLoading = false;
+      }
+    });
+  }
 
   goToLogin() {
     this.router.navigate(['/login']);

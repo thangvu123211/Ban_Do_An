@@ -21,89 +21,123 @@
     </div>
 
     <!-- Right Form -->
+    <!-- Right Form -->
     <div class="w-1/2 bg-white flex flex-col justify-center px-10 py-6">
 
-      <div class="mb-8">
-        <h2 class="text-2xl font-bold text-gray-800">Tạo Tài Khoản</h2>
-        <p class="text-gray-500 text-sm">Vui Lòng Điền Đầy Đủ Thông Tin</p>
-      </div>
+      <!-- ================= STEP 1 ================= -->
+      <div *ngIf="step === 1">
 
-      <form [formGroup]="registerForm" (ngSubmit)="TaoTaiKhoan()" class="flex flex-col gap-4">
-
-        <!-- Họ tên -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Họ Tên</mat-label>
-          <input matInput formControlName="hoten">
-        </mat-form-field>
-
-        <!-- Email -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email">
-        </mat-form-field>
-
-        <!-- Mật khẩu -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Mật Khẩu</mat-label>
-          <input matInput type="password" formControlName="matkhau">
-        </mat-form-field>
-
-        <!-- Xác nhận mật khẩu -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Xác Nhận Mật Khẩu</mat-label>
-          <input matInput type="password" formControlName="confirmMatkhau">
-        </mat-form-field>
-
-        <!-- SĐT -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Số Điện Thoại</mat-label>
-          <input matInput formControlName="sdt">
-        </mat-form-field>
-
-        <!-- Error -->
-        <div *ngIf="registerForm.get('confirmMatkhau')?.hasError('notMatched') &&
-          (registerForm.get('confirmMatkhau')?.dirty || registerForm.get('confirmMatkhau')?.touched)"
-          class="text-red-500 text-sm">
-          Mật khẩu không khớp
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-gray-800">Tạo Tài Khoản</h2>
+          <p class="text-gray-500 text-sm">Vui Lòng Điền Đầy Đủ Thông Tin</p>
         </div>
 
-        <!-- Button -->
-        <button type="submit"
-          class="w-full py-3 bg-green-600 text-white rounded-full text-lg font-semibold hover:bg-green-700 transition">
-          Tạo Tài Khoản
-        </button>
+        <form [formGroup]="registerForm" (ngSubmit)="TaoTaiKhoan()" class="flex flex-col gap-4">
 
-      </form>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Họ Tên</mat-label>
+            <input matInput formControlName="hoten">
 
-      <!-- Divider -->
-      <div class="flex items-center my-6">
-        <div class="flex-grow h-px bg-gray-300"></div>
-        <span class="px-3 text-gray-500 text-sm">Or Sign Up with</span>
-        <div class="flex-grow h-px bg-gray-300"></div>
+            <mat-error *ngIf="registerForm.get('hoten')?.touched && registerForm.get('hoten')?.hasError('required')">
+              Vui lòng nhập họ tên
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email">
+
+            <mat-error *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('required')">
+              Vui lòng nhập email
+            </mat-error>
+
+            <mat-error *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('email')">
+              Email không hợp lệ
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Mật Khẩu</mat-label>
+            <input matInput type="password" formControlName="matkhau">
+
+            <mat-error
+              *ngIf="registerForm.get('matkhau')?.touched && registerForm.get('matkhau')?.hasError('required')">
+              Vui lòng nhập mật khẩu
+            </mat-error>
+
+            <mat-error
+              *ngIf="registerForm.get('matkhau')?.touched && registerForm.get('matkhau')?.hasError('minlength')">
+              Mật khẩu tối thiểu 6 ký tự
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Xác Nhận Mật Khẩu</mat-label>
+
+            <input matInput type="password" formControlName="confirmMatkhau" autocomplete="new-password">
+
+            <mat-error
+              *ngIf="registerForm.get('confirmMatkhau')?.touched && registerForm.get('confirmMatkhau')?.hasError('required')">
+              Vui lòng nhập xác nhận mật khẩu
+            </mat-error>
+
+            <mat-error
+              *ngIf="registerForm.get('confirmMatkhau')?.touched && registerForm.get('confirmMatkhau')?.hasError('notMatched')">
+              Mật khẩu không trùng khớp
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Số Điện Thoại</mat-label>
+            <input matInput formControlName="sdt">
+
+            <mat-error *ngIf="registerForm.get('sdt')?.touched && registerForm.get('sdt')?.hasError('required')">
+              Vui lòng nhập số điện thoại
+            </mat-error>
+
+            <mat-error *ngIf="registerForm.get('sdt')?.touched && registerForm.get('sdt')?.hasError('pattern')">
+              Số điện thoại không hợp lệ
+            </mat-error>
+          </mat-form-field>
+
+          <button type="submit" [disabled]="isLoading"
+            class="w-full py-3 bg-green-600 text-white rounded-full text-lg font-semibold hover:bg-green-700 transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+            <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+            <span *ngIf="!isLoading">Gửi OTP</span>
+          </button>
+
+          <button type="button" (click)="goToLogin()"
+            class="w-full mt-3 py-2 text-green-600 border border-green-600 rounded-full text-sm font-medium hover:bg-green-50 transition">
+            ← Quay lại đăng nhập
+          </button>
+
+        </form>
+
       </div>
 
-      <!-- Social -->
-      <div class="flex justify-center gap-3">
-        <button
-          class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100 transition text-sm">
-          <img src="assets/Google__G__logo.svg.png" alt="Google" class="w-4 h-4" />
-          Google
+      <!-- ================= STEP 2 (OTP) ================= -->
+      <div *ngIf="step === 2" class="flex flex-col gap-4">
+
+        <h2 class="text-2xl font-bold text-gray-800">Xác thực OTP</h2>
+
+        <p class="text-gray-500 text-sm">
+          OTP đã gửi tới: {{ pendingData.email }}
+        </p>
+
+        <input class="border p-3 rounded-lg" placeholder="Nhập OTP" [(ngModel)]="otp" />
+
+        <button (click)="verifyOtp()" [disabled]="isOtpLoading"
+          class="w-full py-3 bg-green-600 text-white rounded-full text-lg font-semibold hover:bg-green-500 transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+          <mat-spinner *ngIf="isOtpLoading" diameter="20"></mat-spinner>
+          <span *ngIf="!isOtpLoading">Xác nhận</span>
         </button>
 
-        <button
-          class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-100 transition text-sm">
-          <img src="assets/2023_Facebook_icon.svg.png" alt="Facebook" class="w-4 h-4" />
-          Facebook
+        <button (click)="step = 1" class="w-full py-2 text-sm text-gray-500 hover:text-gray-700 transition">
+          ← Quay lại
         </button>
+
+
       </div>
-
-      <!-- Login -->
-      <p class="mt-6 text-center text-gray-500 text-sm">
-        Bạn đã có tài khoản?
-        <span (click)="goToLogin()" class="text-green-600 font-semibold cursor-pointer hover:text-green-700">
-          Đăng Nhập
-        </span>
-      </p>
 
     </div>
   </div>
