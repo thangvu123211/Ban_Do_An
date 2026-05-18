@@ -23,9 +23,9 @@ export class CartService {
   }
 
   saveLocal(list: any[]) {
-  localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
-  this.emitLocalCount(list); // 🔥 realtime
-}
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
+    this.emitLocalCount(list); // 🔥 realtime
+  }
 
   private total(list: any[]) {
     return list.reduce((s, i) => s + i.soLuong, 0);
@@ -35,8 +35,13 @@ export class CartService {
     const list = this.getLocal();
     const found = list.find(x => x.ma_mon_an === mon.ma_mon_an);
 
-    if (found) found.soLuong += 1;
-    else list.push({ ...mon, soLuong: 1 });
+    const qty = mon.soLuong ?? 1; // ⭐ lấy số lượng truyền vào
+
+    if (found) {
+      found.soLuong += qty;       // ✅ cộng đúng số lượng
+    } else {
+      list.push({ ...mon, soLuong: qty }); // ✅ đúng số lượng
+    }
 
     this.saveLocal(list);
   }
@@ -77,10 +82,10 @@ export class CartService {
   }
 
   clearDB(userId: number) {
-  return this.http.delete(
-    `${environment.apiUrl}/gio-hang/clear`
-  );
-}
+    return this.http.delete(
+      `${environment.apiUrl}/gio-hang/clear`
+    );
+  }
 
   loadCountFromDB(userId: number) {
     this.getByUser(userId).subscribe(res => {

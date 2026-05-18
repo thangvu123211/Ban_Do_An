@@ -20,6 +20,7 @@ export class SidebarUser implements OnInit {
     { link: '/user/don-hang', icon: 'local_shipping', text: 'Đơn hàng' },
     { link: '/user/quan-ly-binh-luan', icon: 'comment', text: 'Quản lý bình luận' },
     { link: '/user/quan-ly-danh-gia', icon: 'stars_2', text: 'Quản lý đánh giá' },
+    { link: '/user/quan-ly-dat-ban', icon: 'table_bar', text: 'Quản lý đặt bàn' },
   ];
 
   

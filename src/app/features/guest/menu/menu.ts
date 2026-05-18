@@ -98,14 +98,12 @@ export class Menu implements OnInit {
 
     this.quanlimonan.LayTatCaMonAn().subscribe({
       next: (res: any) => {
-        this.tatCaMonAn = res.data;
+        // 🔥 CHỈ LẤY MÓN CÒN BÁN
+        this.tatCaMonAn = res.data.filter(
+          (mon: any) => mon.trang_thai == 1
+        );
 
-        // nếu đang filter từ Home → giữ filter
-        if (this.selectedLoai) {
-          this.applyFilterAfterLoad();
-        } else {
-          this.MonAn = [...this.tatCaMonAn];
-        }
+        this.MonAn = [...this.tatCaMonAn];
       }
     });
   }
@@ -139,12 +137,11 @@ export class Menu implements OnInit {
 
   /** Lấy món ăn theo loại */
   getMonAnTheoLoai(loaiId: number, tenLoai?: string) {
-
     this.selectedLoai = loaiId;
     this.selectedLoaiName = tenLoai || '';
 
     this.MonAn = this.tatCaMonAn.filter(
-      mon => mon.ma_loai_mon_an === loaiId
+      mon => mon.ma_loai_mon_an === loaiId && mon.trang_thai == 1
     );
   }
 
@@ -334,12 +331,14 @@ export class Menu implements OnInit {
     });
   }
   applyFilterAfterLoad() {
-    if (!this.tatCaMonAn?.length) return;
+  if (!this.tatCaMonAn?.length) return;
 
-    this.MonAn = this.tatCaMonAn.filter(
-      mon => mon.ma_loai_mon_an === this.selectedLoai
-    );
-  }
+  this.MonAn = this.tatCaMonAn.filter(
+    mon =>
+      mon.ma_loai_mon_an === this.selectedLoai &&
+      mon.trang_thai == 1
+  );
+}
   @ViewChild('scrollContainer', { static: false })
   scrollContainer!: ElementRef;
 

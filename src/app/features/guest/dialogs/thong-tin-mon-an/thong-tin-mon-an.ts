@@ -136,17 +136,38 @@ export class ThongTinMonAn implements OnInit {
   // ================= COMMENT =================
   guiBinhLuan() {
 
-    const payload = {
-      ma_nguoi_dung: Number(localStorage.getItem('ma_nguoi_dung')),
-      ma_mon_an: this.data.ma_mon_an,
-      noi_dung: this.noiDungBinhLuan
-    };
+  const token = localStorage.getItem('token');
+  const maNguoiDung = localStorage.getItem('ma_nguoi_dung');
 
-    this.binhLuanService.create(payload).subscribe(() => {
+  // ❌ CHƯA ĐĂNG NHẬP
+  if (!token || !maNguoiDung) {
+    this.showToast('Vui lòng đăng nhập để bình luận', 'warn');
+    return;
+  }
+
+  // ❌ CHƯA NHẬP NỘI DUNG
+  if (!this.noiDungBinhLuan?.trim()) {
+    this.showToast('Vui lòng nhập nội dung bình luận', 'warn');
+    return;
+  }
+
+  const payload = {
+    ma_nguoi_dung: Number(maNguoiDung),
+    ma_mon_an: this.data.ma_mon_an,
+    noi_dung: this.noiDungBinhLuan.trim()
+  };
+
+  this.binhLuanService.create(payload).subscribe({
+    next: () => {
       this.noiDungBinhLuan = '';
       this.loadBinhLuan();
-    });
-  }
+      this.showToast('Đã gửi bình luận', 'success');
+    },
+    error: () => {
+      this.showToast('Không thể gửi bình luận', 'error');
+    }
+  });
+}
 
   loadBinhLuan() {
     this.binhLuanService.getByMonAn(this.data.ma_mon_an)

@@ -6,30 +6,41 @@
   </div>
 
   <!-- EMPTY CART -->
-  <div *ngIf="loaded && (!gioHang || gioHang.length === 0)"
-       class="flex items-center justify-center min-h-[60vh]">
+  <div *ngIf="loaded && (!gioHang || gioHang.length === 0)" class="flex items-center justify-center min-h-[60vh] px-4">
 
-    <div class="text-center">
-      <mat-icon class="text-gray-400 text-6xl">shopping_cart</mat-icon>
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-gray-100
+           p-8 text-center animate-fade-in">
 
-      <h2 class="text-xl font-semibold text-gray-700 mt-4">
-        Giỏ hàng chưa có gì
+      <!-- ICON -->
+      <div class="mx-auto w-20 h-20 rounded-full bg-green-50
+             flex items-center justify-center mb-6">
+        <mat-icon class="text-green-500 text-xl">shopping_cart</mat-icon>
+      </div>
+
+      <!-- TITLE -->
+      <h2 class="text-2xl font-bold text-gray-800">
+        Giỏ hàng trống
       </h2>
 
-      <p class="text-gray-500 mt-2">
-        Hãy thêm món ăn vào giỏ hàng để tiếp tục
+      <!-- DESC -->
+      <p class="text-gray-500 mt-3 leading-relaxed">
+        Bạn chưa thêm món ăn nào vào giỏ.
+        Hãy chọn món yêu thích để bắt đầu nhé 🍽️
       </p>
 
-      <button mat-raised-button color="primary" class="mt-6" (click)="close()">
+      <!-- BUTTON -->
+      <button (click)="close()" class="mt-8 w-full py-3 rounded-xl font-semibold text-white
+             bg-gradient-to-r from-green-500 to-green-600
+             hover:from-green-600 hover:to-green-700
+             active:scale-95 transition-all duration-200 shadow-md">
         Tiếp tục mua sắm
       </button>
-    </div>
 
+    </div>
   </div>
 
   <!-- CART CONTENT -->
-  <div *ngIf="loaded && gioHang && gioHang.length > 0"
-       class="max-w-7xl mx-auto px-4 md:px-6">
+  <div *ngIf="loaded && gioHang && gioHang.length > 0" class="max-w-7xl mx-auto px-4 md:px-6">
 
     <!-- HEADER -->
     <div class="bg-white rounded-2xl shadow-sm p-6 flex flex-col gap-6 mb-6">
@@ -47,23 +58,25 @@
           </span>
         </div>
 
+        <div class="flex justify-center mt-2">
+          <mat-horizontal-stepper [selectedIndex]="currentStep" class="custom-stepper readonly-stepper">
+
+            <mat-step label="Giỏ hàng"></mat-step>
+            <mat-step label="Tạm tính"></mat-step>
+            <mat-step label="Thông tin giao hàng"></mat-step>
+            <mat-step label="Thanh toán"></mat-step>
+
+          </mat-horizontal-stepper>
+        </div>
+
         <button mat-icon-button (click)="close()">
           <mat-icon class="text-gray-500 hover:text-gray-800">close</mat-icon>
         </button>
+
       </div>
 
       <!-- STEPPER -->
-      <div class="flex justify-center">
-        <mat-horizontal-stepper [selectedIndex]="currentStep"
-                                class="custom-stepper readonly-stepper">
 
-          <mat-step label="Giỏ hàng"></mat-step>
-          <mat-step label="Tạm tính"></mat-step>
-          <mat-step label="Thông tin giao hàng"></mat-step>
-          <mat-step label="Thanh toán"></mat-step>
-
-        </mat-horizontal-stepper>
-      </div>
 
     </div>
 
@@ -71,67 +84,34 @@
     <div class="bg-white rounded-2xl shadow-sm p-6 min-h-[400px]">
 
       <!-- STEP 0 -->
-      <app-step-gio-hang
-        *ngIf="currentStep === 0"
-        [gioHang]="gioHang"
-        [tongTien]="tongTien"
-        [ghiChu]="ghiChu"
-        (tang)="tangSoLuong($event)"
-        (giam)="giamSoLuong($event)"
-        (xoa)="removeFromGioHang($event)"
+      <app-step-gio-hang *ngIf="currentStep === 0" [gioHang]="gioHang" [tongTien]="tongTien" [ghiChu]="ghiChu"
+        (tang)="tangSoLuong($event)" (giam)="giamSoLuong($event)" (xoa)="removeFromGioHang($event)"
         (ghiChuChange)="ghiChu = $event">
       </app-step-gio-hang>
 
       <!-- STEP 1 -->
-      <app-step-tam-tinh
-        *ngIf="currentStep === 1"
-        [tongTien]="tongTien"
-        [tongSauGiam]="tongSauGiam"
-        [maGiamGiaChon]="maGiamGiaChon"
-        [ghiChu]="ghiChu"
-        [giamGiaList]="giamGiaList || []"
+      <app-step-tam-tinh *ngIf="currentStep === 1" [tongTien]="tongTien" [tongSauGiam]="tongSauGiam"
+        [maGiamGiaChon]="maGiamGiaChon" [ghiChu]="ghiChu" [giamGiaList]="giamGiaList || []"
         (chonGiamGia)="chonGiamGia($event)">
       </app-step-tam-tinh>
 
       <!-- STEP 2 -->
-      <app-step-thong-tin
-        *ngIf="currentStep === 2"
-        [isLoggedIn]="isLoggedIn"
-        [danhSachDiaChi]="danhSachDiaChi"
-        [tenNguoiNhan]="tenNguoiNhan"
-        [soDienThoai]="soDienThoai"
-        [diaChi]="diaChi"
-        [selectedDiaChi]="selectedDiaChi"
-        [showAddAddress]="showAddAddress"
-        [newDiaChi]="newDiaChi"
-        [editingDiaChiId]="editingDiaChiId"
-        [editDiaChiForm]="editDiaChiForm"
-        (chonDiaChi)="chonDiaChi($event)"
-        (suaDiaChi)="moSuaDiaChi($event)"
-        (datMacDinh)="datMacDinh($event)"
-        (capNhatDiaChi)="capNhatDiaChi()"
-        [(showAddAddress)]="showAddAddress"
-        (themDiaChi)="themDiaChi()"
-        (goToLogin)="goToLogin()">
+      <app-step-thong-tin *ngIf="currentStep === 2" [isLoggedIn]="isLoggedIn" [danhSachDiaChi]="danhSachDiaChi"
+        [tenNguoiNhan]="tenNguoiNhan" [soDienThoai]="soDienThoai" [diaChi]="diaChi" [selectedDiaChi]="selectedDiaChi"
+        [showAddAddress]="showAddAddress" [newDiaChi]="newDiaChi" [editingDiaChiId]="editingDiaChiId"
+        [editDiaChiForm]="editDiaChiForm" (chonDiaChi)="chonDiaChi($event)" (suaDiaChi)="moSuaDiaChi($event)"
+        (datMacDinh)="datMacDinh($event)" (capNhatDiaChi)="capNhatDiaChi()" [(showAddAddress)]="showAddAddress"
+        (themDiaChi)="themDiaChi()" (goToLogin)="goToLogin()">
       </app-step-thong-tin>
 
       <!-- STEP 3 -->
-      <app-step-thanh-toan
-        *ngIf="currentStep === 3"
-        [gioHang]="gioHang"
-        [tongTien]="tongTien"
-        [tongSauGiam]="tongSauGiam"
-        [maGiamGiaChon]="maGiamGiaChon"
-        [tenNguoiNhan]="tenNguoiNhan"
-        [soDienThoai]="soDienThoai"
-        [diaChi]="diaChi"
-        [ghiChu]="ghiChu"
-        (thanhToan)="thanhToan()">
+      <app-step-thanh-toan *ngIf="currentStep === 3" [gioHang]="gioHang" [tongTien]="tongTien"
+        [tongSauGiam]="tongSauGiam" [maGiamGiaChon]="maGiamGiaChon" [tenNguoiNhan]="tenNguoiNhan"
+        [soDienThoai]="soDienThoai" [diaChi]="diaChi" [ghiChu]="ghiChu" (thanhToan)="thanhToan()">
       </app-step-thanh-toan>
 
       <!-- SUCCESS -->
-      <div *ngIf="currentStep === 4"
-           class="flex flex-col items-center justify-center py-16 text-center">
+      <div *ngIf="currentStep === 4" class="flex flex-col items-center justify-center py-16 text-center">
 
         <mat-icon class="text-green-500 text-6xl mb-4">
           check_circle
@@ -145,9 +125,7 @@
           Vui lòng vào trang cá nhân để theo dõi đơn hàng
         </p>
 
-        <button mat-flat-button color="primary"
-                class="mt-6"
-                (click)="goToDonHang()">
+        <button mat-flat-button color="primary" class="mt-6" (click)="goToDonHang()">
           Xem đơn hàng
         </button>
 
@@ -159,24 +137,18 @@
     <div class="sticky bottom-0 bg-gradient-to-r from-green-500 to-emerald-500
                 p-4 rounded-t-2xl shadow-xl flex justify-end gap-4 mt-4">
 
-      <button mat-stroked-button
-              class="!border-white !text-white hover:!bg-white/10"
-              (click)="prevStep()"
-              *ngIf="currentStep > 0 && currentStep < 4">
+      <button mat-stroked-button class="!border-white !text-white hover:!bg-white/10" (click)="prevStep()"
+        *ngIf="currentStep > 0 && currentStep < 4">
         Quay lại
       </button>
 
-      <button mat-raised-button
-              class="!bg-white !text-green-600 font-semibold hover:!bg-gray-100"
-              (click)="nextStep()"
-              *ngIf="currentStep < 3">
+      <button mat-raised-button class="!bg-white !text-green-600 font-semibold hover:!bg-gray-100" (click)="nextStep()"
+        *ngIf="currentStep < 3">
         Tiếp tục
       </button>
 
-      <button mat-raised-button
-              class="!bg-white !text-green-600 font-semibold hover:!bg-gray-100"
-              *ngIf="currentStep === 4"
-              (click)="close()">
+      <button mat-raised-button class="!bg-white !text-green-600 font-semibold hover:!bg-gray-100"
+        *ngIf="currentStep === 4" (click)="close()">
         Hoàn tất
       </button>
 
@@ -187,8 +159,5 @@
 </div>
 
 <!-- TOAST -->
-<app-toast-message
-  [show]="toast.show"
-  [message]="toast.message"
-  [type]="toast.type">
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type">
 </app-toast-message>

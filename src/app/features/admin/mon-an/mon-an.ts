@@ -18,7 +18,7 @@ export interface MonAn {
   gia_tien: number;
   trang_thai: string;
   anh_mon_an: string;
-  mo_ta:string;
+  mo_ta: string;
 }
 
 @Component({
@@ -106,6 +106,9 @@ export class MonAn implements OnInit {
         this.showToast('Bạn đã hủy sửa món ăn', 'warn');
       }
     });
+  }
+  toggleOption(monan: any) {
+    monan.showOption = !monan.showOption;
   }
 
   ngOnInit(): void {

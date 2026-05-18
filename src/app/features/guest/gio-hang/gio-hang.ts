@@ -103,25 +103,23 @@ export class GioHang implements OnInit {
   get isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
-
+  // ================= CHON GIAM GIA =================
   chonGiamGia(v: any) {
-
     if (!this.isVoucherValid(v)) {
       this.showToast('Đơn hàng chưa đủ điều kiện áp dụng mã này', 'warn');
       return;
     }
-
     this.maGiamGiaChon = v;
     this.tongSauGiam = this.tinhTienSauGiam();
   }
-
+  // ================= LOAD GIAM GIA =================
   loadGiamGia() {
     this.giamGiaService.LayTatCaGiamGia()
       .subscribe(res => {
         this.giamGiaList = (res.data || []).filter((x: any) => x.is_active);
       });
   }
-
+  // ================= DANG NHAP =================
   goToLogin() {
     this.router.navigate(['/login']);
   }
@@ -184,7 +182,7 @@ export class GioHang implements OnInit {
     // =========================
     this.loadGiamGia();
   }
-
+  
   loadCartFromDB(userId: number) {
     this.cartService.getByUser(userId).subscribe(res => {
 
@@ -545,7 +543,7 @@ export class GioHang implements OnInit {
   }
 
   close() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/thucdon']);
   }
   goToDonHang() {
     this.router.navigate(['/user/don-hang']);
