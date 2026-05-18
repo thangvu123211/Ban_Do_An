@@ -10,6 +10,8 @@ import { Menu } from './menu/menu';
 import { LienHe } from './lien-he/lien-he';
 import { Hello } from './hello/hello';
 import { DoiTacWebsite } from './doi-tac-website/doi-tac-website';
+import { GioHang } from './gio-hang/gio-hang';
+import { ForgotPassword } from '../../pages/forgot-password/forgot-password';
 
 export const guestRoutes: Routes = [
   {
@@ -27,6 +29,8 @@ export const guestRoutes: Routes = [
       { path: 'lienhe', component: LienHe, title: 'Liên hệ' },
       { path: 'test', component: Hello, title: 'test' },
       { path: 'doi_tac', component: DoiTacWebsite, title: 'Đối tác website' },
+      { path: 'gio_hang', component: GioHang, title: 'Giỏ hàng' },
+      { path: 'forgot_password', component: ForgotPassword, title: 'Quên mật khẩu' },
     ],
   },
 ];

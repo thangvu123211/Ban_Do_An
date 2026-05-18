@@ -15,6 +15,7 @@ import { HoaDonService } from '../../../core/services/HoaDon.Service';
 import { AuthService } from '../../../core/services/auth.service';
 import { YeuThichService } from '../../../core/services/YeuThich.service';
 import { YeuThich } from '../yeu-thich/yeu-thich';
+import { ThemGioHangDialog } from '../dialogs/them-gio-hang-dialog/them-gio-hang-dialog';
 
 
 
@@ -47,6 +48,7 @@ export class Menu implements OnInit {
   maBan: number = 0;
   tenBan: string = '';
   showGioHang: boolean = false;
+  tongSoMon = 0;
 
   toast = {
     show: false,
@@ -164,25 +166,40 @@ export class Menu implements OnInit {
   }
 
   addToGioHang(mon: any) {
-    const token = localStorage.getItem('token');
 
-    if (!token) {
-      this.cartService.addLocal(mon);
-      this.showToast('Đã thêm vào giỏ hàng', 'success');
-      return;
-    }
+    const dialogRef = this.dialog.open(ThemGioHangDialog, {
+      data: {
+        mon: mon   // 🔥 BẮT BUỘC PHẢI CÓ
+      },
+      width: '85vw',
+      maxWidth: '900px',
+      height: '80vh'
+    });
 
-    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) return;
 
-    this.cartService.addDB(mon.ma_mon_an, 1).subscribe(() => {
-      this.cartService.loadCountFromDB(userId);
-      this.showToast('Đã thêm vào giỏ hàng', 'success');
+      const { mon, soLuong } = result;
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        this.cartService.addLocal({
+          ...mon,
+          soLuong
+        });
+        this.showToast('Đã thêm vào giỏ hàng', 'success');
+        return;
+      }
+
+      const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+      this.cartService.addDB(mon.ma_mon_an, soLuong).subscribe(() => {
+        this.cartService.loadCountFromDB(userId);
+        this.showToast('Đã thêm vào giỏ hàng', 'success');
+      });
     });
   }
 
-  get tongSoMon(): number {
-    return this.gioHang.reduce((sum, i) => sum + i.soLuong, 0);
-  }
 
   loadFavorites() {
     const token = localStorage.getItem('token');
@@ -298,6 +315,10 @@ export class Menu implements OnInit {
     this.getAllLoaiMonAn();
     this.getAllMonAn();
     this.loadFavorites();
+
+    this.cartService.count$.subscribe(count => {
+      this.tongSoMon = count;
+    });
 
     this.route.queryParams.subscribe(params => {
       const loai = params['loai'];

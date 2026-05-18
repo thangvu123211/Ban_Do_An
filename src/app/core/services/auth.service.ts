@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { environment } from '../../../environments/environment.prod';
 import { YeuThichService } from './YeuThich.service';
 import { CartService } from './cart.service';
+import { environment } from '../../../environments/environment.prod';
 
 
 
@@ -15,10 +15,10 @@ export class AuthService {
 
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private router: Router,
-    private yeuThichService:YeuThichService,
-    private cartService:CartService,
+    private yeuThichService: YeuThichService,
+    private cartService: CartService,
   ) { }
 
   // 🔹 Đăng nhập
@@ -35,25 +35,25 @@ export class AuthService {
   // }
 
   login(data: any): Observable<any> {
-  return this.http.post(`${environment.apiUrl}/login`, data).pipe(
-    tap((res: any) => {
-      if (res.token) {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('role', res.role || '');
-        localStorage.setItem('user', JSON.stringify(res.data));
+    return this.http.post(`${environment.apiUrl}/login`, data).pipe(
+      tap((res: any) => {
+        if (res.token) {
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('role', res.role || '');
+          localStorage.setItem('user', JSON.stringify(res.data));
 
-        const userId = res.data?.ma_nguoi_dung || res.data?.id;
-        localStorage.setItem('ma_nguoi_dung', userId);
+          const userId = res.data?.ma_nguoi_dung || res.data?.id;
+          localStorage.setItem('ma_nguoi_dung', userId);
 
-        // 🔥 MERGE LOCAL → DB
-        this.yeuThichService.syncLocalToDB(userId);
-        this.cartService.syncLocalToDB(userId)?.subscribe(() => {
-          console.log('SYNC CART DONE');
-        });
-      }
-    })
-  );
-}
+          // 🔥 MERGE LOCAL → DB
+          this.yeuThichService.syncLocalToDB(userId);
+          this.cartService.syncLocalToDB(userId)?.subscribe(() => {
+            console.log('SYNC CART DONE');
+          });
+        }
+      })
+    );
+  }
 
 
 
@@ -107,5 +107,18 @@ export class AuthService {
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  sendOtp(email: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/auth/send-otp`, { email });
+  }
+
+  // Reset mật khẩu
+  resetPassword(data: {
+    email: string;
+    otp: string;
+    mat_khau_moi: string;
+  }): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/auth/reset-password`, data);
   }
 }

@@ -42,6 +42,8 @@ export class GioHang implements OnInit {
   maGiamGiaChon: any = null;
   tongSauGiam = 0;
 
+  loaded: boolean = false;
+
   // ================= STATE =================
   gioHang: any[] = [];
   tongTien = 0;
@@ -67,6 +69,7 @@ export class GioHang implements OnInit {
     ma_nguoi_dung: 0
   };
 
+
   //eddit dia chi
   editingDiaChiId: number | null = null;
   editDiaChiForm: any = {
@@ -87,7 +90,7 @@ export class GioHang implements OnInit {
   };
 
   constructor(
-    private dialogRef: MatDialogRef<GioHang>,
+
     private cartService: CartService,
     private authService: AuthService,
     private router: Router,
@@ -121,12 +124,11 @@ export class GioHang implements OnInit {
 
   goToLogin() {
     this.router.navigate(['/login']);
-    this.close();
   }
 
   // ================= INIT =================
   ngOnInit() {
-
+    this.loaded = false;
     const token = localStorage.getItem('token');
     const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
@@ -166,10 +168,7 @@ export class GioHang implements OnInit {
       const local = this.cartService.getLocal();
       this.gioHang = local;
       this.tinhTong();
-
-      if (local.length === 0 && !this.isCheckoutDone) {
-        this.dialogRef.close();
-      }
+      this.loaded = true;
     }
 
     // =========================
@@ -190,13 +189,11 @@ export class GioHang implements OnInit {
     this.cartService.getByUser(userId).subscribe(res => {
 
       this.gioHang = (res || []).map(x => {
-
-        const mon = x.mon_an?.[0]; // 👈 QUAN TRỌNG
+        const mon = x.mon_an?.[0];
 
         return {
           ma_mon_an: x.ma_mon_an,
           soLuong: x.so_luong,
-
           ten_mon_an: mon?.ten_mon_an || '',
           gia_tien: mon?.gia_tien || 0,
           anh_mon_an: mon?.anh_mon_an?.[0]?.url || ''
@@ -204,10 +201,7 @@ export class GioHang implements OnInit {
       });
 
       this.tinhTong();
-
-      if (this.gioHang.length === 0 && !this.isCheckoutDone) {
-        this.dialogRef.close();
-      }
+      this.loaded = true; // 🔥 QUAN TRỌNG
     });
   }
   isVoucherValid(v: any): boolean {
@@ -253,6 +247,7 @@ export class GioHang implements OnInit {
         this.cartService.loadCountFromDB(userId);
       });
   }
+
 
   giamSoLuong(item: any) {
 
@@ -550,10 +545,9 @@ export class GioHang implements OnInit {
   }
 
   close() {
-    this.dialogRef.close();
+    this.router.navigate(['/']);
   }
   goToDonHang() {
-    this.dialogRef.close();
     this.router.navigate(['/user/don-hang']);
   }
 }

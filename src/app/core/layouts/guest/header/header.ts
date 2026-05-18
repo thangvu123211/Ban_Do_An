@@ -78,54 +78,8 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/datban']);
   }
 
-  moGioHang() {
-    const token = localStorage.getItem('token');
-    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
-
-    // ❌ CHƯA LOGIN → LOCAL
-    if (!token) {
-      const list = this.cartService.getLocal();
-
-      if (!list || list.length === 0) {
-        this.showToast('Không có gì trong giỏ hàng', 'warn');
-        return;
-      }
-
-      this.dialog.open(GioHang, {
-        width: '85vw',
-        maxWidth: '900px',
-        height: '80vh',
-        panelClass: 'gio-hang-dialog',
-        data: list
-      });
-
-      return;
-    }
-
-    // ✅ LOGIN → DB
-    this.cartService.getByUser(userId).subscribe((res: any[]) => {
-
-      if (!res || res.length === 0) {
-        this.showToast('Không có gì trong giỏ hàng', 'warn');
-        return;
-      }
-
-      const list = res.map(x => ({
-        ma_mon_an: x.mon_an?.ma_mon_an,
-        ten_mon_an: x.mon_an?.ten_mon_an,
-        gia_tien: x.mon_an?.gia_tien,
-        soLuong: x.so_luong,
-        anh_mon_an: x.mon_an?.anh_mon_an
-      }));
-
-      this.dialog.open(GioHang, {
-        width: '85vw',
-        maxWidth: '900px',
-        height: '80vh',
-        panelClass: 'gio-hang-dialog',
-        data: list
-      });
-    });
+    moGioHang() {
+    this.router.navigate(['/gio_hang']);
   }
 
   moYeuThich() {
