@@ -24,52 +24,60 @@
   <!-- ================= MÃ GIẢM GIÁ ================= -->
   <div class="mt-4">
 
-  <h3 class="text-lg font-bold mb-2">Mã giảm giá</h3>
+    <h3 class="text-lg font-bold mb-2">Mã giảm giá</h3>
+    <div class="flex gap-2 mb-4">
 
-  <div *ngIf="(giamGiaList?.length ?? 0) > 0; else emptyVoucher"
-       class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2">
+      <input type="text" [(ngModel)]="maNhap" placeholder="Nhập mã giảm giá..."
+        class="flex-1 border rounded-xl px-3 py-2 focus:ring focus:ring-green-200" />
 
-    <div *ngFor="let v of giamGiaList || []"
-         (click)="chonGiamGia.emit(v)"
-         class="min-w-[260px] snap-start cursor-pointer p-4 rounded-2xl border transition hover:shadow-md"
-         [ngClass]="{
+      <button class="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700" (click)="apDungMa.emit(maNhap)">
+        Áp dụng
+      </button>
+
+    </div>
+
+    <div *ngIf="(giamGiaList?.length ?? 0) > 0; else emptyVoucher"
+      class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2">
+
+      <div *ngFor="let v of giamGiaList || []" (click)="chonGiamGia.emit(v)"
+        class="min-w-[260px] snap-start cursor-pointer p-4 rounded-2xl border transition hover:shadow-md" [ngClass]="{
            'border-green-500 bg-green-50': (maGiamGiaChon?.code ?? '') === v.code,
            'border-gray-200 bg-white': (maGiamGiaChon?.code ?? '') !== v.code
          }">
 
-      <!-- CODE -->
-      <p class="font-bold text-green-600 text-lg">
-        🎟 {{ v.code }}
-      </p>
+        <!-- CODE -->
+        <p class="font-bold text-green-600 text-lg">
+          🎟 {{ v.code }}
+        </p>
 
-      <!-- TÊN CHƯƠNG TRÌNH -->
-      <p class="text-sm font-medium text-gray-800">
-        {{ v.ten_chuong_trinh }}
-      </p>
+        <!-- TÊN CHƯƠNG TRÌNH -->
+        <p class="text-sm font-medium text-gray-800">
+          {{ v.ten_chuong_trinh }}
+        </p>
 
-      <!-- LOẠI GIẢM GIÁ -->
-      <p class="text-xs text-gray-500 mt-1">
-        {{ v.loai_giam_gia === 'percent'
-            ? 'Giảm ' + v.gia_tri_giam + '%'
-            : 'Giảm ' + (v.gia_tri_giam | number) + 'đ' }}
-      </p>
+        <!-- LOẠI GIẢM GIÁ -->
+        <p class="text-xs text-gray-500 mt-1">
+          {{ v.loai_giam_gia === 'percent'
+          ? 'Giảm ' + v.gia_tri_giam + '%'
+          : 'Giảm ' + (v.gia_tri_giam | number) + 'đ' }}
+        </p>
 
-      <!-- ĐIỀU KIỆN -->
-      <p class="text-xs text-gray-400 mt-1">
-        Đơn tối thiểu: {{ v.don_toi_thieu ? (v.don_toi_thieu | number) + 'đ' : 'Không yêu cầu' }}
-      </p>
+        <!-- ĐIỀU KIỆN -->
+        <p class="text-xs text-gray-400 mt-1">
+          Đơn tối thiểu: {{ v.don_toi_thieu ? (v.don_toi_thieu | number) + 'đ' : 'Không yêu cầu' }}
+        </p>
+
+      </div>
 
     </div>
 
+    <ng-template #emptyVoucher>
+      <p class="text-gray-400 text-sm">
+        Không có mã giảm giá khả dụng
+      </p>
+    </ng-template>
+
   </div>
-
-  <ng-template #emptyVoucher>
-    <p class="text-gray-400 text-sm">
-      Không có mã giảm giá khả dụng
-    </p>
-  </ng-template>
-
-</div>
 
   <!-- ================= GIẢM GIÁ ĐÃ CHỌN ================= -->
   <div *ngIf="maGiamGiaChon" class="flex justify-between text-red-500 font-medium mt-2">

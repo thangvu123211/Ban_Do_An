@@ -19,9 +19,12 @@
           {{ item.gia_tien | number }} đ
         </p>
 
-        <p class="text-gray-400 mt-1">
-          Không cay, ít hành
-        </p>
+
+        <div *ngIf="item.options?.length" class="text-xs text-gray-500 mt-1">
+          <div *ngFor="let o of item.options">
+            + {{ o.ten_option }} ({{ o.gia_them | number }}đ)
+          </div>
+        </div>
       </div>
 
       <!-- ACTION -->
@@ -32,7 +35,7 @@
 
         <div class="flex items-center gap-2 bg-gray-100 rounded-full px-2 py-1">
           <button (click)="giam.emit(item)" class="w-7 h-7 rounded-full bg-white shadow">
-            <mat-icon class="text-base">remove</mat-icon>
+            <mat-icon class="text-base mt-0.5">remove</mat-icon>
           </button>
 
           <span class="w-6 text-center font-semibold text-sm">
@@ -40,7 +43,7 @@
           </span>
 
           <button (click)="tang.emit(item)" class="w-7 h-7 rounded-full bg-green-500 text-white shadow">
-            <mat-icon class="text-base">add</mat-icon>
+            <mat-icon class="text-base mt-0.5">add</mat-icon>
           </button>
         </div>
       </div>

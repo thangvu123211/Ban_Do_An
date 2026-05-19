@@ -28,7 +28,8 @@ export class AdminSidebar implements OnInit {
     { link: '/admin/khach_hang_dat_ban', icon: 'table_bar', text: 'Khách Hàng Đặt Bàn' },
     { link: '/admin/hoa_don', icon: 'receipt_long', text: 'Hóa Đơn' },
     { link: '/admin/lien_he', icon: 'contact_emergency', text: 'Liên Hệ' },
-    { link: '/admin/ma_giam_gia', icon: 'attach_money', text: 'Mã Giảm Giá' }
+    { link: '/admin/ma_giam_gia', icon: 'attach_money', text: 'Mã Giảm Giá' },
+    { link: '/admin/option_mon_an', icon: 'local_dining', text: 'OpTion món ăn' }
   ];
 
   constructor(private router: Router,private sidebarService: SidebarService) { }

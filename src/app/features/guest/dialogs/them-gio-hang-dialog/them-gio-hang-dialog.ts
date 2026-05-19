@@ -15,6 +15,8 @@ export class ThemGioHangDialog {
 
   mon: any = null;
   soLuong = 1;
+  selectedOptions: any[] = [];
+  selectedByGroup: { [key: number]: any[] } = {};
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -25,33 +27,84 @@ export class ThemGioHangDialog {
     this.mon = data?.mon ?? null;
   }
 
+  tinhTongTien() {
+
+    let optionTotal = 0;
+
+    Object.values(this.selectedByGroup).forEach((list: any[]) => {
+      list.forEach(opt => {
+        optionTotal += opt.gia_them || 0;
+      });
+    });
+
+    const giaMon = this.mon?.gia_tien || 0;
+
+    return (giaMon + optionTotal) * this.soLuong;
+  }
+
   tangSoLuong() {
     this.soLuong++;
   }
 
   giamSoLuong() {
-    if (this.soLuong > 1) {
-      this.soLuong--;
-    }
+    if (this.soLuong > 1) this.soLuong--;
   }
 
   get tongTien() {
-    return this.soLuong * (this.mon?.gia_tien || 0);
+    return this.tinhTongTien()
   }
 
   xacNhan() {
-  this.dialogRef.close({
-    mon: {
-      ma_mon_an: this.mon.ma_mon_an,
-      ten_mon_an: this.mon.ten_mon_an,
-      gia_tien: this.mon.gia_tien,
-      anh_mon_an: this.mon.anh_mon_an
-    },
-    soLuong: this.soLuong
-  });
-}
+
+    const selectedOptions = Object.values(this.selectedByGroup)
+      .flat()
+      .map((opt: any) => ({
+        ma_option_item: opt.ma_option_item,
+        ten_option: opt.ten_option,
+        gia_them: opt.gia_them
+      }));
+
+    this.dialogRef.close({
+      mon: {
+        ma_mon_an: this.mon.ma_mon_an,
+        ten_mon_an: this.mon.ten_mon_an,
+        gia_tien: this.mon.gia_tien,
+        anh_mon_an: this.mon.anh_mon_an,
+        options: selectedOptions
+      },
+      soLuong: this.soLuong
+    });
+  }
 
   huy() {
     this.dialogRef.close();
   }
+  toggleOption(nhom: any, opt: any, event: any) {
+
+    if (!this.selectedByGroup[nhom.ma_nhom_option]) {
+      this.selectedByGroup[nhom.ma_nhom_option] = [];
+    }
+
+    const list = this.selectedByGroup[nhom.ma_nhom_option];
+
+    if (!nhom.chon_nhieu) {
+
+      this.selectedByGroup[nhom.ma_nhom_option] =
+        event.target.checked ? [opt] : [];
+
+    } else {
+
+      if (event.target.checked) {
+        list.push(opt);
+      } else {
+        this.selectedByGroup[nhom.ma_nhom_option] =
+          list.filter(x => x.ma_option_item !== opt.ma_option_item);
+      }
+    }
+  }
+  isChecked(nhom: any, opt: any): boolean {
+    return (this.selectedByGroup[nhom.ma_nhom_option] || [])
+      .some(x => x.ma_option_item === opt.ma_option_item);
+  }
+
 }

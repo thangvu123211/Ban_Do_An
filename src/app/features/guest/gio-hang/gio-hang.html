@@ -92,7 +92,7 @@
       <!-- STEP 1 -->
       <app-step-tam-tinh *ngIf="currentStep === 1" [tongTien]="tongTien" [tongSauGiam]="tongSauGiam"
         [maGiamGiaChon]="maGiamGiaChon" [ghiChu]="ghiChu" [giamGiaList]="giamGiaList || []"
-        (chonGiamGia)="chonGiamGia($event)">
+        (chonGiamGia)="chonGiamGia($event)" (apDungMa)="apDungMa($event)">
       </app-step-tam-tinh>
 
       <!-- STEP 2 -->

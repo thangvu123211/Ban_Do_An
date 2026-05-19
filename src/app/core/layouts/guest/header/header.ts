@@ -78,7 +78,7 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/datban']);
   }
 
-    moGioHang() {
+  moGioHang() {
     this.router.navigate(['/gio_hang']);
   }
 
@@ -129,6 +129,8 @@ export class HeaderComponent implements OnInit {
       this.router.navigate(['/admin']);
     } else if (role === 'user') {
       this.router.navigate(['/user']);
+    } else if (role === 'shipper') {
+      this.router.navigate(['/shipper']);
     } else {
       this.router.navigate(['/login']);
     }

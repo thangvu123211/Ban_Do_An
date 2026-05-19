@@ -175,6 +175,18 @@
         <h3 class="font-bold text-gray-900">
           Thêm địa chỉ mới
         </h3>
+        <button class="bg-blue-500 text-white px-4 py-2 rounded-xl" (click)="openMap = !openMap">
+          📍 Chọn vị trí trên bản đồ
+        </button>
+
+        <div *ngIf="openMap" class="mt-4">
+          <google-map height="300px" width="100%" [center]="mapCenter" [zoom]="15" (mapClick)="onMapClick($event)">
+          </google-map>
+
+          <p class="text-sm mt-2 text-gray-600">
+            Lat: {{ newDiaChi.latitude }} | Lng: {{ newDiaChi.longitude }}
+          </p>
+        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -189,6 +201,7 @@
           </mat-form-field>
 
         </div>
+
 
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Địa chỉ</mat-label>

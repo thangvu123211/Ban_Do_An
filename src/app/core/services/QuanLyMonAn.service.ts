@@ -49,5 +49,9 @@ export class QuanLyMonAn {
     );
   }
 
+  getMonAnDetail(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/mon_an/${id}/detail`);
+  }
+
 
 }

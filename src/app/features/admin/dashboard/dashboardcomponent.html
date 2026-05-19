@@ -6,12 +6,11 @@
       class="rounded-2xl shadow-lg p-5 flex items-center justify-between hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
       <div>
         <h5 class="text-xs font-semibold uppercase tracking-wider">
-          SỐ HÓA ĐƠN
+          SỐ ĐƠN HÀNG
         </h5>
-        <span class="text-3xl font-bold">40</span>
+        <span class="text-3xl font-bold"> {{ dangTai ? '...' : tongHoaDon }}</span>
         <p class="text-sm mt-2">
-          <span class="text-green-500 mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
-          So với tháng trước
+          Tổng số đơn hàng trong hệ thống
         </p>
       </div>
       <div class="bg-red-500 rounded-full p-2 shadow-md flex items-center justify-center
@@ -29,12 +28,11 @@
       class="rounded-2xl shadow-lg p-5 flex items-center justify-between hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
       <div>
         <h5 class="text-xs font-semibold uppercase tracking-wider">
-          SỐ LƯỢNG NHÂN VIÊN
+          SỐ LƯỢNG KHÁCH HÀNG
         </h5>
-        <span class="text-3xl font-bold">5</span>
-        <p class="text-sm mt-2">
-          <span class="text-red-500 mr-2"><i class="fas fa-arrow-down"></i> 3.48%</span>
-          So với tuần trước
+        <span class="text-3xl font-bold">{{ dangTaiUser ? '...' : tongKhachHang }}</span>
+        <p class="text-sm mt-2">         
+          Tổng số khách hàng trong hệ thống
         </p>
       </div>
 
@@ -52,12 +50,11 @@
       class="rounded-2xl shadow-lg p-5 flex items-center justify-between hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
       <div>
         <h5 class="text-xs font-semibold uppercase tracking-wider">
-          SỐ HÓA ĐƠN HỦY
+          SỐ ĐƠN HÀNG ĐÃ HỦY
         </h5>
-        <span class="text-3xl font-bold">55</span>
+        <span class="text-3xl font-bold">{{ dangTaiHoaDonHuy ? '...' : tongHoaDonHuy }}</span>
         <p class="text-sm mt-2">
-          <span class="text-yellow-500 mr-2"><i class="fas fa-arrow-down"></i> 1.10%</span>
-          So với hôm qua
+          Tổng số đơn hàng đã bị hủy trong hệ thống
         </p>
       </div>
 
@@ -75,12 +72,12 @@
       class="rounded-2xl shadow-lg p-5 flex items-center justify-between hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
       <div>
         <h5 class="text-xs font-semibold uppercase tracking-wider">
-          HÓA ĐƠN ĐÃ XÁC NHẬN
+          ĐƠN HÀNG ĐÃ ĐÃ ĐƯỢC GIAO
         </h5>
-        <span class="text-3xl font-bold">100</span>
+        <span class="text-3xl font-bold"> {{dangTaihoadondagiao ? '...' : tongdonhangdagiao}}</span>
         <p class="text-sm mt-2">
-          <span class="text-green-500 mr-2"><i class="fas fa-arrow-up"></i> 12%</span>
-          So với tháng trước
+          
+         Tổng số đơn hàng đã được giao trong hệ thống
         </p>
       </div>
       <div class="bg-blue-500 rounded-full p-2 shadow-md flex items-center justify-center

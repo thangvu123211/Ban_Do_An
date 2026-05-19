@@ -14,12 +14,15 @@ export class StepTamTinhComponent {
   @Input() maGiamGiaChon: any = null;
   @Input() ghiChu = '';
   @Input() giamGiaList: any[] = [];
+  maNhap: string = '';
 
   @Output() chonGiamGia = new EventEmitter<any>();
+  @Output() apDungMa = new EventEmitter<string>();
 
   // ================= CHECK VOUCHER =================
   isVoucherValid(v: any): boolean {
     if (!v?.don_toi_thieu) return true;
     return this.tongTien >= v.don_toi_thieu;
   }
+  
 }

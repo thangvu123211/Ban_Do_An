@@ -17,10 +17,8 @@
 
     <!-- LEFT: IMAGE -->
     <div class="w-5/12 bg-gray-50 flex items-center justify-center p-6">
-      <img
-        [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
-        class="max-w-full max-h-full object-contain rounded-xl shadow-sm"
-      />
+      <img [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
+        class="max-w-full max-h-full object-contain rounded-xl shadow-sm" />
     </div>
 
     <!-- RIGHT: CONTENT -->
@@ -59,47 +57,62 @@
       </div>
 
       <!-- ===== TOPPING ===== -->
-      <div>
-        <p class="font-semibold text-gray-800 mb-2">Topping</p>
+      <!-- ===== OPTION ===== -->
+      <div class="space-y-6">
 
-        <div class="flex flex-wrap gap-2">
-          <label class="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
-            <input type="checkbox" /> Trứng (+10.000đ)
-          </label>
-          <label class="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
-            <input type="checkbox" /> Phô mai (+15.000đ)
-          </label>
-          <label class="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
-            <input type="checkbox" /> Xúc xích (+12.000đ)
-          </label>
-        </div>
-      </div>
+        <div *ngFor="let nhom of data.options" class="border rounded-2xl p-4 bg-gray-50 shadow-sm">
 
-      <!-- ===== CẤP ĐỘ CAY ===== -->
-      <div>
-        <p class="font-semibold text-gray-800 mb-2">Cấp độ cay</p>
-        <div class="flex gap-4 text-gray-700">
-          <label><input type="radio" name="cay" checked /> Không cay</label>
-          <label><input type="radio" name="cay" /> Cay vừa 🌶️</label>
-          <label><input type="radio" name="cay" /> Cay nhiều 🌶️🌶️</label>
-        </div>
-      </div>
+          <!-- HEADER NHÓM -->
+          <div class="flex justify-between items-center mb-3">
 
-      <!-- ===== CHẾ BIẾN ===== -->
-      <div>
-        <p class="font-semibold text-gray-800 mb-2">Chế biến</p>
-        <div class="flex gap-4 text-gray-700">
-          <label><input type="radio" name="nau" checked /> Nấu bình thường</label>
-          <label><input type="radio" name="nau" /> Không nấu</label>
+            <p class="font-bold text-gray-800">
+              {{ nhom.ten_nhom }}
+            </p>
+
+            <span class="text-xs px-3 py-1 rounded-full" [ngClass]="{
+              'bg-red-100 text-red-600': nhom.bat_buoc,
+              'bg-gray-200 text-gray-600': !nhom.bat_buoc
+            }">
+
+              {{ nhom.chon_nhieu ? 'Chọn nhiều' : 'Chọn 1' }}
+
+            </span>
+
+          </div>
+
+          <!-- OPTION LIST -->
+          <div class="grid grid-cols-2 gap-2">
+
+            <label *ngFor="let opt of nhom.option_items" class="flex items-center justify-between gap-2 px-3 py-2 rounded-xl border bg-white
+                    hover:border-green-400 cursor-pointer transition">
+
+              <div class="flex items-center gap-2">
+
+                <input type="checkbox" [checked]="isChecked(nhom, opt)" (change)="toggleOption(nhom, opt, $event)"
+                  class="accent-green-500 w-4 h-4" />
+
+                <span class="text-gray-700 text-sm">
+                  {{ opt.ten_option }}
+                </span>
+
+              </div>
+
+              <span class="text-green-600 font-semibold text-sm">
+                +{{ opt.gia_them | number }}đ
+              </span>
+
+            </label>
+
+          </div>
+
         </div>
+
       </div>
 
       <!-- ===== GHI CHÚ ===== -->
       <div>
         <p class="font-semibold text-gray-800 mb-2">Ghi chú</p>
-        <textarea
-          rows="3"
-          placeholder="Ví dụ: ít hành, không tiêu..."
+        <textarea rows="3" placeholder="Ví dụ: ít hành, không tiêu..."
           class="w-full border rounded-lg p-3 focus:outline-none focus:ring focus:ring-green-200">
         </textarea>
       </div>

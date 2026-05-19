@@ -1,1 +1,271 @@
-<p>trang-ca-nhan works!</p>
+<div class="min-h-screen bg-gray-100 flex">
+
+    <!-- ================= LEFT PROFILE ================= -->
+    <aside class="w-full md:w-[340px] bg-white shadow-lg p-6 flex flex-col items-center">
+
+        <!-- AVATAR -->
+        <div class="relative group">
+
+            <img [src]="Anhnguoidung" class="w-36 h-36 rounded-full object-cover border-4 border-blue-500 shadow-md" />
+
+            <!-- status -->
+            <span class="absolute bottom-2 right-2 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></span>
+
+            <!-- hidden file -->
+            <input type="file" accept="image/*" hidden #fileInput (change)="onFileSelected($event)" />
+
+            <!-- overlay -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 
+              bg-black/40 opacity-0 group-hover:opacity-100 transition rounded-full">
+
+                <!-- chọn ảnh -->
+                <button class="px-3 py-1 text-sm bg-white text-gray-800 rounded-lg hover:bg-gray-200"
+                    (click)="fileInput.click()">
+                    Đổi ảnh
+                </button>
+
+                <!-- lưu ảnh -->
+                <button class="px-3 py-1 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600"
+                    (click)="uploadAvatar()" [disabled]="!selectedFile">
+                    Lưu ảnh
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- NAME -->
+        <h2 class="mt-4 text-xl font-bold text-gray-800">
+            {{ Thongtinnguoidung?.ho_ten }}
+        </h2>
+
+        <p class="text-gray-500 text-sm">
+            {{ Thongtinnguoidung?.email }}
+        </p>
+
+        <!-- INFO BOX -->
+        <div class="mt-6 w-full bg-gray-50 p-4 rounded-xl border">
+            <p class="text-xs text-gray-500">Trạng thái</p>
+            <p class="text-green-600 font-semibold">Đang hoạt động</p>
+        </div>
+
+    </aside>
+
+    <!-- ================= RIGHT CONTENT ================= -->
+    <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+
+        <!-- HEADER -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">
+                Tài khoản cá nhân
+            </h1>
+            <p class="text-gray-500">
+                Quản lý thông tin và địa chỉ giao hàng
+            </p>
+        </div>
+
+        <!-- WRAPPER -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- ================= USER INFO ================= -->
+            <section class="lg:col-span-2 bg-white rounded-2xl shadow p-6">
+
+                <h2 class="text-lg font-semibold mb-4">
+                    Thông tin cá nhân
+                </h2>
+
+                <div *ngIf="Thongtinnguoidung" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Họ tên</mat-label>
+                        <input matInput [(ngModel)]="Thongtinnguoidung.ho_ten">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Email</mat-label>
+                        <input matInput [(ngModel)]="Thongtinnguoidung.email">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Số điện thoại</mat-label>
+                        <input matInput [(ngModel)]="Thongtinnguoidung.sdt">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Ngày sinh</mat-label>
+
+                        <input matInput [matDatepicker]="picker" [(ngModel)]="Thongtinnguoidung.ngay_sinh" />
+
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+
+                </div>
+
+                <!-- SAVE -->
+                <div class="flex justify-end mt-6">
+                    <button matButton="filled" (click)="capNhatNguoiDung()">
+                        Cập nhật
+                    </button>
+                </div>
+
+                <!-- ================= ADDRESS ================= -->
+                <div class="mt-10">
+
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-lg font-semibold">
+                            Địa chỉ của tôi
+                        </h3>
+
+                        <button mat-flat-button color="accent" (click)="showAdd = !showAdd">
+                            Thêm địa chỉ
+                        </button>
+                    </div>
+
+                    <!-- LIST -->
+                    <div class="space-y-3">
+
+                        <div *ngFor="let dc of danhSachDiaChi"
+                            class="border rounded-xl p-4 bg-white hover:shadow transition">
+
+                            <div class="flex justify-between">
+
+                                <!-- INFO -->
+                                <div>
+                                    <p class="font-semibold">{{ dc.ho_ten }}</p>
+                                    <p class="text-sm text-gray-500">{{ dc.sdt }}</p>
+                                    <p class="text-sm text-gray-700">{{ dc.dia_chi }}</p>
+
+                                    <span *ngIf="dc.mac_dinh" class="text-xs text-green-600 font-semibold">
+                                        Mặc định
+                                    </span>
+                                </div>
+
+                                <!-- ACTION -->
+                                <div class="flex flex-col gap-2">
+
+                                    <button mat-raised-button (click)="moSuaDiaChi(dc)">
+                                        Sửa
+                                    </button>
+
+                                    <button mat-stroked-button (click)="datMacDinh(dc.id)">
+                                        Mặc định
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            <!-- EDIT FORM -->
+                            <div *ngIf="editingDiaChiId === dc.id" class="mt-4 space-y-3 bg-gray-50 p-4 rounded-xl">
+
+                                <mat-form-field appearance="outline" class="w-full">
+                                    <mat-label>Họ tên</mat-label>
+                                    <input matInput [(ngModel)]="editDiaChiForm.ho_ten">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="w-full">
+                                    <mat-label>SĐT</mat-label>
+                                    <input matInput [(ngModel)]="editDiaChiForm.sdt">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="w-full">
+                                    <mat-label>Địa chỉ</mat-label>
+                                    <textarea matInput rows="3" [(ngModel)]="editDiaChiForm.dia_chi"></textarea>
+                                </mat-form-field>
+
+                                <div class="flex justify-end gap-2">
+                                    <button mat-stroked-button (click)="editingDiaChiId = null">
+                                        Hủy
+                                    </button>
+
+                                    <button mat-flat-button color="primary" (click)="capNhatDiaChi()">
+                                        Lưu
+                                    </button>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ADD FORM -->
+                    <div *ngIf="showAdd" class="mt-4 p-4 bg-gray-50 rounded-xl space-y-3">
+
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Họ tên</mat-label>
+                            <input matInput [(ngModel)]="newDiaChi.ho_ten">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>SĐT</mat-label>
+                            <input matInput [(ngModel)]="newDiaChi.sdt" autocomplete="off">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Địa chỉ</mat-label>
+                            <textarea matInput [(ngModel)]="newDiaChi.dia_chi"></textarea>
+                        </mat-form-field>
+
+                        <mat-checkbox [(ngModel)]="newDiaChi.mac_dinh">
+                            Đặt làm mặc định
+                        </mat-checkbox>
+
+                        <div class="flex justify-end gap-2">
+                            <button mat-stroked-button (click)="showAdd = false">
+                                Hủy
+                            </button>
+
+                            <button mat-flat-button color="primary" (click)="themDiaChi()">
+                                Thêm
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ================= RIGHT PANEL ================= -->
+            <section class="bg-white rounded-2xl shadow p-6">
+
+                <h2 class="text-lg font-semibold mb-4">
+                    Bảo mật
+                </h2>
+
+                <div class="space-y-3">
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Mật khẩu cũ</mat-label>
+                        <input matInput type="password" [(ngModel)]="doiMatKhauForm.mat_khau_cu" autocomplete="off">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Mật khẩu mới</mat-label>
+                        <input matInput type="password" [(ngModel)]="doiMatKhauForm.mat_khau_moi">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Xác nhận mật khẩu</mat-label>
+                        <input matInput type="password" [(ngModel)]="doiMatKhauForm.xac_nhan_mat_khau_moi">
+                    </mat-form-field>
+
+                    <button class="w-full bg-gray-900 hover:bg-black text-white py-2 rounded-xl transition"
+                        (click)="doiMatKhau()">
+                        Đổi mật khẩu
+                    </button>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

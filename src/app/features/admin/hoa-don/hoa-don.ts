@@ -48,7 +48,7 @@ export class HoaDon implements OnInit {
     this.loading = true;
     this.hoaDonService.getAllHoaDon().subscribe({
       next: (res: any) => {
-        this.hoaDons = res.data; // backend trả { data: [...] }
+        this.hoaDons = res; // backend trả { data: [...] }
         this.loading = false;
 
       },
@@ -118,8 +118,8 @@ export class HoaDon implements OnInit {
       label: 'Chờ xác nhận',
       classes: 'bg-yellow-100 text-yellow-700'
     },
-    dang_chuan_bi: {
-      label: 'Đang chuẩn bị',
+    da_xac_nhan: {
+      label: 'Đã xác nhận',
       classes: 'bg-blue-100 text-blue-700'
     },
     dang_giao: {

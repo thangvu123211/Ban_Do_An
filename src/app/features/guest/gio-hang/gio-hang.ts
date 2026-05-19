@@ -41,6 +41,7 @@ export class GioHang implements OnInit {
   giamGiaList: any[] = [];
   maGiamGiaChon: any = null;
   tongSauGiam = 0;
+  maNhap: string = '';
 
   loaded: boolean = false;
 
@@ -66,7 +67,16 @@ export class GioHang implements OnInit {
     sdt: '',
     dia_chi: '',
     mac_dinh: false,
-    ma_nguoi_dung: 0
+    ma_nguoi_dung: 0,
+    latitude: null,
+    longitude: null
+  };
+
+  openMap = false;
+
+  mapCenter = {
+    lat: 10.762622,
+    lng: 106.660172
   };
 
 
@@ -105,12 +115,26 @@ export class GioHang implements OnInit {
   }
   // ================= CHON GIAM GIA =================
   chonGiamGia(v: any) {
+
+    // ✔ nếu click lại đúng mã đang chọn → bỏ chọn
+    if (this.maGiamGiaChon?.code === v.code) {
+      this.maGiamGiaChon = null;
+      this.tongSauGiam = this.tinhTienSauGiam();
+      this.showToast('Đã bỏ mã giảm giá', 'warn');
+      return;
+    }
+
+    // ✔ check điều kiện
     if (!this.isVoucherValid(v)) {
       this.showToast('Đơn hàng chưa đủ điều kiện áp dụng mã này', 'warn');
       return;
     }
+
+    // ✔ chọn mã mới
     this.maGiamGiaChon = v;
     this.tongSauGiam = this.tinhTienSauGiam();
+
+    this.showToast('Áp dụng mã thành công', 'success');
   }
   // ================= LOAD GIAM GIA =================
   loadGiamGia() {
@@ -164,7 +188,10 @@ export class GioHang implements OnInit {
 
       // ❌ GUEST → LOCAL
       const local = this.cartService.getLocal();
-      this.gioHang = local;
+      this.gioHang = local.map(x => ({
+        ...x,
+        options: x.options || []
+      }));
       this.tinhTong();
       this.loaded = true;
     }
@@ -182,7 +209,7 @@ export class GioHang implements OnInit {
     // =========================
     this.loadGiamGia();
   }
-  
+
   loadCartFromDB(userId: number) {
     this.cartService.getByUser(userId).subscribe(res => {
 
@@ -194,7 +221,8 @@ export class GioHang implements OnInit {
           soLuong: x.so_luong,
           ten_mon_an: mon?.ten_mon_an || '',
           gia_tien: mon?.gia_tien || 0,
-          anh_mon_an: mon?.anh_mon_an?.[0]?.url || ''
+          anh_mon_an: mon?.anh_mon_an?.[0]?.url || '',
+          options: []
         };
       });
 
@@ -345,10 +373,17 @@ export class GioHang implements OnInit {
   }
 
   tinhTong() {
-    this.tongTien = this.gioHang.reduce(
-      (s, i) => s + i.soLuong * i.gia_tien,
-      0
-    );
+    this.tongTien = this.gioHang.reduce((s, i) => {
+
+      const base = i.soLuong * i.gia_tien;
+
+      const optionTotal = (i.options || []).reduce((oSum: number, o: any) => {
+        return oSum + (o.gia_them || 0);
+      }, 0);
+
+      return s + base + (optionTotal * i.soLuong);
+
+    }, 0);
 
     this.tongSauGiam = this.tinhTienSauGiam();
   }
@@ -412,10 +447,21 @@ export class GioHang implements OnInit {
   }
 
   themDiaChi() {
-    this.diaChiService.ThemDiaChi(this.newDiaChi)
+    const payload = {
+      ho_ten: this.newDiaChi.ho_ten,
+      sdt: this.newDiaChi.sdt,
+      dia_chi: this.newDiaChi.dia_chi,
+      mac_dinh: this.newDiaChi.mac_dinh,
+      latitude: this.newDiaChi.latitude,
+      longitude: this.newDiaChi.longitude,
+      ma_nguoi_dung: this.newDiaChi.ma_nguoi_dung
+    };
+
+    this.diaChiService.ThemDiaChi(payload)
       .subscribe(() => {
         this.loadDiaChi();
         this.showAddAddress = false;
+        this.openMap = false;
       });
   }
 
@@ -547,5 +593,35 @@ export class GioHang implements OnInit {
   }
   goToDonHang() {
     this.router.navigate(['/user/don-hang']);
+  }
+  apDungMa(code: string) {
+
+    if (!code?.trim()) return;
+
+    const found = this.giamGiaList.find(
+      v => v.code?.toLowerCase() === code.trim().toLowerCase()
+    );
+
+    if (!found) {
+      this.showToast('Mã giảm giá không hợp lệ', 'error');
+      return;
+    }
+
+    if (!this.isVoucherValid(found)) {
+      this.showToast('Đơn hàng chưa đủ điều kiện', 'warn');
+      return;
+    }
+
+    this.maGiamGiaChon = found;
+    this.tongSauGiam = this.tinhTienSauGiam();
+
+    this.showToast('Áp dụng mã thành công', 'success');
+  }
+
+  onChangeMaNhap() {
+    if (!this.maNhap) {
+      this.maGiamGiaChon = null;
+      this.tongSauGiam = this.tongTien;
+    }
   }
 }

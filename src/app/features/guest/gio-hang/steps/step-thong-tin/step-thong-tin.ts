@@ -1,10 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MATERIAL } from '../../../../../Shared/material';
-
+import { GoogleMapsModule } from '@angular/google-maps';
 @Component({
   selector: 'app-step-thong-tin',
   standalone: true,
-  imports: [MATERIAL],
+  imports: [MATERIAL , GoogleMapsModule  ],
   templateUrl: './step-thong-tin.html'
 })
 export class StepThongTincomponent {
@@ -21,6 +21,13 @@ export class StepThongTincomponent {
   @Input() showAddAddress = false;
   @Input() newDiaChi: any;
 
+  openMap = false;
+
+  mapCenter = {
+    lat: 10.762622,
+    lng: 106.660172
+  };
+
   @Output() chonDiaChi = new EventEmitter<any>();
   @Output() themDiaChi = new EventEmitter<void>();
   @Output() toggleAdd = new EventEmitter<void>();
@@ -36,5 +43,15 @@ export class StepThongTincomponent {
   @Output() suaDiaChi = new EventEmitter<any>();
   @Output() capNhatDiaChi = new EventEmitter<void>();
 
+  onMapClick(event: google.maps.MapMouseEvent) {
+  if (!event.latLng) return;
 
+  const lat = event.latLng.lat();
+  const lng = event.latLng.lng();
+
+  this.newDiaChi.latitude = lat;
+  this.newDiaChi.longitude = lng;
+
+  this.mapCenter = { lat, lng };
+}
 }

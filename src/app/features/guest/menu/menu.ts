@@ -16,6 +16,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { YeuThichService } from '../../../core/services/YeuThich.service';
 import { YeuThich } from '../yeu-thich/yeu-thich';
 import { ThemGioHangDialog } from '../dialogs/them-gio-hang-dialog/them-gio-hang-dialog';
+import { OptionService } from '../../../core/services/option.service';
 
 
 
@@ -84,6 +85,7 @@ export class Menu implements OnInit {
 
     private quanlimonan: QuanLyMonAn,
     private quanliloaimonan: QuanLyLoaiMonAn,
+    private optionService:OptionService,
     private dialog: MatDialog,
     private cartService: CartService,
     private yeuThichService: YeuThichService,
@@ -164,38 +166,61 @@ export class Menu implements OnInit {
 
   addToGioHang(mon: any) {
 
+  // 1. Lấy option theo món (GIỐNG ADMIN)
+  this.optionService.getAllNhomOption().subscribe((res: any) => {
+
+    const nhomOptions = (res.data || [])
+      .filter((n: any) => n.ma_mon_an === mon.ma_mon_an)
+      .map((n: any) => ({
+        ...n,
+        option_items: n.OptionItems || []
+      }));
+
+    // 2. Mở dialog
     const dialogRef = this.dialog.open(ThemGioHangDialog, {
       data: {
-        mon: mon   // 🔥 BẮT BUỘC PHẢI CÓ
+        mon: mon,              // chỉ cần data món từ list
+        options: nhomOptions   // lấy riêng option
       },
       width: '85vw',
       maxWidth: '900px',
       height: '80vh'
     });
 
+    // 3. handle result
     dialogRef.afterClosed().subscribe(result => {
+
       if (!result) return;
 
-      const { mon, soLuong } = result;
+      const { mon, soLuong, selectedOptions } = result;
+
       const token = localStorage.getItem('token');
 
+      const payload = {
+        ...mon,
+        soLuong,
+        selectedOptions
+      };
+
+      // LOCAL CART
       if (!token) {
-        this.cartService.addLocal({
-          ...mon,
-          soLuong
-        });
+        this.cartService.addLocal(payload);
         this.showToast('Đã thêm vào giỏ hàng', 'success');
         return;
       }
 
+      // DB CART
       const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
       this.cartService.addDB(mon.ma_mon_an, soLuong).subscribe(() => {
         this.cartService.loadCountFromDB(userId);
         this.showToast('Đã thêm vào giỏ hàng', 'success');
       });
+
     });
-  }
+
+  });
+}
 
 
   loadFavorites() {
@@ -331,14 +356,14 @@ export class Menu implements OnInit {
     });
   }
   applyFilterAfterLoad() {
-  if (!this.tatCaMonAn?.length) return;
+    if (!this.tatCaMonAn?.length) return;
 
-  this.MonAn = this.tatCaMonAn.filter(
-    mon =>
-      mon.ma_loai_mon_an === this.selectedLoai &&
-      mon.trang_thai == 1
-  );
-}
+    this.MonAn = this.tatCaMonAn.filter(
+      mon =>
+        mon.ma_loai_mon_an === this.selectedLoai &&
+        mon.trang_thai == 1
+    );
+  }
   @ViewChild('scrollContainer', { static: false })
   scrollContainer!: ElementRef;
 

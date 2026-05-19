@@ -10,6 +10,7 @@ import { BanAn } from './ban-an/ban-an';
 import { HoaDon } from './hoa-don/hoa-don';
 import { LienHe } from './lien-he/lien-he';
 import { MaGiamGia } from './ma-giam-gia/ma-giam-gia';
+import { OptionMonAn } from './option-mon-an/option-mon-an';
 
 export const adminRoutes: Routes = [
   {
@@ -27,6 +28,7 @@ export const adminRoutes: Routes = [
       { path: 'hoa_don', component: HoaDon, title: 'Quản lí hóa đơn' },
       { path: 'lien_he', component: LienHe, title: 'Quản lí liên hệ' },
       { path: 'ma_giam_gia', component: MaGiamGia, title: 'Quản lí mã giảm giá' },
+      { path: 'option_mon_an', component: OptionMonAn, title: 'Quản lí option món ăn' },
     ],
   },
 ];

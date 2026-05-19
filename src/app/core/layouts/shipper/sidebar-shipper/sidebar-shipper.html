@@ -1,1 +1,33 @@
-<p>sidebar-shipper works!</p>
+<nav [ngClass]="collapsed ? 'w-20' : 'w-64'"
+     class="fixed top-20 left-0 h-[calc(100vh-5rem)] shadow-xl transition-all duration-300">
+  
+
+  <!-- NAVIGATION -->
+  <div class="flex-1 overflow-y-auto px-2 py-5">
+    <ul class="space-y-2">
+      <li *ngFor="let item of menuItems">
+        <a [routerLink]="[item.link]" routerLinkActive="active-link" matTooltip="{{ collapsed ? item.text : '' }}"
+          matTooltipPosition="right"
+          class="flex items-center gap-3 px-3 py-2 rounded-full hover:bg-gray-800 hover:text-white transition-all duration-100 ease-in-out">
+          <!-- ICON luôn hiển thị -->
+          <mat-icon class="flex-shrink-0">{{ item.icon }}</mat-icon>
+
+          <!-- CHỮ ẩn/mở -->
+          <span class="overflow-hidden transition-all duration-300 whitespace-nowrap" 
+      [ngStyle]="{
+        'max-width': collapsed ? '0px' : '200px',
+        'opacity': collapsed ? 0 : 1
+      }">
+  {{ item.text }}
+</span>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="px-4 py-3 border-t border-gray-700 text-sm text-gray-400 text-center">
+    © 2025 FRESH FOOD
+  </div>
+</nav>

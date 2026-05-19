@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.prod';
+import { map } from 'rxjs/operators';
 
 export interface MonOrder {
   ma_mon_an: number;
@@ -34,7 +35,11 @@ export class HoaDonService {
   }
 
   getAllHoaDon(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/hoa-don`);
+    return this.http
+      .get<any>(`${environment.apiUrl}/hoa-don`)
+      .pipe(
+        map(res => res.data) // 🔥 LẤY ĐÚNG data
+      );
   }
 
   // 🔹 Lấy hóa đơn theo ID

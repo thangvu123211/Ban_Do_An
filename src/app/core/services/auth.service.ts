@@ -93,6 +93,8 @@ export class AuthService {
       this.router.navigate(['/admin']);
     } else if (role === 'user') {
       this.router.navigate(['']);
+    } else if (role === 'shipper') {
+      this.router.navigate(['/shipper']);
     } else {
       this.router.navigate(['/login']);
     }
@@ -112,8 +114,8 @@ export class AuthService {
   }
 
   registerSendOtp(data: any): Observable<any> {
-  return this.http.post(`${environment.apiUrl}/register`, data);
-}
+    return this.http.post(`${environment.apiUrl}/register`, data);
+  }
 
   verifyRegisterOtp(data: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}/auth/verify-register-otp`, data);

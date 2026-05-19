@@ -32,15 +32,27 @@ export class CartService {
   }
 
   addLocal(mon: any) {
-    const list = this.getLocal();
-    const found = list.find(x => x.ma_mon_an === mon.ma_mon_an);
 
-    const qty = mon.soLuong ?? 1; // ⭐ lấy số lượng truyền vào
+    const list = this.getLocal();
+
+    const optionKey = JSON.stringify(mon.options || []);
+
+    // tìm đúng món + đúng option
+    const found = list.find(x =>
+      x.ma_mon_an === mon.ma_mon_an &&
+      JSON.stringify(x.options || []) === optionKey
+    );
+
+    const qty = mon.soLuong ?? 1;
 
     if (found) {
-      found.soLuong += qty;       // ✅ cộng đúng số lượng
+      found.soLuong += qty;
     } else {
-      list.push({ ...mon, soLuong: qty }); // ✅ đúng số lượng
+      list.push({
+        ...mon,
+        soLuong: qty,
+        options: mon.options || []
+      });
     }
 
     this.saveLocal(list);

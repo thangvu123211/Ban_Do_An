@@ -1,0 +1,151 @@
+<div class="grid grid-cols-3 gap-6 h-full">
+
+  <!-- ===== DANH SÁCH MÓN ===== -->
+  <div class="bg-white rounded-2xl shadow p-4">
+
+    <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+      🍽 Danh sách món ăn
+    </h2>
+
+    <div class="overflow-y-auto max-h-[80vh] pr-1">
+
+      <div *ngFor="let mon of MonAn"
+           (click)="chonMonAn(mon)"
+           class="flex items-center gap-3 p-3 mb-2 rounded-xl cursor-pointer transition border"
+           [ngClass]="{
+             'bg-orange-50 border-orange-400': monAnDangChon?.ma_mon_an === mon.ma_mon_an,
+             'hover:bg-gray-50 border-gray-200': monAnDangChon?.ma_mon_an !== mon.ma_mon_an
+           }">
+
+        <img *ngIf="mon.anh_mon_an?.length"
+             [src]="mon.anh_mon_an[0].url"
+             class="w-12 h-12 rounded-lg object-cover" />
+
+        <div class="flex-1">
+          <p class="font-semibold text-sm">{{ mon.ten_mon_an }}</p>
+          <p class="text-red-500 font-bold text-sm">
+            {{ mon.gia_tien | number }} đ
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== OPTION PANEL ===== -->
+  <div class="col-span-2 bg-white rounded-2xl shadow p-6"
+       *ngIf="monAnDangChon">
+
+    <!-- HEADER -->
+    <div class="mb-4">
+      <h2 class="text-lg font-bold">
+        ⚙ Option món:
+        <span class="text-orange-500">
+          {{ monAnDangChon.ten_mon_an }}
+        </span>
+      </h2>
+      <p class="text-sm text-gray-500">
+        Quản lý nhóm option và các lựa chọn cho món ăn
+      </p>
+    </div>
+
+    <!-- ===== THÊM NHÓM ===== -->
+    <div class="bg-gray-50 border rounded-xl p-4 mb-6">
+
+      <h3 class="font-semibold mb-3">➕ Thêm nhóm option</h3>
+
+      <input class="w-full border rounded-lg px-3 py-2 mb-3 focus:ring-2 focus:ring-orange-400 outline-none"
+             placeholder="VD: Size / Topping / Đường đá..."
+             [(ngModel)]="nhomOption.ten_nhom" />
+
+      <div class="flex gap-6 text-sm mb-3">
+
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" class="accent-orange-500"
+                 [(ngModel)]="nhomOption.bat_buoc" />
+          <span>Bắt buộc</span>
+        </label>
+
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" class="accent-orange-500"
+                 [(ngModel)]="nhomOption.chon_nhieu" />
+          <span>Chọn nhiều</span>
+        </label>
+
+      </div>
+
+      <button class="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold transition"
+              (click)="themNhomOption()">
+        + Thêm nhóm
+      </button>
+
+    </div>
+
+    <!-- ===== DANH SÁCH NHÓM ===== -->
+    <div *ngFor="let nhom of danhSachNhomOption"
+         class="border rounded-xl p-4 mb-4 hover:shadow-md transition">
+
+      <!-- HEADER NHÓM -->
+      <div class="flex items-center justify-between mb-3">
+
+        <h4 class="font-semibold">
+          📌 {{ nhom.ten_nhom }}
+        </h4>
+
+        <span class="text-xs px-2 py-1 rounded-full"
+              [ngClass]="{
+                'bg-red-100 text-red-600': nhom.bat_buoc,
+                'bg-gray-100 text-gray-600': !nhom.bat_buoc
+              }">
+          {{ nhom.bat_buoc ? 'Bắt buộc' : 'Không bắt buộc' }}
+        </span>
+
+      </div>
+
+      <!-- LIST OPTION -->
+      <div *ngIf="nhom.option_items?.length > 0; else empty">
+
+        <div *ngFor="let opt of nhom.option_items"
+             class="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-lg mb-1 text-sm">
+
+          <span class="text-gray-700">• {{ opt.ten_option }}</span>
+
+          <span class="text-red-500 font-semibold">
+            +{{ opt.gia_them | number }} đ
+          </span>
+
+        </div>
+
+      </div>
+
+      <ng-template #empty>
+        <p class="text-sm text-gray-400 italic">
+          Chưa có option nào
+        </p>
+      </ng-template>
+
+      <!-- ===== ADD OPTION ===== -->
+      <div class="mt-3 flex gap-2 items-center">
+
+        <input class="flex-1 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-400 outline-none"
+               placeholder="Tên option"
+               [(ngModel)]="nhom.newOption.ten_option" />
+
+        <input class="w-28 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-400 outline-none"
+               type="number"
+               placeholder="Giá"
+               [(ngModel)]="nhom.newOption.gia_them" />
+
+        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold"
+                (click)="themOptionItem(nhom)">
+          +
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

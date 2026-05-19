@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MATERIAL } from '../../../Shared/material';
 import { series } from './data';
 
@@ -15,9 +15,11 @@ import {
   ApexFill,
   ApexPlotOptions,
   ApexLegend,
-   ApexYAxis, 
+  ApexYAxis,
   ApexTitleSubtitle
 } from 'ng-apexcharts';
+import { HoaDonService } from '../../../core/services/HoaDon.Service';
+import { QuanLyNhanVienService } from '../../../core/services/QuanLyNhanVien.service';
 
 export interface PeriodicElement {
   name: string;
@@ -28,16 +30,16 @@ export interface PeriodicElement {
 
 // Bảng dữ liệu
 const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
+  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
+  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
+  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
+  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
+  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
+  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
+  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
+  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
+  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
+  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
 ];
 
 // Kiểu chart Pie
@@ -100,19 +102,39 @@ export type AreaBasicChartOptions = {
   templateUrl: './dashboardcomponent.html',
   styleUrls: ['./dashboardcomponent.scss']
 })
-export class Dashboardcomponent {
+export class Dashboardcomponent implements OnInit {
+  //dem so hoa don
+  tongHoaDon = 0;
+  dangTai = true;
+
+  //dem so khach hang
+  tongKhachHang = 0;
+  dangTaiUser = true;
+
+  //dem so hoa don huy
+  tongHoaDonHuy = 0;
+  dangTaiHoaDonHuy = false;
+
+  //dem so hoa don da xac nhan
+  tongdonhangdagiao = 0;
+  dangTaihoadondagiao = false;
+
+
   // Pie chart
   public pieChartOptions: PieChartOptions;
   // Area chart
   public areaChartOptions: AreaChartOptions;
-  public RadialbarChartOptions:RadialbarChartOptions;
-  public BarChartOptions:BarChartOptions;
-  public AreaBasicChartOptions:AreaBasicChartOptions;
+  public RadialbarChartOptions: RadialbarChartOptions;
+  public BarChartOptions: BarChartOptions;
+  public AreaBasicChartOptions: AreaBasicChartOptions;
 
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = ELEMENT_DATA;
 
-  constructor() {
+  constructor(
+    private hoaDonService: HoaDonService,
+    private nhanVienService: QuanLyNhanVienService
+  ) {
     // Pie chart
     this.pieChartOptions = {
       series: [44, 55, 13, 43, 22],
@@ -168,7 +190,7 @@ export class Dashboardcomponent {
             total: {
               show: true,
               label: "Total",
-              formatter: function(w) {
+              formatter: function (w) {
                 return "249";
               }
             }
@@ -215,7 +237,7 @@ export class Dashboardcomponent {
         style: {
           colors: ["#fff"]
         },
-        formatter: function(val, opt) {
+        formatter: function (val, opt) {
           return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val;
         },
         offsetX: 0,
@@ -261,7 +283,7 @@ export class Dashboardcomponent {
         },
         y: {
           title: {
-            formatter: function() {
+            formatter: function () {
               return "";
             }
           }
@@ -308,5 +330,97 @@ export class Dashboardcomponent {
         horizontalAlign: "left"
       }
     };
+
+
   }
+  ngOnInit(): void {
+    this.loadTongHoaDon();
+    this.loadTongKhachHang();
+    this.loadTongHoaDonHuy()
+    this.loadDonHangDaGiao()
+  }
+  loadTongHoaDon() {
+    this.dangTai = true;
+
+    this.hoaDonService.getAllHoaDon().subscribe({
+      next: (data) => {
+        this.tongHoaDon = data.length;
+        this.dangTai = false;
+      },
+      error: (err) => {
+        console.error('Lỗi load hóa đơn', err);
+        this.dangTai = false;
+      }
+    });
+  }
+
+  loadTongKhachHang() {
+    this.dangTaiUser = true;
+
+    this.nhanVienService.LayTatCaNhanVien().subscribe({
+      next: (res: any) => {
+
+        // ✅ lấy list đúng format
+        const list = res.data ?? res;
+
+        // 🔥 CHỈ LẤY USER
+        const users = list.filter((x: any) =>
+          x.loai_nguoi_dung === 'user'
+        );
+
+        this.tongKhachHang = users.length;
+        this.dangTaiUser = false;
+      },
+      error: (err) => {
+        console.error('Lỗi load user', err);
+        this.dangTaiUser = false;
+      }
+    });
+  }
+
+  loadTongHoaDonHuy() {
+    this.dangTaiHoaDonHuy = true;
+
+    this.hoaDonService.getAllHoaDon().subscribe({
+      next: (data: any[]) => {
+
+        const hoaDonHuy = data.filter(
+          hd => hd.trang_thai === 'da_huy'
+        );
+
+        this.tongHoaDonHuy = hoaDonHuy.length;
+        this.dangTaiHoaDonHuy = false;
+      },
+
+      error: (err) => {
+        console.error('Lỗi load hóa đơn hủy', err);
+        this.tongHoaDonHuy = 0;
+        this.dangTaiHoaDonHuy = false;
+      }
+    });
+  }
+  loadDonHangDaGiao() {
+    this.dangTaihoadondagiao = true;
+
+    this.hoaDonService.getAllHoaDon().subscribe({
+      
+      next: (data: any[]) => {
+
+        const hoaDonGiao = data.filter(
+          hd => hd.trang_thai === 'da_giao'
+        );
+
+        this.tongdonhangdagiao = hoaDonGiao.length;
+        this.dangTaihoadondagiao = false;
+      },
+      
+
+      error: (err) => {
+        console.error('Lỗi load hóa đơn đã giao', err);
+        this.tongdonhangdagiao = 0;
+        this.dangTaihoadondagiao = false;
+      }
+    });
+  }
+
 }
