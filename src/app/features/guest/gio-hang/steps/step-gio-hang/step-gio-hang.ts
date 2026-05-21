@@ -17,6 +17,7 @@ export class StepGioHangComponent {
   @Output() giam = new EventEmitter<any>();
   @Output() xoa = new EventEmitter<any>();
   @Output() ghiChuChange = new EventEmitter<string>();
+  @Output() change = new EventEmitter<{ item: any, type: string }>();
   getImage(item: any): string {
   // DB
   if (typeof item.anh_mon_an === 'string') {

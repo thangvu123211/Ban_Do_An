@@ -21,7 +21,7 @@ import { Observable } from 'rxjs';
 
 export class HeaderComponent implements OnInit {
 
-  tongSoMon = 0;
+  cartBadgeCount = 0;
   tongYeuThich$!: Observable<number>;
 
   toast = {
@@ -56,18 +56,21 @@ export class HeaderComponent implements OnInit {
       this.cartService.saveLocal(this.cartService.getLocal());
     }
 
-    this.cartService.count$.subscribe(v => {
-      this.tongSoMon = v ?? 0;
+    this.cartService.count$.subscribe(count => {
+      this.cartBadgeCount = count;
     });
 
     // ================= YEUTHICH =================
     this.tongYeuThich$ = this.yeuThichService.count$;
 
     if (token && userId) {
-      this.yeuThichService.loadCountFromDB(userId);
-    } else {
-      this.yeuThichService.initState(); // 🔥 FIX QUAN TRỌNG
-    }
+  this.cartService.loadCountFromDB(userId);
+} else {
+  this.cartService.setCount(this.cartService.getLocal().reduce(
+    (s: number, i: any) => s + (i.soLuong || 0),
+    0
+  ));
+}
   }
 
   goToHome() {

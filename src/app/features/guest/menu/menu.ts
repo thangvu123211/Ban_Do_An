@@ -85,7 +85,7 @@ export class Menu implements OnInit {
 
     private quanlimonan: QuanLyMonAn,
     private quanliloaimonan: QuanLyLoaiMonAn,
-    private optionService:OptionService,
+    private optionService: OptionService,
     private dialog: MatDialog,
     private cartService: CartService,
     private yeuThichService: YeuThichService,
@@ -166,61 +166,70 @@ export class Menu implements OnInit {
 
   addToGioHang(mon: any) {
 
-  // 1. Lấy option theo món (GIỐNG ADMIN)
-  this.optionService.getAllNhomOption().subscribe((res: any) => {
+    // 1. Lấy option theo món (GIỐNG ADMIN)
+    this.optionService.getAllNhomOption().subscribe((res: any) => {
 
-    const nhomOptions = (res.data || [])
-      .filter((n: any) => n.ma_mon_an === mon.ma_mon_an)
-      .map((n: any) => ({
-        ...n,
-        option_items: n.OptionItems || []
-      }));
+      const nhomOptions = (res.data || [])
+        .filter((n: any) => n.ma_mon_an === mon.ma_mon_an)
+        .map((n: any) => ({
+          ...n,
+          option_items: n.OptionItems || []
+        }));
 
-    // 2. Mở dialog
-    const dialogRef = this.dialog.open(ThemGioHangDialog, {
-      data: {
-        mon: mon,              // chỉ cần data món từ list
-        options: nhomOptions   // lấy riêng option
-      },
-      width: '85vw',
-      maxWidth: '900px',
-      height: '80vh'
-    });
+      // 2. Mở dialog
+      const dialogRef = this.dialog.open(ThemGioHangDialog, {
+        data: {
+          mon: mon,              // chỉ cần data món từ list
+          options: nhomOptions   // lấy riêng option
+        },
+        width: '85vw',
+        maxWidth: '900px',
+        height: '80vh'
+      });
 
-    // 3. handle result
-    dialogRef.afterClosed().subscribe(result => {
+      // 3. handle result
+      dialogRef.afterClosed().subscribe(result => {
 
-      if (!result) return;
+        if (!result) return;
 
-      const { mon, soLuong, selectedOptions } = result;
+        const { mon, soLuong, selectedOptions } = result;
+        const token = localStorage.getItem('token');
 
-      const token = localStorage.getItem('token');
+        const payload = {
+          ma_mon_an: mon.ma_mon_an,
+          so_luong: soLuong,
+          options: selectedOptions.map((o: any) => ({
+            ma_nhom_option: o.ma_nhom_option,
+            ma_option_item: o.ma_option_item,
+            ten_nhom_option: o.ten_nhom_option,
+            ten_option: o.ten_option,
+            gia_them: o.gia_them
+          }))
+        };
 
-      const payload = {
-        ...mon,
-        soLuong,
-        selectedOptions
-      };
+        // ❌ GUEST → LOCAL
+        if (!token) {
+          this.cartService.addLocal({
+            ...mon,
+            soLuong,
+            options: payload.options
+          });
+          this.showToast('Đã thêm vào giỏ hàng', 'success');
+          return;
+        }
 
-      // LOCAL CART
-      if (!token) {
-        this.cartService.addLocal(payload);
-        this.showToast('Đã thêm vào giỏ hàng', 'success');
-        return;
-      }
+        // ✅ LOGIN → DB
+        const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-      // DB CART
-      const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+        this.cartService.addDB(payload).subscribe(() => {
+          this.cartService.loadCountFromDB(userId);
+          this.showToast('Đã thêm vào giỏ hàng', 'success');
+        });
 
-      this.cartService.addDB(mon.ma_mon_an, soLuong).subscribe(() => {
-        this.cartService.loadCountFromDB(userId);
-        this.showToast('Đã thêm vào giỏ hàng', 'success');
       });
 
     });
-
-  });
-}
+  }
 
 
   loadFavorites() {

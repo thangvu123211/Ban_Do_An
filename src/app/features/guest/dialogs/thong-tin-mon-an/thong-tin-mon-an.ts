@@ -121,53 +121,51 @@ export class ThongTinMonAn implements OnInit {
     // =========================
     // 🔥 LOGIN → DB
     // =========================
-    this.cartService.addDB(mon.ma_mon_an, 1).subscribe(() => {
-
+    this.cartService.addDB({
+      ma_mon_an: mon.ma_mon_an,
+      so_luong: 1,
+      options: []   // không có option thì để mảng rỗng
+    }).subscribe(() => {
       this.cartService.loadCountFromDB(userId);
-
-      this.dialogRef.close({
-        success: true,
-        message: `Đã thêm ${mon.ten_mon_an} vào giỏ hàng`
-      });
-
+      this.showToast('Đã thêm vào giỏ hàng', 'success');
     });
   }
 
   // ================= COMMENT =================
   guiBinhLuan() {
 
-  const token = localStorage.getItem('token');
-  const maNguoiDung = localStorage.getItem('ma_nguoi_dung');
+    const token = localStorage.getItem('token');
+    const maNguoiDung = localStorage.getItem('ma_nguoi_dung');
 
-  // ❌ CHƯA ĐĂNG NHẬP
-  if (!token || !maNguoiDung) {
-    this.showToast('Vui lòng đăng nhập để bình luận', 'warn');
-    return;
-  }
-
-  // ❌ CHƯA NHẬP NỘI DUNG
-  if (!this.noiDungBinhLuan?.trim()) {
-    this.showToast('Vui lòng nhập nội dung bình luận', 'warn');
-    return;
-  }
-
-  const payload = {
-    ma_nguoi_dung: Number(maNguoiDung),
-    ma_mon_an: this.data.ma_mon_an,
-    noi_dung: this.noiDungBinhLuan.trim()
-  };
-
-  this.binhLuanService.create(payload).subscribe({
-    next: () => {
-      this.noiDungBinhLuan = '';
-      this.loadBinhLuan();
-      this.showToast('Đã gửi bình luận', 'success');
-    },
-    error: () => {
-      this.showToast('Không thể gửi bình luận', 'error');
+    // ❌ CHƯA ĐĂNG NHẬP
+    if (!token || !maNguoiDung) {
+      this.showToast('Vui lòng đăng nhập để bình luận', 'warn');
+      return;
     }
-  });
-}
+
+    // ❌ CHƯA NHẬP NỘI DUNG
+    if (!this.noiDungBinhLuan?.trim()) {
+      this.showToast('Vui lòng nhập nội dung bình luận', 'warn');
+      return;
+    }
+
+    const payload = {
+      ma_nguoi_dung: Number(maNguoiDung),
+      ma_mon_an: this.data.ma_mon_an,
+      noi_dung: this.noiDungBinhLuan.trim()
+    };
+
+    this.binhLuanService.create(payload).subscribe({
+      next: () => {
+        this.noiDungBinhLuan = '';
+        this.loadBinhLuan();
+        this.showToast('Đã gửi bình luận', 'success');
+      },
+      error: () => {
+        this.showToast('Không thể gửi bình luận', 'error');
+      }
+    });
+  }
 
   loadBinhLuan() {
     this.binhLuanService.getByMonAn(this.data.ma_mon_an)

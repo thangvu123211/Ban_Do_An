@@ -64,9 +64,9 @@
 
       <button mat-icon-button
               matTooltip="Giỏ hàng"
-              [matBadge]="tongSoMon"
+              [matBadge]="cartBadgeCount "
               matBadgeColor="warn"
-              [matBadgeHidden]="tongSoMon === 0"
+              [matBadgeHidden]="cartBadgeCount  === 0"
               class="hover:text-green-600"
               (click)="moGioHang()">
         <mat-icon>shopping_cart</mat-icon>

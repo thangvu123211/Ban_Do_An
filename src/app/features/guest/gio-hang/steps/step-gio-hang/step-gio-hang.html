@@ -7,7 +7,7 @@
     <div class="flex gap-4">
 
       <!-- ẢNH -->
-      <img [src]="getImage(item)" class="w-20 h-20 rounded-xl object-cover border bg-gray-100" />
+      <img [src]="item.anh" class="w-20 h-20 rounded-xl object-cover border bg-gray-100" />
 
       <!-- THÔNG TIN -->
       <div class="flex-1">
@@ -16,13 +16,16 @@
         </p>
 
         <p class="text-green-600 font-bold text-sm mt-1">
-          {{ item.gia_tien | number }} đ
+          {{ item.gia_don | number }} đ
         </p>
 
 
-        <div *ngIf="item.options?.length" class="text-xs text-gray-500 mt-1">
-          <div *ngFor="let o of item.options">
-            + {{ o.ten_option }} ({{ o.gia_them | number }}đ)
+        <div *ngIf="item.options?.length">
+          <div *ngFor="let opt of item.options" class="text-sm text-gray-600">
+            + {{ opt.ten_nhom_option }}: {{ opt.ten_option }}
+            <span *ngIf="opt.gia_them > 0">
+              ({{ opt.gia_them | number }}đ)
+            </span>
           </div>
         </div>
       </div>
@@ -34,7 +37,7 @@
         </button>
 
         <div class="flex items-center gap-2 bg-gray-100 rounded-full px-2 py-1">
-          <button (click)="giam.emit(item)" class="w-7 h-7 rounded-full bg-white shadow">
+          <button (click)="change.emit({ item, type: 'minus' })" class="w-7 h-7 rounded-full bg-white shadow">
             <mat-icon class="text-base mt-0.5">remove</mat-icon>
           </button>
 
@@ -42,7 +45,7 @@
             {{ item.soLuong }}
           </span>
 
-          <button (click)="tang.emit(item)" class="w-7 h-7 rounded-full bg-green-500 text-white shadow">
+          <button (click)="change.emit({ item, type: 'plus' })" class="w-7 h-7 rounded-full bg-green-500 text-white shadow">
             <mat-icon class="text-base mt-0.5">add</mat-icon>
           </button>
         </div>

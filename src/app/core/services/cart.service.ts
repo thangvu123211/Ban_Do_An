@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment.prod';
 import { forkJoin, } from 'rxjs';
 @Injectable({ providedIn: 'root' })
@@ -27,9 +27,9 @@ export class CartService {
     this.emitLocalCount(list); // 🔥 realtime
   }
 
-  private total(list: any[]) {
-    return list.reduce((s, i) => s + i.soLuong, 0);
-  }
+ private total(list: any[]) {
+  return list.reduce((s, i) => s + (i.soLuong || 0), 0);
+}
 
   addLocal(mon: any) {
 
@@ -71,16 +71,17 @@ export class CartService {
   /* ================= DB ================= */
 
   getByUser(userId: number) {
-    return this.http.get<any[]>(
+    return this.http.get<{ data: any[] }>(
       `${environment.apiUrl}/gio-hang/user/${userId}`
     );
   }
 
-  addDB(maMonAn: number, soLuong: number) {
-    return this.http.post(`${environment.apiUrl}/gio-hang`, {
-      ma_mon_an: maMonAn,
-      so_luong: soLuong
-    });
+  addDB(payload: {
+    ma_mon_an: number;
+    so_luong: number;
+    options: any[];
+  }) {
+    return this.http.post(`${environment.apiUrl}/gio-hang`, payload);
   }
 
   updateDB(maMonAn: number, soLuong: number) {
@@ -100,39 +101,56 @@ export class CartService {
   }
 
   loadCountFromDB(userId: number) {
-    this.getByUser(userId).subscribe(res => {
-      const total = res.reduce((s, i) => s + i.so_luong, 0);
-      this._count$.next(total);
+    this.getByUser(userId).subscribe({
+      next: (res: any) => {
+        const total = (res.data || []).reduce(
+          (sum: number, item: any) => sum + (item.SoLuong || 0),
+          0
+        );
+
+        this._count$.next(total);
+      },
+      error: () => {
+        this._count$.next(0);
+      }
     });
   }
+  setCount(count: number) {
+    this._count$.next(count);
+  }
+
+updateSoLuong(cartId: number, soLuong: number) {
+  return this.http.put(
+    `${environment.apiUrl}/gio-hang/${cartId}`,
+    { so_luong: soLuong }
+  );
+}
 
   /* ================= SYNC ================= */
 
-  syncLocalToDB(userId: number) {
+  syncLocalToDB(userId: number): Observable<boolean> {
     const local = this.getLocal();
-    if (!local.length) {
+
+    // ✅ local rỗng → vẫn trả Observable<boolean>
+    if (!local || local.length === 0) {
       this.loadCountFromDB(userId);
-      return;
+      return of(true);
     }
 
-    const map = new Map<number, number>();
-
-    local.forEach(i => {
-      map.set(i.ma_mon_an, (map.get(i.ma_mon_an) || 0) + i.soLuong);
-    });
-
-    const requests = Array.from(map.entries()).map(([maMon, soLuong]) =>
-      this.addDB(maMon, soLuong)
+    const requests: Observable<any>[] = local.map(item =>
+      this.addDB({
+        ma_mon_an: item.ma_mon_an,
+        so_luong: item.soLuong,
+        options: item.options || []
+      })
     );
 
     return forkJoin(requests).pipe(
-      tap({
-        next: () => {
-          this.clearLocal();
-          this.loadCountFromDB(userId);
-        },
-        error: (err) => console.error(err)
-      })
+      tap(() => {
+        this.clearLocal();
+        this.loadCountFromDB(userId);
+      }),
+      map(() => true) // ⭐ ÉP OUTPUT VỀ boolean
     );
   }
 }

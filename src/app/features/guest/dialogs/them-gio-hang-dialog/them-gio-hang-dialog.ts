@@ -70,9 +70,9 @@ export class ThemGioHangDialog {
         ten_mon_an: this.mon.ten_mon_an,
         gia_tien: this.mon.gia_tien,
         anh_mon_an: this.mon.anh_mon_an,
-        options: selectedOptions
       },
-      soLuong: this.soLuong
+      soLuong: this.soLuong,
+      selectedOptions   
     });
   }
 

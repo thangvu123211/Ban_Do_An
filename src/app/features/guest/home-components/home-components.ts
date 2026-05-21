@@ -100,7 +100,7 @@ export class HomeComponents implements OnInit, OnDestroy {
 
   copyCode(code: string) {
     navigator.clipboard.writeText(code).then(() => {
-      this.showToast(`Đã copy mã code `,'success');
+      this.showToast(`Đã copy mã code `, 'success');
     });
   }
 
@@ -233,7 +233,11 @@ export class HomeComponents implements OnInit, OnDestroy {
 
     const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-    this.cartService.addDB(mon.ma_mon_an, 1).subscribe(() => {
+    this.cartService.addDB({
+      ma_mon_an: mon.ma_mon_an,
+      so_luong: 1,
+      options: []
+    }).subscribe(() => {
       this.cartService.loadCountFromDB(userId);
       this.showToast('Đã thêm vào giỏ hàng', 'success');
     });

@@ -84,9 +84,8 @@
     <div class="bg-white rounded-2xl shadow-sm p-6 min-h-[400px]">
 
       <!-- STEP 0 -->
-      <app-step-gio-hang *ngIf="currentStep === 0" [gioHang]="gioHang" [tongTien]="tongTien" [ghiChu]="ghiChu"
-        (tang)="tangSoLuong($event)" (giam)="giamSoLuong($event)" (xoa)="removeFromGioHang($event)"
-        (ghiChuChange)="ghiChu = $event">
+      <app-step-gio-hang [gioHang]="gioHang" [tongTien]="tongTien" [ghiChu]="ghiChu" (change)="changeSoLuong($event)"
+        (xoa)="removeFromGioHang($event)" (ghiChuChange)="ghiChu = $event">
       </app-step-gio-hang>
 
       <!-- STEP 1 -->
