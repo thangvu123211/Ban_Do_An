@@ -48,12 +48,25 @@
       <div>
         <p class="font-medium">{{ item.ten_mon_an }}</p>
         <p class="text-sm text-gray-500">
-          {{ item.soLuong }} × {{ item.gia_tien | number }} đ
+          {{ item.soLuong }} × {{ item.gia_don | number }}
         </p>
+        <div *ngIf="item.options?.length">
+          <div *ngFor="let opt of item.options" class="text-xs text-gray-500">
+
+            + {{ opt.ten_nhom_option || 'Option' }}:
+            {{ opt.ten_option }}
+
+            <span *ngIf="opt.gia_them > 0">
+              (+{{ opt.gia_them | number }} đ)
+            </span>
+
+          </div>
+        </div>
       </div>
 
+
       <span class="font-bold">
-        {{ item.soLuong * item.gia_tien | number }} đ
+        {{ item.soLuong * item.gia_don | number }} đ
       </span>
 
     </div>

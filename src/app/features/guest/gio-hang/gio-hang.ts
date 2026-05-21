@@ -401,7 +401,7 @@ export class GioHang implements OnInit {
     if (!token) {
 
       const list = this.cartService.getLocal()
-        .filter(x => x.ma_mon_an !== item.ma_mon_an);
+        .filter(x => x.ma_gio_hang !== item.ma_gio_hang);
 
       this.cartService.saveLocal(list);
 
@@ -414,12 +414,12 @@ export class GioHang implements OnInit {
     // =========================
     // 🔥 LOGIN → DB
     // =========================
-    this.cartService.deleteDB(item.ma_mon_an).subscribe({
+    this.cartService.deleteDB(item.ma_gio_hang).subscribe({
 
       next: () => {
 
         // 🔥 update UI ngay lập tức
-        this.gioHang = this.gioHang.filter(x => x.ma_mon_an !== item.ma_mon_an);
+        this.gioHang = this.gioHang.filter(x => x.ma_gio_hang !== item.ma_gio_hang);
 
         this.tinhTong();
 
@@ -566,64 +566,84 @@ export class GioHang implements OnInit {
     });
   }
   thanhToan() {
-    this.tongSauGiam = this.tinhTienSauGiam();
-    if (!this.tongSauGiam || this.tongSauGiam < 0 || isNaN(this.tongSauGiam)) {
-      this.showToast('Tổng tiền không hợp lệ', 'error');
-      return;
-    }
-    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-    const monAns = this.gioHang.map(i => ({
-      ma_mon_an: i.ma_mon_an,
-      so_luong: i.soLuong,
-      ghi_chu: i.ghi_chu || ''
-    }));
+  this.tongSauGiam = this.tinhTienSauGiam();
 
-    const request = {
-      ho_ten: this.tenNguoiNhan,
-      sdt: this.soDienThoai,
-      dia_chi: this.diaChi,
-      ghi_chu: this.ghiChu,
-
-      code_giam_gia: this.maGiamGiaChon?.code || null, // ⭐ QUAN TRỌNG
-
-      mon_ans: monAns
-    };
-
-    this.hoadonservice.taoHoaDon(request).subscribe({
-
-      next: () => {
-
-        this.showToast('Thanh toán thành công!', 'success');
-
-        this.isCheckoutDone = true;
-
-        // =========================
-        // 🧹 CLEAR GIỎ HÀNG DB (1 LẦN DUY NHẤT)
-        // =========================
-        this.cartService.clearDB(userId).subscribe({
-          next: () => {
-            this.gioHang = [];
-            this.tinhTong();
-            this.cartService.loadCountFromDB(userId);
-          },
-          error: (err) => {
-            console.error('Clear cart lỗi:', err);
-          }
-        });
-
-        // =========================
-        // UI
-        // =========================
-        this.currentStep = 4;
-      },
-
-      error: () => {
-        this.showToast('Thanh toán thất bại!', 'error');
-      }
-
-    });
+  if (!this.tongSauGiam || this.tongSauGiam < 0 || isNaN(this.tongSauGiam)) {
+    this.showToast('Tổng tiền không hợp lệ', 'error');
+    return;
   }
+
+  const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+  // =========================
+  // 🔥 MAP GIỎ HÀNG -> BACKEND FORMAT
+  // =========================
+  const monAns = this.gioHang.map(i => ({
+
+    ma_mon_an: i.ma_mon_an,
+    so_luong: i.soLuong,
+    ghi_chu: i.ghi_chu || '',
+
+    // ⭐ QUAN TRỌNG: gửi options xuống backend
+    options: (i.options || []).map((op: any) => ({
+      ma_option_item: op.ma_option_item
+    }))
+
+  }));
+
+  const request = {
+    ho_ten: this.tenNguoiNhan,
+    sdt: this.soDienThoai,
+    dia_chi: this.diaChi,
+    ghi_chu: this.ghiChu,
+
+    code_giam_gia: this.maGiamGiaChon?.code || null,
+
+    mon_ans: monAns
+  };
+
+  this.hoadonservice.taoHoaDon(request).subscribe({
+
+    next: (res: any) => {
+
+      this.showToast('Thanh toán thành công!', 'success');
+
+      // (optional) lấy QR nếu cần
+      console.log('QR URL:', res.qr_url);
+
+      this.isCheckoutDone = true;
+
+      // =========================
+      // 🧹 CLEAR CART
+      // =========================
+      this.cartService.clearDB(userId).subscribe({
+        next: () => {
+          this.gioHang = [];
+          this.tinhTong();
+          this.cartService.loadCountFromDB(userId);
+        },
+        error: (err) => {
+          console.error('Clear cart lỗi:', err);
+        }
+      });
+
+      // =========================
+      // UI STEP
+      // =========================
+      this.currentStep = 4;
+    },
+
+    error: (err) => {
+      console.error(err);
+      this.showToast(
+        err?.error?.error || 'Thanh toán thất bại!',
+        'error'
+      );
+    }
+
+  });
+}
 
   tinhTienSauGiam(): number {
 

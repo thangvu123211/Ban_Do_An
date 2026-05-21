@@ -27,9 +27,9 @@ export class CartService {
     this.emitLocalCount(list); // 🔥 realtime
   }
 
- private total(list: any[]) {
-  return list.reduce((s, i) => s + (i.soLuong || 0), 0);
-}
+  private total(list: any[]) {
+    return list.reduce((s, i) => s + (i.soLuong || 0), 0);
+  }
 
   addLocal(mon: any) {
 
@@ -90,8 +90,8 @@ export class CartService {
     });
   }
 
-  deleteDB(maMonAn: number) {
-    return this.http.delete(`${environment.apiUrl}/gio-hang/${maMonAn}`);
+  deleteDB(maGioHang: number) {
+    return this.http.delete(`${environment.apiUrl}/gio-hang/${maGioHang}`);
   }
 
   clearDB(userId: number) {
@@ -119,12 +119,12 @@ export class CartService {
     this._count$.next(count);
   }
 
-updateSoLuong(cartId: number, soLuong: number) {
-  return this.http.put(
-    `${environment.apiUrl}/gio-hang/${cartId}`,
-    { so_luong: soLuong }
-  );
-}
+  updateSoLuong(cartId: number, soLuong: number) {
+    return this.http.put(
+      `${environment.apiUrl}/gio-hang/${cartId}`,
+      { so_luong: soLuong }
+    );
+  }
 
   /* ================= SYNC ================= */
 
