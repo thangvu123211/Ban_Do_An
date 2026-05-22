@@ -4,7 +4,7 @@
   <div *ngFor="let item of gioHang" class="bg-white rounded-2xl border shadow-sm p-4 space-y-2">
 
     <!-- ===== HÀNG TRÊN ===== -->
-    <div class="flex gap-4">
+    <div class="flex gap-4 cursor-pointer" (click)="moSuaItem(item)" >
 
       <!-- ẢNH -->
       <img [src]="item.anh" class="w-20 h-20 rounded-xl object-cover border bg-gray-100" />

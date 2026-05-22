@@ -1,0 +1,145 @@
+<!-- CHỐNG CRASH -->
+<div *ngIf="mon; else noData" class="h-full flex flex-col bg-white">
+
+    <!-- ===== HEADER ===== -->
+    <div class="flex items-center justify-between px-6 py-4 border-b">
+        <h2 class="text-gray-800">
+            Cập nhật món ăn trong nhà hàng
+        </h2>
+
+        <button mat-icon-button (click)="huy()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <!-- ===== BODY ===== -->
+    <div class="flex flex-1 overflow-hidden">
+
+        <!-- LEFT: IMAGE -->
+        <div class="w-5/12 bg-gray-50 flex items-center justify-center p-6">
+            <img [src]="mon.anh || 'assets/no-image.png'"
+                class="max-w-full max-h-full object-contain rounded-xl shadow-sm" />
+        </div>
+
+        <!-- RIGHT: CONTENT -->
+        <div class="w-7/12 px-8 py-6 overflow-y-auto pb-32 space-y-6">
+
+            <!-- INFO -->
+            <div>
+                <p class="text-xl font-semibold text-gray-900">
+                    {{ mon.ten_mon_an }}
+                </p>
+
+                <p class="text-green-600 text-2xl font-bold mt-1">
+                    {{ mon.gia_don | number }} đ
+                </p>
+            </div>
+
+            <!-- ===== SỐ LƯỢNG ===== -->
+
+                <div class="flex items-center justify-between">
+                    <span class="font-medium text-gray-700">Số lượng</span>
+
+                    <div class="flex items-center gap-2 bg-gray-100 rounded-full px-2 py-1">
+                        <button mat-icon-button (click)="giamSoLuong()" [disabled]="soLuong === 1">
+                            <mat-icon>remove</mat-icon>
+                        </button>
+
+                        <span class="w-6 text-center font-semibold text-sm">
+                            {{ soLuong }}
+                        </span>
+
+                        <button mat-icon-button (click)="tangSoLuong()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+            <!-- ===== TOPPING ===== -->
+            <!-- ===== OPTION ===== -->
+            <div class="space-y-6">
+
+                <div *ngFor="let nhom of optionsData" class="border rounded-2xl p-4 bg-gray-50 shadow-sm">
+
+                    <!-- HEADER NHÓM -->
+                    <div class="flex justify-between items-center mb-4">
+                        <p class="font-bold text-gray-800">
+                            {{ nhom.ten_nhom }}
+                        </p>
+
+                        <span class="text-xs px-3 py-1 rounded-full bg-gray-200 text-gray-600">
+                            {{ nhom.chon_nhieu ? 'Chọn nhiều' : 'Chọn 1' }}
+                        </span>
+                    </div>
+
+                    <!-- OPTIONS LIST -->
+                    <div class="space-y-3">
+
+                        <label *ngFor="let opt of nhom.option_items" class="flex items-center justify-between
+                          px-4 py-3
+                          rounded-xl border bg-white
+                          hover:border-green-400
+                          cursor-pointer transition">
+
+                            <!-- LEFT -->
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" [checked]="isChecked(opt)"
+                                    (change)="toggleOption(nhom, opt, $event)" class="accent-green-500 w-4 h-4" />
+
+                                <span class="text-gray-800 text-sm font-medium">
+                                    {{ opt.ten_option }}
+                                </span>
+                            </div>
+
+                            <!-- RIGHT: GIÁ -->
+                            <span class="text-green-600 font-semibold text-sm whitespace-nowrap">
+                                +{{ opt.gia_them | number }}đ
+                            </span>
+
+                        </label>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===== GHI CHÚ ===== -->
+            <div>
+                <p class="font-semibold text-gray-800 mb-2">Ghi chú</p>
+                <textarea rows="3" placeholder="Ví dụ: ít hành, không tiêu..."
+                    class="w-full border rounded-lg p-3 focus:outline-none focus:ring focus:ring-green-200">
+        </textarea>
+            </div>
+
+            <!-- ===== TỔNG TIỀN ===== -->
+            <div class="flex justify-between items-center pt-4 border-t">
+                <span class="text-lg font-semibold">Tổng tiền</span>
+                <span class="text-2xl font-bold text-green-600">
+                    {{ tongTien | number }} đ
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="flex justify-between items-center px-6 py-4 border-t bg-white">
+        <span class="text-gray-600 text-sm">
+            Giá đã bao gồm topping
+        </span>
+
+        <div class="flex gap-3">
+            <button mat-stroked-button (click)="huy()">Hủy</button>
+            <button mat-flat-button color="primary" (click)="xacNhan()">
+                Cập nhật giỏ hàng
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- FALLBACK -->
+<ng-template #noData>
+    <div class="flex items-center justify-center h-full text-gray-400">
+        Không có dữ liệu món ăn
+    </div>
+</ng-template>

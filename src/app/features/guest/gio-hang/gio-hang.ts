@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { MatDialogRef } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { CartService } from "../../../core/services/cart.service";
 import { MATERIAL } from "../../../Shared/material";
 import { ToastMessageComponent } from "../../../Shared/toasts_message/toast-message/toast-message";
@@ -13,6 +13,7 @@ import { StepThanhToanComponent } from "./steps/step-thanh-toan/step-thanh-toan"
 import { QuanLyGiamGiaService } from "../../../core/services/QuanLyGiamGia";
 import { HoaDonService } from "../../../core/services/HoaDon.Service";
 import { BehaviorSubject } from "rxjs";
+import { SuaGioHang } from "../dialogs/sua-gio-hang/sua-gio-hang";
 
 // STEP COMPONENTS
 interface DiaChi {
@@ -109,6 +110,7 @@ export class GioHang implements OnInit {
     private diaChiService: DiaChiService,
     private giamGiaService: QuanLyGiamGiaService,
     private hoadonservice: HoaDonService,
+    private dialog: MatDialog
   ) { }
 
   // ================= LOGIN =================
@@ -567,83 +569,83 @@ export class GioHang implements OnInit {
   }
   thanhToan() {
 
-  this.tongSauGiam = this.tinhTienSauGiam();
+    this.tongSauGiam = this.tinhTienSauGiam();
 
-  if (!this.tongSauGiam || this.tongSauGiam < 0 || isNaN(this.tongSauGiam)) {
-    this.showToast('Tổng tiền không hợp lệ', 'error');
-    return;
-  }
-
-  const userId = Number(localStorage.getItem('ma_nguoi_dung'));
-
-  // =========================
-  // 🔥 MAP GIỎ HÀNG -> BACKEND FORMAT
-  // =========================
-  const monAns = this.gioHang.map(i => ({
-
-    ma_mon_an: i.ma_mon_an,
-    so_luong: i.soLuong,
-    ghi_chu: i.ghi_chu || '',
-
-    // ⭐ QUAN TRỌNG: gửi options xuống backend
-    options: (i.options || []).map((op: any) => ({
-      ma_option_item: op.ma_option_item
-    }))
-
-  }));
-
-  const request = {
-    ho_ten: this.tenNguoiNhan,
-    sdt: this.soDienThoai,
-    dia_chi: this.diaChi,
-    ghi_chu: this.ghiChu,
-
-    code_giam_gia: this.maGiamGiaChon?.code || null,
-
-    mon_ans: monAns
-  };
-
-  this.hoadonservice.taoHoaDon(request).subscribe({
-
-    next: (res: any) => {
-
-      this.showToast('Thanh toán thành công!', 'success');
-
-      // (optional) lấy QR nếu cần
-      console.log('QR URL:', res.qr_url);
-
-      this.isCheckoutDone = true;
-
-      // =========================
-      // 🧹 CLEAR CART
-      // =========================
-      this.cartService.clearDB(userId).subscribe({
-        next: () => {
-          this.gioHang = [];
-          this.tinhTong();
-          this.cartService.loadCountFromDB(userId);
-        },
-        error: (err) => {
-          console.error('Clear cart lỗi:', err);
-        }
-      });
-
-      // =========================
-      // UI STEP
-      // =========================
-      this.currentStep = 4;
-    },
-
-    error: (err) => {
-      console.error(err);
-      this.showToast(
-        err?.error?.error || 'Thanh toán thất bại!',
-        'error'
-      );
+    if (!this.tongSauGiam || this.tongSauGiam < 0 || isNaN(this.tongSauGiam)) {
+      this.showToast('Tổng tiền không hợp lệ', 'error');
+      return;
     }
 
-  });
-}
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    // =========================
+    // 🔥 MAP GIỎ HÀNG -> BACKEND FORMAT
+    // =========================
+    const monAns = this.gioHang.map(i => ({
+
+      ma_mon_an: i.ma_mon_an,
+      so_luong: i.soLuong,
+      ghi_chu: i.ghi_chu || '',
+
+      // ⭐ QUAN TRỌNG: gửi options xuống backend
+      options: (i.options || []).map((op: any) => ({
+        ma_option_item: op.ma_option_item
+      }))
+
+    }));
+
+    const request = {
+      ho_ten: this.tenNguoiNhan,
+      sdt: this.soDienThoai,
+      dia_chi: this.diaChi,
+      ghi_chu: this.ghiChu,
+
+      code_giam_gia: this.maGiamGiaChon?.code || null,
+
+      mon_ans: monAns
+    };
+
+    this.hoadonservice.taoHoaDon(request).subscribe({
+
+      next: (res: any) => {
+
+        this.showToast('Thanh toán thành công!', 'success');
+
+        // (optional) lấy QR nếu cần
+        console.log('QR URL:', res.qr_url);
+
+        this.isCheckoutDone = true;
+
+        // =========================
+        // 🧹 CLEAR CART
+        // =========================
+        this.cartService.clearDB(userId).subscribe({
+          next: () => {
+            this.gioHang = [];
+            this.tinhTong();
+            this.cartService.loadCountFromDB(userId);
+          },
+          error: (err) => {
+            console.error('Clear cart lỗi:', err);
+          }
+        });
+
+        // =========================
+        // UI STEP
+        // =========================
+        this.currentStep = 4;
+      },
+
+      error: (err) => {
+        console.error(err);
+        this.showToast(
+          err?.error?.error || 'Thanh toán thất bại!',
+          'error'
+        );
+      }
+
+    });
+  }
 
   tinhTienSauGiam(): number {
 
@@ -739,5 +741,38 @@ export class GioHang implements OnInit {
       // ===== SỐ LƯỢNG =====
       soLuong: x.soLuong || 1,
     };
+  }
+
+  oSuaItem(item: any) {
+
+    const dialogRef = this.dialog.open(SuaGioHang, {
+
+      data: {
+        ...item,
+        options: item.options || [],
+        optionsGroups: item.optionsGroups || []   // ⭐ QUAN TRỌNG
+      },
+      width: '90vw',
+      maxWidth: '1000px',
+      height: '85vh',
+      panelClass: 'giohang-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+
+      const index = this.gioHang.findIndex(x =>
+        x.ma_mon_an === result.ma_mon_an
+      );
+
+      if (index !== -1) {
+        this.gioHang[index] = this.normalizeCartItem({
+          ...this.gioHang[index],
+          ...result
+        });
+
+        this.tinhTong();
+      }
+    });
   }
 }
