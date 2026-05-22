@@ -9,17 +9,22 @@ export class BinhLuanService {
 
   constructor(private http: HttpClient) {}
 
-  // lấy bình luận theo món
   getByMonAn(maMonAn: number) {
     return this.http.get(`${environment.apiUrl}/binh-luan/mon-an/${maMonAn}`);
   }
 
-  // tạo bình luận
   create(data: any) {
     return this.http.post(`${environment.apiUrl}/binh-luan`, data);
   }
 
-  // xoá
+  reply(data: any) {
+    return this.http.post(`${environment.apiUrl}/binh-luan`, data);
+  }
+
+  update(id: number, data: any) {
+    return this.http.put(`${environment.apiUrl}/binh-luan/${id}`, data);
+  }
+
   delete(id: number) {
     return this.http.delete(`${environment.apiUrl}/binh-luan/${id}`);
   }

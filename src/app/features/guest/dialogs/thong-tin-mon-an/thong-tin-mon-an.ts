@@ -27,6 +27,8 @@ export class ThongTinMonAn implements OnInit {
   // ===== COMMENT =====
   binhLuans: any[] = [];
   noiDungBinhLuan = '';
+  replyText: { [key: number]: string } = {};
+  replyingId: number | null = null;
 
   // ===== RATING =====
   ratings: any[] = [];
@@ -132,38 +134,41 @@ export class ThongTinMonAn implements OnInit {
   }
 
   // ================= COMMENT =================
-  guiBinhLuan() {
+  guiBinhLuan(parentId?: number) {
 
     const token = localStorage.getItem('token');
     const maNguoiDung = localStorage.getItem('ma_nguoi_dung');
 
-    // ❌ CHƯA ĐĂNG NHẬP
     if (!token || !maNguoiDung) {
-      this.showToast('Vui lòng đăng nhập để bình luận', 'warn');
+      this.showToast('Vui lòng đăng nhập', 'warn');
       return;
     }
 
-    // ❌ CHƯA NHẬP NỘI DUNG
-    if (!this.noiDungBinhLuan?.trim()) {
-      this.showToast('Vui lòng nhập nội dung bình luận', 'warn');
+    const text = parentId
+      ? this.replyText[parentId]
+      : this.noiDungBinhLuan;
+
+    if (!text?.trim()) {
+      this.showToast('Nội dung trống', 'warn');
       return;
     }
 
     const payload = {
-      ma_nguoi_dung: Number(maNguoiDung),
       ma_mon_an: this.data.ma_mon_an,
-      noi_dung: this.noiDungBinhLuan.trim()
+      noi_dung: text.trim(),
+      parent_id: parentId || null
     };
 
-    this.binhLuanService.create(payload).subscribe({
-      next: () => {
+    this.binhLuanService.create(payload).subscribe(() => {
+
+      if (parentId) {
+        this.replyText[parentId] = '';
+        this.replyingId = null;
+      } else {
         this.noiDungBinhLuan = '';
-        this.loadBinhLuan();
-        this.showToast('Đã gửi bình luận', 'success');
-      },
-      error: () => {
-        this.showToast('Không thể gửi bình luận', 'error');
       }
+
+      this.loadBinhLuan();
     });
   }
 
