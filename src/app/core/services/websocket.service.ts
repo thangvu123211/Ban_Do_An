@@ -10,6 +10,8 @@ export class WebsocketService {
     messages$ = this.messageSubject.asObservable();
 
     connect() {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) return;
+
         const token = localStorage.getItem('token');
 
         const url = token

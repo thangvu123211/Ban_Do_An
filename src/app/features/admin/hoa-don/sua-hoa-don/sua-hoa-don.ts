@@ -35,22 +35,12 @@ export class SuaHoaDon {
   }
 
   capNhatHoaDon() {
-  this.isLoading = true;
+    this.isLoading = true;
 
-  const id = this.donHang.ma_hd;
+    const id = this.donHang.ma_hd;
 
-  this.hoaDonService.updateHoaDon(id, {
-    ho_ten: this.donHang.ho_ten,
-    sdt: this.donHang.sdt,
-    dia_chi: this.donHang.dia_chi,
-    ghi_chu: this.donHang.ghi_chu
-  }).subscribe({
-    next: () => {
-
-      this.hoaDonService.updateTrangThai(
-        id,
-        this.donHang.trang_thai
-      ).subscribe({
+    this.hoaDonService.updateTrangThai(id, this.donHang.trang_thai)
+      .subscribe({
         next: () => {
           this.isLoading = false;
           this.dialogRef.close(true);
@@ -60,14 +50,7 @@ export class SuaHoaDon {
           this.dialogRef.close(false);
         }
       });
-
-    },
-    error: () => {
-      this.isLoading = false;
-      this.dialogRef.close(false);
-    }
-  });
-}
+  }
 
   close() {
     this.dialogRef.close(false);

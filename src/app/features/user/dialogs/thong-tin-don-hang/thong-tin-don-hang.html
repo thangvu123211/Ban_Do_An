@@ -11,117 +11,126 @@
       </p>
     </div>
 
-    <button (click)="close()" class="w-9 h-9 rounded-full flex items-center justify-center
-             hover:bg-gray-100 text-gray-500 hover:text-black transition">
+    <button (click)="close()"
+      class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100">
       ✕
     </button>
   </div>
 
-  <!-- STEPPER -->
+  <!-- STEP -->
   <div class="px-8 py-6 border-b">
 
-    <!-- ❌ ĐÃ HỦY -->
-    <div *ngIf="isHuy()" class="bg-red-50 border border-red-300 rounded-xl
-              px-6 py-4 text-center">
+    <!-- HỦY -->
+    <div *ngIf="isHuy()" class="bg-red-50 border border-red-300 rounded-xl px-6 py-4 text-center">
       <p class="text-red-600 font-bold text-lg">
         ❌ Đơn hàng đã bị hủy
       </p>
-      <p class="text-sm text-red-500 mt-1">
-        Đơn hàng này đã bị hủy và không thể tiếp tục xử lý
-      </p>
     </div>
 
-    <!-- ✅ ĐÃ THANH TOÁN -->
-    <div *ngIf="isThanhToan()" class="bg-emerald-50 border border-emerald-300 rounded-xl
-              px-6 py-4 text-center">
-      <p class="text-emerald-700 font-bold text-lg">
-        💰 Đơn hàng đã thanh toán
-      </p>
-      <p class="text-sm text-emerald-600 mt-1">
-        Thanh toán đã được xác nhận thành công
-      </p>
-    </div>
-
-    <!-- 🔄 STEPPER BÌNH THƯỜNG -->
-    <div *ngIf="!isHuy() && !isThanhToan()" class="flex items-center justify-between">
+    <!-- STEP PROGRESS -->
+    <div *ngIf="!isHuy()" class="flex items-center justify-between">
 
       <ng-container *ngFor="let step of steps; let i = index">
 
         <div class="flex flex-col items-center flex-1">
-          <div class="w-5 h-5 rounded-full flex items-center justify-center mb-2"
-            [ngClass]="isActive(step.key) ? 'bg-green-500' : 'bg-gray-300'">
-            <div *ngIf="isActive(step.key)" class="w-2 h-2 bg-white rounded-full"></div>
+
+          <div class="w-5 h-5 rounded-full mb-2"
+            [ngClass]="isStepActive(step.key) ? 'bg-green-500' : 'bg-gray-300'">
           </div>
 
-          <span class="text-xs" [ngClass]="isActive(step.key)
-                ? 'text-green-600 font-semibold'
-                : 'text-gray-400'">
+          <span class="text-xs"
+            [ngClass]="isStepActive(step.key)
+              ? 'text-green-600 font-semibold'
+              : 'text-gray-400'">
             {{ step.label }}
           </span>
+
         </div>
 
-        <div *ngIf="i < steps.length - 1" class="flex-1 h-[3px] -mt-4 rounded" [ngClass]="isActive(steps[i + 1].key)
-             ? 'bg-green-500'
-             : 'bg-gray-200'">
+        <div *ngIf="i < steps.length - 1"
+          class="flex-1 h-[3px] -mt-4"
+          [ngClass]="isStepActive(steps[i + 1].key)
+            ? 'bg-green-500'
+            : 'bg-gray-200'">
         </div>
 
       </ng-container>
 
     </div>
-
   </div>
 
-  <!-- CONTENT -->
+  <!-- BODY -->
   <div class="flex flex-1 overflow-hidden">
 
     <!-- LEFT -->
     <div class="flex-1 overflow-y-auto p-6 space-y-6">
 
-      <!-- THÔNG TIN KHÁCH -->
+      <!-- KHÁCH HÀNG -->
       <div class="bg-gray-50 rounded-xl p-4">
-        <h3 class="font-semibold text-gray-800 mb-3">
-          Thông tin giao hàng
-        </h3>
+        <h3 class="font-semibold mb-3">Thông tin giao hàng</h3>
 
-        <div class="text-sm text-gray-700 space-y-1">
-          <p><b>Khách hàng:</b> {{ hoaDon.ho_ten }}</p>
-          <p><b>SĐT:</b> {{ hoaDon.sdt }}</p>
-          <p><b>Địa chỉ:</b> {{ hoaDon.dia_chi }}</p>
-          <p *ngIf="hoaDon.ghi_chu" class="italic text-gray-500">
-            Ghi chú: {{ hoaDon.ghi_chu }}
-          </p>
-        </div>
+        <p><b>Khách:</b> {{ hoaDon.ho_ten }}</p>
+        <p><b>SĐT:</b> {{ hoaDon.sdt }}</p>
+        <p><b>Địa chỉ:</b> {{ hoaDon.dia_chi }}</p>
+        <p *ngIf="hoaDon.ghi_chu" class="text-gray-500 italic">
+          {{ hoaDon.ghi_chu }}
+        </p>
+      </div>
+
+      <!-- THANH TOÁN (RIÊNG) -->
+      <div class="bg-gray-50 rounded-xl p-4">
+        <h3 class="font-semibold mb-2">Thanh toán</h3>
+
+        <span class="px-3 py-1 rounded-full text-sm font-medium"
+          [ngClass]="hoaDon.trang_thai_thanh_toan === 'da_thanh_toan'
+            ? 'bg-green-100 text-green-700'
+            : 'bg-gray-200 text-gray-600'">
+
+          {{ hoaDon.trang_thai_thanh_toan === 'da_thanh_toan'
+            ? 'Đã thanh toán'
+            : 'Chưa thanh toán' }}
+
+        </span>
       </div>
 
       <!-- MÓN -->
       <div>
-        <h3 class="font-semibold text-gray-800 mb-4">
-          Món đã đặt
-        </h3>
+        <h3 class="font-semibold mb-4">Món đã đặt</h3>
 
         <div *ngFor="let item of hoaDon.chi_tiet_hoa_dons"
-          class="flex justify-between items-start py-3 border-b last:border-b-0">
-          <div>
-            <p class="font-medium text-gray-900">
-              {{ item.mon_an.ten_mon_an }}
+          class="flex justify-between border-b py-3">
+
+          <div class="w-full">
+
+            <p class="font-medium">
+              {{ item.mon_an?.ten_mon_an }}
             </p>
-            <p *ngIf="item.ghi_chu" class="text-xs text-gray-500">
+
+            <!-- OPTIONS -->
+            <div *ngIf="item.options?.length" class="text-xs text-gray-500 ml-2 mt-1 space-y-1">
+              <div *ngFor="let op of item.options">
+                + {{ op.ten_option }} (+{{ op.gia_them | number }}đ)
+              </div>
+            </div>
+
+            <p *ngIf="item.ghi_chu" class="text-xs text-gray-400 mt-1">
               Ghi chú: {{ item.ghi_chu }}
             </p>
+
           </div>
 
-          <div class="text-right text-sm">
+          <div class="text-right">
             <p>x{{ item.so_luong }}</p>
-            <p class="font-semibold">
+            <p class="font-bold text-green-600">
               {{ item.thanh_tien | number }}đ
             </p>
           </div>
+
         </div>
       </div>
 
-      <!-- TỔNG TIỀN -->
-      <div class="flex justify-between items-center
-               bg-green-50 rounded-xl p-4 text-lg font-bold">
+      <!-- TỔNG -->
+      <div class="bg-green-50 p-4 rounded-xl flex justify-between font-bold">
         <span>Tổng tiền</span>
         <span class="text-green-600">
           {{ hoaDon.tong_tien | number }}đ
@@ -135,51 +144,35 @@
 
       <!-- SHIPPER -->
       <div class="p-5 border-b">
-        <h3 class="font-semibold text-gray-800 mb-3">
-          Nhân viên giao hàng
-        </h3>
+        <p class="font-semibold">Shipper</p>
 
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-full bg-green-500
-                   flex items-center justify-center
-                   text-white font-bold">
-            NV
-          </div>
+        <p class="text-sm">
+          {{ hoaDon.shipper?.ten || 'Chưa có' }}
+        </p>
 
-          <div class="text-sm">
-            <p class="font-semibold">
-              {{ hoaDon.shipper?.ten || 'Nguyễn Văn A' }}
-            </p>
-            <p class="text-gray-500">
-              {{ hoaDon.shipper?.sdt || '0909 000 000' }}
-            </p>
-            <p class="text-green-600 text-xs font-medium">
-              Đang giao hàng
-            </p>
-          </div>
-        </div>
+        <p class="text-xs text-gray-500">
+          {{ hoaDon.shipper?.sdt || '' }}
+        </p>
       </div>
 
-      <!-- MAP (GIỮ NGUYÊN) -->
+      <!-- MAP -->
       <div class="flex-1">
         <iframe class="w-full h-full"
-          src="https://maps.google.com/maps?q=ho%20chi%20minh&t=&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
+          src="https://maps.google.com/maps?q=ho%20chi%20minh&z=15&output=embed">
+        </iframe>
       </div>
 
     </div>
   </div>
 
-  <div class="border-t bg-white px-6 py-4 flex justify-end items-center gap-3">
+  <!-- FOOTER -->
+  <div class="border-t px-6 py-4 flex justify-end gap-3">
 
-    <!-- NÚT ĐẶT LẠI -->
-    <button  class="px-4 py-2 rounded-full border border-gray-300 text-gray-700
-           hover:bg-gray-100 transition active:scale-95">
+    <button class="px-4 py-2 border rounded-full">
       🔁 Đặt lại
     </button>
 
-    <!-- NÚT ĐÁNH GIÁ -->
-    <button  class="px-4 py-2 rounded-full bg-green-500 text-white font-medium shadow
-           hover:bg-green-600 transition active:scale-95">
+    <button class="px-4 py-2 bg-green-500 text-white rounded-full">
       ⭐ Đánh giá
     </button>
 

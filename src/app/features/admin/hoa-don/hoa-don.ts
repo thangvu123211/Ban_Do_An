@@ -70,20 +70,22 @@ export class HoaDon implements OnInit {
           this.showToast('Có đơn hàng mới', 'success');
           break;
 
-        case 'update_trang_thai_hoa_don': {
+        case 'update_trang_thai_hoa_don_user': {
           const index = this.hoaDons.findIndex(
             h => h.ma_hd === msg.payload.ma_hd
           );
+
           if (index !== -1) {
             this.hoaDons[index].trang_thai = msg.payload.trang_thai;
           }
           break;
         }
 
-        case 'cancel_hoa_don': {
+        case 'cancel_hoa_don_user': {
           const index = this.hoaDons.findIndex(
             h => h.ma_hd === msg.payload.ma_hd
           );
+
           if (index !== -1) {
             this.hoaDons[index].trang_thai = 'da_huy';
           }
@@ -114,17 +116,17 @@ export class HoaDon implements OnInit {
   }
 
   trangThaiDonHangMap: Record<string, any> = {
-  cho_xac_nhan: { label: 'Chờ xác nhận', classes: 'bg-yellow-100 text-yellow-700' },
-  da_xac_nhan: { label: 'Đã xác nhận', classes: 'bg-blue-100 text-blue-700' },
-  dang_giao: { label: 'Đang giao', classes: 'bg-indigo-100 text-indigo-700' },
-  da_giao: { label: 'Đã giao', classes: 'bg-green-100 text-green-700' },
-  da_huy: { label: 'Đã hủy', classes: 'bg-red-100 text-red-700' },
-};
+    cho_xac_nhan: { label: 'Chờ xác nhận', classes: 'bg-yellow-100 text-yellow-700' },
+    da_xac_nhan: { label: 'Đã xác nhận', classes: 'bg-blue-100 text-blue-700' },
+    dang_giao: { label: 'Đang giao', classes: 'bg-indigo-100 text-indigo-700' },
+    da_giao: { label: 'Đã giao', classes: 'bg-green-100 text-green-700' },
+    da_huy: { label: 'Đã hủy', classes: 'bg-red-100 text-red-700' },
+  };
 
-trangThaiThanhToanMap: Record<string, any> = {
-  da_thanh_toan: { label: 'Đã thanh toán', classes: 'bg-emerald-100 text-emerald-700' },
-  chua_thanh_toan: { label: 'Chưa thanh toán', classes: 'bg-gray-100 text-gray-600' },
-};
+  trangThaiThanhToanMap: Record<string, any> = {
+    da_thanh_toan: { label: 'Đã thanh toán', classes: 'bg-emerald-100 text-emerald-700' },
+    chua_thanh_toan: { label: 'Chưa thanh toán', classes: 'bg-gray-100 text-gray-600' },
+  };
 
   toggleExpand(ma_hd: number) {
     this.expandedHoaDonId =

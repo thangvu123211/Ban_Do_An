@@ -1,103 +1,103 @@
-<div class="relative p-6">
+<div class="relative bg-white rounded-2xl shadow-xl p-6 w-full max-w-3xl mx-auto">
 
-    <!-- Nút đóng -->
-    <button (click)="close()" class="absolute right-3 top-3 text-gray-400 hover:text-red-500 transition-colors">
+    <!-- CLOSE -->
+    <button (click)="close()" class="absolute right-4 top-4 text-gray-400 hover:text-red-500 transition">
         <mat-icon>close</mat-icon>
     </button>
 
-    <!-- Tiêu đề -->
-    <div class="text-center mb-8">
-        <h2 class="text-2xl font-semibold flex items-center justify-center gap-2">
-            <mat-icon class="text-blue-500">receipt_long</mat-icon>
-            Chỉnh sửa thông tin đơn hàng
+    <!-- HEADER -->
+    <div class="text-center mb-6">
+        <mat-icon class="text-blue-500 text-4xl">receipt_long</mat-icon>
+
+        <h2 class="text-xl font-bold text-gray-800 mt-2">
+            Chi tiết hóa đơn
         </h2>
-        <p class="text-sm text-gray-500 mt-1">
-            Mã đơn hàng: <span class="font-medium text-gray-700">#{{ donHang.ma_hd }}</span>
+
+        <p class="text-sm text-gray-500">
+            Mã đơn: <span class="font-semibold">#{{ donHang.ma_hd }}</span>
         </p>
     </div>
 
-    <div class="flex gap-8 flex-wrap lg:flex-nowrap">
+    <!-- CONTENT -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        <!-- Form nhập thông tin -->
-        <div class="grid grid-cols-2 gap-4 flex-1">
+        <!-- KHÁCH -->
+        <div class="bg-gray-50 p-4 rounded-xl">
+            <p class="text-xs text-gray-500">Khách hàng</p>
+            <p class="font-semibold text-gray-800">{{ donHang.ho_ten }}</p>
+        </div>
 
-            <!-- Tên khách hàng -->
+        <!-- SĐT -->
+        <div class="bg-gray-50 p-4 rounded-xl">
+            <p class="text-xs text-gray-500">Số điện thoại</p>
+            <p class="font-semibold text-gray-800">{{ donHang.sdt }}</p>
+        </div>
+
+        <!-- ĐỊA CHỈ -->
+        <div class="bg-gray-50 p-4 rounded-xl md:col-span-2">
+            <p class="text-xs text-gray-500">Địa chỉ</p>
+            <p class="font-semibold text-gray-800">{{ donHang.dia_chi }}</p>
+        </div>
+
+        <!-- NGÀY -->
+        <div class="bg-gray-50 p-4 rounded-xl">
+            <p class="text-xs text-gray-500">Ngày tạo</p>
+            <p class="font-semibold text-gray-800">
+                {{ formatNgay(donHang.ngay) }}
+            </p>
+        </div>
+
+        <!-- TỔNG TIỀN -->
+        <div class="bg-gray-50 p-4 rounded-xl">
+            <p class="text-xs text-gray-500">Tổng tiền</p>
+            <p class="font-bold text-green-600">
+                {{ money.formatVND(donHang.tong_tien) }} đ
+            </p>
+        </div>
+
+        <!-- GHI CHÚ -->
+        <div class="bg-gray-50 p-4 rounded-xl md:col-span-2">
+            <p class="text-xs text-gray-500">Ghi chú</p>
+            <p class="text-gray-700">
+                {{ donHang.ghi_chu || 'Không có ghi chú' }}
+            </p>
+        </div>
+
+        <!-- TRẠNG THÁI -->
+        <div class="md:col-span-2 bg-gray-50 p-4 rounded-xl">
+
             <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Tên khách hàng</mat-label>
-                <input matInput [(ngModel)]="donHang.ho_ten" readonly>
-            </mat-form-field>
-
-            <!-- Số điện thoại -->
-            <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Số điện thoại</mat-label>
-                <input matInput [(ngModel)]="donHang.sdt" readonly>
-            </mat-form-field>
-
-            <!-- Địa chỉ (chiếm 2 cột) -->
-            <mat-form-field appearance="outline" class="w-full col-span-2">
-                <mat-label>Địa chỉ</mat-label>
-                <input matInput [(ngModel)]="donHang.dia_chi">
-            </mat-form-field>
-
-            <!-- Ngày -->
-            <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Ngày</mat-label>
-                <input matInput [value]="formatNgay(donHang.ngay)" readonly>
-            </mat-form-field>
-
-            <!-- Tổng tiền -->
-            <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Tổng tiền</mat-label>
-                <input matInput [value]="money.formatVND(donHang.tong_tien) + ' đ'" readonly>
-            </mat-form-field>
-
-            <!-- Ghi chú (chiếm 2 cột) -->
-            <mat-form-field appearance="outline" class="w-full col-span-2">
-                <mat-label>Ghi chú</mat-label>
-                <textarea matInput rows="3" [(ngModel)]="donHang.ghi_chu" readonly>
-                </textarea>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-full ">
-                <mat-label>Trạng thái</mat-label>
+                <mat-label>Chọn trạng thái</mat-label>
                 <mat-select [(ngModel)]="donHang.trang_thai">
+
                     <mat-option value="cho_xac_nhan">Chờ xác nhận</mat-option>
                     <mat-option value="da_xac_nhan">Đã xác nhận</mat-option>
                     <mat-option value="dang_giao">Đang giao</mat-option>
                     <mat-option value="da_giao">Đã giao</mat-option>
                     <mat-option value="da_huy">Đã hủy</mat-option>
-                    <mat-option value="da_thanh_toan">Đã thanh toán</mat-option>
                 </mat-select>
             </mat-form-field>
-
         </div>
+
     </div>
 
-    <!-- Nút hành động -->
-    <div class="flex justify-end gap-4 mt-8">
-        <button matButton="filled" color="primary" (click)="capNhatHoaDon()" [disabled]="isLoading"
-            class="relative flex items-center justify-center gap-2">
+    <!-- FOOTER -->
+    <div class="flex justify-end gap-3 mt-6">
 
-            <!-- SPINNER -->
-            <mat-icon *ngIf="isLoading" class="animate-spin">
-                refresh
-            </mat-icon>
-
-            <!-- ICON BÌNH THƯỜNG -->
-            <mat-icon *ngIf="!isLoading">
-                check
-            </mat-icon>
-
-            <!-- TEXT -->
-            <span>
-                {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật' }}
-            </span>
-
-        </button>
-
-        <button mat-stroked-button color="warn" (click)="close()">
-            <mat-icon>close</mat-icon>
+        <button mat-stroked-button (click)="close()">
             Hủy
         </button>
+
+        <button mat-flat-button color="primary" (click)="capNhatHoaDon()" [disabled]="isLoading"
+            class="flex items-center gap-2">
+
+            <mat-icon *ngIf="isLoading" class="animate-spin">refresh</mat-icon>
+            <mat-icon *ngIf="!isLoading">check</mat-icon>
+
+            {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật trạng thái' }}
+
+        </button>
+
     </div>
+
 </div>
