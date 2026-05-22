@@ -1,95 +1,61 @@
-<div class="min-h-screen bg-gray-50 pt-24">
+<div class="relative min-h-screen bg-slate-50/50 pb-12 pt-24 flex flex-col justify-between">
 
-  <!-- LOADING -->
-  <div *ngIf="!loaded" class="flex items-center justify-center min-h-[60vh]">
-    Đang tải giỏ hàng...
+  <div *ngIf="!loaded" class="flex flex-col items-center justify-center flex-1 min-h-[60vh] gap-3">
+    <div class="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-sm font-semibold text-slate-500 tracking-wide animate-pulse">
+      Đang tải dữ liệu giỏ hàng...
+    </p>
   </div>
 
-  <!-- EMPTY CART -->
-  <div *ngIf="loaded && (!gioHang || gioHang.length === 0)" class="flex items-center justify-center min-h-[60vh] px-4">
-
-    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-gray-100
-           p-8 text-center animate-fade-in">
-
-      <!-- ICON -->
-      <div class="mx-auto w-20 h-20 rounded-full bg-green-50
-             flex items-center justify-center mb-6">
-        <mat-icon class="text-green-500 text-xl">shopping_cart</mat-icon>
+  <div *ngIf="loaded && (!gioHang || gioHang.length === 0)" class="flex items-center justify-center flex-1 min-h-[60vh] px-4 animate-fade-in">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-100 p-8 text-center">
+      <div class="mx-auto w-20 h-20 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mb-6 shadow-sm border border-emerald-100">
+        <mat-icon style="font-size: 32px; width: 32px; height: 32px;" class="flex items-center justify-center">shopping_cart</mat-icon>
       </div>
-
-      <!-- TITLE -->
-      <h2 class="text-2xl font-bold text-gray-800">
-        Giỏ hàng trống
-      </h2>
-
-      <!-- DESC -->
-      <p class="text-gray-500 mt-3 leading-relaxed">
-        Bạn chưa thêm món ăn nào vào giỏ.
-        Hãy chọn món yêu thích để bắt đầu nhé 🍽️
+      <h2 class="text-2xl font-black text-slate-800 tracking-tight">Giỏ hàng trống rỗng</h2>
+      <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">
+        Hiện tại bạn chưa thêm món ăn nào vào giỏ hàng.<br> Hãy khám phá các món ngon đặc sắc để bắt đầu nhé! 🍔
       </p>
-
-      <!-- BUTTON -->
-      <button (click)="close()" class="mt-8 w-full py-3 rounded-xl font-semibold text-white
-             bg-gradient-to-r from-green-500 to-green-600
-             hover:from-green-600 hover:to-green-700
-             active:scale-95 transition-all duration-200 shadow-md">
+      <button (click)="close()" class="mt-8 w-full py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-emerald-500/20 text-sm tracking-wide">
         Tiếp tục mua sắm
       </button>
-
     </div>
   </div>
 
-  <!-- CART CONTENT -->
-  <div *ngIf="loaded && gioHang && gioHang.length > 0" class="max-w-7xl mx-auto px-4 md:px-6">
+  <div *ngIf="loaded && gioHang && gioHang.length > 0" class="w-full max-w-7xl mx-auto px-4 md:px-6 flex-1 space-y-6 relative">
 
-    <!-- HEADER -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 flex flex-col gap-6 mb-6">
-
-      <div class="flex items-center justify-between">
-
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-            <mat-icon class="text-green-500">shopping_cart</mat-icon>
-            Giỏ hàng
-          </h2>
-
-          <span class="inline-block mt-1 px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">
-            Tổng số món: {{ tongSoMon }}
-          </span>
-        </div>
-
-        <div class="flex justify-center mt-2">
-          <mat-horizontal-stepper [selectedIndex]="currentStep" class="custom-stepper readonly-stepper">
-
-            <mat-step label="Giỏ hàng"></mat-step>
-            <mat-step label="Tạm tính"></mat-step>
-            <mat-step label="Thông tin giao hàng"></mat-step>
-            <mat-step label="Thanh toán"></mat-step>
-
-          </mat-horizontal-stepper>
-        </div>
+    <div class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex flex-col items-center text-center gap-6">
+      
+      <div class="space-y-1.5 flex flex-col items-center">
+        <h2 class="text-xl font-black text-slate-800 flex items-center gap-2 tracking-tight justify-center">
+          <mat-icon class="text-emerald-500">shopping_cart</mat-icon> Chi tiết đơn hàng của bạn
+        </h2>
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-100 w-max">
+          Tổng số lượng: {{ tongSoMon }} món ăn
+        </span>
       </div>
 
-      <!-- STEPPER -->
-
+      <div class="w-full max-w-3xl overflow-x-auto flex justify-center custom-stepper-container">
+        <mat-horizontal-stepper [selectedIndex]="currentStep" class="custom-stepper readonly-stepper bg-transparent w-full">
+          <mat-step label="Giỏ hàng"></mat-step>
+          <mat-step label="Tạm tính"></mat-step>
+          <mat-step label="Giao hàng"></mat-step>
+          <mat-step label="Thanh toán"></mat-step>
+        </mat-horizontal-stepper>
+      </div>
 
     </div>
 
-    <!-- BODY -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 min-h-[400px]">
-
-      <!-- STEP 0 -->
+    <div class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-6 min-h-[400px]">
       <app-step-gio-hang *ngIf="currentStep === 0" [gioHang]="gioHang" [tongTien]="tongTien" [ghiChu]="ghiChu"
         (change)="changeSoLuong($event)" (xoa)="removeFromGioHang($event)" (ghiChuChange)="ghiChu = $event">
       </app-step-gio-hang>
 
-      <!-- STEP 1 -->
       <app-step-tam-tinh *ngIf="currentStep === 1" [tongTien]="tongTien" [tongSauGiam]="tongSauGiam"
         [maGiamGiaChon]="maGiamGiaChon" [ghiChu]="ghiChu" [giamGiaList]="giamGiaList || []"
         (chonGiamGia)="chonGiamGia($event)" (apDungMa)="apDungMa($event)">
       </app-step-tam-tinh>
 
-      <!-- STEP 2 -->
       <app-step-thong-tin *ngIf="currentStep === 2" [isLoggedIn]="isLoggedIn" [danhSachDiaChi]="danhSachDiaChi"
         [tenNguoiNhan]="tenNguoiNhan" [soDienThoai]="soDienThoai" [diaChi]="diaChi" [selectedDiaChi]="selectedDiaChi"
         [showAddAddress]="showAddAddress" [newDiaChi]="newDiaChi" [editingDiaChiId]="editingDiaChiId"
@@ -98,7 +64,6 @@
         (themDiaChi)="themDiaChi()" (goToLogin)="goToLogin()">
       </app-step-thong-tin>
 
-      <!-- STEP 3 -->
       <app-step-thanh-toan *ngIf="currentStep === 3" [gioHang]="gioHang" [tongTien]="tongTien"
         [tongSauGiam]="tongSauGiam" [maGiamGiaChon]="maGiamGiaChon" [tenNguoiNhan]="tenNguoiNhan"
         [soDienThoai]="soDienThoai" [diaChi]="diaChi" [ghiChu]="ghiChu" [showQR]="showQR" [qrUrl]="qrUrl"
@@ -106,54 +71,58 @@
         (submitThanhToan)="thanhToan()">
       </app-step-thanh-toan>
 
-      <!-- SUCCESS -->
-      <div *ngIf="currentStep === 4" class="flex flex-col items-center justify-center py-16 text-center">
-
-        <mat-icon class="text-green-500 text-6xl mb-4">
-          check_circle
-        </mat-icon>
-
-        <h2 class="text-2xl font-bold">
-          Thanh toán thành công!
-        </h2>
-
-        <p class="text-gray-500 mt-2">
-          Vui lòng vào trang cá nhân để theo dõi đơn hàng
+      <div *ngIf="currentStep === 4" class="w-full flex flex-col items-center justify-center py-16 text-center animate-fade-in">
+        <div class="w-16 h-16 bg-emerald-50 rounded-full border border-emerald-100 flex items-center justify-center text-emerald-500 mb-4 shadow-sm">
+          <mat-icon style="font-size: 36px; width: 36px; height: 36px;" class="flex items-center justify-center">check_circle</mat-icon>
+        </div>
+        <h2 class="text-2xl font-black text-slate-800 tracking-tight">Thanh toán thành công!</h2>
+        <p class="text-slate-500 text-sm mt-2 font-medium max-w-sm leading-relaxed">
+          Đơn hàng đã được tiếp nhận. Vui lòng kiểm tra tiến độ giao hàng tại trang quản lý cá nhân.
         </p>
+        <button (click)="goToDonHang()" class="mt-6 px-6 py-2.5 rounded-xl font-bold text-sm text-emerald-600 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all duration-150">
+          Xem đơn hàng của tôi
+        </button>
+      </div>
+    </div>
 
-        <button mat-flat-button color="primary" class="mt-6" (click)="goToDonHang()">
-          Xem đơn hàng
+    <div *ngIf="loaded && gioHang && gioHang.length > 0" 
+      class="sticky bottom-0 w-full bg-white border border-slate-100 py-4 px-6 rounded-2xl shadow-[0_-12px_30px_rgba(0,0,0,0.03)] flex items-center justify-between gap-4 z-40 backdrop-blur-md bg-white/95">
+      
+      <!-- <div class="hidden sm:flex flex-col">
+        <span class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Tạm tính đơn hàng</span>
+        <span class="text-xl font-black text-emerald-600">
+          {{ (tongSauGiam || tongTien) | number }} đ
+        </span>
+      </div> -->
+
+      <div class="flex items-center gap-3 w-full sm:w-auto ml-auto">
+        
+        <button 
+          *ngIf="currentStep > 0 && currentStep < 4"
+          (click)="prevStep()"
+          class="flex-1 sm:flex-none px-6 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl font-bold text-sm transition-all active:scale-[0.98]">
+          Quay lại
+        </button>
+
+        <button 
+          *ngIf="currentStep < 3"
+          (click)="nextStep()"
+          class="flex-1 sm:flex-none px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl font-bold text-sm shadow-md shadow-emerald-500/10 transition-all active:scale-[0.98]">
+          Tiếp tục hành trình
+        </button>
+
+        <button 
+          *ngIf="currentStep === 4"
+          (click)="close()"
+          class="w-full sm:w-auto px-8 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold text-sm transition-all active:scale-[0.98]">
+          Hoàn tất đóng lại
         </button>
 
       </div>
-
-    </div>
-
-    <!-- FOOTER -->
-    <div class="sticky bottom-0 bg-gradient-to-r from-green-500 to-emerald-500
-                p-4 rounded-t-2xl shadow-xl flex justify-end gap-4 mt-4">
-
-      <button mat-stroked-button class="!border-white !text-white hover:!bg-white/10" (click)="prevStep()"
-        *ngIf="currentStep > 0 && currentStep < 4">
-        Quay lại
-      </button>
-
-      <button mat-raised-button class="!bg-white !text-green-600 font-semibold hover:!bg-gray-100" (click)="nextStep()"
-        *ngIf="currentStep < 3">
-        Tiếp tục
-      </button>
-
-      <button mat-raised-button class="!bg-white !text-green-600 font-semibold hover:!bg-gray-100"
-        *ngIf="currentStep === 4" (click)="close()">
-        Hoàn tất
-      </button>
-
     </div>
 
   </div>
-
 </div>
 
-<!-- TOAST -->
 <app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type">
 </app-toast-message>

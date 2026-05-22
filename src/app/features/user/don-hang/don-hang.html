@@ -38,7 +38,8 @@
             <th class="px-4 py-3 text-center border">Ngày</th>
             <th class="px-4 py-3 text-center border">Tổng tiền</th>
             <th class="px-4 py-3 text-center border">Ghi chú</th>
-            <th class="px-4 py-3 text-center border">trạng thái</th>
+            <th class="px-4 py-3 text-center border">Trạng thái đơn hàng</th>
+            <th class="px-4 py-3 text-center border">Trạng thái thanh toán</th>
             <th class="px-4 py-3 text-center border">Thao tác</th>
           </tr>
         </thead>
@@ -66,9 +67,20 @@
 
               <!-- TRẠNG THÁI -->
               <td class="px-4 py-7 text-center border">
-                <span *ngIf="trangThaiMap[hd.trang_thai]; else unknownStatus"
-                  class="px-3 py-1 rounded-full text-sm font-semibold" [ngClass]="trangThaiMap[hd.trang_thai].classes">
-                  {{ trangThaiMap[hd.trang_thai].label }}
+                <span *ngIf="trangThaiDonHangMap[hd.trang_thai]" [ngClass]="trangThaiDonHangMap[hd.trang_thai].classes">
+                  {{ trangThaiDonHangMap[hd.trang_thai].label }}
+                </span>
+
+                <ng-template #unknownStatus>
+                  <span class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-600">
+                    Không xác định
+                  </span>
+                </ng-template>
+              </td>
+              <td class="px-4 py-7 text-center border">
+                <span *ngIf="trangThaiThanhToanMap[hd.trang_thai_thanh_toan]"
+                  [ngClass]="trangThaiThanhToanMap[hd.trang_thai_thanh_toan].classes">
+                  {{ trangThaiThanhToanMap[hd.trang_thai_thanh_toan].label }}
                 </span>
 
                 <ng-template #unknownStatus>
@@ -110,9 +122,9 @@
                       Chi tiết đơn hàng #{{ hd.ma_hd }}
                     </h4>
 
-                    <span *ngIf="trangThaiMap[hd.trang_thai]" class="px-3 py-1 rounded-full text-sm font-semibold"
-                      [ngClass]="trangThaiMap[hd.trang_thai].classes">
-                      {{ trangThaiMap[hd.trang_thai].label }}
+                    <span *ngIf="trangThaiDonHangMap[hd.trang_thai]"
+                      [ngClass]="trangThaiDonHangMap[hd.trang_thai].classes">
+                      {{ trangThaiDonHangMap[hd.trang_thai].label }}
                     </span>
                   </div>
 

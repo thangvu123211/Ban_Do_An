@@ -1,109 +1,115 @@
-<div class="space-y-4">
+<div class="w-full space-y-6">
 
-  <h3 class="text-lg font-bold">Thông tin thanh toán</h3>
+  <div class="w-full bg-white rounded-2xl border border-slate-100 p-5 shadow-sm space-y-4">
+    <h3 class="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2 border-b border-slate-50 pb-3">
+      <span>💳</span> Thông tin thanh toán
+    </h3>
 
-  <!-- ================= TẠM TÍNH ================= -->
-  <div class="flex justify-between">
-    <span>Tạm tính</span>
-    <span>{{ tongTien | number }} đ</span>
+    <div class="w-full space-y-3 text-sm font-medium">
+      <div class="flex justify-between items-center text-slate-600 w-full">
+        <span>Tạm tính</span>
+        <span class="text-slate-800 font-bold text-base">{{ tongTien | number }} đ</span>
+      </div>
+
+      <div class="flex justify-between items-center text-slate-600 w-full">
+        <span>Phí giao hàng</span>
+        <span class="text-emerald-600 font-bold">0 đ</span>
+      </div>
+
+      <div *ngIf="maGiamGiaChon" class="flex justify-between items-center text-rose-600 w-full pt-1">
+        <span class="flex items-center gap-1">
+          <span class="text-xs">🎟️</span> Giảm giá ({{ maGiamGiaChon.code }})
+        </span>
+        <span class="font-bold">- {{ (tongTien - tongSauGiam) | number }} đ</span>
+      </div>
+    </div>
+
+    <div *ngIf="ghiChu?.trim()" class="w-full p-4 rounded-xl bg-amber-50/60 border border-amber-100 mt-2">
+      <p class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-1 flex items-center gap-1">
+        <span>📝</span> Ghi chú cho nhà hàng
+      </p>
+      <p class="text-sm text-amber-900 italic font-medium leading-relaxed">
+        "{{ ghiChu }}"
+      </p>
+    </div>
   </div>
 
-  <!-- ================= PHÍ ================= -->
-  <div class="flex justify-between">
-    <span>Phí giao hàng</span>
-    <span>0 đ</span>
-  </div>
+  <div class="w-full bg-white rounded-2xl border border-slate-100 p-5 shadow-sm space-y-4">
+    <h3 class="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
+      <span>🎟️</span> Mã giảm giá công ty
+    </h3>
 
-  <div *ngIf="ghiChu?.trim()" class="mt-4 p-4 rounded-xl bg-gray-50 border">
+    <div class="flex flex-col sm:flex-row gap-2 w-full">
+      <input type="text" [(ngModel)]="maNhap" placeholder="Nhập mã giảm giá của bạn..."
+        class="flex-1 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-700 bg-slate-50/50 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all duration-200" />
 
-    <p class="text-sm text-gray-500 mb-1">Ghi chú cho nhà hàng</p>
-    <p class="text-gray-800 italic">"{{ ghiChu }}"</p>
-
-  </div>
-
-  <!-- ================= MÃ GIẢM GIÁ ================= -->
-  <div class="mt-4">
-
-    <h3 class="text-lg font-bold mb-2">Mã giảm giá</h3>
-    <div class="flex gap-2 mb-4">
-
-      <input type="text" [(ngModel)]="maNhap" placeholder="Nhập mã giảm giá..."
-        class="flex-1 border rounded-xl px-3 py-2 focus:ring focus:ring-green-200" />
-
-      <button class="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700" (click)="apDungMa.emit(maNhap)">
-        Áp dụng
+      <button 
+        class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-white rounded-xl font-bold text-sm shadow-md shadow-emerald-500/10 transition-all duration-200 shrink-0" 
+        (click)="apDungMa.emit(maNhap)">
+        Áp dụng mã
       </button>
-
     </div>
 
     <div *ngIf="(giamGiaList?.length ?? 0) > 0; else emptyVoucher"
-      class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2">
+      class="w-full flex gap-4 overflow-x-auto snap-x snap-mandatory pb-3 pt-1 scrollbar-thin scrollbar-thumb-slate-200">
 
       <div *ngFor="let v of giamGiaList || []" (click)="chonGiamGia.emit(v)"
-        class="min-w-[260px] snap-start cursor-pointer p-4 rounded-2xl border transition hover:shadow-md" [ngClass]="{
-           'border-green-500 bg-green-50': (maGiamGiaChon?.code ?? '') === v.code,
-           'border-gray-200 bg-white': (maGiamGiaChon?.code ?? '') !== v.code
+        class="min-w-[280px] sm:min-w-[300px] snap-start cursor-pointer p-4 rounded-2xl border transition-all duration-200 relative group flex flex-col justify-between" 
+        [ngClass]="{
+           'border-emerald-500 bg-gradient-to-br from-emerald-50/60 to-white ring-1 ring-emerald-500/30 shadow-md shadow-emerald-500/5': (maGiamGiaChon?.code ?? '') === v.code,
+           'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md': (maGiamGiaChon?.code ?? '') !== v.code
          }">
+         
+        <div class="absolute top-1/2 -left-2 w-4 h-4 bg-slate-50 border-r border-inherit rounded-full transform -translate-y-1/2 z-10"></div>
+        <div class="absolute top-1/2 -right-2 w-4 h-4 bg-slate-50 border-l border-inherit rounded-full transform -translate-y-1/2 z-10"></div>
 
-        <!-- CODE -->
-        <p class="font-bold text-green-600 text-lg">
-          🎟 {{ v.code }}
-        </p>
+        <div class="pl-2 pr-2 space-y-1">
+          <div class="flex items-center justify-between w-full">
+            <span class="font-black text-emerald-600 text-lg tracking-wider">
+              {{ v.code }}
+            </span>
+            <span *ngIf="(maGiamGiaChon?.code ?? '') === v.code" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-white">
+              Đang chọn
+            </span>
+          </div>
 
-        <!-- TÊN CHƯƠNG TRÌNH -->
-        <p class="text-sm font-medium text-gray-800">
-          {{ v.ten_chuong_trinh }}
-        </p>
+          <p class="text-sm font-bold text-slate-700 tracking-tight line-clamp-1">
+            {{ v.ten_chuong_trinh }}
+          </p>
+        </div>
 
-        <!-- LOẠI GIẢM GIÁ -->
-        <p class="text-xs text-gray-500 mt-1">
-          {{ v.loai_giam_gia === 'percent'
-          ? 'Giảm ' + v.gia_tri_giam + '%'
-          : 'Giảm ' + (v.gia_tri_giam | number) + 'đ' }}
-        </p>
-
-        <!-- ĐIỀU KIỆN -->
-        <p class="text-xs text-gray-400 mt-1">
-          Đơn tối thiểu: {{ v.don_toi_thieu ? (v.don_toi_thieu | number) + 'đ' : 'Không yêu cầu' }}
-        </p>
+        <div class="pl-2 pr-2 pt-3 mt-3 border-t border-dashed border-slate-100 flex items-center justify-between text-xs font-semibold">
+          <span class="text-rose-500 bg-rose-50 px-2 py-0.5 rounded-md">
+            {{ v.loai_giam_gia === 'percent' ? 'Giảm ' + v.gia_tri_giam + '%' : 'Giảm ' + (v.gia_tri_giam | number) + 'đ' }}
+          </span>
+          <span class="text-slate-400">
+            Hạn mức: {{ v.don_toi_thieu ? (v.don_toi_thieu | number) + 'đ' : 'Mọi đơn hàng' }}
+          </span>
+        </div>
 
       </div>
-
     </div>
 
     <ng-template #emptyVoucher>
-      <p class="text-gray-400 text-sm">
-        Không có mã giảm giá khả dụng
-      </p>
+      <div class="w-full py-4 text-center border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
+        <p class="text-slate-400 text-sm font-medium">
+          📭 Không có sẵn mã giảm giá nào khả dụng vào lúc này
+        </p>
+      </div>
     </ng-template>
-
   </div>
 
-  <!-- ================= GIẢM GIÁ ĐÃ CHỌN ================= -->
-  <div *ngIf="maGiamGiaChon" class="flex justify-between text-red-500 font-medium mt-2">
-
-    <span>Giảm giá ({{ maGiamGiaChon.code }})</span>
-
-    <span>
-      - {{ (tongTien - tongSauGiam) | number }} đ
-    </span>
-
-  </div>
-
-  <!-- ================= GHI CHÚ ================= -->
-
-
-  <hr>
-
-  <!-- ================= TỔNG TIỀN ================= -->
-  <div class="flex justify-between text-lg font-bold">
-
-    <span>Tổng cộng</span>
-
-    <span class="text-green-600">
+  <div class="w-full rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-500 to-teal-600 p-5 shadow-lg shadow-emerald-500/10 text-white flex justify-between items-center">
+    <div class="space-y-0.5">
+      <span class="font-bold tracking-tight text-sm sm:text-base opacity-90">
+        Tổng cộng số tiền thanh toán
+      </span>
+      <p class="text-[11px] opacity-75 font-medium">Giá đã bao gồm các mức chiết khấu giảm giá</p>
+    </div>
+    
+    <span class="text-2xl sm:text-3xl font-black tracking-tight drop-shadow-sm">
       {{ (tongSauGiam || tongTien) | number }} đ
     </span>
-
   </div>
 
 </div>

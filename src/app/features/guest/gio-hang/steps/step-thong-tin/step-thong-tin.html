@@ -1,231 +1,225 @@
-<div class="space-y-8">
+<div class="w-full space-y-8">
 
-  <!-- ================= CHƯA LOGIN ================= -->
-  <div *ngIf="!isLoggedIn" class="flex flex-col items-center justify-center py-14 text-center">
-
-    <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-      <mat-icon class="text-5xl text-gray-400">lock</mat-icon>
+  <div *ngIf="!isLoggedIn" class="w-full flex flex-col items-center justify-center py-16 px-4 text-center bg-slate-50/60 rounded-2xl border border-dashed border-slate-200">
+    <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mb-5 text-slate-400 shadow-inner">
+      <mat-icon style="font-size: 36px; width: 36px; height: 36px;" class="flex items-center justify-center">lock</mat-icon>
     </div>
 
-    <h3 class="text-xl font-bold text-gray-900 mb-2">
-      Vui lòng đăng nhập
+    <h3 class="text-xl font-extrabold text-slate-800 tracking-tight mb-2">
+      Yêu cầu đăng nhập
     </h3>
 
-    <p class="text-gray-500 mb-6 max-w-sm">
-      Bạn cần đăng nhập để sử dụng chức năng đặt hàng và quản lý địa chỉ
+    <p class="text-slate-500 mb-6 max-w-sm text-sm leading-relaxed">
+      Vui lòng đăng nhập tài khoản để sử dụng đầy đủ chức năng đặt hàng, lưu trữ và quản lý sổ địa chỉ cá nhân.
     </p>
 
-    <button mat-flat-button class="bg-green-500 text-white px-6 py-2 rounded-xl" (click)="goToLogin.emit()">
+    <button mat-flat-button 
+      class="px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold shadow-lg shadow-emerald-500/20 transition-all duration-200 active:scale-[0.98]" 
+      (click)="goToLogin.emit()">
       Đăng nhập ngay
     </button>
-
   </div>
 
-  <!-- ================= LOGGED IN ================= -->
-  <div *ngIf="isLoggedIn" class="space-y-8">
+  <div *ngIf="isLoggedIn" class="w-full space-y-8 animate-fade-in">
 
-    <!-- TITLE -->
-    <div>
-      <h2 class="text-xl font-bold text-gray-900">
+    <div class="border-b border-slate-100 pb-4">
+      <h2 class="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
         Thông tin giao hàng
       </h2>
-      <p class="text-sm text-gray-500">
-        Nhập hoặc chọn địa chỉ giao hàng
+      <p class="text-sm font-medium text-slate-400 mt-1">
+        Vui lòng chọn từ danh sách hoặc cập nhật địa chỉ nhận hàng chính xác bên dưới
       </p>
     </div>
 
-    <!-- ================= FORM NHANH ================= -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="w-full bg-slate-50/80 border border-slate-100 p-5 rounded-2xl space-y-4">
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Địa chỉ đang áp dụng cho đơn này
+        </span>
+      </div>
 
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Tên người nhận</mat-label>
-        <input matInput [(ngModel)]="tenNguoiNhan" (ngModelChange)="tenNguoiNhanChange.emit($event)" readonly />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full shadow-sm bg-white rounded-xl">
+          <mat-label>Tên người nhận</mat-label>
+          <input matInput [(ngModel)]="tenNguoiNhan" (ngModelChange)="tenNguoiNhanChange.emit($event)" readonly class="font-semibold text-slate-700" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full shadow-sm bg-white rounded-xl">
+          <mat-label>Số điện thoại</mat-label>
+          <input matInput type="tel" [(ngModel)]="soDienThoai" (ngModelChange)="soDienThoaiChange.emit($event)" readonly class="font-semibold text-slate-700 tracking-wide" />
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-full shadow-sm bg-white rounded-xl">
+        <mat-label>Địa chỉ giao hàng cụ thể</mat-label>
+        <textarea matInput rows="2" [(ngModel)]="diaChi" (ngModelChange)="diaChiChange.emit($event)" readonly class="font-medium text-slate-600 leading-relaxed"></textarea>
       </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Số điện thoại</mat-label>
-        <input matInput type="tel" [(ngModel)]="soDienThoai" (ngModelChange)="soDienThoaiChange.emit($event)"
-          readonly />
-      </mat-form-field>
-
     </div>
 
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Địa chỉ giao hàng</mat-label>
-      <textarea matInput rows="3" [(ngModel)]="diaChi" (ngModelChange)="diaChiChange.emit($event)" readonly></textarea>
-    </mat-form-field>
-
-    <!-- ================= ADDRESS LIST ================= -->
-    <div class="space-y-4">
-
-      <h3 class="text-lg font-bold text-gray-900">
-        Danh sách địa chỉ
+    <div class="w-full space-y-4">
+      <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2 tracking-tight">
+        Sổ địa chỉ của bạn
       </h3>
 
       <div class="grid gap-4">
-
-        <div *ngFor="let dc of danhSachDiaChi" class="p-4 rounded-2xl border transition hover:shadow-md cursor-pointer"
+        <div *ngFor="let dc of danhSachDiaChi" 
+          class="p-5 rounded-2xl border transition-all duration-200 shadow-sm relative group w-full"
           [ngClass]="{
-            'border-green-500 bg-green-50': selectedDiaChi?.id === dc.id,
-            'border-gray-200 bg-white': selectedDiaChi?.id !== dc.id
+            'border-emerald-500 bg-gradient-to-br from-emerald-50/40 to-white ring-1 ring-emerald-500/30 shadow-md shadow-emerald-500/5': selectedDiaChi?.id === dc.id,
+            'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md': selectedDiaChi?.id !== dc.id
           }">
 
-          <!-- TOP -->
-          <div class="flex justify-between gap-4">
+          <div class="flex justify-between items-start gap-4 w-full">
 
-            <!-- INFO -->
-            <div class="space-y-1 flex-1" (click)="chonDiaChi.emit(dc)">
-
-              <div class="flex items-center gap-2">
-                <p class="font-semibold text-gray-900">
+            <div class="space-y-2 flex-1 cursor-pointer" (click)="chonDiaChi.emit(dc)">
+              <div class="flex items-center flex-wrap gap-2">
+                <p class="font-bold text-slate-800 text-base">
                   {{ dc.ho_ten }}
                 </p>
-
-                <span *ngIf="dc.mac_dinh" class="text-xs px-2 py-0.5 rounded-full bg-green-600 text-white">
+                <span *ngIf="dc.mac_dinh" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 border border-emerald-200/50">
                   Mặc định
                 </span>
               </div>
 
-              <p class="text-sm text-gray-600">
-                📞 {{ dc.sdt }}
-              </p>
-
-              <p class="text-sm text-gray-700">
-                📍 {{ dc.dia_chi }}
-              </p>
-
+              <div class="text-sm space-y-1 text-slate-600 font-medium">
+                <p class="flex items-center gap-2 text-slate-500">
+                  <span class="text-slate-400 text-xs">📞</span> {{ dc.sdt }}
+                </p>
+                <p class="flex items-start gap-2 text-slate-700 leading-relaxed">
+                  <span class="text-slate-400 text-xs mt-0.5">📍</span> {{ dc.dia_chi }}
+                </p>
+              </div>
             </div>
 
-            <!-- ACTION -->
-            <div class="flex flex-col gap-2 items-end">
-
-              <button
-                class="text-xs px-3 py-1 rounded-lg border border-green-500 text-green-600 hover:bg-green-50 transition"
-                (click)="datMacDinh.emit(dc.id)">
-                Mặc định
+            <div class="flex flex-col sm:flex-row gap-2 items-end sm:items-center shrink-0">
+              <button *ngIf="!dc.mac_dinh"
+                class="text-xs px-3 py-1.5 rounded-xl border border-slate-200 font-semibold text-slate-500 bg-white hover:bg-slate-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors"
+                (click)="datMacDinh.emit(dc.id); $event.stopPropagation()">
+                Đặt mặc định
               </button>
 
               <button
-                class="text-xs px-3 py-1 rounded-lg border border-blue-500 text-blue-600 hover:bg-blue-50 transition"
-                (click)="suaDiaChi.emit(dc)">
+                class="text-xs px-3 py-1.5 rounded-xl border border-blue-100 font-semibold text-blue-600 bg-blue-50/50 hover:bg-blue-100 transition-colors flex items-center gap-1"
+                (click)="suaDiaChi.emit(dc); $event.stopPropagation()">
                 Sửa
               </button>
-
             </div>
 
           </div>
 
-          <!-- EDIT FORM -->
-          <div *ngIf="editingDiaChiId === dc.id" class="mt-4 p-4 bg-gray-50 rounded-xl border space-y-3">
-
-            <h4 class="font-semibold text-gray-800">
-              Chỉnh sửa địa chỉ
+          <div *ngIf="editingDiaChiId === dc.id" class="mt-5 pt-5 border-t border-slate-100 space-y-4 bg-slate-50/50 p-4 rounded-xl border border-slate-200/40 w-full">
+            <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Chỉnh sửa thông tin địa chỉ
             </h4>
 
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Họ tên</mat-label>
-              <input matInput [(ngModel)]="editDiaChiForm.ho_ten">
-            </mat-form-field>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <mat-form-field appearance="outline" class="w-full bg-white rounded-xl">
+                <mat-label>Họ tên</mat-label>
+                <input matInput [(ngModel)]="editDiaChiForm.ho_ten">
+              </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Số điện thoại</mat-label>
-              <input matInput [(ngModel)]="editDiaChiForm.sdt">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Địa chỉ</mat-label>
-              <textarea matInput rows="3" [(ngModel)]="editDiaChiForm.dia_chi"></textarea>
-            </mat-form-field>
-
-            <mat-checkbox [(ngModel)]="editDiaChiForm.mac_dinh">
-              Đặt làm mặc định
-            </mat-checkbox>
-
-            <div class="flex justify-end gap-2">
-
-              <button class="px-4 py-2 rounded-xl border text-gray-600 hover:bg-gray-100 transition"
-                (click)="editingDiaChiId = null">
-                Hủy
-              </button>
-
-              <button class="px-4 py-2 rounded-xl bg-green-500 hover:bg-green-600 text-white transition active:scale-95"
-                (click)="capNhatDiaChi.emit()">
-                Lưu
-              </button>
-
+              <mat-form-field appearance="outline" class="w-full bg-white rounded-xl">
+                <mat-label>Số điện thoại</mat-label>
+                <input matInput [(ngModel)]="editDiaChiForm.sdt">
+              </mat-form-field>
             </div>
 
+            <mat-form-field appearance="outline" class="w-full bg-white rounded-xl">
+              <mat-label>Địa chỉ cụ thể</mat-label>
+              <textarea matInput rows="2" [(ngModel)]="editDiaChiForm.dia_chi"></textarea>
+            </mat-form-field>
+
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-1">
+              <mat-checkbox [(ngModel)]="editDiaChiForm.mac_dinh" class="text-xs font-medium text-slate-600">
+                Đặt làm địa chỉ nhận hàng mặc định
+              </mat-checkbox>
+
+              <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button class="px-4 py-2 text-sm font-semibold text-slate-500 hover:bg-slate-100 rounded-xl transition"
+                  (click)="editingDiaChiId = null">
+                  Hủy
+                </button>
+                <button class="px-5 py-2 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-md shadow-emerald-500/10 transition active:scale-[0.97]"
+                  (click)="capNhatDiaChi.emit()">
+                  Lưu thay đổi
+                </button>
+              </div>
+            </div>
           </div>
 
         </div>
-
       </div>
     </div>
 
-    <!-- ================= ADD NEW ================= -->
-    <div class="space-y-4">
-
-      <button class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-xl transition active:scale-95"
+    <div class="w-full space-y-4 pt-2">
+      
+      <button *ngIf="!showAddAddress"
+        class="group w-full sm:w-auto px-6 py-3.5 border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-white text-slate-700 hover:text-emerald-600 rounded-2xl font-bold transition-all duration-200 flex items-center justify-center gap-2 shadow-sm"
         (click)="showAddAddressChange.emit(!showAddAddress)">
-        + Thêm địa chỉ mới
+        <span class="text-xl transition-transform group-hover:scale-125">+</span> Thêm địa chỉ mới
       </button>
 
-      <div *ngIf="showAddAddress" class="p-5 border rounded-2xl bg-gray-50 space-y-4">
+      <div *ngIf="showAddAddress" class="w-full p-6 border border-slate-200 rounded-2xl bg-slate-50/50 shadow-inner space-y-5 animate-fade-in">
+        <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
+          <h3 class="font-extrabold text-slate-800 text-base">
+            ✨ Tạo địa chỉ mới
+          </h3>
+          
+          <button 
+            class="px-4 py-2 text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-600 border border-indigo-100 rounded-xl transition flex items-center gap-1.5" 
+            (click)="openMap = !openMap">
+            <span>📍</span> Chọn vị trí trên bản đồ
+          </button>
+        </div>
 
-        <h3 class="font-bold text-gray-900">
-          Thêm địa chỉ mới
-        </h3>
-        <button class="bg-blue-500 text-white px-4 py-2 rounded-xl" (click)="openMap = !openMap">
-          📍 Chọn vị trí trên bản đồ
-        </button>
-
-        <div *ngIf="openMap" class="mt-4">
-          <google-map height="300px" width="100%" [center]="mapCenter" [zoom]="15" (mapClick)="onMapClick($event)">
+        <div *ngIf="openMap" class="w-full rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-white p-2 animate-fade-in">
+          <google-map height="320px" width="100%" [center]="mapCenter" [zoom]="15" (mapClick)="onMapClick($event)" class="rounded-lg overflow-hidden">
           </google-map>
 
-          <p class="text-sm mt-2 text-gray-600">
-            Lat: {{ newDiaChi.latitude }} | Lng: {{ newDiaChi.longitude }}
-          </p>
+          <div class="mt-2.5 px-3 py-2 bg-slate-100 rounded-lg flex items-center justify-between text-xs font-semibold text-slate-500">
+            <span>Tọa độ đã chọn:</span>
+            <span class="text-slate-700 font-mono">Lat: {{ newDiaChi.latitude }} | Lng: {{ newDiaChi.longitude }}</span>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-          <mat-form-field appearance="outline">
-            <mat-label>Họ tên</mat-label>
-            <input matInput [(ngModel)]="newDiaChi.ho_ten">
+          <mat-form-field appearance="outline" class="w-full bg-white rounded-xl">
+            <mat-label>Họ tên người nhận</mat-label>
+            <input matInput [(ngModel)]="newDiaChi.ho_ten" placeholder="VD: Nguyễn Văn A">
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Số điện thoại</mat-label>
-            <input matInput [(ngModel)]="newDiaChi.sdt">
+          <mat-form-field appearance="outline" class="w-full bg-white rounded-xl">
+            <mat-label>Số điện thoại liên hệ</mat-label>
+            <input matInput [(ngModel)]="newDiaChi.sdt" placeholder="VD: 0912345xxx">
           </mat-form-field>
-
         </div>
 
-
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Địa chỉ</mat-label>
-          <textarea matInput rows="3" [(ngModel)]="newDiaChi.dia_chi"></textarea>
+        <mat-form-field appearance="outline" class="w-full bg-white rounded-xl">
+          <mat-label>Địa chỉ chi tiết (Số nhà, Tên đường, Toà nhà...)</mat-label>
+          <textarea matInput rows="3" [(ngModel)]="newDiaChi.dia_chi" placeholder="Nhập địa chỉ đầy đủ của bạn"></textarea>
         </mat-form-field>
 
-        <mat-checkbox [(ngModel)]="newDiaChi.mac_dinh">
-          Đặt làm mặc định
-        </mat-checkbox>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-1">
+          <mat-checkbox [(ngModel)]="newDiaChi.mac_dinh" class="font-medium text-slate-600 text-sm">
+            Đặt làm địa chỉ mặc định lần sau
+          </mat-checkbox>
 
-        <div class="flex gap-3 justify-end">
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <button mat-stroked-button 
+              class="px-5 py-2 rounded-xl text-slate-500 font-semibold hover:bg-slate-100 border-slate-200 transition" 
+              (click)="toggleAdd.emit(); showAddAddressChange.emit(false)">
+              Hủy bỏ
+            </button>
 
-          <button mat-stroked-button (click)="toggleAdd.emit()">
-            Hủy
-          </button>
-
-          <button mat-flat-button class="bg-green-500 text-white" (click)="themDiaChi.emit()">
-            Lưu địa chỉ
-          </button>
-
+            <button mat-flat-button 
+              class="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl font-bold shadow-md shadow-emerald-500/10 transition active:scale-[0.98]" 
+              (click)="themDiaChi.emit()">
+              Lưu địa chỉ
+            </button>
+          </div>
         </div>
 
       </div>
-
     </div>
 
   </div>

@@ -37,7 +37,8 @@
                         <th class="px-4 py-3 text-center border">Ngày</th>
                         <th class="px-4 py-3 text-center border">Tổng tiền</th>
                         <th class="px-4 py-3 text-center border">Ghi chú</th>
-                        <th class="px-4 py-3 text-center border">trạng thái</th>
+                        <th class="px-4 py-3 text-center border">trạng thái đơn hàng</th>
+                        <th class="px-4 py-3 text-center border">trạng thái thanh toán</th>
                         <th class="px-4 py-3 text-center border">Thao tác</th>
                     </tr>
                 </thead>
@@ -77,6 +78,21 @@
                                     </span>
                                 </ng-template>
                             </td>
+
+                            <td class="px-4 py-7 text-center border">
+                                <span *ngIf="trangThaiThanhToanMap[hd.trang_thai_thanh_toan]"
+                                    [ngClass]="trangThaiThanhToanMap[hd.trang_thai_thanh_toan].classes">
+                                    {{ trangThaiThanhToanMap[hd.trang_thai_thanh_toan].label }}
+                                </span>
+
+                                <ng-template #unknownStatus>
+                                    <span
+                                        class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-600">
+                                        Không xác định
+                                    </span>
+                                </ng-template>
+                            </td>
+
 
                             <!-- THAO TÁC -->
                             <td class="px-4 py-7 text-center border">

@@ -40,6 +40,8 @@ export class DonHang implements OnInit {
     });
   }
 
+
+
   connectRealtime() {
     this.wsService.connect();
 
@@ -87,32 +89,18 @@ export class DonHang implements OnInit {
     });
   }
 
-  trangThaiMap: Record<string, { label: string; classes: string }> = {
-    cho_xac_nhan: {
-      label: 'Chờ xác nhận',
-      classes: 'bg-yellow-100 text-yellow-700'
-    },
-    dang_chuan_bi: {
-      label: 'Đang chuẩn bị',
-      classes: 'bg-blue-100 text-blue-700'
-    },
-    dang_giao: {
-      label: 'Đang giao',
-      classes: 'bg-indigo-100 text-indigo-700'
-    },
-    da_giao: {
-      label: 'Đã giao',
-      classes: 'bg-green-100 text-green-700'
-    },
-    da_thanh_toan: {
-      label: 'Đã thanh toán',
-      classes: 'bg-emerald-100 text-emerald-700'
-    },
-    da_huy: {
-      label: 'Đã hủy',
-      classes: 'bg-red-100 text-red-700'
-    }
-  };
+  trangThaiDonHangMap: Record<string, any> = {
+  cho_xac_nhan: { label: 'Chờ xác nhận', classes: 'bg-yellow-100 text-yellow-700' },
+  da_xac_nhan: { label: 'Đã xác nhận', classes: 'bg-blue-100 text-blue-700' },
+  dang_giao: { label: 'Đang giao', classes: 'bg-indigo-100 text-indigo-700' },
+  da_giao: { label: 'Đã giao', classes: 'bg-green-100 text-green-700' },
+  da_huy: { label: 'Đã hủy', classes: 'bg-red-100 text-red-700' },
+};
+
+trangThaiThanhToanMap: Record<string, any> = {
+  da_thanh_toan: { label: 'Đã thanh toán', classes: 'bg-emerald-100 text-emerald-700' },
+  chua_thanh_toan: { label: 'Chưa thanh toán', classes: 'bg-gray-100 text-gray-600' },
+};
 
   toggleExpand(ma_hd: number) {
     this.expandedHoaDonId =
