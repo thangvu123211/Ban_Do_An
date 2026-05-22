@@ -37,7 +37,7 @@
         </button>
 
         <div class="flex items-center gap-2 bg-gray-100 rounded-full px-2 py-1">
-          <button (click)="change.emit({ item, type: 'minus' })" class="w-7 h-7 rounded-full bg-white shadow">
+          <button (click)="change.emit({ item, type: 'minus' }) ; $event.stopPropagation() "  class="w-7 h-7 rounded-full bg-white shadow">
             <mat-icon class="text-base mt-0.5">remove</mat-icon>
           </button>
 
@@ -45,7 +45,7 @@
             {{ item.soLuong }}
           </span>
 
-          <button (click)="change.emit({ item, type: 'plus' })"
+          <button (click)="change.emit({ item, type: 'plus' });  $event.stopPropagation()"
             class="w-7 h-7 rounded-full bg-green-500 text-white shadow">
             <mat-icon class="text-base mt-0.5">add</mat-icon>
           </button>

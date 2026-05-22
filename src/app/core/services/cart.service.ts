@@ -14,6 +14,10 @@ export class CartService {
   private emitLocalCount(list: any[]) {
     this._count$.next(this.total(list));
   }
+
+  private generateId(): string {
+    return Date.now().toString() + '-' + Math.random().toString(36).substring(2, 9);
+  }
   constructor(private http: HttpClient) { }
 
   /* ================= LOCAL ================= */
@@ -35,21 +39,27 @@ export class CartService {
 
     const list = this.getLocal();
 
-    const optionKey = JSON.stringify(mon.options || []);
+    const qty = mon.soLuong ?? 1;
 
-    // tìm đúng món + đúng option
     const found = list.find(x =>
       x.ma_mon_an === mon.ma_mon_an &&
-      JSON.stringify(x.options || []) === optionKey
+      JSON.stringify(x.options || []) === JSON.stringify(mon.options || [])
     );
 
-    const qty = mon.soLuong ?? 1;
+    // ⭐ FIX GIÁ Ở ĐÂY
+    const giaGoc = mon.gia_tien ?? mon.gia ?? mon.price ?? 0;
 
     if (found) {
       found.soLuong += qty;
     } else {
       list.push({
-        ...mon,
+        cartLocalId: this.generateId(),
+        ma_mon_an: mon.ma_mon_an,
+        ten_mon_an: mon.ten_mon_an,
+
+        anh: mon.anh || mon.anh_mon_an?.[0]?.url,
+
+        gia_goc: giaGoc,   // ⭐ QUAN TRỌNG
         soLuong: qty,
         options: mon.options || []
       });
@@ -58,8 +68,8 @@ export class CartService {
     this.saveLocal(list);
   }
 
-  removeLocal(maMonAn: number) {
-    const list = this.getLocal().filter(x => x.ma_mon_an !== maMonAn);
+  removeLocal(cartLocalId: string) {
+    const list = this.getLocal().filter(x => x.cartLocalId !== cartLocalId);
     this.saveLocal(list);
   }
 

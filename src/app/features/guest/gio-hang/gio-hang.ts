@@ -448,12 +448,16 @@ export class GioHang implements OnInit {
     // =========================
     if (!token) {
 
-      const list = this.cartService.getLocal()
-        .filter(x => x.ma_gio_hang !== item.ma_gio_hang);
+      const list = this.cartService.getLocal();
 
-      this.cartService.saveLocal(list);
+      const newList = list.filter(x =>
+        x.cartLocalId !== item.cartLocalId   // ⭐ giờ luôn đúng
+      );
 
-      this.gioHang = list;
+      this.cartService.saveLocal(newList);
+
+      this.gioHang = newList.map(x => this.normalizeCartItem(x));
+
       this.tinhTong();
 
       return;
@@ -466,12 +470,12 @@ export class GioHang implements OnInit {
 
       next: () => {
 
-        // 🔥 update UI ngay lập tức
-        this.gioHang = this.gioHang.filter(x => x.ma_gio_hang !== item.ma_gio_hang);
+        this.gioHang = this.gioHang.filter(x =>
+          x.ma_gio_hang !== item.ma_gio_hang
+        );
 
         this.tinhTong();
 
-        // 🔥 sync badge header
         this.cartService.loadCountFromDB(userId);
       },
 
@@ -794,29 +798,31 @@ export class GioHang implements OnInit {
       0
     );
 
-    const giaGoc = x.gia_goc ?? x.gia_tien ?? 0;
+    const giaGoc =
+      x.gia_goc ??
+      x.gia_tien ??
+      x.gia ??
+      0;
 
     return {
-      // ===== ID =====
+      // ⭐ QUAN TRỌNG: dùng 1 field duy nhất
+      cartLocalId: x.cartLocalId,
+
+      ma_gio_hang: x.ma_gio_hang || x.cartLocalId,
+
       ma_mon_an: x.ma_mon_an,
-
-      // ===== UI =====
       ten_mon_an: x.ten_mon_an || '',
-      anh: x.anh
-        || x.anh_mon_an?.[0]?.url
-        || 'assets/no-image.png',
+      anh: x.anh || 'assets/no-image.png',
 
-      // ===== OPTION =====
       options,
 
-      // ===== GIÁ =====
       gia_goc: giaGoc,
       gia_option: giaOption,
       gia_don: giaGoc + giaOption,
-      thanh_tien: (giaGoc + giaOption) * (x.soLuong || 1),
 
-      // ===== SỐ LƯỢNG =====
       soLuong: x.soLuong || 1,
+
+      thanh_tien: (giaGoc + giaOption) * (x.soLuong || 1),
     };
   }
 
@@ -829,11 +835,9 @@ export class GioHang implements OnInit {
         options: item.options || [],
         optionsGroups: item.optionsGroups || []   // ⭐ QUAN TRỌNG
       },
-      width: '95vw',
-      maxWidth: '1100px',
-
-      height: '90vh',
-      maxHeight: '90vh',
+      width: '90vw',
+      maxWidth: '1000px',
+      height: '85vh',
     });
 
     dialogRef.afterClosed().subscribe((result) => {
