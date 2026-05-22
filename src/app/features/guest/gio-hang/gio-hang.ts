@@ -63,6 +63,7 @@ export class GioHang implements OnInit {
   ghiChu: string = '';
 
   cartBadgeCount = 0;
+  qrUrl: string = '';
 
 
   // ================= USER =================
@@ -614,10 +615,13 @@ export class GioHang implements OnInit {
   }
   thanhToan() {
 
-    this.tongSauGiam = this.tinhTienSauGiam();
+    this.isCreatingPayment = true;
 
-    if (!this.tongSauGiam || this.tongSauGiam <= 0) {
+    const tongTien = this.tinhTienSauGiam();
+
+    if (!tongTien || tongTien <= 0) {
       this.showToast('Tổng tiền không hợp lệ', 'error');
+      this.isCreatingPayment = false;
       return;
     }
 
@@ -637,39 +641,85 @@ export class GioHang implements OnInit {
       }))
     };
 
-    // 1️⃣ TẠO HÓA ĐƠN
+    console.log('🔥 CREATE ORDER REQUEST:', request);
+
     this.hoadonservice.taoHoaDon(request).subscribe({
       next: (res: any) => {
 
-        this.maHoaDonDangThanhToan = res.ma_hd;
-        this.daXuLyThanhToan = false;
+        console.log('🔥 ORDER RESPONSE:', res);
 
-        localStorage.setItem('pending_hoa_don', String(res.ma_hd));
+        // =========================
+        // ⚠️ FIX QUAN TRỌNG
+        // backend trả data nằm trong res.data
+        // =========================
+        const order = res?.data || res;
 
-        // 2️⃣ CHUẨN BỊ PAYLOAD SEPAY
+        if (!order?.ma_hd) {
+          this.showToast('Không tạo được hóa đơn', 'error');
+          this.isCreatingPayment = false;
+          return;
+        }
+
+        this.maHoaDonDangThanhToan = order.ma_hd;
+        localStorage.setItem('pending_hoa_don', String(order.ma_hd));
+
         const payload = {
-          amount: Number(res.tong_tien), // ÉP KIỂU LUÔN
-          invoice_number: `HD${res.ma_hd}`,
-          description: `Thanh toán hóa đơn HD${res.ma_hd}`,
-          success_url: `${window.location.origin}/payment-success`,
-          error_url: `${window.location.origin}/payment-error`,
-          cancel_url: `${window.location.origin}/payment-cancel`,
+          amount: Math.round(Number(order.tong_tien || 0)),
+          invoice_number: `HD${order.ma_hd}`,
+          description: `Thanh toán hóa đơn HD${order.ma_hd}`,
+          success_url: window.location.origin + '/payment-success',
+          error_url: window.location.origin + '/payment-error',
+          cancel_url: window.location.origin + '/payment-cancel',
         };
 
-        // 3️⃣ GỌI PAYMENT SERVICE
-        this.paymentService.createSePayPayment(payload)
-          .subscribe(html => {
+        console.log('🔥 SEPAY PAYLOAD:', payload);
 
-            this.qrHtml = html;
+        this.paymentService.createSePayPayment(payload).subscribe({
+          next: (r: any) => {
+
+            console.log('🔥 SEPAY RESPONSE:', r);
+
+            const order = res?.data || res;
+
+            if (!order?.ma_hd) {
+              this.showToast('Không tạo được hóa đơn', 'error');
+              this.isCreatingPayment = false;
+              return;
+            }
+
+            const amount = Math.round(Number(order.tong_tien || 0));
+            const content = `HD${order.ma_hd}`;
+
+            // ✅ CHỈ DÙNG QR TỰ TẠO (KHÔNG DÙNG r.qr_url)
+            this.qrUrl =
+              `https://qr.sepay.vn/img?acc=0123456789&bank=MBBank` +
+              `&amount=${amount}&des=${encodeURIComponent(content)}`;
+
+            console.log('QR URL:', this.qrUrl);
+
+            this.maHoaDonDangThanhToan = order.ma_hd;
+            localStorage.setItem('pending_hoa_don', String(order.ma_hd));
+
             this.showQR = true;
             this.isCreatingPayment = false;
+          },
 
+          error: (err) => {
+            console.error('❌ SEPAY ERROR:', err);
+            this.showToast('Không tạo được QR thanh toán', 'error');
+            this.isCreatingPayment = false;
+          }
+        });
 
-          });
       },
+
       error: (err) => {
-        console.error(err);
-        this.showToast('Không thể tạo hóa đơn', 'error');
+        console.error('❌ ORDER ERROR:', err);
+        this.showToast(
+          err?.error?.message || 'Không thể tạo hóa đơn',
+          'error'
+        );
+        this.isCreatingPayment = false;
       }
     });
   }
@@ -779,10 +829,11 @@ export class GioHang implements OnInit {
         options: item.options || [],
         optionsGroups: item.optionsGroups || []   // ⭐ QUAN TRỌNG
       },
-      width: '90vw',
-      maxWidth: '1000px',
-      height: '85vh',
-      panelClass: 'giohang-dialog'
+      width: '95vw',
+      maxWidth: '1100px',
+
+      height: '90vh',
+      maxHeight: '90vh',
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -806,4 +857,6 @@ export class GioHang implements OnInit {
   ngOnDestroy() {
     this.websocketService.disconnect();
   }
+
+
 }

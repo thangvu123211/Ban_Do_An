@@ -4,7 +4,7 @@
   <div *ngFor="let item of gioHang" class="bg-white rounded-2xl border shadow-sm p-4 space-y-2">
 
     <!-- ===== HÀNG TRÊN ===== -->
-    <div class="flex gap-4 cursor-pointer" (click)="moSuaItem(item)" >
+    <div class="flex gap-4 cursor-pointer" (click)="moSuaItem(item)">
 
       <!-- ẢNH -->
       <img [src]="item.anh" class="w-20 h-20 rounded-xl object-cover border bg-gray-100" />
@@ -32,7 +32,7 @@
 
       <!-- ACTION -->
       <div class="flex flex-col items-end justify-between">
-        <button (click)="xoa.emit(item)" class="text-gray-400 hover:text-red-500">
+        <button (click)="xoa.emit(item); $event.stopPropagation()" class="text-gray-400 hover:text-red-500">
           <mat-icon>close</mat-icon>
         </button>
 
@@ -45,7 +45,8 @@
             {{ item.soLuong }}
           </span>
 
-          <button (click)="change.emit({ item, type: 'plus' })" class="w-7 h-7 rounded-full bg-green-500 text-white shadow">
+          <button (click)="change.emit({ item, type: 'plus' })"
+            class="w-7 h-7 rounded-full bg-green-500 text-white shadow">
             <mat-icon class="text-base mt-0.5">add</mat-icon>
           </button>
         </div>

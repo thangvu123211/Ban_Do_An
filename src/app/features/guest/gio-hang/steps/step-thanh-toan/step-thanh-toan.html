@@ -116,21 +116,21 @@
     </h4>
 
     <!-- QR HTML TỪ SEPAY -->
-    <div class="w-56 h-56 flex items-center justify-center" [innerHTML]="qrHtml">
-    </div>
+    <div class="flex flex-col items-center">
+      <img *ngIf="qrUrl" [src]="qrUrl" width="220" height="220" />
 
-    <p class="text-xs text-gray-500 mt-4 text-center">
-      Dùng app ngân hàng để quét mã
-    </p>
+      <p class="text-xs text-gray-500 mt-3 text-center">
+        Nội dung: {{ maHoaDonDangThanhToan ? 'HD' + maHoaDonDangThanhToan : '' }}
+      </p>
+    </div>
 
   </div>
   <div class="flex justify-end mt-6">
 
-    <button mat-flat-button color="primary" class="px-8 py-2" [disabled]="isCreatingPayment" (click)="onThanhToan()">
-
+    <button mat-flat-button color="primary" [disabled]="isCreatingPayment" (click)="onThanhToan()">
       <mat-icon class="mr-2">payments</mat-icon>
-      {{ isCreatingPayment ? 'Đang tạo QR...' : 'Thanh toán' }}
 
+      {{ isCreatingPayment ? 'Đang tạo QR...' : 'Thanh toán' }}
     </button>
 
   </div>

@@ -19,7 +19,8 @@ export class StepThanhToanComponent {
   @Input() ghiChu = '';
   @Input() tongSauGiam = 0;
   @Input() maGiamGiaChon: any;
-  @Output() thanhToan = new EventEmitter<void>();
+  @Input() qrUrl: string = '';
+@Input() maHoaDonDangThanhToan: number | null = null;
   
 
   onThanhToan() {
