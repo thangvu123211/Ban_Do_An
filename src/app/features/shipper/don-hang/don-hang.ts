@@ -5,10 +5,11 @@ import { WebsocketService } from '../../../core/services/websocket.service';
 import { MATERIAL } from '../../../Shared/material';
 import { ThongTinDonHang } from '../dialogs/thong-tin-don-hang/thong-tin-don-hang';
 import { HoaDonService } from '../../../core/services/HoaDon.Service';
+import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-message/toast-message';
 
 @Component({
   selector: 'app-don-hang',
-  imports: [MATERIAL],
+  imports: [MATERIAL, ToastMessageComponent],
   templateUrl: './don-hang.html',
   styleUrl: './don-hang.scss'
 })
@@ -26,7 +27,7 @@ export class DonHang implements OnInit {
   };
 
   constructor(
-    private shipperService: shipperService,
+    private hoaDonService: HoaDonService,
     private dialog: MatDialog,
     private wsService: WebsocketService
   ) { }
@@ -44,23 +45,15 @@ export class DonHang implements OnInit {
   }
   loadHoaDons() {
     this.loading = true;
-    this.shipperService.getAllHoaDon().subscribe({
-      next: (data: any[]) => {
-        this.hoaDons = data; // ✅ ĐÚNG
+    this.hoaDonService.getAllHoaDon().subscribe({
+      next: (res: any) => {
+        this.hoaDons = res; // backend trả { data: [...] }
         this.loading = false;
+        console.log(this.hoaDons);
       },
       error: () => {
-        this.loading = false;
-        this.showToast('Lỗi tải đơn hàng', 'error');
+        this.showToast('Lỗi không thể tải tất cả đơn hàng', 'error');
       }
-    });
-  }
-  ThongTinDonHang(hoaDon: any) {
-    this.dialog.open(ThongTinDonHang, {
-      width: '1000px',
-      maxWidth: '95vw',
-      height: '85vh',
-      data: hoaDon
     });
   }
 
@@ -72,25 +65,26 @@ export class DonHang implements OnInit {
       switch (msg.type) {
 
         case 'new_hoa_don':
-          if (msg.payload?.ma_hd) {
-            this.hoaDons = [msg.payload, ...this.hoaDons];
-          }
+          this.hoaDons = [msg.payload, ...this.hoaDons];
+          this.showToast('Có đơn hàng mới', 'success');
           break;
 
-        case 'update_trang_thai_hoa_don': {
+        case 'update_trang_thai_hoa_don_user': {
           const index = this.hoaDons.findIndex(
             h => h.ma_hd === msg.payload.ma_hd
           );
+
           if (index !== -1) {
             this.hoaDons[index].trang_thai = msg.payload.trang_thai;
           }
           break;
         }
 
-        case 'cancel_hoa_don': {
+        case 'cancel_hoa_don_user': {
           const index = this.hoaDons.findIndex(
             h => h.ma_hd === msg.payload.ma_hd
           );
+
           if (index !== -1) {
             this.hoaDons[index].trang_thai = 'da_huy';
           }
@@ -103,37 +97,48 @@ export class DonHang implements OnInit {
     this.wsService.disconnect();
   }
 
+  ThongTinDonHang(hoaDon: any) {
+    this.dialog.open(ThongTinDonHang, {
+      width: '1000px',
+      maxWidth: '95vw',
+      height: '85vh',
+      data: hoaDon
+    });
+  }
 
+  trangThaiDonHangMap: Record<string, any> = {
+    cho_xac_nhan: { label: 'Chờ xác nhận', classes: 'bg-yellow-100 text-yellow-700' },
+    da_xac_nhan: { label: 'Đã xác nhận', classes: 'bg-blue-100 text-blue-700' },
+    dang_giao: { label: 'Đang giao', classes: 'bg-indigo-100 text-indigo-700' },
+    da_giao: { label: 'Đã giao', classes: 'bg-green-100 text-green-700' },
+    da_huy: { label: 'Đã hủy', classes: 'bg-red-100 text-red-700' },
+  };
 
-  trangThaiMap: Record<string, { label: string; classes: string }> = {
-    cho_xac_nhan: {
-      label: 'Chờ xác nhận',
-      classes: 'bg-yellow-100 text-yellow-700'
-    },
-    dang_chuan_bi: {
-      label: 'Đang chuẩn bị',
-      classes: 'bg-blue-100 text-blue-700'
-    },
-    dang_giao: {
-      label: 'Đang giao',
-      classes: 'bg-indigo-100 text-indigo-700'
-    },
-    da_giao: {
-      label: 'Đã giao',
-      classes: 'bg-green-100 text-green-700'
-    },
-    da_thanh_toan: {
-      label: 'Đã thanh toán',
-      classes: 'bg-emerald-100 text-emerald-700'
-    },
-    da_huy: {
-      label: 'Đã hủy',
-      classes: 'bg-red-100 text-red-700'
-    }
+  trangThaiThanhToanMap: Record<string, any> = {
+    da_thanh_toan: { label: 'Đã thanh toán', classes: 'bg-emerald-100 text-emerald-700' },
+    chua_thanh_toan: { label: 'Chưa thanh toán', classes: 'bg-gray-100 text-gray-600' },
   };
 
   toggleExpand(ma_hd: number) {
     this.expandedHoaDonId =
       this.expandedHoaDonId === ma_hd ? null : ma_hd;
   }
+
+  // ThongTinDonHang(hoaDon: any) {
+  //   this.dialog.open(ThongTinDonHang, {
+  //     width: '1000px',
+  //     maxWidth: '95vw',
+  //     height: '85vh',
+  //     data: hoaDon
+  //   });
+  // }
+
+  // huyHoaDon(id: number) {
+  //   if (!confirm('Bạn có chắc muốn hủy hóa đơn này?')) return;
+
+  //   this.hoaDonService.huyHoaDon(id).subscribe(() => {
+  //     this.loadHoaDons();
+  //   });
+  // }
+
 }

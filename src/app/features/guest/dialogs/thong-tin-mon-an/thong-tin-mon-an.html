@@ -79,17 +79,27 @@
                     <div class="bg-gray-50 border rounded-2xl p-4 shadow-sm">
 
                         <!-- HEADER -->
+                        <!-- HEADER -->
                         <div class="flex justify-between items-center text-sm text-gray-500">
 
                             <div class="flex items-center gap-2">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-bold">
-                                    {{ c.nguoi_dung?.ho_ten?.charAt(0) || 'U' }}
-                                </div>
+
+                                <!-- AVATAR IMAGE -->
+                                <img *ngIf="c.nguoi_dung?.anh_nguoi_dung_url; else noAvatar"
+                                    [src]="c.nguoi_dung.anh_nguoi_dung_url"
+                                    class="w-8 h-8 rounded-full object-cover border" />
+
+                                <ng-template #noAvatar>
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-bold">
+                                        {{ c.nguoi_dung?.ho_ten?.charAt(0) || 'U' }}
+                                    </div>
+                                </ng-template>
 
                                 <b class="text-gray-800">
                                     {{ c.nguoi_dung?.ho_ten || 'Ẩn danh' }}
                                 </b>
+
                             </div>
 
                             <span>{{ c.created_at | date:'short' }}</span>

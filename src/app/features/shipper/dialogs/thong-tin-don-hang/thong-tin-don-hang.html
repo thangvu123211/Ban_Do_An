@@ -1,6 +1,5 @@
 <div class="bg-white rounded-2xl h-full flex flex-col overflow-hidden">
 
-  <!-- HEADER -->
   <div class="flex justify-between items-center px-6 py-4 border-b">
     <div>
       <h2 class="text-xl font-bold text-gray-900">
@@ -11,177 +10,185 @@
       </p>
     </div>
 
-    <button (click)="close()" class="w-9 h-9 rounded-full flex items-center justify-center
-             hover:bg-gray-100 text-gray-500 hover:text-black transition">
+    <button (click)="close()" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100">
       ✕
     </button>
   </div>
 
-  <!-- STEPPER -->
   <div class="px-8 py-6 border-b">
-
-    <!-- ❌ ĐÃ HỦY -->
-    <div *ngIf="isHuy()" class="bg-red-50 border border-red-300 rounded-xl
-              px-6 py-4 text-center">
+    <div *ngIf="isHuy()" class="bg-red-50 border border-red-300 rounded-xl px-6 py-4 text-center">
       <p class="text-red-600 font-bold text-lg">
         ❌ Đơn hàng đã bị hủy
       </p>
-      <p class="text-sm text-red-500 mt-1">
-        Đơn hàng này đã bị hủy và không thể tiếp tục xử lý
-      </p>
     </div>
 
-    <!-- ✅ ĐÃ THANH TOÁN -->
-    <div *ngIf="isThanhToan()" class="bg-emerald-50 border border-emerald-300 rounded-xl
-              px-6 py-4 text-center">
-      <p class="text-emerald-700 font-bold text-lg">
-        💰 Đơn hàng đã thanh toán
-      </p>
-      <p class="text-sm text-emerald-600 mt-1">
-        Thanh toán đã được xác nhận thành công
-      </p>
-    </div>
-
-    <!-- 🔄 STEPPER BÌNH THƯỜNG -->
-    <div *ngIf="!isHuy() && !isThanhToan()" class="flex items-center justify-between">
-
+    <div *ngIf="!isHuy()" class="flex items-center justify-between">
       <ng-container *ngFor="let step of steps; let i = index">
-
         <div class="flex flex-col items-center flex-1">
-          <div class="w-5 h-5 rounded-full flex items-center justify-center mb-2"
-            [ngClass]="isActive(step.key) ? 'bg-green-500' : 'bg-gray-300'">
-            <div *ngIf="isActive(step.key)" class="w-2 h-2 bg-white rounded-full"></div>
+          <div class="w-5 h-5 rounded-full mb-2" [ngClass]="isStepActive(step.key) ? 'bg-green-500' : 'bg-gray-300'">
           </div>
-
-          <span class="text-xs" [ngClass]="isActive(step.key)
-                ? 'text-green-600 font-semibold'
-                : 'text-gray-400'">
+          <span class="text-xs" [ngClass]="isStepActive(step.key) ? 'text-green-600 font-semibold' : 'text-gray-400'">
             {{ step.label }}
           </span>
         </div>
-
-        <div *ngIf="i < steps.length - 1" class="flex-1 h-[3px] -mt-4 rounded" [ngClass]="isActive(steps[i + 1].key)
-             ? 'bg-green-500'
-             : 'bg-gray-200'">
+        <div *ngIf="i < steps.length - 1" class="flex-1 h-[3px] -mt-4"
+          [ngClass]="isStepActive(steps[i + 1].key) ? 'bg-green-500' : 'bg-gray-200'">
         </div>
-
       </ng-container>
-
     </div>
-
   </div>
 
-  <!-- CONTENT -->
   <div class="flex flex-1 overflow-hidden">
 
-    <!-- LEFT -->
-    <div class="flex-1 overflow-y-auto p-6 space-y-6">
+    <div class="flex-1 flex flex-col h-full bg-gray-50/30">
 
-      <!-- THÔNG TIN KHÁCH -->
-      <div class="bg-gray-50 rounded-xl p-4">
-        <h3 class="font-semibold text-gray-800 mb-3">
-          Thông tin giao hàng
-        </h3>
-
-        <div class="text-sm text-gray-700 space-y-1">
-          <p><b>Khách hàng:</b> {{ hoaDon.ho_ten }}</p>
+      <div class="flex-1 overflow-y-auto p-6 space-y-6">
+        <div class="bg-gray-50 rounded-xl p-4">
+          <h3 class="font-semibold mb-3">Thông tin giao hàng</h3>
+          <p><b>Khách:</b> {{ hoaDon.ho_ten }}</p>
           <p><b>SĐT:</b> {{ hoaDon.sdt }}</p>
           <p><b>Địa chỉ:</b> {{ hoaDon.dia_chi }}</p>
-          <p *ngIf="hoaDon.ghi_chu" class="italic text-gray-500">
-            Ghi chú: {{ hoaDon.ghi_chu }}
+          <p *ngIf="hoaDon.ghi_chu" class="text-gray-500 italic">
+            {{ hoaDon.ghi_chu }}
           </p>
         </div>
-      </div>
 
-      <!-- MÓN -->
-      <div>
-        <h3 class="font-semibold text-gray-800 mb-4">
-          Món đã đặt
-        </h3>
+        <div class="bg-gray-50 rounded-xl p-4">
+          <h3 class="font-semibold mb-2">Thanh toán</h3>
+          <span class="px-3 py-1 rounded-full text-sm font-medium"
+            [ngClass]="hoaDon.trang_thai_thanh_toan === 'da_thanh_toan' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'">
+            {{ hoaDon.trang_thai_thanh_toan === 'da_thanh_toan' ? 'Đã thanh toán' : 'Chưa thanh toán' }}
+          </span>
+        </div>
 
-        <div *ngFor="let item of hoaDon.chi_tiet_hoa_dons"
-          class="flex justify-between items-start py-3 border-b last:border-b-0">
-          <div>
-            <p class="font-medium text-gray-900">
-              {{ item.mon_an.ten_mon_an }}
-            </p>
-            <p *ngIf="item.ghi_chu" class="text-xs text-gray-500">
-              Ghi chú: {{ item.ghi_chu }}
-            </p>
-          </div>
+        <div>
+          <h3 class="font-bold mb-5 text-gray-950 text-xl flex items-center gap-2">
+            <span>📋</span> Chi tiết món đã đặt
+          </h3>
 
-          <div class="text-right text-sm">
-            <p>x{{ item.so_luong }}</p>
-            <p class="font-semibold">
-              {{ item.thanh_tien | number }}đ
-            </p>
+          <div *ngFor="let item of hoaDon.chi_tiet_hoa_dons"
+            class="bg-white border-2 border-gray-150 rounded-2xl p-6 mb-5 shadow-sm">
+            <div class="flex justify-between items-start gap-4 mb-4">
+              <div class="space-y-1.5">
+                <h4 class="font-extrabold text-gray-900 text-lg sm:text-xl leading-tight">
+                  {{ item.mon_an?.ten_mon_an }}
+                </h4>
+                <p class="text-base text-gray-600 font-medium">
+                  Giá gốc: <span class="text-gray-900 font-bold">{{ item.don_gia | number }}đ</span>
+                  <span class="text-gray-400 text-sm ml-2 font-normal">({{ item.don_gia | number }}đ × {{ item.so_luong
+                    }})</span>
+                </p>
+              </div>
+              <span
+                class="bg-gray-100 text-gray-900 text-base font-extrabold px-4 py-2 rounded-xl border border-gray-200 shrink-0">
+                Số lượng: x{{ item.so_luong }}
+              </span>
+            </div>
+
+            <div *ngIf="item.options?.length"
+              class="mt-4 pt-4 border-t-2 border-dashed border-gray-200 bg-gray-50/70 -mx-6 px-6 py-4">
+              <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Topping / Tùy chọn thêm:</p>
+              <div class="space-y-3">
+                <div *ngFor="let op of item.options"
+                  class="flex justify-between items-center text-base text-gray-800 font-medium">
+                  <div class="flex items-center gap-2">
+                    <span class="text-green-600 text-sm">◆</span>
+                    <span>{{ op.ten_option }}</span>
+                  </div>
+                  <div
+                    class="text-sm text-gray-600 font-medium bg-white px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm">
+                    <span>{{ item.so_luong }} × {{ op.gia_them | number }}đ</span>
+                    <span class="font-extrabold text-red-600 ml-2">(+{{ (item.so_luong * op.gia_them) | number
+                      }}đ)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="item.ghi_chu"
+              class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-base text-amber-900 flex gap-2.5">
+              <span class="text-lg">📝</span>
+              <p><span class="font-bold">Ghi chú:</span> {{ item.ghi_chu }}</p>
+            </div>
+
+            <div
+              class="mt-5 pt-4 border-t border-gray-100 flex justify-between items-center bg-gray-50 -mx-6 -mb-6 px-6 py-4 rounded-b-2xl border-b border-gray-200">
+              <span class="text-sm font-semibold text-gray-600">Thành tiền món này:</span>
+              <span class="font-bold text-xl text-gray-900 tracking-tight">
+                {{ item.thanh_tien | number }}đ
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- TỔNG TIỀN -->
-      <div class="flex justify-between items-center
-               bg-green-50 rounded-xl p-4 text-lg font-bold">
-        <span>Tổng tiền</span>
-        <span class="text-green-600">
-          {{ hoaDon.tong_tien | number }}đ
-        </span>
+      <div class="p-6 bg-white border-t-2 border-gray-100 shadow-[0_-8px_24px_rgba(0,0,0,0.04)]">
+        <div class="border-2 border-green-200 rounded-2xl overflow-hidden shadow-sm">
+
+          <div class="bg-gray-50/80 p-4 space-y-2.5 text-base">
+            <div class="flex justify-between text-gray-600 font-medium px-1">
+              <span>Tạm tính (Tiền món gốc):</span>
+              <span class="text-gray-900 font-bold text-lg">{{ hoaDon.tam_tinh | number }}đ</span>
+            </div>
+
+            <div *ngIf="hoaDon.tien_giam > 0"
+              class="flex justify-between items-center bg-red-50 text-red-700 px-4 py-2.5 rounded-xl border border-red-100">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">🎟️</span>
+                <div>
+                  <p class="font-bold text-sm sm:text-base leading-none">Mã giảm giá áp dụng</p>
+                  <p *ngIf="hoaDon.giam_gia?.code"
+                    class="text-xs text-red-500 font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-red-200 inline-block mt-1">
+                    {{ hoaDon.giam_gia.code }}
+                  </p>
+                </div>
+              </div>
+              <span class="font-black text-xl">-{{ hoaDon.tien_giam | number }}đ</span>
+            </div>
+          </div>
+
+          <div class="bg-green-600 px-6 py-4.5 flex justify-between items-center">
+            <div class="text-white">
+              <span class="text-base font-bold text-green-100 uppercase tracking-wider">Tổng tiền thanh toán</span>
+              <p class="text-xs text-green-200 opacity-90 mt-0.5">(Đã trừ tiền giảm giá)</p>
+            </div>
+            <span class="font-black text-3xl text-white tracking-tight">
+              {{ hoaDon.tong_tien | number }}đ
+            </span>
+          </div>
+
+        </div>
       </div>
 
     </div>
 
-    <!-- RIGHT -->
-    <div class="w-[38%] border-l flex flex-col">
-
-      <!-- SHIPPER -->
+    <div class="w-[38%] border-l flex flex-col bg-white">
       <div class="p-5 border-b">
-        <h3 class="font-semibold text-gray-800 mb-3">
-          Nhân viên giao hàng
-        </h3>
-
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-full bg-green-500
-                   flex items-center justify-center
-                   text-white font-bold">
-            NV
-          </div>
-
-          <div class="text-sm">
-            <p class="font-semibold">
-              {{ hoaDon.shipper?.ten || 'Nguyễn Văn A' }}
-            </p>
-            <p class="text-gray-500">
-              {{ hoaDon.shipper?.sdt || '0909 000 000' }}
-            </p>
-            <p class="text-green-600 text-xs font-medium">
-              Đang giao hàng
-            </p>
-          </div>
-        </div>
+        <p class="font-semibold text-gray-900">Shipper</p>
+        <p class="text-sm font-medium text-gray-700">{{ hoaDon.shipper?.ten || 'Chưa có' }}</p>
+        <p class="text-xs text-gray-500">{{ hoaDon.shipper?.sdt || '' }}</p>
       </div>
 
-      <!-- MAP (GIỮ NGUYÊN) -->
       <div class="flex-1">
-        <iframe class="w-full h-full"
-          src="https://maps.google.com/maps?q=ho%20chi%20minh&t=&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
+        <iframe class="w-full h-full" src="https://maps.google.com/maps?q=ho%20chi%20minh&z=15&output=embed"></iframe>
       </div>
-
     </div>
+
   </div>
 
-  <div class="border-t bg-white px-6 py-4 flex justify-end items-center gap-3">
+  <div class="border-t px-6 py-4 flex justify-end gap-3 bg-white">
 
-    <!-- NÚT ĐẶT LẠI -->
-    <button class="px-4 py-2 rounded-full border border-gray-300 text-gray-700
-           hover:bg-gray-100 transition active:scale-95">
-      🔁 Đặt lại
+    <button (click)="capNhatTrangThai('dang_giao')"
+      class="px-4 py-2 bg-blue-500 text-white rounded-full font-medium hover:bg-blue-600 shadow-sm">
+      🚚 Đang giao
     </button>
 
-    <!-- NÚT ĐÁNH GIÁ -->
-    <button class="px-4 py-2 rounded-full bg-green-500 text-white font-medium shadow
-           hover:bg-green-600 transition active:scale-95">
-      ⭐ Đánh giá
+    <button (click)="capNhatTrangThai('da_giao')"
+      class="px-4 py-2 bg-green-500 text-white rounded-full font-medium hover:bg-green-600 shadow-sm">
+      ✅ Đã giao
     </button>
 
   </div>
 </div>
+
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>
