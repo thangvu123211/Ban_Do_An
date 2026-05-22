@@ -316,65 +316,60 @@ export class GioHang implements OnInit {
 
   // ================= CART =================
   tangSoLuong(item: any) {
-
     const token = localStorage.getItem('token');
 
     // ===== GUEST → LOCAL =====
     if (!token) {
-
       const list = this.cartService.getLocal();
 
-      const index = list.findIndex(
-        x => x.ma_mon_an === item.ma_mon_an
+      // Tìm sản phẩm trùng mã món và trùng tập hợp các options đi kèm
+      const index = list.findIndex(x =>
+        x.ma_mon_an === item.ma_mon_an &&
+        JSON.stringify(x.options || []) === JSON.stringify(item.options || [])
       );
 
       if (index === -1) return;
 
       list[index].soLuong = (list[index].soLuong || 1) + 1;
 
-      // 🔥 chuẩn hóa lại UI
+      // 🔥 chuẩn hóa lại UI và tính toán lại giá
       this.gioHang = list.map(x => this.normalizeCartItem(x));
 
       this.cartService.saveLocal(list);
       this.tinhTong();
       return;
     }
-
-    // ===== LOGIN → DB (GIỮ NGUYÊN CODE CŨ) =====
   }
 
-
   giamSoLuong(item: any) {
-
     const token = localStorage.getItem('token');
 
     // ===== GUEST → LOCAL =====
     if (!token) {
-
       const list = this.cartService.getLocal();
 
-      const index = list.findIndex(
-        x => x.ma_mon_an === item.ma_mon_an
+      // Tìm sản phẩm trùng mã món và trùng tập hợp các options đi kèm
+      const index = list.findIndex(x =>
+        x.ma_mon_an === item.ma_mon_an &&
+        JSON.stringify(x.options || []) === JSON.stringify(item.options || [])
       );
 
       if (index === -1) return;
 
       list[index].soLuong = (list[index].soLuong || 1) - 1;
 
-      // ❌ <= 0 → xoá
+      // ❌ Nếu số lượng giảm về <= 0 thì tiến hành xóa món ra khỏi giỏ
       if (list[index].soLuong <= 0) {
         list.splice(index, 1);
       }
 
-      // 🔥 chuẩn hóa lại UI
+      // 🔥 chuẩn hóa lại UI và tính toán lại giá
       this.gioHang = list.map(x => this.normalizeCartItem(x));
 
       this.cartService.saveLocal(list);
       this.tinhTong();
       return;
     }
-
-    // ===== LOGIN → DB (GIỮ NGUYÊN CODE CŨ) =====
   }
 
   changeSoLuong(event: any) {

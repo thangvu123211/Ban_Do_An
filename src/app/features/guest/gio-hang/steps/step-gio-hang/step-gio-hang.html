@@ -1,64 +1,76 @@
 <div class="w-full space-y-5">
 
   <div *ngFor="let item of gioHang"
-    class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-4 hover:shadow-md transition-all duration-200">
+    (click)="moSuaItem(item)"
+    class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-4 hover:shadow-md transition-all duration-200 cursor-pointer active:scale-[0.99]">
 
-    <div class="flex gap-4 w-full">
+    <div class="flex gap-4 w-full items-start">
 
-      <img [src]="item.anh"
-        class="w-20 h-20 rounded-xl object-cover border border-slate-100 bg-slate-50 shrink-0" />
+      <img [src]="item.anh" class="w-20 h-20 rounded-xl object-cover border border-slate-100 bg-slate-50 shrink-0" />
 
-      <div class="flex-1 space-y-1">
+      <div class="flex-1 min-w-0 space-y-1.5">
 
-        <p class="font-bold text-slate-800 text-base leading-snug tracking-tight">
+        <p class="font-bold text-slate-800 text-base leading-snug tracking-tight truncate">
           {{ item.ten_mon_an }}
         </p>
 
-        <p class="text-xs text-slate-400 font-medium">
-          Giá gốc: {{ item.gia_goc | number }} đ
+        <p class="text-xs text-slate-400 font-medium flex items-center gap-1">
+          <span>Giá gốc:</span>
+          <span>{{ item.gia_goc | number }} đ</span>
         </p>
 
         <div *ngIf="item.options?.length" class="text-xs text-slate-500 space-y-1 pt-0.5">
-          <div *ngFor="let opt of item.options" class="flex items-center flex-wrap gap-1.5 font-medium">
+          <div *ngFor="let opt of item.options" class="flex items-center flex-wrap gap-1 font-medium">
             <span class="text-slate-300">•</span>
             <span class="text-slate-400">{{ opt.ten_nhom_option }}:</span>
             <span class="text-slate-600">{{ opt.ten_option }}</span>
-            <span *ngIf="opt.gia_them > 0" class="text-rose-500 font-bold bg-rose-50 px-1 rounded text-[10px]">
-              +{{ opt.gia_them | number }} đ
+
+            <span *ngIf="opt.gia_them > 0"
+              class="text-rose-600 font-semibold bg-rose-50/70 px-1.5 py-0.2 rounded text-[10px] ml-0.5">
+              +{{ (opt.gia_them * item.soLuong) | number }} đ
             </span>
           </div>
         </div>
 
-        <p class="text-sm font-black text-emerald-600 pt-1.5">
-          Thành tiền: {{ item.gia_don | number }} đ
-        </p>
+        <div class="pt-1 space-y-0.5 border-t border-slate-50 mt-2">
+          <div class="text-sm font-black text-emerald-600">
+            Thành tiền: {{ (item.gia_don * item.soLuong) | number }} đ
+          </div>
+
+          <div class="text-[11px] text-slate-400 font-medium leading-relaxed">
+            Chi tiết: <span class="font-bold text-slate-500">{{ item.soLuong }}</span> × {{ item.gia_don | number }} đ
+            <span class="text-[10px] text-slate-400 font-normal block sm:inline">
+              ({{ item.ten_mon_an }}
+              <ng-container *ngFor="let opt of item.options">
+                + {{ opt.ten_option }}
+              </ng-container>)
+            </span>
+          </div>
+        </div>
 
       </div>
 
-      <div class="flex flex-col items-end justify-between shrink-0">
+      <div class="flex flex-col items-end justify-between h-24 shrink-0 pl-2">
 
-        <button
-          (click)="xoa.emit(item); $event.stopPropagation()"
-          class="text-slate-300 hover:text-rose-500 p-1 rounded-lg hover:bg-rose-50 transition-colors duration-150">
-          <mat-icon style="font-size: 20px; width: 20px; height: 20px;" class="flex items-center justify-center">close</mat-icon>
+        <button (click)="xoa.emit(item); $event.stopPropagation()"
+          class="text-slate-300 hover:text-rose-500 p-1 rounded-xl hover:bg-rose-50/80 transition-colors duration-150 -mr-1 -mt-1">
+          <mat-icon style="font-size: 18px; width: 18px; height: 18px;" class="flex items-center justify-center">close</mat-icon>
         </button>
 
-        <div class="flex items-center bg-slate-100 rounded-full px-1.5 py-1 gap-2 border border-slate-200/40">
+        <div (click)="$event.stopPropagation()" class="flex items-center bg-slate-100 rounded-full p-0.5 border border-slate-200/50 shadow-sm">
 
-          <button
-            (click)="change.emit({ item, type: 'minus' }); $event.stopPropagation()"
-            class="w-7 h-7 flex items-center justify-center bg-white text-slate-600 rounded-full shadow-sm hover:bg-slate-50 active:scale-95 transition-all">
-            <mat-icon style="font-size: 16px; width: 16px; height: 16px;" class="flex items-center justify-center">remove</mat-icon>
+          <button (click)="change.emit({ item, type: 'minus' })"
+            class="w-6 h-6 flex items-center justify-center bg-white text-slate-600 rounded-full shadow-sm hover:bg-slate-50 active:scale-90 transition-all">
+            <mat-icon style="font-size: 14px; width: 14px; height: 14px;" class="flex items-center justify-center">remove</mat-icon>
           </button>
 
-          <span class="w-6 text-center font-black text-slate-700 text-sm">
+          <span class="w-6 text-center font-black text-slate-700 text-xs select-none">
             {{ item.soLuong }}
           </span>
 
-          <button
-            (click)="change.emit({ item, type: 'plus' }); $event.stopPropagation()"
-            class="w-7 h-7 flex items-center justify-center bg-emerald-500 text-white rounded-full shadow-sm hover:bg-emerald-600 active:scale-95 transition-all">
-            <mat-icon style="font-size: 16px; width: 16px; height: 16px;" class="flex items-center justify-center">add</mat-icon>
+          <button (click)="change.emit({ item, type: 'plus' })"
+            class="w-6 h-6 flex items-center justify-center bg-emerald-500 text-white rounded-full shadow-sm hover:bg-emerald-600 active:scale-90 transition-all">
+            <mat-icon style="font-size: 14px; width: 14px; height: 14px;" class="flex items-center justify-center">add</mat-icon>
           </button>
 
         </div>
@@ -68,31 +80,23 @@
   </div>
 
   <div class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-
     <label class="text-sm font-bold text-slate-700 flex items-center gap-1.5">
       <span>📝</span> Ghi chú gửi cho nhà hàng
     </label>
-
-    <textarea
-      rows="3"
-      [(ngModel)]="ghiChu"
-      (ngModelChange)="ghiChuChange.emit($event)"
-      placeholder="Ví dụ: ít cay, không lấy hành lá, đồ ăn kèm để riêng, giao trước 18h..."
-      class="mt-2.5 w-full text-sm font-medium rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 p-3 bg-slate-50/50 text-slate-700 placeholder:text-slate-400 outline-none transition-all duration-200">
+    <textarea rows="3" [(ngModel)]="ghiChu" (ngModelChange)="ghiChuChange.emit($event)"
+      placeholder="Ví dụ: ít cay, không lấy hành lá, đồ ăn kèm để riêng..."
+      class="mt-2.5 w-full text-sm font-medium rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100/60 p-3 bg-slate-50/50 text-slate-700 placeholder:text-slate-400 outline-none transition-all duration-200">
     </textarea>
-
   </div>
-
-
 
   <div class="w-full rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-500 to-teal-600 p-5 shadow-lg shadow-emerald-500/10 text-white flex justify-between items-center">
     <div class="space-y-0.5">
-      <span class="font-bold tracking-tight text-sm sm:text-base opacity-90">
+      <span class="font-bold tracking-tight text-sm sm:text-base opacity-95">
         Tạm tính giỏ hàng
       </span>
-      <p class="text-[11px] opacity-75 font-medium">Giá đã bao gồm các topping kèm theo và giá món ăn</p>
+      <p class="text-[11px] opacity-80 font-medium">Giá đã bao gồm các topping kèm theo và giá món ăn</p>
     </div>
-    
+
     <span class="text-2xl sm:text-3xl font-black tracking-tight drop-shadow-sm">
       {{ (tongTien) | number }} đ
     </span>
