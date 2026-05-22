@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output, output } from '@angular/core';
 import { MATERIAL } from '../../../../../Shared/material';
+import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-step-thanh-toan',
@@ -19,4 +20,16 @@ export class StepThanhToanComponent {
   @Input() tongSauGiam = 0;
   @Input() maGiamGiaChon: any;
   @Output() thanhToan = new EventEmitter<void>();
+  
+
+  onThanhToan() {
+    this.submitThanhToan.emit();
+  }
+
+  @Input() showQR = false;
+  @Input() qrHtml: SafeHtml | null = null;
+  @Input() isCreatingPayment = false;
+
+  // ⬇️ CHỈ PHÁT EVENT
+  @Output() submitThanhToan = new EventEmitter<void>();
 }

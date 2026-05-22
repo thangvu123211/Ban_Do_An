@@ -9,10 +9,9 @@ export class WebsocketService {
     private messageSubject = new Subject<any>();
     messages$ = this.messageSubject.asObservable();
 
-    connect(maMonAn: number) {
+    connect() {
         const token = localStorage.getItem('token');
 
-        // ✅ Tự chọn endpoint theo login hay không
         const url = token
             ? `ws://localhost:3000/ws?token=${token}`
             : `ws://localhost:3000/ws/public`;
@@ -22,9 +21,6 @@ export class WebsocketService {
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             this.messageSubject.next(data);
-        };
-        this.ws.onclose = () => {
-            console.log('WebSocket disconnected');
         };
     }
 

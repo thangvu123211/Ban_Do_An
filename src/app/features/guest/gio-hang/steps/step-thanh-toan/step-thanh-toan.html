@@ -109,14 +109,14 @@
   </div>
 
   <!-- QR -->
-  <div class="rounded-2xl border bg-white p-6 flex flex-col items-center">
+  <div *ngIf="showQR" class="rounded-2xl border bg-white p-6 flex flex-col items-center">
 
     <h4 class="font-semibold mb-4">
       Quét QR để thanh toán
     </h4>
 
-    <div class="w-48 h-48 bg-gray-100 border rounded-2xl flex items-center justify-center">
-      QR CODE
+    <!-- QR HTML TỪ SEPAY -->
+    <div class="w-56 h-56 flex items-center justify-center" [innerHTML]="qrHtml">
     </div>
 
     <p class="text-xs text-gray-500 mt-4 text-center">
@@ -126,10 +126,10 @@
   </div>
   <div class="flex justify-end mt-6">
 
-    <button mat-flat-button color="primary" class="px-8 py-2" (click)="thanhToan.emit()">
+    <button mat-flat-button color="primary" class="px-8 py-2" [disabled]="isCreatingPayment" (click)="onThanhToan()">
 
       <mat-icon class="mr-2">payments</mat-icon>
-      Thanh toán
+      {{ isCreatingPayment ? 'Đang tạo QR...' : 'Thanh toán' }}
 
     </button>
 

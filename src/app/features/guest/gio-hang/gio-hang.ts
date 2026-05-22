@@ -14,6 +14,9 @@ import { QuanLyGiamGiaService } from "../../../core/services/QuanLyGiamGia";
 import { HoaDonService } from "../../../core/services/HoaDon.Service";
 import { BehaviorSubject } from "rxjs";
 import { SuaGioHang } from "../dialogs/sua-gio-hang/sua-gio-hang";
+import { PaymentService } from "../../../core/services/payment.service";
+import { WebsocketService } from "../../../core/services/websocket.service";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 // STEP COMPONENTS
 interface DiaChi {
@@ -43,6 +46,13 @@ export class GioHang implements OnInit {
   maGiamGiaChon: any = null;
   tongSauGiam = 0;
   maNhap: string = '';
+
+  maHoaDonDangThanhToan!: number;
+  daXuLyThanhToan = false;
+
+  showQR = false;
+  qrHtml: SafeHtml | null = null;
+  isCreatingPayment = false;
 
   loaded: boolean = false;
 
@@ -110,7 +120,10 @@ export class GioHang implements OnInit {
     private diaChiService: DiaChiService,
     private giamGiaService: QuanLyGiamGiaService,
     private hoadonservice: HoaDonService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private paymentService: PaymentService,
+    private websocketService: WebsocketService,
+    private sanitizer: DomSanitizer,
   ) { }
 
   // ================= LOGIN =================
@@ -155,6 +168,12 @@ export class GioHang implements OnInit {
   // ================= INIT =================
   ngOnInit() {
     this.loaded = false;
+
+    const pending = localStorage.getItem('pending_hoa_don');
+    if (pending) {
+      this.maHoaDonDangThanhToan = Number(pending);
+      this.daXuLyThanhToan = false;
+    }
 
     const token = localStorage.getItem('token');
     const userId = Number(localStorage.getItem('ma_nguoi_dung'));
@@ -220,6 +239,32 @@ export class GioHang implements OnInit {
     // 🎁 VOUCHER
     // =========================
     this.loadGiamGia();
+
+    // 🔌 connect websocket (chỉ cần 1 lần)
+    this.websocketService.connect();
+
+    this.websocketService.messages$
+      .subscribe(msg => {
+
+        if (!this.maHoaDonDangThanhToan) return;
+        if (msg.type !== 'payment_success') return;
+        if (msg.payload?.hoa_don_id !== this.maHoaDonDangThanhToan) return;
+        if (this.daXuLyThanhToan) return;
+
+        this.daXuLyThanhToan = true;
+
+        localStorage.removeItem('pending_hoa_don');
+
+        this.showToast('Thanh toán thành công!', 'success');
+
+        this.currentStep = 4;
+        this.isCheckoutDone = true;
+
+        const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+        this.cartService.clearDB(userId).subscribe(() => {
+          this.cartService.loadCountFromDB(userId);
+        });
+      });
   }
 
   loadCartFromDB(userId: number) {
@@ -571,79 +616,61 @@ export class GioHang implements OnInit {
 
     this.tongSauGiam = this.tinhTienSauGiam();
 
-    if (!this.tongSauGiam || this.tongSauGiam < 0 || isNaN(this.tongSauGiam)) {
+    if (!this.tongSauGiam || this.tongSauGiam <= 0) {
       this.showToast('Tổng tiền không hợp lệ', 'error');
       return;
     }
-
-    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
-
-    // =========================
-    // 🔥 MAP GIỎ HÀNG -> BACKEND FORMAT
-    // =========================
-    const monAns = this.gioHang.map(i => ({
-
-      ma_mon_an: i.ma_mon_an,
-      so_luong: i.soLuong,
-      ghi_chu: i.ghi_chu || '',
-
-      // ⭐ QUAN TRỌNG: gửi options xuống backend
-      options: (i.options || []).map((op: any) => ({
-        ma_option_item: op.ma_option_item
-      }))
-
-    }));
 
     const request = {
       ho_ten: this.tenNguoiNhan,
       sdt: this.soDienThoai,
       dia_chi: this.diaChi,
       ghi_chu: this.ghiChu,
-
       code_giam_gia: this.maGiamGiaChon?.code || null,
-
-      mon_ans: monAns
+      mon_ans: this.gioHang.map(i => ({
+        ma_mon_an: i.ma_mon_an,
+        so_luong: i.soLuong,
+        ghi_chu: i.ghi_chu || '',
+        options: (i.options || []).map((op: any) => ({
+          ma_option_item: op.ma_option_item
+        }))
+      }))
     };
 
+    // 1️⃣ TẠO HÓA ĐƠN
     this.hoadonservice.taoHoaDon(request).subscribe({
-
       next: (res: any) => {
 
-        this.showToast('Thanh toán thành công!', 'success');
+        this.maHoaDonDangThanhToan = res.ma_hd;
+        this.daXuLyThanhToan = false;
 
-        // (optional) lấy QR nếu cần
-        console.log('QR URL:', res.qr_url);
+        localStorage.setItem('pending_hoa_don', String(res.ma_hd));
 
-        this.isCheckoutDone = true;
+        // 2️⃣ CHUẨN BỊ PAYLOAD SEPAY
+        const payload = {
+          amount: Number(res.tong_tien), // ÉP KIỂU LUÔN
+          invoice_number: `HD${res.ma_hd}`,
+          description: `Thanh toán hóa đơn HD${res.ma_hd}`,
+          success_url: `${window.location.origin}/payment-success`,
+          error_url: `${window.location.origin}/payment-error`,
+          cancel_url: `${window.location.origin}/payment-cancel`,
+        };
 
-        // =========================
-        // 🧹 CLEAR CART
-        // =========================
-        this.cartService.clearDB(userId).subscribe({
-          next: () => {
-            this.gioHang = [];
-            this.tinhTong();
-            this.cartService.loadCountFromDB(userId);
-          },
-          error: (err) => {
-            console.error('Clear cart lỗi:', err);
-          }
-        });
+        // 3️⃣ GỌI PAYMENT SERVICE
+        this.paymentService.createSePayPayment(payload)
+          .subscribe(html => {
 
-        // =========================
-        // UI STEP
-        // =========================
-        this.currentStep = 4;
+            this.qrHtml = html;
+            this.showQR = true;
+            this.isCreatingPayment = false;
+
+
+          });
       },
-
       error: (err) => {
         console.error(err);
-        this.showToast(
-          err?.error?.error || 'Thanh toán thất bại!',
-          'error'
-        );
+        this.showToast('Không thể tạo hóa đơn', 'error');
       }
-
     });
   }
 
@@ -774,5 +801,9 @@ export class GioHang implements OnInit {
         this.tinhTong();
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.websocketService.disconnect();
   }
 }

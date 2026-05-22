@@ -41,7 +41,7 @@ export class DonHang implements OnInit {
   }
 
   connectRealtime() {
-    this.wsService.connect(0);
+    this.wsService.connect();
 
     this.wsService.messages$.subscribe((msg: any) => {
 

@@ -65,7 +65,7 @@ export class DonHang implements OnInit {
   }
 
   connectRealtime() {
-    this.wsService.connect(0); // tham số không dùng, giữ cho đúng interface
+    this.wsService.connect(); // tham số không dùng, giữ cho đúng interface
 
     this.wsService.messages$.subscribe((msg: any) => {
 

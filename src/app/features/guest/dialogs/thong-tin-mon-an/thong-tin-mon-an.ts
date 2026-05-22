@@ -46,7 +46,7 @@ export class ThongTinMonAn implements OnInit {
     this.loadBinhLuan();
 
     // join room realtime
-    this.wsService.connect(this.data.ma_mon_an);
+    this.wsService.connect();
 
     // listen event
     this.wsService.messages$.subscribe((msg: any) => {
