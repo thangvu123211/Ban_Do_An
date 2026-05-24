@@ -3,7 +3,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-message/toast-message';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { QuanLyLoaiMonAn } from '../../../core/services/QuanLyLoaiMonAnService';
 import { QuanLyMonAn } from '../../../core/services/QuanLyMonAn.service';
 import { PhongToAnh } from '../../../Shared/phong_to_anh/phong-to-anh';
@@ -17,6 +17,7 @@ import { YeuThichService } from '../../../core/services/YeuThich.service';
 import { YeuThich } from '../yeu-thich/yeu-thich';
 import { ThemGioHangDialog } from '../dialogs/them-gio-hang-dialog/them-gio-hang-dialog';
 import { OptionService } from '../../../core/services/option.service';
+import { DanhGiaService } from '../../../core/services/DanhGia.service';
 
 
 
@@ -50,6 +51,7 @@ export class Menu implements OnInit {
   tenBan: string = '';
   showGioHang: boolean = false;
   tongSoMon = 0;
+  tongYeuThich = 0;
 
   toast = {
     show: false,
@@ -72,6 +74,8 @@ export class Menu implements OnInit {
 
   screenWidth = window.innerWidth;
 
+  ratingsMap: any = {};
+
   showToast(message: string, type: 'success' | 'warn' | 'error') {
     this.toast.show = true;
     this.toast.message = message;
@@ -89,8 +93,25 @@ export class Menu implements OnInit {
     private dialog: MatDialog,
     private cartService: CartService,
     private yeuThichService: YeuThichService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router,
+    private danhGiaService: DanhGiaService,
   ) { }
+
+  reloadFavoriteCount() {
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    if (!token) {
+      this.tongYeuThich = this.yeuThichService.getLocal().length;
+      return;
+    }
+
+    this.yeuThichService.getCountFromDB(userId)
+      .subscribe(res => {
+        this.tongYeuThich = res?.length || 0;
+      });
+  }
 
   /** Lấy tất cả món ăn */
   getAllMonAn() {
@@ -264,27 +285,31 @@ export class Menu implements OnInit {
     });
   }
 
-  moThongTinMon(mon: any) {
+moThongTinMon(mon: any, openTab: string = 'info') {
 
-    const dialogRef = this.dialog.open(ThongTinMonAn, {
-      width: '650px',
-      maxWidth: '95vw',
-      height: '85vh',
-      panelClass: 'thong-tin-mon-dialog',
-      data: mon
-    });
+  const data = {
+    ma_mon_an: mon.ma_mon_an,
+    ten_mon_an: mon.ten_mon_an,
+    gia_tien: mon.gia_tien,
+    mo_ta: mon.mo_ta ?? '',
+    anh_mon_an: mon.anh_mon_an,
+    openTab
+  };
 
-    dialogRef.afterClosed().subscribe((result: any) => {
-      if (result?.success) {
-        this.showToast(result.message, 'success');
-      }
-    });
+  this.dialog.open(ThongTinMonAn, {
+    width: '650px',
+    maxWidth: '95vw',
+    height: '85vh',
+    panelClass: 'thong-tin-mon-dialog',
+    data
+  });
 
-  }
+}
 
   isFavorite(maMonAn: number): boolean {
     return this.favoriteIds.has(maMonAn);
   }
+
   toggleYeuThich(mon: any) {
     const token = localStorage.getItem('token');
     const maMonAn = mon.ma_mon_an;
@@ -331,6 +356,7 @@ export class Menu implements OnInit {
           this._loadingFav = false;
 
           this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
+          this.reloadFavoriteCount();
         },
         error: () => {
           this._loadingFav = false;
@@ -340,12 +366,12 @@ export class Menu implements OnInit {
     }
   }
 
-
-
   ngOnInit() {
     this.getAllLoaiMonAn();
     this.getAllMonAn();
     this.loadFavorites();
+    this.reloadFavoriteCount();
+    this.loadRatings();
 
     this.cartService.count$.subscribe(count => {
       this.tongSoMon = count;
@@ -363,6 +389,21 @@ export class Menu implements OnInit {
         this.applyFilterAfterLoad();
       }
     });
+
+    const state = history.state;
+
+  if (state?.openDialog && state?.monAn) {
+    this.dialog.open(ThongTinMonAn, {
+      width: '650px',
+      maxWidth: '95vw',
+      height: '85vh',
+      panelClass: 'thong-tin-mon-dialog',
+      data: {
+        ...state.monAn,
+        openTab: state.openTab || 'info'
+      }
+    });
+  }
   }
   applyFilterAfterLoad() {
     if (!this.tatCaMonAn?.length) return;
@@ -387,6 +428,20 @@ export class Menu implements OnInit {
     this.scrollContainer.nativeElement.scrollBy({
       left: 300,
       behavior: 'smooth'
+    });
+  }
+
+  loadRatings() {
+    this.danhGiaService.getRatingByMon().subscribe((res: any) => {
+
+      this.ratingsMap = {};
+
+      const data = res?.data || res || [];
+
+      data.forEach((item: any) => {
+        this.ratingsMap[item.ma_mon_an] = item;
+      });
+
     });
   }
 }

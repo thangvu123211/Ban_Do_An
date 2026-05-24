@@ -64,14 +64,30 @@ export class HeaderComponent implements OnInit {
     this.tongYeuThich$ = this.yeuThichService.count$;
 
     if (token && userId) {
-  this.cartService.loadCountFromDB(userId);
-} else {
-  this.cartService.setCount(this.cartService.getLocal().reduce(
-    (s: number, i: any) => s + (i.soLuong || 0),
-    0
-  ));
-}
+      this.cartService.loadCountFromDB(userId);
+    } else {
+      this.cartService.setCount(this.cartService.getLocal().reduce(
+        (s: number, i: any) => s + (i.soLuong || 0),
+        0
+      ));
+    }
+     this.initYeuThich();
   }
+
+  initYeuThich() {
+  const token = localStorage.getItem('token');
+  const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+  if (!token) {
+    const local = this.yeuThichService.getLocal();
+    this.yeuThichService.setCount(local.length); // 🔥 quan trọng
+    return;
+  }
+
+  this.yeuThichService.getByUser(userId).subscribe(res => {
+    this.yeuThichService.setCount(res?.length || 0); // 🔥 quan trọng
+  });
+}
 
   goToHome() {
     this.router.navigate(['/']);

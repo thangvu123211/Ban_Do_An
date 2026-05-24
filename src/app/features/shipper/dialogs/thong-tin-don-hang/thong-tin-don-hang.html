@@ -178,15 +178,23 @@
 
   <div class="border-t px-6 py-4 flex justify-end gap-3 bg-white">
 
-    <button (click)="capNhatTrangThai('dang_giao')"
+    <!-- ===== NÚT ĐANG GIAO ===== -->
+    <button *ngIf="hoaDon.trang_thai === 'da_xac_nhan'" (click)="capNhatTrangThai('dang_giao')"
       class="px-4 py-2 bg-blue-500 text-white rounded-full font-medium hover:bg-blue-600 shadow-sm">
       🚚 Đang giao
     </button>
 
-    <button (click)="capNhatTrangThai('da_giao')"
+    <!-- ===== NÚT ĐÃ GIAO ===== -->
+    <button *ngIf="hoaDon.trang_thai === 'dang_giao'" (click)="capNhatTrangThai('da_giao')"
       class="px-4 py-2 bg-green-500 text-white rounded-full font-medium hover:bg-green-600 shadow-sm">
-      ✅ Đã giao
+      ✅ Đã giao hàng
     </button>
+
+    <!-- ===== ĐÃ GIAO THÀNH CÔNG ===== -->
+    <div *ngIf="hoaDon.trang_thai === 'da_giao'"
+      class="px-6 py-3 bg-green-50 text-green-700 font-bold rounded-2xl border border-green-200">
+      ✔ Đơn hàng đã được giao thành công
+    </div>
 
   </div>
 </div>

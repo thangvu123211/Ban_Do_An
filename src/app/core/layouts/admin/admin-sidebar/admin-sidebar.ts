@@ -21,6 +21,7 @@ export class AdminSidebar implements OnInit {
   public menuItems = [
     { link: '/admin/dashboard', icon: 'dashboard', text: 'Trang Tổng Quan' },
     { link: '/admin/account_admin', icon: 'person', text: 'Trang Cá Nhân' },
+    { link: '/admin/nha_hang_cua_ban', icon: 'list_alt_add', text: 'Nhà hàng của bạn' },
     { link: '/admin/user_profile', icon: 'groups', text: 'Bảng Nhân Viên' },
     { link: '/admin/mon_an', icon: 'dinner_dining', text: 'Món Ăn' },
     { link: '/admin/loai_mon_an', icon: 'room_service', text: 'Loại Món Ăn' },

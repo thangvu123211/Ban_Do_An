@@ -27,13 +27,13 @@ export class YeuThichService {
     this._count$.next(local.length);
   }
   initState() {
-  const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
-  if (!token) {
-    const local = this.getLocal();
-    this._count$.next(local.length);
+    if (!token) {
+      const local = this.getLocal();
+      this._count$.next(local.length);
+    }
   }
-}
 
   addLocal(mon: any) {
     const list = this.getLocal();
@@ -62,21 +62,27 @@ export class YeuThichService {
   addDB(maMonAn: number) {
     return this.http.post(`${environment.apiUrl}/yeu-thich`, {
       ma_mon_an: maMonAn
-    }).pipe(
-      tap(() => this._count$.next(this._count$.value + 1))
-    );
+    });
   }
 
   removeDB(maMonAn: number) {
-    return this.http.delete(`${environment.apiUrl}/yeu-thich/${maMonAn}`).pipe(
-      tap(() => this._count$.next(Math.max(0, this._count$.value - 1)))
-    );
+    return this.http.delete(`${environment.apiUrl}/yeu-thich/${maMonAn}`);
   }
 
   loadCountFromDB(userId: number) {
     this.getByUser(userId).subscribe(res => {
       this._count$.next(res?.length || 0);
     });
+  }
+
+  setCount(value: number) {
+    this._count$.next(value);
+  }
+
+  getCountFromDB(userId: number) {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/yeu-thich/user/${userId}`
+    );
   }
 
   /* ================= SYNC LOCAL → DB ================= */

@@ -6,6 +6,7 @@ import { TrangCaNhan } from './trang-ca-nhan/trang-ca-nhan';
 import { QuanLyBinhLuan } from './quan-ly-binh-luan/quan-ly-binh-luan';
 import { QuanLyDanhGia } from './quan-ly-danh-gia/quan-ly-danh-gia';
 import { QuanLyDatBan } from './quan-ly-dat-ban/quan-ly-dat-ban';
+import { DanhGia } from './dialogs/danh-gia/danh-gia';
 
 
 export const userRoutes: Routes = [
@@ -19,6 +20,7 @@ export const userRoutes: Routes = [
       { path: 'quan-ly-binh-luan', component: QuanLyBinhLuan, title: 'Quản lý bình luận' },
       { path: 'quan-ly-danh-gia', component: QuanLyDanhGia, title: 'Quản lý đánh giá' },
       { path: 'quan-ly-dat-ban', component: QuanLyDatBan, title: 'Quản lý đặt bàn' },
+      { path: 'danh_gia', component: DanhGia, title: 'Đánh giá' },
     ],
   },
 ];

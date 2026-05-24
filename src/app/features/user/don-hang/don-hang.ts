@@ -4,11 +4,12 @@ import { MATERIAL } from '../../../Shared/material';
 import { MatDialog } from '@angular/material/dialog';
 import { ThongTinDonHang } from '../dialogs/thong-tin-don-hang/thong-tin-don-hang';
 import { WebsocketService } from '../../../core/services/websocket.service';
+import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-message/toast-message';
 
 
 @Component({
   selector: 'app-don-hang',
-  imports: [MATERIAL],
+  imports: [MATERIAL,ToastMessageComponent],
   templateUrl: './don-hang.html',
   styleUrl: './don-hang.scss'
 })
@@ -17,10 +18,23 @@ export class DonHang implements OnInit {
   loading = false;
   expandedHoaDonId: number | null = null;
 
+  toast = {
+    show: false,
+    message: '',
+    type: 'success' as 'success' | 'warn' | 'error'
+  };
+
   constructor(
     private hoaDonService: HoaDonService,
     private dialog: MatDialog,
     private wsService: WebsocketService) { }
+
+    showToast(message: string, type: 'success' | 'warn' | 'error') {
+    this.toast.show = true;
+    this.toast.message = message;
+    this.toast.type = type;
+    setTimeout(() => this.toast.show = false, 3000);
+  }
 
   ngOnInit(): void {
     this.loadHoaDons();

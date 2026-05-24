@@ -11,6 +11,7 @@ import { HoaDon } from './hoa-don/hoa-don';
 import { LienHe } from './lien-he/lien-he';
 import { MaGiamGia } from './ma-giam-gia/ma-giam-gia';
 import { OptionMonAn } from './option-mon-an/option-mon-an';
+import { ThongTinNhaHang } from './thong-tin-nha-hang/thong-tin-nha-hang';
 
 export const adminRoutes: Routes = [
   {
@@ -29,6 +30,7 @@ export const adminRoutes: Routes = [
       { path: 'lien_he', component: LienHe, title: 'Quản lí liên hệ' },
       { path: 'ma_giam_gia', component: MaGiamGia, title: 'Quản lí mã giảm giá' },
       { path: 'option_mon_an', component: OptionMonAn, title: 'Quản lí option món ăn' },
+      { path: 'nha_hang_cua_ban', component: ThongTinNhaHang, title: 'Quản lí thông tin nhà hàng' },
     ],
   },
 ];

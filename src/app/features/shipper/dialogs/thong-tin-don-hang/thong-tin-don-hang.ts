@@ -7,7 +7,7 @@ import { ToastMessageComponent } from '../../../../Shared/toasts_message/toast-m
 
 @Component({
   selector: 'app-thong-tin-don-hang',
-  imports: [MATERIAL,ToastMessageComponent],
+  imports: [MATERIAL, ToastMessageComponent],
   templateUrl: './thong-tin-don-hang.html',
   styleUrl: './thong-tin-don-hang.scss'
 })
@@ -84,24 +84,46 @@ export class ThongTinDonHang implements OnInit {
   }
 
   capNhatTrangThai(trangThai: string) {
-    this.hoaDonService.updateTrangThai(this.hoaDon.ma_hd, trangThai)
-      .subscribe({
-        next: () => {
-          this.hoaDon.trang_thai = trangThai;
 
-          this.showToast(
-            trangThai === 'dang_giao'
-              ? '🚚 Đã chuyển sang trạng thái Đang giao'
-              : '✅ Đơn hàng đã hoàn tất',
-            'success'
-          );
-        },
-        error: () => {
-          this.showToast('❌ Cập nhật trạng thái thất bại', 'error');
-        }
-      });
+  // 🚫 CHẶN SAI LUỒNG
+  if (trangThai === 'dang_giao' && this.hoaDon.trang_thai !== 'da_xac_nhan') {
+    return;
   }
+
+  if (trangThai === 'da_giao' && this.hoaDon.trang_thai !== 'dang_giao') {
+    return;
+  }
+
+  this.hoaDonService.updateTrangThai(this.hoaDon.ma_hd, trangThai)
+    .subscribe({
+      next: () => {
+        this.hoaDon.trang_thai = trangThai;
+
+        this.showToast(
+          trangThai === 'dang_giao'
+            ? '🚚 Shipper đang giao đơn hàng'
+            : '✅ Đơn hàng đã giao thành công',
+          'success'
+        );
+      },
+      error: () => {
+        this.showToast('❌ Cập nhật trạng thái thất bại', 'error');
+      }
+    });
+}
   close() {
     this.dialogRef.close();
+  }
+
+  canDangGiao(): boolean {
+    return this.hoaDon.trang_thai === 'da_xac_nhan';
+  }
+
+  canDaGiao(): boolean {
+    return this.hoaDon.trang_thai === 'dang_giao';
+  }
+
+  isDaGiao(): boolean {
+    return this.hoaDon.trang_thai === 'da_giao';
   }
 }

@@ -31,7 +31,8 @@
             {{ step.label }}
           </span>
         </div>
-        <div *ngIf="i < steps.length - 1" class="flex-1 h-[3px] -mt-4" [ngClass]="isStepActive(steps[i + 1].key) ? 'bg-green-500' : 'bg-gray-200'">
+        <div *ngIf="i < steps.length - 1" class="flex-1 h-[3px] -mt-4"
+          [ngClass]="isStepActive(steps[i + 1].key) ? 'bg-green-500' : 'bg-gray-200'">
         </div>
       </ng-container>
     </div>
@@ -40,7 +41,7 @@
   <div class="flex flex-1 overflow-hidden">
 
     <div class="flex-1 flex flex-col h-full bg-gray-50/30">
-      
+
       <div class="flex-1 overflow-y-auto p-6 space-y-6">
         <div class="bg-gray-50 rounded-xl p-4">
           <h3 class="font-semibold mb-3">Thông tin giao hàng</h3>
@@ -54,7 +55,8 @@
 
         <div class="bg-gray-50 rounded-xl p-4">
           <h3 class="font-semibold mb-2">Thanh toán</h3>
-          <span class="px-3 py-1 rounded-full text-sm font-medium" [ngClass]="hoaDon.trang_thai_thanh_toan === 'da_thanh_toan' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'">
+          <span class="px-3 py-1 rounded-full text-sm font-medium"
+            [ngClass]="hoaDon.trang_thai_thanh_toan === 'da_thanh_toan' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'">
             {{ hoaDon.trang_thai_thanh_toan === 'da_thanh_toan' ? 'Đã thanh toán' : 'Chưa thanh toán' }}
           </span>
         </div>
@@ -64,7 +66,8 @@
             <span>📋</span> Chi tiết món đã đặt
           </h3>
 
-          <div *ngFor="let item of hoaDon.chi_tiet_hoa_dons" class="bg-white border-2 border-gray-150 rounded-2xl p-6 mb-5 shadow-sm">
+          <div *ngFor="let item of hoaDon.chi_tiet_hoa_dons"
+            class="bg-white border-2 border-gray-150 rounded-2xl p-6 mb-5 shadow-sm">
             <div class="flex justify-between items-start gap-4 mb-4">
               <div class="space-y-1.5">
                 <h4 class="font-extrabold text-gray-900 text-lg sm:text-xl leading-tight">
@@ -72,36 +75,54 @@
                 </h4>
                 <p class="text-base text-gray-600 font-medium">
                   Giá gốc: <span class="text-gray-900 font-bold">{{ item.don_gia | number }}đ</span>
-                  <span class="text-gray-400 text-sm ml-2 font-normal">({{ item.don_gia | number }}đ × {{ item.so_luong }})</span>
+                  <span class="text-gray-400 text-sm ml-2 font-normal">({{ item.don_gia | number }}đ × {{ item.so_luong
+                    }})</span>
                 </p>
+                <button *ngIf="isDaGiao() && !item.da_danh_gia" (click)="openDanhGia(item)"
+                  class="px-3 py-1 bg-green-500 text-white rounded">
+                  ⭐ Đánh giá
+                </button>
+
+                <!-- Nếu đã đánh giá -->
+                <button *ngIf="item.da_danh_gia" (click)="openRating(item)"
+                  class="px-3 py-1 bg-blue-500 text-white rounded">
+                  👁 Xem đánh giá
+                </button>
               </div>
-              <span class="bg-gray-100 text-gray-900 text-base font-extrabold px-4 py-2 rounded-xl border border-gray-200 shrink-0">
+              <span
+                class="bg-gray-100 text-gray-900 text-base font-extrabold px-4 py-2 rounded-xl border border-gray-200 shrink-0">
                 Số lượng: x{{ item.so_luong }}
               </span>
             </div>
 
-            <div *ngIf="item.options?.length" class="mt-4 pt-4 border-t-2 border-dashed border-gray-200 bg-gray-50/70 -mx-6 px-6 py-4">
+            <div *ngIf="item.options?.length"
+              class="mt-4 pt-4 border-t-2 border-dashed border-gray-200 bg-gray-50/70 -mx-6 px-6 py-4">
               <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Topping / Tùy chọn thêm:</p>
               <div class="space-y-3">
-                <div *ngFor="let op of item.options" class="flex justify-between items-center text-base text-gray-800 font-medium">
+                <div *ngFor="let op of item.options"
+                  class="flex justify-between items-center text-base text-gray-800 font-medium">
                   <div class="flex items-center gap-2">
                     <span class="text-green-600 text-sm">◆</span>
                     <span>{{ op.ten_option }}</span>
                   </div>
-                  <div class="text-sm text-gray-600 font-medium bg-white px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm">
+                  <div
+                    class="text-sm text-gray-600 font-medium bg-white px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm">
                     <span>{{ item.so_luong }} × {{ op.gia_them | number }}đ</span>
-                    <span class="font-extrabold text-red-600 ml-2">(+{{ (item.so_luong * op.gia_them) | number }}đ)</span>
+                    <span class="font-extrabold text-red-600 ml-2">(+{{ (item.so_luong * op.gia_them) | number
+                      }}đ)</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div *ngIf="item.ghi_chu" class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-base text-amber-900 flex gap-2.5">
+            <div *ngIf="item.ghi_chu"
+              class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-base text-amber-900 flex gap-2.5">
               <span class="text-lg">📝</span>
               <p><span class="font-bold">Ghi chú:</span> {{ item.ghi_chu }}</p>
             </div>
 
-            <div class="mt-5 pt-4 border-t border-gray-100 flex justify-between items-center bg-gray-50 -mx-6 -mb-6 px-6 py-4 rounded-b-2xl border-b border-gray-200">
+            <div
+              class="mt-5 pt-4 border-t border-gray-100 flex justify-between items-center bg-gray-50 -mx-6 -mb-6 px-6 py-4 rounded-b-2xl border-b border-gray-200">
               <span class="text-sm font-semibold text-gray-600">Thành tiền món này:</span>
               <span class="font-bold text-xl text-gray-900 tracking-tight">
                 {{ item.thanh_tien | number }}đ
@@ -113,19 +134,21 @@
 
       <div class="p-6 bg-white border-t-2 border-gray-100 shadow-[0_-8px_24px_rgba(0,0,0,0.04)]">
         <div class="border-2 border-green-200 rounded-2xl overflow-hidden shadow-sm">
-          
+
           <div class="bg-gray-50/80 p-4 space-y-2.5 text-base">
             <div class="flex justify-between text-gray-600 font-medium px-1">
               <span>Tạm tính (Tiền món gốc):</span>
               <span class="text-gray-900 font-bold text-lg">{{ hoaDon.tam_tinh | number }}đ</span>
             </div>
-            
-            <div *ngIf="hoaDon.tien_giam > 0" class="flex justify-between items-center bg-red-50 text-red-700 px-4 py-2.5 rounded-xl border border-red-100">
+
+            <div *ngIf="hoaDon.tien_giam > 0"
+              class="flex justify-between items-center bg-red-50 text-red-700 px-4 py-2.5 rounded-xl border border-red-100">
               <div class="flex items-center gap-2">
                 <span class="text-xl">🎟️</span>
                 <div>
                   <p class="font-bold text-sm sm:text-base leading-none">Mã giảm giá áp dụng</p>
-                  <p *ngIf="hoaDon.giam_gia?.code" class="text-xs text-red-500 font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-red-200 inline-block mt-1">
+                  <p *ngIf="hoaDon.giam_gia?.code"
+                    class="text-xs text-red-500 font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-red-200 inline-block mt-1">
                     {{ hoaDon.giam_gia.code }}
                   </p>
                 </div>
@@ -164,7 +187,13 @@
   </div>
 
   <div class="border-t px-6 py-4 flex justify-end gap-3 bg-white">
-    <button class="px-4 py-2 border rounded-full font-medium text-gray-700 hover:bg-gray-50">🔁 Đặt lại</button>
-    <button class="px-4 py-2 bg-green-500 text-white rounded-full font-medium hover:bg-green-600 shadow-sm">⭐ Đánh giá</button>
+
+    <button class="px-4 py-2 border rounded-full font-medium text-gray-700 hover:bg-gray-50">
+      🔁 Đặt lại
+    </button>
+
+
   </div>
 </div>
+
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

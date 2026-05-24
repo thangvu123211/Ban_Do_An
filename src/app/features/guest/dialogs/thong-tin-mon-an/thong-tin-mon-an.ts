@@ -6,6 +6,7 @@ import { ToastMessageComponent } from '../../../../Shared/toasts_message/toast-m
 import { BinhLuanService } from '../../../../core/services/BinhLuan.service';
 import { FormsModule } from '@angular/forms';
 import { WebsocketService } from '../../../../core/services/websocket.service';
+import { DanhGiaService } from '../../../../core/services/DanhGia.service';
 @Component({
   selector: 'app-thong-tin-mon-an',
   standalone: true,
@@ -40,12 +41,17 @@ export class ThongTinMonAn implements OnInit {
     private cartService: CartService,
     private binhLuanService: BinhLuanService,
     private wsService: WebsocketService,
+    private danhGiaService: DanhGiaService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
   ngOnInit(): void {
     this.loadBinhLuan();
-    this.loadBinhLuan();
+    console.log('ANH MON:', this.data.anh_mon_an);
+    this.activeTab = this.data.openTab || 'info';
+    if (this.activeTab === 'rating') {
+      this.loadDanhGia();
+    }
 
     // join room realtime
     this.wsService.connect();
@@ -179,28 +185,19 @@ export class ThongTinMonAn implements OnInit {
       });
   }
 
-  // ================= RATING =================
-  guiDanhGia() {
-    const payload = {
-      ma_nguoi_dung: Number(localStorage.getItem('ma_nguoi_dung')),
-      ma_mon_an: this.data.ma_mon_an,
-      so_sao: this.diemDanhGia,
-      noi_dung: this.noiDungDanhGia
-    };
 
-    // nếu bạn chưa có service thì comment lại
-    // this.danhGiaService.create(payload).subscribe(() => {
-    //   this.noiDungDanhGia = '';
-    //   this.loadDanhGia();
-    // });
-
-    console.log('rating:', payload);
-  }
 
   loadDanhGia() {
-    // this.danhGiaService.getByMonAn(this.data.ma_mon_an)
-    //   .subscribe((res: any) => {
-    //     this.ratings = res.data || [];
-    //   });
+    this.danhGiaService.getByMonAn(this.data.ma_mon_an)
+      .subscribe((res: any) => {
+
+        this.ratings = (res.data || []).map((x: any) => ({
+          ...x,
+          so_sao: Number(x.SoSao ?? x.so_sao)
+        }));
+
+      });
   }
+
+
 }
