@@ -80,28 +80,30 @@ export class ThemGioHangDialog {
     this.dialogRef.close();
   }
   toggleOption(nhom: any, opt: any, event: any) {
+  const key = nhom.ma_nhom_option;
 
-    if (!this.selectedByGroup[nhom.ma_nhom_option]) {
-      this.selectedByGroup[nhom.ma_nhom_option] = [];
-    }
-
-    const list = this.selectedByGroup[nhom.ma_nhom_option];
-
-    if (!nhom.chon_nhieu) {
-
-      this.selectedByGroup[nhom.ma_nhom_option] =
-        event.target.checked ? [opt] : [];
-
-    } else {
-
-      if (event.target.checked) {
-        list.push(opt);
-      } else {
-        this.selectedByGroup[nhom.ma_nhom_option] =
-          list.filter(x => x.ma_option_item !== opt.ma_option_item);
-      }
-    }
+  if (!this.selectedByGroup[key]) {
+    this.selectedByGroup[key] = [];
   }
+
+  const checked = event.target.checked;
+
+  // CHỌN 1 => RADIO
+  if (!nhom.chon_nhieu) {
+    this.selectedByGroup[key] = checked ? [opt] : [];
+    return;
+  }
+
+  // CHỌN NHIỀU => CHECKBOX
+  const list = this.selectedByGroup[key];
+
+  if (checked) {
+    list.push(opt);
+  } else {
+    this.selectedByGroup[key] =
+      list.filter(x => x.ma_option_item !== opt.ma_option_item);
+  }
+}
   isChecked(nhom: any, opt: any): boolean {
     return (this.selectedByGroup[nhom.ma_nhom_option] || [])
       .some(x => x.ma_option_item === opt.ma_option_item);

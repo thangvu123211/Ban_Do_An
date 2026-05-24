@@ -20,6 +20,7 @@ export class SuaGioHang implements OnInit {
   selectedOptions: any[] = [];
 
   tongTien = 0;
+  isLoggedIn = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -30,7 +31,7 @@ export class SuaGioHang implements OnInit {
   ngOnInit() {
 
     const item = this.data;
-
+    this.isLoggedIn = !!localStorage.getItem('access_token');
     this.mon = item;
     this.soLuong = item.soLuong || 1;
 
@@ -62,6 +63,34 @@ export class SuaGioHang implements OnInit {
     return this.selectedOptions.some(
       o => o.ma_option_item === opt.ma_option_item
     );
+  }
+
+  initLoginMode(item: any) {
+    this.selectedOptions = (item.options || []).map((o: any) => ({
+      ma_option_item: o.ma_option_item,
+      ma_nhom_option: o.ma_nhom_option // CHỈ dùng cho check radio
+    }));
+  }
+  initLocalMode(item: any) {
+    this.selectedOptions = (item.options || []).map((o: any) => ({
+      ma_option_item: o.ma_option_item,
+      gia_them: o.gia_them || 0,
+      ma_nhom_option: o.ma_nhom_option,
+      ten_option: o.ten_option
+    }));
+  }
+  loadOptions() {
+    this.optionService.getAllNhomOption().subscribe((res: any) => {
+
+      this.optionsData = (res.data || [])
+        .filter((n: any) => n.ma_mon_an === this.mon.ma_mon_an)
+        .map((n: any) => ({
+          ...n,
+          option_items: n.OptionItems || []
+        }));
+
+      this.tinhTongTien();
+    });
   }
 
   // ================= TOGGLE =================
@@ -113,6 +142,13 @@ export class SuaGioHang implements OnInit {
   tinhTongTien() {
     const giaGoc = this.mon.gia_goc || this.mon.gia || 0;
 
+    // 🔵 LOGIN → chỉ để hiển thị
+    if (this.isLoggedIn) {
+      this.tongTien = giaGoc * this.soLuong;
+      return;
+    }
+
+    // 🟢 LOCAL → cộng option
     const tongOption = this.selectedOptions.reduce(
       (sum, o) => sum + (o.gia_them || 0),
       0
@@ -137,17 +173,21 @@ export class SuaGioHang implements OnInit {
   // ================= XÁC NHẬN =================
   xacNhan() {
 
-    const selectedOptions = this.getAllOptions()
-      .filter(o => this.selectedOptions.includes(o.ma_option_item))
-      .map(o => ({
-        ma_option_item: o.ma_option_item,
-        ten_option: o.ten_option,
-        gia_them: o.gia_them
-      }));
+    // 🔵 LOGIN → chỉ trả ma_option_item
+    if (this.isLoggedIn) {
+      this.dialogRef.close({
+        soLuong: this.soLuong,
+        options: this.selectedOptions.map(o => ({
+          ma_option_item: o.ma_option_item
+        }))
+      });
+      return;
+    }
 
+    // 🟢 LOCAL → trả full option
     this.dialogRef.close({
       soLuong: this.soLuong,
-      options: this.selectedOptions,
+      options: this.selectedOptions
     });
   }
 

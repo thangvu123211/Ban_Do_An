@@ -88,8 +88,13 @@
 
               <div class="flex items-center gap-2">
 
-                <input type="checkbox" [checked]="isChecked(nhom, opt)" (change)="toggleOption(nhom, opt, $event)"
+                <input *ngIf="!nhom.chon_nhieu" type="radio" [name]="'group_' + nhom.ma_nhom_option"
+                  [checked]="isChecked(nhom, opt)" (change)="toggleOption(nhom, opt, $event)"
                   class="accent-green-500 w-4 h-4" />
+
+                <!-- CHECKBOX -->
+                <input *ngIf="nhom.chon_nhieu" type="checkbox" [checked]="isChecked(nhom, opt)"
+                  (change)="toggleOption(nhom, opt, $event)" class="accent-green-500 w-4 h-4" />
 
                 <span class="text-gray-700 text-sm">
                   {{ opt.ten_option }}

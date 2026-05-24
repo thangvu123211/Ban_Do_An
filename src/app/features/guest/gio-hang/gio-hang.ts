@@ -841,7 +841,6 @@ export class GioHang implements OnInit {
         this.cartService.updateCartItem(item.ma_gio_hang, {
           so_luong: result.soLuong,
           options: result.options.map((o: any) => ({
-            ma_nhom_option: o.ma_nhom_option,
             ma_option_item: o.ma_option_item
           }))
         }).subscribe({
