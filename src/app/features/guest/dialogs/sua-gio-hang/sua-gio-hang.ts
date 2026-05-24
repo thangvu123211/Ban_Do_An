@@ -17,7 +17,7 @@ export class SuaGioHang implements OnInit {
   soLuong = 1;
 
   optionsData: any[] = [];
-  selectedOptionIds: number[] = [];
+  selectedOptions: any[] = [];
 
   tongTien = 0;
 
@@ -34,86 +34,103 @@ export class SuaGioHang implements OnInit {
     this.mon = item;
     this.soLuong = item.soLuong || 1;
 
-    // ===== OPTION ĐÃ CHỌN (từ giỏ hàng) =====
-    this.selectedOptionIds = (item.options || [])
-      .map((o: any) => o.ma_option_item)
-      .filter(Boolean);
+    // 🔥 CHỈ LẤY OPTION CŨ → ĐỔ VÀO selectedOptions
+    this.selectedOptions = (item.options || []).map((o: any) => ({
+      ma_option_item: o.ma_option_item,
+      gia_them: o.gia_them || 0,
+      ma_nhom_option: o.ma_nhom_option,
+      ten_option: o.ten_option
+    }));
 
-    // ===== LOAD LẠI OPTION THEO MÓN (BẮT BUỘC) =====
+    // ❌ TUYỆT ĐỐI KHÔNG DÙNG item.options SAU DÒNG NÀY
+
     this.optionService.getAllNhomOption().subscribe((res: any) => {
 
-      const nhomOptions = (res.data || [])
+      this.optionsData = (res.data || [])
         .filter((n: any) => n.ma_mon_an === this.mon.ma_mon_an)
         .map((n: any) => ({
           ...n,
           option_items: n.OptionItems || []
         }));
 
-      this.optionsData = nhomOptions;
-
-      this.tinhTien();
+      // ✅ TÍNH TIỀN CHỈ DỰA TRÊN selectedOptions
+      this.tinhTongTien();
     });
   }
 
   isChecked(opt: any): boolean {
-    return this.selectedOptionIds.includes(opt.ma_option_item);
+    return this.selectedOptions.some(
+      o => o.ma_option_item === opt.ma_option_item
+    );
   }
 
   // ================= TOGGLE =================
-  toggleOption(nhom: any, opt: any, event: any) {
+  toggleOption(nhom: any, opt: any) {
 
-    const id = opt.ma_option_item;
+    if (!nhom.chon_nhieu) {
 
-    if (event.target.checked) {
+      // 🔥 XOÁ HẾT OPTION CŨ CÙNG NHÓM (KỂ CẢ OPTION BỊ THIẾU ma_nhom_option)
+      this.selectedOptions = this.selectedOptions.filter(
+        o => o.ma_nhom_option && o.ma_nhom_option !== nhom.ma_nhom_option
+      );
 
-      // nếu chọn 1 option
-      if (!nhom.chon_nhieu) {
-
-        const groupIds = nhom.option_items.map((x: any) => x.ma_option_item);
-
-        this.selectedOptionIds =
-          this.selectedOptionIds.filter(x => !groupIds.includes(x));
-      }
-
-      if (!this.selectedOptionIds.includes(id)) {
-        this.selectedOptionIds.push(id);
-      }
+      // ✅ GHI ĐÈ OPTION MỚI
+      this.selectedOptions.push({
+        ma_option_item: opt.ma_option_item,
+        gia_them: opt.gia_them || 0,
+        ma_nhom_option: nhom.ma_nhom_option,
+        ten_option: opt.ten_option
+      });
 
     } else {
-      this.selectedOptionIds =
-        this.selectedOptionIds.filter(x => x !== id);
+
+      // CHỌN NHIỀU → GIỮ NGUYÊN
+      const exists = this.selectedOptions.some(
+        o => o.ma_option_item === opt.ma_option_item
+      );
+
+      if (exists) {
+        this.selectedOptions = this.selectedOptions.filter(
+          o => o.ma_option_item !== opt.ma_option_item
+        );
+      } else {
+        this.selectedOptions.push({
+          ma_option_item: opt.ma_option_item,
+          gia_them: opt.gia_them || 0,
+          ma_nhom_option: nhom.ma_nhom_option,
+          ten_option: opt.ten_option
+        });
+      }
     }
 
-    this.tinhTien();
+    this.tinhTongTien();
   }
-
   // ================= FLAT OPTIONS =================
   getAllOptions(): any[] {
     return this.optionsData.flatMap(x => x.option_items || []);
   }
 
-  // ================= TÍNH TIỀN =================
-  tinhTien() {
+  tinhTongTien() {
+    const giaGoc = this.mon.gia_goc || this.mon.gia || 0;
 
-    const base = this.mon.gia_don || this.mon.gia_tien || 0;
+    const tongOption = this.selectedOptions.reduce(
+      (sum, o) => sum + (o.gia_them || 0),
+      0
+    );
 
-    const optionTotal = this.getAllOptions()
-      .filter(o => this.selectedOptionIds.includes(o.ma_option_item))
-      .reduce((s, o) => s + (o.gia_them || 0), 0);
-
-    this.tongTien = (base + optionTotal) * this.soLuong;
+    this.tongTien = (giaGoc + tongOption) * this.soLuong;
   }
 
   // ================= SỐ LƯỢNG =================
   tangSoLuong() {
     this.soLuong++;
-    this.tinhTien();
+    this.tinhTongTien();
   }
 
   giamSoLuong() {
     if (this.soLuong > 1) {
       this.soLuong--;
-      this.tinhTien();
+      this.tinhTongTien();
     }
   }
 
@@ -121,7 +138,7 @@ export class SuaGioHang implements OnInit {
   xacNhan() {
 
     const selectedOptions = this.getAllOptions()
-      .filter(o => this.selectedOptionIds.includes(o.ma_option_item))
+      .filter(o => this.selectedOptions.includes(o.ma_option_item))
       .map(o => ({
         ma_option_item: o.ma_option_item,
         ten_option: o.ten_option,
@@ -129,10 +146,8 @@ export class SuaGioHang implements OnInit {
       }));
 
     this.dialogRef.close({
-      ma_mon_an: this.mon.ma_mon_an,
       soLuong: this.soLuong,
-      options: selectedOptions,
-      ghi_chu: this.mon.ghi_chu || ''
+      options: this.selectedOptions,
     });
   }
 

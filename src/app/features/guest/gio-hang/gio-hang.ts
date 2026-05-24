@@ -42,6 +42,8 @@ interface DiaChi {
   styleUrl: "./gio-hang.scss"
 })
 export class GioHang implements OnInit {
+
+
   giamGiaList: any[] = [];
   maGiamGiaChon: any = null;
   tongSauGiam = 0;
@@ -196,8 +198,6 @@ export class GioHang implements OnInit {
       this.cartBadgeCount = count;
     });
 
-    // luôn init local trước
-    this.cartService.getLocal();
 
     // =========================
     // 🔄 LOAD CART
@@ -821,14 +821,13 @@ export class GioHang implements OnInit {
     };
   }
 
-  oSuaItem(item: any) {
+  moSuaItem(item: any) {
 
     const dialogRef = this.dialog.open(SuaGioHang, {
-
       data: {
         ...item,
         options: item.options || [],
-        optionsGroups: item.optionsGroups || []   // ⭐ QUAN TRỌNG
+        optionsGroups: item.optionsGroups || []
       },
       width: '90vw',
       maxWidth: '1000px',
@@ -838,18 +837,38 @@ export class GioHang implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
 
-      const index = this.gioHang.findIndex(x =>
-        x.ma_mon_an === result.ma_mon_an
-      );
+      if (this.isLoggedIn) {
+        this.cartService.updateCartItem(item.ma_gio_hang, {
+          so_luong: result.soLuong,
+          options: result.options.map((o: any) => ({
+            ma_nhom_option: o.ma_nhom_option,
+            ma_option_item: o.ma_option_item
+          }))
+        }).subscribe({
+          next: () => {
+            this.showToast('Cập nhật giỏ hàng thành công', 'success');
 
-      if (index !== -1) {
-        this.gioHang[index] = this.normalizeCartItem({
-          ...this.gioHang[index],
-          ...result
+            const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+            this.loadCartFromDB(userId); // 🔥 CHỈ LOAD DB
+          },
+          error: () => {
+            this.showToast('Cập nhật thất bại', 'error');
+          }
+        });
+      } else {
+        // LOCAL
+        this.cartService.updateLocal({
+          cartLocalId: item.cartLocalId,
+          soLuong: result.soLuong,
+          options: result.options
         });
 
-        this.tinhTong();
+        this.gioHang = this.cartService.getLocal()
+          .map(x => this.normalizeCartItem(x));
       }
+
+      this.tinhTong();
+      this.showToast('Cập nhật món ăn thành công', 'success');
     });
   }
 

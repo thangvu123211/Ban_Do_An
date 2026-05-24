@@ -18,8 +18,7 @@
     <!-- ================= LEFT (NHỎ LẠI) ================= -->
     <div class="w-4/12 bg-gray-50 flex flex-col items-center justify-start p-4 gap-4">
 
-      <img [src]="mon.anh || 'assets/no-image.png'"
-           class="w-full h-64 object-cover rounded-xl shadow" />
+      <img [src]="mon.anh || 'assets/no-image.png'" class="w-full h-64 object-cover rounded-xl shadow" />
 
       <div class="text-center">
         <p class="text-lg font-semibold text-gray-900">
@@ -56,8 +55,7 @@
       <!-- OPTIONS -->
       <div class="space-y-5">
 
-        <div *ngFor="let nhom of optionsData"
-             class="border rounded-xl p-4 bg-gray-50">
+        <div *ngFor="let nhom of optionsData" class="border rounded-xl p-4 bg-gray-50">
 
           <!-- HEADER NHÓM -->
           <div class="flex justify-between items-center mb-3">
@@ -73,16 +71,14 @@
           <!-- OPTIONS -->
           <div class="grid grid-cols-2 gap-2">
 
-            <label *ngFor="let opt of nhom.option_items"
-                   class="flex items-center justify-between
+            <label *ngFor="let opt of nhom.option_items" class="flex items-center justify-between
                           px-3 py-2 rounded-lg border bg-white
                           hover:border-green-400 cursor-pointer">
 
               <div class="flex items-center gap-2">
-                <input type="checkbox"
-                       [checked]="isChecked(opt)"
-                       (change)="toggleOption(nhom, opt, $event)"
-                       class="accent-green-500 w-4 h-4" />
+                <input [type]="nhom.chon_nhieu ? 'checkbox' : 'radio'" [name]="'nhom_' + nhom.ma_nhom_option"
+                  [checked]="isChecked(opt)" (change)="toggleOption(nhom, opt)"
+                  class="accent-green-500 w-4 h-4" />
 
                 <span class="text-sm text-gray-800">
                   {{ opt.ten_option }}
@@ -103,9 +99,7 @@
       <!-- GHI CHÚ -->
       <div>
         <p class="font-semibold text-gray-800 mb-2">Ghi chú</p>
-        <textarea rows="3"
-                  placeholder="Ví dụ: ít hành, không tiêu..."
-                  class="w-full border rounded-lg p-3">
+        <textarea rows="3" placeholder="Ví dụ: ít hành, không tiêu..." class="w-full border rounded-lg p-3">
         </textarea>
       </div>
 
@@ -144,7 +138,3 @@
     Không có dữ liệu món ăn
   </div>
 </ng-template>
-
-
-
-

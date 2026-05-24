@@ -48,7 +48,7 @@
 
     <div class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-6 min-h-[400px]">
       <app-step-gio-hang *ngIf="currentStep === 0" [gioHang]="gioHang" [tongTien]="tongTien" [ghiChu]="ghiChu"
-        (change)="changeSoLuong($event)" (xoa)="removeFromGioHang($event)" (ghiChuChange)="ghiChu = $event">
+        (change)="changeSoLuong($event)" (xoa)="removeFromGioHang($event)" (ghiChuChange)="ghiChu = $event" (sua)="moSuaItem($event)">
       </app-step-gio-hang>
 
       <app-step-tam-tinh *ngIf="currentStep === 1" [tongTien]="tongTien" [tongSauGiam]="tongSauGiam"

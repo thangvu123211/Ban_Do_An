@@ -35,6 +35,27 @@ export class CartService {
     return list.reduce((s, i) => s + (i.soLuong || 0), 0);
   }
 
+  updateLocal(item: {
+    cartLocalId: string;
+    soLuong: number;
+    options: any[];
+    ghi_chu?: string;
+  }) {
+    const list = this.getLocal();
+
+    const index = list.findIndex(x => x.cartLocalId === item.cartLocalId);
+    if (index === -1) return;
+
+    list[index] = {
+      ...list[index],
+      soLuong: item.soLuong,
+      options: item.options || [],
+      ghi_chu: item.ghi_chu || ''
+    };
+
+    this.saveLocal(list);
+  }
+
   addLocal(mon: any) {
 
     const list = this.getLocal();
@@ -83,6 +104,13 @@ export class CartService {
   getByUser(userId: number) {
     return this.http.get<{ data: any[] }>(
       `${environment.apiUrl}/gio-hang/user/${userId}`
+    );
+  }
+
+  updateCartItem(cartId: number, payload: any) {
+    return this.http.put(
+      `${environment.apiUrl}/gio-hang/cart/${cartId}`,
+      payload
     );
   }
 
