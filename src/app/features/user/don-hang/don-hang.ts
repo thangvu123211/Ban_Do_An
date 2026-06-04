@@ -9,7 +9,7 @@ import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-mess
 
 @Component({
   selector: 'app-don-hang',
-  imports: [MATERIAL,ToastMessageComponent],
+  imports: [MATERIAL, ToastMessageComponent],
   templateUrl: './don-hang.html',
   styleUrl: './don-hang.scss'
 })
@@ -29,7 +29,7 @@ export class DonHang implements OnInit {
     private dialog: MatDialog,
     private wsService: WebsocketService) { }
 
-    showToast(message: string, type: 'success' | 'warn' | 'error') {
+  showToast(message: string, type: 'success' | 'warn' | 'error') {
     this.toast.show = true;
     this.toast.message = message;
     this.toast.type = type;
@@ -104,7 +104,25 @@ export class DonHang implements OnInit {
             }
             break;
           }
+          case 'hoa_don_bi_huy_user': {
+            const index = this.hoaDons.findIndex(
+              h => h.ma_hd === msg.payload.ma_hd
+            );
+
+            if (index !== -1) {
+              this.hoaDons[index] = {
+                ...this.hoaDons[index],
+                trang_thai: 'da_huy',
+                trang_thai_thanh_toan: 'da_huy',
+              };
+
+              // ép change detection
+              this.hoaDons = [...this.hoaDons];
+            }
+            break;
+          }
         }
+
       });
   }
 
@@ -132,6 +150,7 @@ export class DonHang implements OnInit {
   trangThaiThanhToanMap: Record<string, any> = {
     da_thanh_toan: { label: 'Đã thanh toán', classes: 'bg-emerald-100 text-emerald-700' },
     chua_thanh_toan: { label: 'Chưa thanh toán', classes: 'bg-gray-100 text-gray-600' },
+    da_huy: { label: 'Đã hủy', classes: 'bg-red-100 text-red-700' },
   };
 
   toggleExpand(ma_hd: number) {

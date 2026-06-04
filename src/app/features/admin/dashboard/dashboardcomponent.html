@@ -31,7 +31,7 @@
           SỐ LƯỢNG KHÁCH HÀNG
         </h5>
         <span class="text-3xl font-bold">{{ dangTaiUser ? '...' : tongKhachHang }}</span>
-        <p class="text-sm mt-2">         
+        <p class="text-sm mt-2">
           Tổng số khách hàng trong hệ thống
         </p>
       </div>
@@ -76,8 +76,8 @@
         </h5>
         <span class="text-3xl font-bold"> {{dangTaihoadondagiao ? '...' : tongdonhangdagiao}}</span>
         <p class="text-sm mt-2">
-          
-         Tổng số đơn hàng đã được giao trong hệ thống
+
+          Tổng số đơn hàng đã được giao trong hệ thống
         </p>
       </div>
       <div class="bg-blue-500 rounded-full p-2 shadow-md flex items-center justify-center
@@ -91,67 +91,76 @@
   </div>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4 ml-4 mr-4 mb-4">
 
-    <div
-      class="rounded-2xl shadow-lg p-5 flex items-center justify-between hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
+    <div class="rounded-2xl shadow-lg p-5 flex items-center justify-between
+         hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
+
       <div>
         <h5 class="text-xs font-semibold uppercase tracking-wider">
           DOANH THU NGÀY HÔM NAY
         </h5>
-        <span class="text-3xl font-bold">350,897</span>
-        <p class="text-sm mt-2">
-          <span class="text-green-500 mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
-          So với tháng trước
+
+        <span class="text-3xl font-bold">
+          {{ doanhThuHomNay | number:'1.0-0' }} đ
+        </span>
+
+        <p class="text-xs text-gray-500 mt-1">
+          {{ soDonHomNay }} đơn • {{ ngayHomNay }}
         </p>
       </div>
+
       <div class="bg-green-500 rounded-full p-2 shadow-md flex items-center justify-center
-         cursor-pointer hover:bg-red-600 hover:scale-110 transition-all duration-200" title="Xem Chi Tiết">
-        <mat-icon class="!text-base !leading-none flex items-center justify-center"
-          style="display: flex; align-items: center; justify-content: center; line-height: 0; font-size: 18px;">
+           cursor-pointer hover:bg-red-600 hover:scale-110 transition-all duration-200" title="Xem Chi Tiết">
+
+        <mat-icon class="!text-base !leading-none flex items-center justify-center">
           keyboard_arrow_down
         </mat-icon>
       </div>
+
     </div>
 
-    <div
-      class="rounded-2xl shadow-lg p-5 flex items-center justify-between hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
+    <div class="rounded-2xl shadow-lg p-5 flex items-center justify-between
+     hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
+
       <div>
         <h5 class="text-xs font-semibold uppercase tracking-wider">
-          DOANH THU THEO THÁNG
+          DOANH THU THÁNG NÀY
         </h5>
-        <span class="text-3xl font-bold">2,356</span>
-        <p class="text-sm mt-2">
-          <span class="text-red-500 mr-2"><i class="fas fa-arrow-down"></i> 3.48%</span>
-          So với tuần trước
+
+        <span class="text-3xl font-bold text-blue-600">
+          {{ doanhThuThang | number:'1.0-0' }} đ
+        </span>
+
+        <p class="text-xs text-gray-500 mt-1">
+          {{ soDonThang }} đơn • {{ thangNam }}
+        </p>
+      </div>
+
+      <div class="bg-blue-500 rounded-full p-2 shadow-md flex items-center justify-center
+       cursor-pointer hover:bg-red-600 hover:scale-110 transition-all duration-200">
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </div>
+    </div>
+
+    <div class="rounded-2xl shadow-lg p-5 flex items-center justify-between
+     hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
+
+      <div>
+        <h5 class="text-xs font-semibold uppercase tracking-wider">
+          DOANH THU NĂM NAY
+        </h5>
+
+        <span class="text-3xl font-bold text-purple-600">
+          {{ doanhThuNam | number:'1.0-0' }} đ
+        </span>
+
+        <p class="text-xs text-gray-500 mt-1">
+          {{ soDonNam }} đơn • {{ namHienTai }}
         </p>
       </div>
 
       <div class="bg-purple-500 rounded-full p-2 shadow-md flex items-center justify-center
-         cursor-pointer hover:bg-red-600 hover:scale-110 transition-all duration-200" title="Xem Chi Tiết">
-        <mat-icon class="!text-base !leading-none flex items-center justify-center"
-          style="display: flex; align-items: center; justify-content: center; line-height: 0; font-size: 18px;">
-          keyboard_arrow_down
-        </mat-icon>
-      </div>
-    </div>
-
-    <div
-      class="rounded-2xl shadow-lg p-5 flex items-center justify-between hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
-      <div>
-        <h5 class="text-xs font-semibold uppercase tracking-wider">
-          DOANH THU THEO NĂM
-        </h5>
-        <span class="text-3xl font-bold">924</span>
-        <p class="text-sm mt-2">
-          <span class="text-yellow-500 mr-2"><i class="fas fa-arrow-down"></i> 1.10%</span>
-          So với hôm qua
-        </p>
-      </div>
-      <div class="bg-yellow-400 rounded-full p-2 shadow-md flex items-center justify-center
-         cursor-pointer hover:bg-red-600 hover:scale-110 transition-all duration-200" title="Xem Chi Tiết">
-        <mat-icon class="!text-base !leading-none flex items-center justify-center"
-          style="display: flex; align-items: center; justify-content: center; line-height: 0; font-size: 18px;">
-          keyboard_arrow_down
-        </mat-icon>
+       cursor-pointer hover:bg-red-600 hover:scale-110 transition-all duration-200">
+        <mat-icon>keyboard_arrow_down</mat-icon>
       </div>
     </div>
 
@@ -174,7 +183,7 @@
           keyboard_arrow_down
         </mat-icon>
       </div>
-    </div>
+  </div>
   </div>
 </mat-card>
 
@@ -198,14 +207,14 @@
     </mat-card>
 
     <!-- Area Chart (full width) -->
-      <mat-card class="lg:col-span-2 shadow rounded-lg p-4 mt-6">
+    <mat-card class="lg:col-span-2 shadow rounded-lg p-4 mt-6">
       <h3 class="font-bold mb-2 mt-2 ml-4">Area Chart</h3>
       <apx-chart [series]="areaChartOptions.series" [chart]="areaChartOptions.chart" [xaxis]="areaChartOptions.xaxis"
         [stroke]="areaChartOptions.stroke" [tooltip]="areaChartOptions.tooltip"
         [dataLabels]="areaChartOptions.dataLabels">
       </apx-chart>
     </mat-card>
-    
+
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
@@ -221,10 +230,10 @@
 
     <mat-card class="mt-4">
       <apx-chart [series]="AreaBasicChartOptions.series" [chart]="AreaBasicChartOptions.chart"
-          [xaxis]="AreaBasicChartOptions.xaxis" [stroke]="AreaBasicChartOptions.stroke"
-          [dataLabels]="AreaBasicChartOptions.dataLabels" [yaxis]="AreaBasicChartOptions.yaxis"
-          [labels]="AreaBasicChartOptions.labels" [legend]="AreaBasicChartOptions.legend"
-          [title]="AreaBasicChartOptions.title" [subtitle]="AreaBasicChartOptions.subtitle"></apx-chart>
+        [xaxis]="AreaBasicChartOptions.xaxis" [stroke]="AreaBasicChartOptions.stroke"
+        [dataLabels]="AreaBasicChartOptions.dataLabels" [yaxis]="AreaBasicChartOptions.yaxis"
+        [labels]="AreaBasicChartOptions.labels" [legend]="AreaBasicChartOptions.legend"
+        [title]="AreaBasicChartOptions.title" [subtitle]="AreaBasicChartOptions.subtitle"></apx-chart>
     </mat-card>
 
   </div>

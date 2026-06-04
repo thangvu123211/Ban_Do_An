@@ -1,0 +1,396 @@
+<div class="bg-white rounded-2xl h-full flex flex-col overflow-hidden">
+
+    <div class="flex justify-between items-center px-6 py-4 border-b">
+        <div>
+            <h2 class="text-xl font-bold text-gray-900">
+                Đơn hàng #{{ hoaDon.ma_hd }}
+            </h2>
+            <p class="text-sm text-gray-500">
+                Theo dõi trạng thái đơn hàng
+            </p>
+        </div>
+
+        <button (click)="close()" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100">
+            ✕
+        </button>
+    </div>
+
+    <div class="px-8 py-6 border-b">
+        <div *ngIf="isHuy()" class="bg-red-50 border border-red-300 rounded-xl px-6 py-4 text-center">
+            <p class="text-red-600 font-bold text-lg">
+                ❌ Đơn hàng đã bị hủy
+            </p>
+        </div>
+
+        <div *ngIf="!isHuy()" class="flex items-center justify-between">
+            <ng-container *ngFor="let step of steps; let i = index">
+                <div class="flex flex-col items-center flex-1">
+                    <div class="w-5 h-5 rounded-full mb-2"
+                        [ngClass]="isStepActive(step.key) ? 'bg-green-500' : 'bg-gray-300'">
+                    </div>
+                    <span class="text-xs"
+                        [ngClass]="isStepActive(step.key) ? 'text-green-600 font-semibold' : 'text-gray-400'">
+                        {{ step.label }}
+                    </span>
+                </div>
+                <div *ngIf="i < steps.length - 1" class="flex-1 h-[3px] -mt-4"
+                    [ngClass]="isStepActive(steps[i + 1].key) ? 'bg-green-500' : 'bg-gray-200'">
+                </div>
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="flex flex-1 overflow-hidden">
+
+        <div class="flex-1 flex flex-col h-full bg-gray-50/30">
+
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <h3 class="font-semibold mb-3">Thông tin giao hàng</h3>
+                    <p><b>Khách:</b> {{ hoaDon.ho_ten }}</p>
+                    <p><b>SĐT:</b> {{ hoaDon.sdt }}</p>
+                    <p><b>Địa chỉ:</b> {{ hoaDon.dia_chi }}</p>
+                    <p *ngIf="hoaDon.ghi_chu" class="text-gray-500 italic">
+                        {{ hoaDon.ghi_chu }}
+                    </p>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <h3 class="font-semibold mb-2">Thanh toán</h3>
+                    <span class="px-3 py-1 rounded-full text-sm font-medium" [ngClass]="{
+                            'bg-green-100 text-green-700': hoaDon.trang_thai_thanh_toan === 'da_thanh_toan',
+                            'bg-red-100 text-red-700': hoaDon.trang_thai_thanh_toan === 'da_huy',
+                            'bg-gray-200 text-gray-600': hoaDon.trang_thai_thanh_toan === 'cho_thanh_toan'
+                        }">
+                        <ng-container [ngSwitch]="hoaDon.trang_thai_thanh_toan">
+                            <span *ngSwitchCase="'da_thanh_toan'">Đã thanh toán</span>
+                            <span *ngSwitchCase="'da_huy'">Đã hủy</span>
+                            <span *ngSwitchDefault>Chưa thanh toán</span>
+                        </ng-container>
+                    </span>
+                </div>
+
+                <div>
+                    <h3 class="font-bold mb-5 text-gray-950 text-xl flex items-center gap-2">
+                        <span>📋</span> Chi tiết món đã đặt
+                    </h3>
+
+                    <div *ngFor="let item of hoaDon.chi_tiet_hoa_dons"
+                        class="bg-white border-2 border-gray-150 rounded-2xl p-6 mb-5 shadow-sm">
+                        <div class="flex justify-between items-start gap-4 mb-4">
+                            <div class="space-y-1.5">
+                                <h4 class="font-extrabold text-gray-900 text-lg sm:text-xl leading-tight">
+                                    {{ item.mon_an?.ten_mon_an }}
+                                </h4>
+                                <p class="text-base text-gray-600 font-medium">
+                                    Giá gốc: <span class="text-gray-900 font-bold">{{ item.don_gia | number }}đ</span>
+                                    <span class="text-gray-400 text-sm ml-2 font-normal">({{ item.don_gia | number }}đ ×
+                                        {{ item.so_luong
+                                        }})</span>
+                                </p>
+
+
+
+                            </div>
+                            <span
+                                class="bg-gray-100 text-gray-900 text-base font-extrabold px-4 py-2 rounded-xl border border-gray-200 shrink-0">
+                                Số lượng: x{{ item.so_luong }}
+                            </span>
+                        </div>
+
+                        <div *ngIf="item.options?.length"
+                            class="mt-4 pt-4 border-t-2 border-dashed border-gray-200 bg-gray-50/70 -mx-6 px-6 py-4">
+                            <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Topping / Tùy chọn
+                                thêm:</p>
+                            <div class="space-y-3">
+                                <div *ngFor="let op of item.options"
+                                    class="flex justify-between items-center text-base text-gray-800 font-medium">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-green-600 text-sm">◆</span>
+
+                                        <span>
+                                            {{ op.option_item?.NhomOption?.ten_nhom }} - {{ op.ten_option }}
+                                        </span>
+                                    </div>
+                                    <div
+                                        class="text-sm text-gray-600 font-medium bg-white px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm">
+                                        <span>{{ item.so_luong }} × {{ op.gia_them | number }}đ</span>
+                                        <span class="font-extrabold text-red-600 ml-2">(+{{ (item.so_luong *
+                                            op.gia_them) | number
+                                            }}đ)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="item.ghi_chu"
+                            class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-base text-amber-900 flex gap-2.5">
+                            <span class="text-lg">📝</span>
+                            <p><span class="font-bold">Ghi chú:</span> {{ item.ghi_chu }}</p>
+                        </div>
+
+                        <div
+                            class="mt-5 pt-4 border-t border-gray-100 flex justify-between items-center bg-gray-50 -mx-6 -mb-6 px-6 py-4 rounded-b-2xl border-b border-gray-200">
+                            <span class="text-sm font-semibold text-gray-600">Thành tiền món này:</span>
+                            <span class="font-bold text-xl text-gray-900 tracking-tight">
+                                {{ item.thanh_tien | number }}đ
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ======================= -->
+                <!-- 🚚 ADMIN CONTROL INSIDE SCROLL -->
+                <!-- ======================= -->
+                <div
+                    class="max-w-4xl mx-auto bg-white border border-gray-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 space-y-8">
+
+                    <!-- Header -->
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-5">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-2 bg-gray-50 rounded-lg text-gray-900 border border-gray-100">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                        </path>
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-base text-gray-900 tracking-tight">Hệ thống xử lý đơn hàng
+                                    </h3>
+                                    <p class="text-xs text-gray-400 font-medium">Mã đơn:{{ hoaDon.ma_hd }} </p>
+                                </div>
+                            </div>
+                        </div>
+                        <span
+                            class="text-[11px] bg-gray-900 text-white px-3 py-1.5 rounded-full font-semibold tracking-wider uppercase shadow-sm">
+                            Admin Control
+                        </span>
+                    </div>
+
+                    <!-- Grid Content -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8" *ngIf="hoaDon.trang_thai_thanh_toan !== 'da_huy'">
+
+                        <!-- Cột 1: Nhân viên giao hàng -->
+                        <div class="space-y-3">
+                            <label
+                                class="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12">
+                                    </path>
+                                </svg>
+                                Điều phối nhân viên vận chuyển
+                            </label>
+                            <div class="flex gap-3 items-center">
+                                <div class="relative flex-1">
+
+                                    <button (click)="openShipper = !openShipper" type="button"
+                                        class="w-full flex items-center justify-between bg-white border border-gray-200 text-gray-900 rounded-xl pl-4 pr-3.5 py-3.5 text-sm font-medium focus:ring-4 focus:ring-gray-100 focus:border-gray-900 focus:outline-none transition-all shadow-sm cursor-pointer">
+                                        <span>-- Chọn shipper sẵn sàng --</span>
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                            stroke-width="2.5" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path>
+                                        </svg>
+                                    </button>
+
+                                    <div *ngIf="openShipper"
+                                        class="absolute left-0 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden py-1">
+
+                                        <div class="px-4 py-3 hover:bg-gray-100 cursor-pointer flex items-center justify-between text-sm"
+                                            (click)="openShipper = false">
+                                            <span class="font-medium text-gray-900">Nguyễn Văn A</span>
+                                            <span
+                                                class="text-xs px-2 py-1 bg-green-50 text-green-700 rounded-md font-semibold">Đang
+                                                rảnh - Khu vực Quận 1</span>
+                                        </div>
+
+                                        <div class="px-4 py-3 hover:bg-gray-100 cursor-pointer flex items-center justify-between text-sm"
+                                            (click)="openShipper = false">
+                                            <span class="font-medium text-gray-900">Trần Văn B</span>
+                                            <span
+                                                class="text-xs px-2 py-1 bg-green-50 text-green-700 rounded-md font-semibold">Đang
+                                                rảnh - Khu vực Quận 3</span>
+                                        </div>
+
+                                        <div class="px-4 py-3 hover:bg-gray-100 cursor-pointer flex items-center justify-between text-sm"
+                                            (click)="openShipper = false">
+                                            <span class="font-medium text-gray-900">Lê Văn C</span>
+                                            <span
+                                                class="text-xs px-2 py-1 bg-amber-50 text-amber-700 rounded-md font-semibold">Sắp
+                                                hoàn thành đơn - Bình Thạnh</span>
+                                        </div>
+
+                                        <div
+                                            class="px-4 py-3 bg-gray-50 opacity-60 cursor-not-allowed flex items-center justify-between text-sm">
+                                            <span class="font-medium text-gray-500">Phạm Minh D</span>
+                                            <span
+                                                class="text-xs px-2 py-1 bg-gray-200 text-gray-600 rounded-md font-semibold">Đang
+                                                ngoại tuyến</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <button
+                                    class="px-6 py-3.5 bg-gray-900 hover:bg-gray-800 active:scale-[0.98] text-white text-sm font-bold rounded-xl transition-all shadow-sm shrink-0">
+                                    Gán việc
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Cột 2: Trạng thái đơn -->
+                        <div class="space-y-3">
+                            <label
+                                class="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.03 0 1.9.693 2.166 1.638m-7.377 2.24a4.5 4.5 0 1115.002 0V17.25m-15.002 0c0 1.242 1.008 2.25 2.25 2.25h9a2.25 2.25 0 002.25-2.25M2.25 12a13.5 13.5 0 0015.002 0">
+                                    </path>
+                                </svg>
+                                Trạng thái tiến độ đơn hàng
+                            </label>
+                            <div class="flex gap-3 items-center">
+
+                                <div class="relative flex-1">
+
+                                    <div *ngIf="hoaDon.trang_thai === 'dang_giao' || hoaDon.trang_thai === 'da_giao'"
+                                        class="px-4 py-3.5 bg-gray-100 rounded-xl text-sm font-semibold text-gray-700 flex items-center justify-between">
+
+                                        <span *ngIf="hoaDon.trang_thai === 'dang_giao'">
+                                            🚚 Đơn hàng đang giao
+                                        </span>
+
+                                        <span *ngIf="hoaDon.trang_thai === 'da_giao'">
+                                            ✅ Đơn hàng đã giao
+                                        </span>
+                                    </div>
+
+                                    <ng-container
+                                        *ngIf="hoaDon.trang_thai !== 'dang_giao' && hoaDon.trang_thai !== 'da_giao'">
+
+                                        <button (click)="openStatus = !openStatus" type="button"
+                                            class="w-full flex items-center justify-between bg-white border border-gray-200 text-gray-900 rounded-xl pl-4 pr-3.5 py-3.5 text-sm font-medium focus:ring-4 focus:ring-gray-100 focus:border-gray-900 focus:outline-none transition-all shadow-sm cursor-pointer">
+
+                                            <span>
+                                                <ng-container [ngSwitch]="hoaDon.trang_thai">
+                                                    <span *ngSwitchCase="'cho_xac_nhan'"
+                                                        class="flex items-center gap-1.5 text-amber-700 font-semibold">⏳
+                                                        Chờ xác nhận</span>
+                                                    <span *ngSwitchCase="'da_xac_nhan'"
+                                                        class="flex items-center gap-1.5 text-blue-700 font-semibold">📦
+                                                        Đã xác nhận</span>
+                                                    <span *ngSwitchCase="'da_huy'"
+                                                        class="flex items-center gap-1.5 text-red-700 font-semibold">❌
+                                                        Đã hủy đơn hàng</span>
+                                                    <span *ngSwitchDefault>-- Chọn trạng thái --</span>
+                                                </ng-container>
+                                            </span>
+
+                                            <svg class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                                                [class.rotate-180]="openStatus" fill="none" stroke="currentColor"
+                                                stroke-width="2.5" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path>
+                                            </svg>
+                                        </button>
+
+                                        <div *ngIf="openStatus"
+                                            class="absolute left-0 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden py-1">
+
+                                            <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center justify-between text-sm transition-colors"
+                                                (click)="hoaDon.trang_thai = 'cho_xac_nhan'; openStatus = false">
+                                                <span class="font-medium text-gray-900">Chờ xác nhận</span>
+                                                <span
+                                                    class="text-xs px-2 py-1 bg-amber-50 text-amber-700 rounded-md font-semibold">⏳
+                                                    Chờ duyệt</span>
+                                            </div>
+
+                                            <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center justify-between text-sm transition-colors"
+                                                (click)="hoaDon.trang_thai = 'da_xac_nhan'; openStatus = false">
+                                                <span class="font-medium text-gray-900">Xác nhận đơn</span>
+                                                <span
+                                                    class="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-md font-semibold">📦
+                                                    Đã xác nhận</span>
+                                            </div>
+
+                                            <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center justify-between text-sm transition-colors"
+                                                (click)="hoaDon.trang_thai = 'da_huy'; openStatus = false">
+                                                <span class="font-medium text-gray-900">Hủy đơn hàng</span>
+                                                <span
+                                                    class="text-xs px-2 py-1 bg-red-50 text-red-700 rounded-md font-semibold">❌
+                                                    Hủy đơn</span>
+                                            </div>
+
+                                        </div>
+                                    </ng-container>
+
+                                </div>
+
+                                <button (click)="capNhatTrangThai()" [disabled]="isDisableUpdate"
+                                    class="px-6 py-3.5 bg-gray-900 hover:bg-gray-800 text-white text-sm font-bold rounded-xl transition-all shadow-sm shrink-0 disabled:opacity-50">
+                                    <span *ngIf="!isLoading">Cập nhật</span>
+                                    <span *ngIf="isLoading">Đang lưu...</span>
+                                </button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="border-t px-6 py-4 bg-white space-y-3">
+
+                <!-- TẠM TÍNH -->
+                <div class="flex justify-between text-gray-600 font-medium">
+                    <span>Tạm tính:</span>
+                    <span class="text-gray-900 font-bold">
+                        {{ hoaDon.tam_tinh | number }}đ
+                    </span>
+                </div>
+
+                <!-- GIẢM GIÁ -->
+                <div *ngIf="hoaDon.tien_giam > 0" class="flex justify-between items-center text-red-600 font-medium">
+                    <span>
+                        🎟️ Giảm giá
+                        <span *ngIf="hoaDon.giam_gia?.code" class="text-xs font-mono ml-1">
+                            ({{ hoaDon.giam_gia.code }})
+                        </span>
+                    </span>
+                    <span class="font-bold">
+                        -{{ hoaDon.tien_giam | number }}đ
+                    </span>
+                </div>
+
+                <!-- TOTAL -->
+                <div class="bg-green-600 text-white rounded-xl px-5 py-4 flex justify-between items-center shadow-md">
+                    <div>
+                        <p class="text-xs uppercase tracking-wider text-green-100">
+                            Tổng thanh toán
+                        </p>
+                        <p class="text-[11px] text-green-200">
+                            Đã bao gồm giảm giá
+                        </p>
+                    </div>
+
+                    <div class="text-2xl font-black">
+                        {{ hoaDon.tong_tien | number }}đ
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

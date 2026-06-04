@@ -20,6 +20,7 @@ import {
 } from 'ng-apexcharts';
 import { HoaDonService } from '../../../core/services/HoaDon.Service';
 import { QuanLyNhanVienService } from '../../../core/services/QuanLyNhanVien.service';
+import { AdminService } from '../../../core/services/admin.service';
 
 export interface PeriodicElement {
   name: string;
@@ -119,6 +120,18 @@ export class Dashboardcomponent implements OnInit {
   tongdonhangdagiao = 0;
   dangTaihoadondagiao = false;
 
+  //doanhthuhomnay
+  doanhThuHomNay = 0;
+  soDonHomNay = 0;
+  ngayHomNay = '';
+  doanhThuThang = 0;
+  soDonThang = 0;
+  thangNam = '';
+
+  doanhThuNam = 0;
+  soDonNam = 0;
+  namHienTai = '';
+
 
   // Pie chart
   public pieChartOptions: PieChartOptions;
@@ -133,7 +146,8 @@ export class Dashboardcomponent implements OnInit {
 
   constructor(
     private hoaDonService: HoaDonService,
-    private nhanVienService: QuanLyNhanVienService
+    private nhanVienService: QuanLyNhanVienService,
+    private adminService: AdminService
   ) {
     // Pie chart
     this.pieChartOptions = {
@@ -338,6 +352,10 @@ export class Dashboardcomponent implements OnInit {
     this.loadTongKhachHang();
     this.loadTongHoaDonHuy()
     this.loadDonHangDaGiao()
+    this.layDoanhThuHomNay()
+
+    this.layDoanhThuThang()
+    this.layDoanhThuNam()
   }
   loadTongHoaDon() {
     this.dangTai = true;
@@ -403,7 +421,7 @@ export class Dashboardcomponent implements OnInit {
     this.dangTaihoadondagiao = true;
 
     this.hoaDonService.getAllHoaDon().subscribe({
-      
+
       next: (data: any[]) => {
 
         const hoaDonGiao = data.filter(
@@ -413,7 +431,7 @@ export class Dashboardcomponent implements OnInit {
         this.tongdonhangdagiao = hoaDonGiao.length;
         this.dangTaihoadondagiao = false;
       },
-      
+
 
       error: (err) => {
         console.error('Lỗi load hóa đơn đã giao', err);
@@ -423,4 +441,56 @@ export class Dashboardcomponent implements OnInit {
     });
   }
 
+  layDoanhThuHomNay() {
+
+    this.adminService.LayDoanhThuNgay().subscribe({
+      next: (res) => {
+        const data = res.data;
+
+        this.doanhThuHomNay = data.doanh_thu;
+        this.soDonHomNay = data.so_don;
+        this.ngayHomNay = data.ngay;
+      },
+      error: (err) => {
+        console.error('Lỗi lấy doanh thu ngày:', err);
+        this.doanhThuHomNay = 0;
+      }
+    });
+  }
+
+  layDoanhThuThang() {
+    const now = new Date();
+
+    this.adminService.getDoanhThuThang(
+      now.getMonth() + 1,
+      now.getFullYear()
+    ).subscribe({
+      next: (res) => {
+        const data = res.data;
+        this.doanhThuThang = data.doanh_thu;
+        this.soDonThang = data.so_don;
+        this.thangNam = `Tháng ${data.thang}/${data.nam}`;
+      },
+      error: (err) => {
+        console.error('Lỗi lấy doanh thu tháng:', err);
+        this.doanhThuThang = 0;
+      }
+    });
+  }
+  layDoanhThuNam() {
+  const now = new Date();
+
+  this.adminService.getDoanhThuNam(now.getFullYear()).subscribe({
+    next: (res) => {
+      const data = res.data;
+      this.doanhThuNam = data.doanh_thu;
+      this.soDonNam = data.so_don;
+      this.namHienTai = `Năm ${data.nam}`;
+    },
+    error: (err) => {
+      console.error('Lỗi lấy doanh thu năm:', err);
+      this.doanhThuNam = 0;
+    }
+  });
+}
 }

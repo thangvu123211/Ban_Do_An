@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-gray-50 pb-12">
 
   <div class="relative w-full h-[380px] md:h-[480px] bg-gray-900 overflow-hidden">
-    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80"
+    <img [src]="getAnhDaiDien()"
       class="w-full h-full object-cover object-center opacity-85 scale-100 group-hover:scale-105 transition duration-700"
       alt="Restaurant Big Cover">
 
@@ -12,59 +12,81 @@
       <mat-icon class="scale-90">arrow_back</mat-icon> Quay lại trang chủ
     </button>
 
-    <div class="absolute bottom-0 inset-x-0 w-full">
+    <div *ngIf="nhaHang" class="absolute bottom-0 inset-x-0 w-full">
       <div
         class="max-w-7xl mx-auto px-4 md:px-6 pb-8 md:pb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
 
         <div class="flex flex-col sm:flex-row items-center sm:items-end gap-6 w-full md:w-auto">
           <div
-            class="w-28 h-28 md:w-32 md:h-32 rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl shrink-0 bg-white backdrop-blur-md transition transform hover:rotate-2">
-            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80"
-              class="w-full h-full object-cover" alt="Restaurant Logo">
+            class="w-28 h-28 md:w-32 md:h-32 rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl shrink-0 bg-white backdrop-blur-md">
+            <img [src]="getAnhDaiDien()" class="w-full h-full object-cover" alt="Restaurant Logo">
           </div>
 
           <div class="text-center sm:text-left text-white mb-2">
             <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-2">
-              <h1 class="text-3xl md:text-4xl font-black tracking-tight drop-shadow-md">Lẩu Quán & Nướng Tropicana</h1>
+              <h1 class="text-3xl md:text-4xl font-black tracking-tight drop-shadow-md">
+                {{ nhaHang.ten_nha_hang }}
+              </h1>
+
               <span
-                class="px-3 py-1 bg-green-500/20 backdrop-blur-md text-green-400 text-xs font-bold rounded-full border border-green-500/30 flex items-center gap-1.5 shadow-sm">
-                <span class="w-2 h-2 bg-green-400 rounded-full animate-ping"></span> Đang mở cửa
+                class="px-3 py-1 backdrop-blur-md text-xs font-bold rounded-full border flex items-center gap-1.5 shadow-sm"
+                [ngClass]="nhaHang.trang_thai === 1
+              ? 'bg-green-500/20 text-green-400 border-green-500/30'
+              : 'bg-red-500/20 text-red-400 border-red-500/30'">
+
+                <span class="w-2 h-2 rounded-full"
+                  [ngClass]="nhaHang.trang_thai === 1 ? 'bg-green-400 animate-ping' : 'bg-red-400'">
+                </span>
+
+                {{ nhaHang.trang_thai === 1 ? 'Đang mở cửa' : 'Đang đóng cửa' }}
               </span>
             </div>
+
             <p
               class="text-gray-300 text-sm md:text-base flex items-center justify-center sm:justify-start gap-1 mb-3 drop-shadow">
               <mat-icon class="text-green-400 scale-90">location_on</mat-icon>
-              120 Đường Nguyễn Văn A, Phường Bán Đảo, Quận 1, TP. Hồ Chí Minh
+              {{ nhaHang.dia_chi }}
             </p>
+
             <div class="flex flex-wrap justify-center sm:justify-start gap-2">
               <span
-                class="text-xs px-3 py-1.5 bg-white/10 backdrop-blur-sm text-gray-200 rounded-xl font-medium border border-white/5">#LẩuHảiSản</span>
+                class="text-xs px-3 py-1.5 bg-white/10 backdrop-blur-sm text-gray-200 rounded-xl font-medium border border-white/5">
+                {{ nhaHang.ngan_hang }}
+              </span>
               <span
-                class="text-xs px-3 py-1.5 bg-white/10 backdrop-blur-sm text-gray-200 rounded-xl font-medium border border-white/5">#ĐồNướngBBQ</span>
-              <span
-                class="text-xs px-3 py-1.5 bg-white/10 backdrop-blur-sm text-gray-200 rounded-xl font-medium border border-white/5">#KhôngGianSânVườn</span>
+                class="text-xs px-3 py-1.5 bg-white/10 backdrop-blur-sm text-gray-200 rounded-xl font-medium border border-white/5">
+                STK: {{ nhaHang.so_tai_khoan }}
+              </span>
             </div>
           </div>
         </div>
 
         <div class="grid grid-cols-3 gap-3 w-full md:w-auto text-center md:text-right mb-2">
           <div class="bg-white/10 backdrop-blur-md p-3.5 px-5 rounded-2xl border border-white/10 shadow-lg">
-            <div class="text-amber-400 font-black text-xl flex items-center justify-center md:justify-end gap-0.5">
-              4.8 <span class="text-sm font-normal text-amber-400">★</span>
+            <div class="text-green-400 font-black text-xl">
+              {{ nhaHang.ten_nguoi_nhan }}
             </div>
-            <div class="text-gray-300 text-xs mt-1 font-medium">1,200+ đánh giá</div>
+            <div class="text-gray-300 text-xs mt-1 font-medium">
+              Chủ nhà hàng
+            </div>
           </div>
+
           <div class="bg-white/10 backdrop-blur-md p-3.5 px-5 rounded-2xl border border-white/10 shadow-lg">
-            <div class="text-blue-400 font-black text-xl flex items-center justify-center md:justify-end">
-              15-30
+            <div class="text-blue-400 font-black text-xl">
+              #{{ nhaHang.ma_nha_hang }}
             </div>
-            <div class="text-gray-300 text-xs mt-1 font-medium">Phút giao hàng</div>
+            <div class="text-gray-300 text-xs mt-1 font-medium">
+              Mã nhà hàng
+            </div>
           </div>
+
           <div class="bg-white/10 backdrop-blur-md p-3.5 px-5 rounded-2xl border border-white/10 shadow-lg">
-            <div class="text-green-400 font-black text-xl flex items-center justify-center md:justify-end">
-              $$
+            <div class="text-amber-400 font-black text-xl">
+              MB
             </div>
-            <div class="text-gray-300 text-xs mt-1 font-medium">50k - 250k đ</div>
+            <div class="text-gray-300 text-xs mt-1 font-medium">
+              Ngân hàng
+            </div>
           </div>
         </div>
 
@@ -184,7 +206,7 @@
 
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-      <div *ngFor="let mon of MonAn">
+      <div *ngFor="let mon of pagedMonAn">
         <mat-card class="h-full flex flex-col rounded-2xl overflow-hidden border border-gray-100
                    shadow-sm hover:shadow-xl transition duration-300 bg-white">
 
@@ -249,12 +271,43 @@
 
           </mat-card-content>
         </mat-card>
-      </div>
 
+      </div>
     </section>
 
   </div>
+  <div class="flex items-center justify-center gap-1.5 my-8 select-none" *ngIf="totalPages > 1">
+
+    <button (click)="currentPage = currentPage - 1; updatePagination()" [disabled]="currentPage === 1"
+      class="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 hover:text-gray-900 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none disabled:scale-100 shadow-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+        stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <button *ngFor="let p of [].constructor(totalPages); let i = index"
+      (click)="currentPage = i + 1; updatePagination()"
+      class="flex items-center justify-center w-9 h-9 rounded-lg border text-sm font-medium transition-all duration-200 active:scale-95"
+      [ngClass]="{
+      'bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-100 font-semibold': currentPage === i + 1,
+      'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 shadow-sm': currentPage !== i + 1
+    }">
+      {{ i + 1 }}
+    </button>
+
+    <button (click)="currentPage = currentPage + 1; updatePagination()" [disabled]="currentPage === totalPages"
+      class="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 hover:text-gray-900 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none disabled:scale-100 shadow-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+        stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+
+  </div>
 </div>
+
+
 
 <!-- TOAST -->
 <app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type">

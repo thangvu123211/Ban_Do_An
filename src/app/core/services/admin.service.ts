@@ -57,5 +57,29 @@ export class AdminService {
     });
   }
 
+  LayDoanhThuNgay(ngay?: string): Observable<any> {
 
+    let url = `${environment.apiUrl}/hoa-don/doanh-thu-ngay`;
+
+    if (ngay) {
+      url += `?ngay=${ngay}`; // yyyy-mm-dd
+    }
+
+    return this.http.get(url, {
+      headers: this.getAuthHeaders()
+    });
+  }
+  getDoanhThuThang(thang: number, nam: number) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/hoa-don/doanh-thu-thang?thang=${thang}&nam=${nam}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getDoanhThuNam(nam: number) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/hoa-don/doanh-thu-nam?nam=${nam}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
 }

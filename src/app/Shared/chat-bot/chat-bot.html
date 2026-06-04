@@ -36,8 +36,8 @@
           : 'bg-white text-gray-800 rounded-bl-none shadow'">
 
         <!-- TEXT -->
-        <div *ngIf="msg.type === 'text'">
-          {{ msg.message }}
+        <div *ngIf="msg.type === 'text'" [innerHTML]="msg.message" >
+          <!-- {{ msg.message }} -->
         </div>
 
         <!-- FOOD LIST -->

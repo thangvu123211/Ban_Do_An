@@ -18,6 +18,7 @@ import { YeuThich } from '../yeu-thich/yeu-thich';
 import { ThemGioHangDialog } from '../dialogs/them-gio-hang-dialog/them-gio-hang-dialog';
 import { OptionService } from '../../../core/services/option.service';
 import { DanhGiaService } from '../../../core/services/DanhGia.service';
+import { NhaHangService } from '../../../core/services/NhaHang.service';
 
 
 
@@ -53,6 +54,12 @@ export class Menu implements OnInit {
   tongSoMon = 0;
   tongYeuThich = 0;
 
+  pageSize = 8;
+  currentPage = 1;
+  totalPages = 0;
+  pagedMonAn: any[] = [];
+  
+
   toast = {
     show: false,
     message: '',
@@ -76,6 +83,9 @@ export class Menu implements OnInit {
 
   ratingsMap: any = {};
 
+  nhaHang: any = null;
+  loading = false;
+
   showToast(message: string, type: 'success' | 'warn' | 'error') {
     this.toast.show = true;
     this.toast.message = message;
@@ -96,7 +106,26 @@ export class Menu implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private danhGiaService: DanhGiaService,
+    private nhaHangService: NhaHangService
   ) { }
+
+  loadNhaHang() {
+    this.nhaHangService.getAllNhaHang().subscribe({
+      next: (res) => {
+        this.nhaHang = res.data?.[0] || null;
+      },
+      error: (err) => {
+        console.error('Lỗi load nhà hàng', err);
+      }
+    });
+  }
+
+  getAnhDaiDien(): string {
+    if (this.nhaHang?.anh_nha_hang?.length > 0) {
+      return this.nhaHang.anh_nha_hang[0].url;
+    }
+    return 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5';
+  }
 
   reloadFavoriteCount() {
     const token = localStorage.getItem('token');
@@ -113,6 +142,15 @@ export class Menu implements OnInit {
       });
   }
 
+  updatePagination() {
+    this.totalPages = Math.ceil(this.MonAn.length / this.pageSize);
+
+    const start = (this.currentPage - 1) * this.pageSize;
+    const end = start + this.pageSize;
+
+    this.pagedMonAn = this.MonAn.slice(start, end);
+  }
+
   /** Lấy tất cả món ăn */
   getAllMonAn() {
     this.selectedLoai = null;
@@ -127,6 +165,8 @@ export class Menu implements OnInit {
         );
 
         this.MonAn = [...this.tatCaMonAn];
+        this.currentPage = 1;
+        this.updatePagination();
       }
     });
   }
@@ -141,6 +181,8 @@ export class Menu implements OnInit {
     if (this.sortPrice === 'desc') {
       this.MonAn.sort((a, b) => b.gia_tien - a.gia_tien);
     }
+    this.currentPage = 1;
+    this.updatePagination();
   }
 
   /** Lấy tất cả loại món ăn */
@@ -166,11 +208,15 @@ export class Menu implements OnInit {
     this.MonAn = this.tatCaMonAn.filter(
       mon => mon.ma_loai_mon_an === loaiId && mon.trang_thai == 1
     );
+    this.currentPage = 1;
+    this.updatePagination();
   }
 
   hienThiTatCaMon() {
     this.selectedLoai = null;
     this.MonAn = [...this.tatCaMonAn];
+    this.currentPage = 1;
+    this.updatePagination();
   }
   /** Tính tổng tiền (getter) */
   get tongTien(): number {
@@ -285,26 +331,26 @@ export class Menu implements OnInit {
     });
   }
 
-moThongTinMon(mon: any, openTab: string = 'info') {
+  moThongTinMon(mon: any, openTab: string = 'info') {
 
-  const data = {
-    ma_mon_an: mon.ma_mon_an,
-    ten_mon_an: mon.ten_mon_an,
-    gia_tien: mon.gia_tien,
-    mo_ta: mon.mo_ta ?? '',
-    anh_mon_an: mon.anh_mon_an,
-    openTab
-  };
+    const data = {
+      ma_mon_an: mon.ma_mon_an,
+      ten_mon_an: mon.ten_mon_an,
+      gia_tien: mon.gia_tien,
+      mo_ta: mon.mo_ta ?? '',
+      anh_mon_an: mon.anh_mon_an,
+      openTab
+    };
 
-  this.dialog.open(ThongTinMonAn, {
-    width: '650px',
-    maxWidth: '95vw',
-    height: '85vh',
-    panelClass: 'thong-tin-mon-dialog',
-    data
-  });
+    this.dialog.open(ThongTinMonAn, {
+      width: '650px',
+      maxWidth: '95vw',
+      height: '85vh',
+      panelClass: 'thong-tin-mon-dialog',
+      data
+    });
 
-}
+  }
 
   isFavorite(maMonAn: number): boolean {
     return this.favoriteIds.has(maMonAn);
@@ -372,6 +418,7 @@ moThongTinMon(mon: any, openTab: string = 'info') {
     this.loadFavorites();
     this.reloadFavoriteCount();
     this.loadRatings();
+    this.loadNhaHang();
 
     this.cartService.count$.subscribe(count => {
       this.tongSoMon = count;
@@ -392,18 +439,18 @@ moThongTinMon(mon: any, openTab: string = 'info') {
 
     const state = history.state;
 
-  if (state?.openDialog && state?.monAn) {
-    this.dialog.open(ThongTinMonAn, {
-      width: '650px',
-      maxWidth: '95vw',
-      height: '85vh',
-      panelClass: 'thong-tin-mon-dialog',
-      data: {
-        ...state.monAn,
-        openTab: state.openTab || 'info'
-      }
-    });
-  }
+    if (state?.openDialog && state?.monAn) {
+      this.dialog.open(ThongTinMonAn, {
+        width: '650px',
+        maxWidth: '95vw',
+        height: '85vh',
+        panelClass: 'thong-tin-mon-dialog',
+        data: {
+          ...state.monAn,
+          openTab: state.openTab || 'info'
+        }
+      });
+    }
   }
   applyFilterAfterLoad() {
     if (!this.tatCaMonAn?.length) return;

@@ -97,14 +97,10 @@
                             <!-- THAO TÁC -->
                             <td class="px-4 py-7 text-center border">
                                 <div class="flex justify-center gap-2">
-                                    <button mat-icon-button matTooltip="Cập nhật" (click)="SuaDonHang(hd)">
-                                        <mat-icon>edit</mat-icon>
-                                    </button>
+                                    
 
-                                    <button mat-icon-button matTooltip="Xem chi tiết" (click)="toggleExpand(hd.ma_hd)">
-                                        <mat-icon>
-                                            {{ expandedHoaDonId === hd.ma_hd ? 'expand_less' : 'expand_more' }}
-                                        </mat-icon>
+                                    <button mat-icon-button matTooltip="Xem chi tiết" (click)="ThongTinHoaDon(hd)">
+                                        <mat-icon>info</mat-icon>
                                     </button>
 
                                     <button mat-icon-button matTooltip="Xóa">
@@ -114,95 +110,6 @@
                             </td>
                         </tr>
 
-                        <!-- ===== DÒNG CHI TIẾT (FIX colspan = 9) ===== -->
-                        <tr *ngIf="expandedHoaDonId === hd.ma_hd" class="bg-gray-100">
-                            <td colspan="9" class="px-8 py-6">
-
-                                <div class="bg-white rounded-2xl border shadow-sm p-6 space-y-5">
-
-                                    <!-- HEADER -->
-                                    <div class="flex justify-between items-center border-b pb-3">
-                                        <h4 class="text-xl font-bold text-gray-800">
-                                            Chi tiết đơn hàng #{{ hd.ma_hd }}
-                                        </h4>
-
-                                        <span *ngIf="trangThaiDonHangMap[hd.trang_thai]"
-                                            [ngClass]="trangThaiDonHangMap[hd.trang_thai].classes">
-                                            {{ trangThaiDonHangMap[hd.trang_thai].label }}
-                                        </span>
-                                    </div>
-
-                                    <!-- BẢNG CHI TIẾT -->
-                                    <table class="w-full text-base border rounded-xl overflow-hidden">
-                                        <thead class="bg-gray-200 text-gray-700">
-                                            <tr>
-                                                <th class="px-4 py-3 border text-center">Mã món</th>
-                                                <th class="px-4 py-3 border text-left">Tên món</th>
-                                                <th class="px-4 py-3 border text-center">Số lượng</th>
-                                                <th class="px-4 py-3 border text-right">Đơn giá</th>
-                                                <th class="px-4 py-3 border text-right">Thành tiền</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            <tr *ngFor="let ct of hd.chi_tiet_hoa_dons"
-                                                class="hover:bg-gray-50 transition">
-                                                <td class="px-4 py-3 border text-center">
-                                                    {{ ct.ma_mon_an }}
-                                                </td>
-
-                                                <td class="px-4 py-3 border">
-                                                    <div class="font-semibold">
-                                                        {{ ct.mon_an?.ten_mon_an || '---' }}
-                                                    </div>
-
-                                                    <div *ngIf="ct.options?.length"
-                                                        class="mt-1 space-y-1 text-sm text-gray-600">
-                                                        <div *ngFor="let opt of ct.options">
-
-                                                            • {{ opt.option_item?.NhomOption?.ten_nhom }}:
-                                                            <b>{{ opt.option_item?.ten_option }}</b>
-
-                                                            <span *ngIf="opt.gia_them || opt.option_item?.gia_them">
-                                                                (+{{ (opt.gia_them ?? opt.option_item?.gia_them) |
-                                                                number }} đ)
-                                                            </span>
-
-                                                        </div>
-                                                    </div>
-                                                    <div *ngIf="ct.ghi_chu" class="text-sm text-gray-500 italic">
-                                                        Ghi chú: {{ ct.ghi_chu }}
-                                                    </div>
-                                                </td>
-
-                                                <td class="px-4 py-3 border text-center font-semibold">
-                                                    x{{ ct.so_luong }}
-                                                </td>
-
-                                                <td class="px-4 py-3 border text-right">
-                                                    {{ ct.don_gia | number }} đ
-                                                </td>
-
-                                                <td class="px-4 py-3 border text-right font-bold text-green-600">
-                                                    {{ ct.thanh_tien | number }} đ
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <!-- TỔNG TIỀN -->
-                                    <div
-                                        class="flex justify-between items-center bg-green-50 rounded-xl px-6 py-4 text-lg font-bold">
-                                        <span>Tổng tiền</span>
-                                        <span class="text-green-600">
-                                            {{ hd.tong_tien | number }} đ
-                                        </span>
-                                    </div>
-
-                                </div>
-
-                            </td>
-                        </tr>
 
                     </ng-container>
                 </tbody>

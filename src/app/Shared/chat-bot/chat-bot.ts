@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MATERIAL } from '../material';
-import { AIChatResponse, AiChatService } from '../../core/services/AIServiceChat';
 import { CartService } from '../../core/services/cart.service';
 import { ToastMessageComponent } from '../toasts_message/toast-message/toast-message';
+import { AIChatService } from '../../core/services/AIServiceChat';
 
 @Component({
   selector: 'app-chat-bot',
@@ -34,8 +34,7 @@ export class ChatBotComponent {
   constructor(
     private dialogRef: MatDialogRef<ChatBotComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private aiChatService: AiChatService,
-    private cartService: CartService
+    private aiChatService: AIChatService,
   ) { }
 
   showToast(message: string, type: 'success' | 'warn' | 'error') {
@@ -68,38 +67,26 @@ export class ChatBotComponent {
 
     this.aiChatService.chat('user-1', userText).subscribe({
       next: (res) => {
-
-        // 👇 FAKE BOT ĐANG GÕ NHƯ MESS
         setTimeout(() => {
           this.isTyping = false;
+          //res.assistantMessage = "messages /n test /n test 2"
 
-          this.messages.push({
-            from: 'bot',
-            ...res
-          });
-        }, 1200); // 👈 chỉnh 800 – 1500ms
-      },
-      error: () => {
-        setTimeout(() => {
-          this.isTyping = false;
           this.messages.push({
             from: 'bot',
             type: 'text',
-            message: '⚠️ Hệ thống đang bận'
+            message: res.assistantMessage.replaceAll(/\n/g, '</br>') // 👈 QUAN TRỌNG
           });
-        }, 800);
+        }, 1200);
+      },
+      error: () => {
+        this.isTyping = false;
+        this.messages.push({
+          from: 'bot',
+          type: 'text',
+          message: '⚠️ Hệ thống đang bận'
+        });
       }
     });
   }
 
-  // addToGioHang(mon: any): void {
-  //   this.cartService.addItem({
-  //     id: mon.ma_mon_an,
-  //     ma_mon_an: mon.ma_mon_an,
-  //     ten_mon_an: mon.ten_mon_an,
-  //     gia_tien: mon.gia_tien,
-  //     anh_mon_an: mon.anh_mon_an
-  //   });
-  //    this.showToast(`Thêm thành công món ${mon.ten_mon_an} vào giỏ hàng`, 'success');
-  // }
 }

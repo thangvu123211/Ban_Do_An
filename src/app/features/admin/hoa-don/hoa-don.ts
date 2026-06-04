@@ -6,6 +6,7 @@ import { HoaDonService } from '../../../core/services/HoaDon.Service';
 import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-message/toast-message';
 import { SuaHoaDon } from './sua-hoa-don/sua-hoa-don';
 import { WebsocketService } from '../../../core/services/websocket.service';
+import { ThongTinHoaDon } from './thong-tin-hoa-don/thong-tin-hoa-don';
 
 @Component({
   selector: 'app-hoa-don',
@@ -91,6 +92,37 @@ export class HoaDon implements OnInit {
           }
           break;
         }
+        case 'hoa_don_bi_huy_user': {
+          const index = this.hoaDons.findIndex(
+            h => h.ma_hd === msg.payload.ma_hd
+          );
+
+          if (index !== -1) {
+            this.hoaDons[index] = {
+              ...this.hoaDons[index],
+              trang_thai: 'da_huy',
+              trang_thai_thanh_toan: 'da_huy',
+            };
+
+            // ép change detection
+            this.hoaDons = [...this.hoaDons];
+          }
+          break;
+        }
+        case 'update_trang_thai_thanh_toan': {
+          const index = this.hoaDons.findIndex(
+            h => h.ma_hd === msg.payload.ma_hd
+          );
+
+          if (index !== -1) {
+            this.hoaDons[index].trang_thai_thanh_toan =
+              msg.payload.trang_thai_thanh_toan;
+
+            // ép Angular render lại
+            this.hoaDons = [...this.hoaDons];
+          }
+          break;
+        }
       }
     });
   }
@@ -126,6 +158,7 @@ export class HoaDon implements OnInit {
   trangThaiThanhToanMap: Record<string, any> = {
     da_thanh_toan: { label: 'Đã thanh toán', classes: 'bg-emerald-100 text-emerald-700' },
     chua_thanh_toan: { label: 'Chưa thanh toán', classes: 'bg-gray-100 text-gray-600' },
+    da_huy: { label: 'Đã hủy', classes: 'bg-red-100 text-red-700' },
   };
 
   toggleExpand(ma_hd: number) {
@@ -133,21 +166,13 @@ export class HoaDon implements OnInit {
       this.expandedHoaDonId === ma_hd ? null : ma_hd;
   }
 
-  // ThongTinDonHang(hoaDon: any) {
-  //   this.dialog.open(ThongTinDonHang, {
-  //     width: '1000px',
-  //     maxWidth: '95vw',
-  //     height: '85vh',
-  //     data: hoaDon
-  //   });
-  // }
-
-  // huyHoaDon(id: number) {
-  //   if (!confirm('Bạn có chắc muốn hủy hóa đơn này?')) return;
-
-  //   this.hoaDonService.huyHoaDon(id).subscribe(() => {
-  //     this.loadHoaDons();
-  //   });
-  // }
+  ThongTinHoaDon(hoaDon: any) {
+    this.dialog.open(ThongTinHoaDon, {
+      width: '1000px',
+      maxWidth: '95vw',
+      height: '85vh',
+      data: hoaDon
+    });
+  }
 
 }

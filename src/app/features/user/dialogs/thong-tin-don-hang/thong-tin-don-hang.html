@@ -55,9 +55,16 @@
 
         <div class="bg-gray-50 rounded-xl p-4">
           <h3 class="font-semibold mb-2">Thanh toán</h3>
-          <span class="px-3 py-1 rounded-full text-sm font-medium"
-            [ngClass]="hoaDon.trang_thai_thanh_toan === 'da_thanh_toan' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'">
-            {{ hoaDon.trang_thai_thanh_toan === 'da_thanh_toan' ? 'Đã thanh toán' : 'Chưa thanh toán' }}
+          <span class="px-3 py-1 rounded-full text-sm font-medium" [ngClass]="{
+                            'bg-green-100 text-green-700': hoaDon.trang_thai_thanh_toan === 'da_thanh_toan',
+                            'bg-red-100 text-red-700': hoaDon.trang_thai_thanh_toan === 'da_huy',
+                            'bg-gray-200 text-gray-600': hoaDon.trang_thai_thanh_toan === 'cho_thanh_toan'
+                        }">
+            <ng-container [ngSwitch]="hoaDon.trang_thai_thanh_toan">
+              <span *ngSwitchCase="'da_thanh_toan'">Đã thanh toán</span>
+              <span *ngSwitchCase="'da_huy'">Đã hủy</span>
+              <span *ngSwitchDefault>Chưa thanh toán</span>
+            </ng-container>
           </span>
         </div>
 
@@ -103,7 +110,10 @@
                   class="flex justify-between items-center text-base text-gray-800 font-medium">
                   <div class="flex items-center gap-2">
                     <span class="text-green-600 text-sm">◆</span>
-                    <span>{{ op.ten_option }}</span>
+
+                    <span>
+                      {{ op.option_item?.NhomOption?.ten_nhom }} - {{ op.ten_option }}
+                    </span>
                   </div>
                   <div
                     class="text-sm text-gray-600 font-medium bg-white px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm">

@@ -88,4 +88,8 @@ export class HoaDonService {
       data
     );
   }
+
+  huyThanhToan(id: number) {
+    return this.http.put(`${environment.apiUrl}/hoa-don/${id}/huy_thanh_toan`, {});
+  }
 }

@@ -170,6 +170,31 @@ export class GioHang implements OnInit {
 
   // ================= INIT =================
   ngOnInit() {
+    const saved = localStorage.getItem('payment_state');
+
+    if (saved) {
+      const state = JSON.parse(saved);
+
+      if (state.ma_hd && !state.is_paid) {
+        this.maHoaDonDangThanhToan = state.ma_hd;
+        this.qrUrl = state.qr_url;
+        this.showQR = true;
+        this.currentStep = 3;
+        this.daThanhToan = false;
+      }
+      if (state.ma_giam_gia) {
+        this.maGiamGiaChon = state.ma_giam_gia;
+      }
+
+      if (state.tong_sau_giam) {
+        this.tongSauGiam = state.tong_sau_giam;
+      }
+
+      if (state.is_paid) {
+        this.currentStep = 4;
+        this.isCheckoutDone = true;
+      }
+    }
     this.loaded = false;
 
     const pending = localStorage.getItem('pending_hoa_don');
@@ -247,9 +272,13 @@ export class GioHang implements OnInit {
     this.websocketService.messages$
       .subscribe(msg => {
 
-        if (!this.maHoaDonDangThanhToan) return;
+        const currentId = this.maHoaDonDangThanhToan;
+        if (!currentId) return;
+
         if (msg.type !== 'payment_success') return;
-        if (msg.payload?.hoa_don_id !== this.maHoaDonDangThanhToan) return;
+
+        if (Number(msg.payload?.hoa_don_id) !== Number(currentId)) return;
+
         if (this.daXuLyThanhToan) return;
 
         this.daXuLyThanhToan = true;
@@ -261,10 +290,32 @@ export class GioHang implements OnInit {
         this.currentStep = 4;
         this.isCheckoutDone = true;
 
+        this.daThanhToan = true;
+
+        localStorage.setItem('payment_state', JSON.stringify({
+          ma_hd: this.maHoaDonDangThanhToan,
+          qr_url: this.qrUrl,
+          step: 4,
+          is_paid: true
+        }));
+
+        localStorage.removeItem('pending_hoa_don');
+
         const userId = Number(localStorage.getItem('ma_nguoi_dung'));
         this.cartService.clearDB(userId).subscribe(() => {
           this.cartService.loadCountFromDB(userId);
         });
+        this.daXuLyThanhToan = true;
+        this.daThanhToan = true;
+        this.currentStep = 4;
+
+        this.showQR = false;
+        this.qrUrl = '';
+
+        localStorage.removeItem('pending_hoa_don');
+        localStorage.removeItem('payment_state');
+
+        this.maHoaDonDangThanhToan = null as any;
       });
   }
 
@@ -502,6 +553,10 @@ export class GioHang implements OnInit {
   }
   // ================= STEP =================
   nextStep() {
+    if (this.maHoaDonDangThanhToan && !this.daThanhToan) {
+      this.showToast('Bạn đang chờ thanh toán', 'warn');
+      return;
+    }
 
     if (this.currentStep === 2 && !this.isLoggedIn) {
       this.showToast('Vui lòng đăng nhập!', 'warn');
@@ -515,6 +570,10 @@ export class GioHang implements OnInit {
   }
 
   prevStep() {
+    if (this.maHoaDonDangThanhToan && !this.daThanhToan) {
+      this.showToast('Bạn đang chờ thanh toán', 'warn');
+      return;
+    }
     if (this.currentStep > 0) {
       this.currentStep--;
     }
@@ -613,7 +672,7 @@ export class GioHang implements OnInit {
     });
   }
   thanhToan() {
-
+    this.startNewCheckoutSession();
     this.isCreatingPayment = true;
 
     const tongTien = this.tinhTienSauGiam();
@@ -662,8 +721,9 @@ export class GioHang implements OnInit {
         this.maHoaDonDangThanhToan = order.ma_hd;
         localStorage.setItem('pending_hoa_don', String(order.ma_hd));
 
+        const amount = Math.round(this.tinhTienSauGiam());
         const payload = {
-          amount: Math.round(Number(order.tong_tien || 0)),
+          amount: amount,
           invoice_number: `HD${order.ma_hd}`,
           description: `Thanh toán hóa đơn HD${order.ma_hd}`,
           success_url: window.location.origin + '/payment-success',
@@ -686,7 +746,7 @@ export class GioHang implements OnInit {
               return;
             }
 
-            const amount = Math.round(Number(order.tong_tien || 0));
+            const amount = order.tong_tien;
             const content = `HD${order.ma_hd}`;
 
             // ✅ CHỈ DÙNG QR TỰ TẠO (KHÔNG DÙNG r.qr_url)
@@ -697,10 +757,22 @@ export class GioHang implements OnInit {
             console.log('QR URL:', this.qrUrl);
 
             this.maHoaDonDangThanhToan = order.ma_hd;
+
+
             localStorage.setItem('pending_hoa_don', String(order.ma_hd));
 
             this.showQR = true;
             this.isCreatingPayment = false;
+            this.currentStep = 3;
+
+            localStorage.setItem('payment_state', JSON.stringify({
+              ma_hd: order.ma_hd,
+              qr_url: this.qrUrl,
+              step: 3,
+              is_paid: false,
+              ma_giam_gia: this.maGiamGiaChon,
+              tong_sau_giam: order.tong_tien
+            }));
           },
 
           error: (err) => {
@@ -875,5 +947,64 @@ export class GioHang implements OnInit {
     this.websocketService.disconnect();
   }
 
+  resetPaymentState() {
+    localStorage.removeItem('payment_state');
+    localStorage.removeItem('pending_hoa_don');
+
+    this.maHoaDonDangThanhToan = null as any;
+    this.qrUrl = '';
+    this.showQR = false;
+    this.daThanhToan = false;
+    this.currentStep = 0;
+
+    this.daXuLyThanhToan = false;
+  }
+
+  startNewCheckoutSession() {
+    this.resetPaymentState();
+    this.daXuLyThanhToan = false;
+
+    this.maHoaDonDangThanhToan = null as any;
+    this.showQR = false;
+    this.qrUrl = '';
+  }
+  resetToNewOrder() {
+    this.resetPaymentState();
+    this.gioHang = [];
+    this.tongTien = 0;
+    this.tongSauGiam = 0;
+    this.currentStep = 0;
+    this.daThanhToan = false;
+    this.isCheckoutDone = false;
+  }
+
+  huyHoaDonDangThanhToan() {
+
+  if (!this.maHoaDonDangThanhToan) return;
+
+  this.hoadonservice.huyThanhToan(this.maHoaDonDangThanhToan)
+    .subscribe({
+      next: () => {
+        this.showToast('Đã hủy hóa đơn', 'success');
+
+
+        // ✅ reset toàn bộ state thanh toán
+        this.showQR = false;
+        this.qrUrl = '';
+        this.currentStep = 0;
+        this.maHoaDonDangThanhToan = null as any;
+        this.daThanhToan = false;
+
+        // ✅ clear localStorage
+        localStorage.removeItem('pending_hoa_don');
+        localStorage.removeItem('payment_state');
+        localStorage.removeItem('cart'); // nếu m lưu cart ở đây
+
+      },
+      error: (err) => {
+        this.showToast(err.error?.error || 'Không thể hủy hóa đơn', 'error');
+      }
+    });
+}
 
 }

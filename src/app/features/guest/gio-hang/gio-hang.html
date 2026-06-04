@@ -68,7 +68,7 @@
         [tongSauGiam]="tongSauGiam" [maGiamGiaChon]="maGiamGiaChon" [tenNguoiNhan]="tenNguoiNhan"
         [soDienThoai]="soDienThoai" [diaChi]="diaChi" [ghiChu]="ghiChu" [showQR]="showQR" [qrUrl]="qrUrl"
         [maHoaDonDangThanhToan]="maHoaDonDangThanhToan" [isCreatingPayment]="isCreatingPayment"
-        (submitThanhToan)="thanhToan()">
+        (submitThanhToan)="thanhToan()" (huyHoaDon)="huyHoaDonDangThanhToan()">
       </app-step-thanh-toan>
 
       <div *ngIf="currentStep === 4" class="w-full flex flex-col items-center justify-center py-16 text-center animate-fade-in">
