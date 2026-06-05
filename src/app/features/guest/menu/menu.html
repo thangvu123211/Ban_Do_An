@@ -157,9 +157,14 @@
 
       <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
         <div class="relative flex-1 sm:flex-none">
-          <input type="text" placeholder="Tìm món trong nhà hàng..."
-            class="w-full sm:w-60 pl-9 pr-4 py-2 text-sm bg-white border border-gray-300 rounded-full focus:outline-none focus:border-green-500 transition">
-          <mat-icon class="absolute left-3 top-2.5 text-gray-400 scale-75 mb-6">search</mat-icon>
+          <input type="text" placeholder="Tìm món trong nhà hàng..." [(ngModel)]="keyword" (input)="onSearch()"
+            class="w-full sm:w-60 pl-9 pr-10 py-2 text-sm bg-white border border-gray-300 rounded-full focus:outline-none focus:border-green-500 transition" />
+
+
+          <!-- nút kính lúp -->
+          <button (click)="onSearch(true)" class="absolute right-2 top-1.5 text-gray-500 hover:text-green-600">
+            <mat-icon>search</mat-icon>
+          </button>
         </div>
 
         <button (click)="getAllMonAn()" class="px-4 py-2 rounded-full bg-green-500 text-white font-medium shadow

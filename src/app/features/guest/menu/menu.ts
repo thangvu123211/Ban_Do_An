@@ -58,7 +58,10 @@ export class Menu implements OnInit {
   currentPage = 1;
   totalPages = 0;
   pagedMonAn: any[] = [];
-  
+
+  keyword: string = '';
+  searchTimeout: any = null;
+
 
   toast = {
     show: false,
@@ -489,6 +492,48 @@ export class Menu implements OnInit {
         this.ratingsMap[item.ma_mon_an] = item;
       });
 
+    });
+  }
+
+  onSearch(isClick = false) {
+    const key = this.keyword?.trim().toLowerCase();
+
+    // ❌ rỗng → reset
+    if (!key) {
+      this.MonAn = [...this.tatCaMonAn];
+      this.currentPage = 1;
+      this.updatePagination();
+      return;
+    }
+
+    // =========================
+    // 🚀 LOCAL SEARCH (KHÔNG SPAM API)
+    // =========================
+    if (!isClick) {
+      clearTimeout(this.searchTimeout);
+
+      this.searchTimeout = setTimeout(() => {
+        this.MonAn = this.tatCaMonAn.filter(mon =>
+          mon.ten_mon_an?.toLowerCase().includes(key) ||
+          mon.mo_ta?.toLowerCase().includes(key)
+        );
+
+        this.currentPage = 1;
+        this.updatePagination();
+      }, 200); // debounce 200ms
+
+      return;
+    }
+
+    // =========================
+    // 🔥 CLICK ICON → CALL API
+    // =========================
+    this.quanlimonan.searchMonAn(this.keyword).subscribe({
+      next: (res: any) => {
+        this.MonAn = (res.data || []).filter((m: any) => m.trang_thai == 1);
+        this.currentPage = 1;
+        this.updatePagination();
+      }
     });
   }
 }

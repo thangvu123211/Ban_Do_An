@@ -53,5 +53,9 @@ export class QuanLyMonAn {
     return this.http.get(`${environment.apiUrl}/mon_an/${id}/detail`);
   }
 
+  searchMonAn(keyword: string) {
+    return this.http.get<any>(`${environment.apiUrl}mon_an/search?q=${keyword}`);
+  }
+
 
 }
