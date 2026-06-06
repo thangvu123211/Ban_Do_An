@@ -187,7 +187,7 @@ export class GioHang implements OnInit {
       }
 
       if (state.tong_sau_giam) {
-        this.tongSauGiam = state.tong_sau_giam;
+        this.tongSauGiam = this.tinhTienSauGiam();
       }
 
       if (state.is_paid) {
@@ -721,7 +721,7 @@ export class GioHang implements OnInit {
         this.maHoaDonDangThanhToan = order.ma_hd;
         localStorage.setItem('pending_hoa_don', String(order.ma_hd));
 
-        const amount = Math.round(this.tinhTienSauGiam());
+        const amount = order?.tong_tien ?? this.tinhTienSauGiam();
         const payload = {
           amount: amount,
           invoice_number: `HD${order.ma_hd}`,
