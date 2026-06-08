@@ -168,7 +168,7 @@
             </div>
 
             <!-- TEXT -->
-            <p class="mt-3 text-sm text-gray-600 text-center group-hover:text-green-700 transition">
+            <p class="mt-3 text-center font-medium transition">
               {{ item.ten_loai_mon_an }}
             </p>
 
@@ -194,23 +194,34 @@
   <div class="max-w-7xl mx-auto px-4 md:px-6">
 
     <!-- HEADER (STYLE GIỐNG VOUCHER) -->
-    <div class="text-center mb-10">
+    <div class="flex items-center justify-between mb-10">
+      <!-- LEFT -->
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-900">
+          Món ăn nổi bật
+        </h2>
+        <p class="text-sm text-gray-500 mt-2">
+          Khám phá các món được yêu thích nhất trong thực đơn
+        </p>
+      </div>
 
-      <h2 class="text-2xl font-semibold text-gray-900">
-        Món ăn nổi bật
-      </h2>
-
-      <p class="text-sm text-gray-500 mt-2">
-        Khám phá các món được yêu thích nhất trong thực đơn
-      </p>
-
+      <!-- RIGHT -->
+      <button routerLink="/thucdon" class="hidden sm:flex items-center gap-3 px-7 py-3 rounded-full 
+               bg-green-600 text-white font-medium tracking-wide
+               shadow-md shadow-green-600/20 
+               transition-all duration-300 ease-in-out
+               hover:bg-green-700 hover:shadow-lg hover:shadow-green-700/30 hover:-translate-y-0.5
+               group">
+        <span>Xem thêm</span>
+        <mat-icon class="transition-transform duration-300 group-hover:translate-x-1">arrow_forward</mat-icon>
+      </button>
     </div>
 
     <!-- GRID -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-      <div *ngFor="let mon of monAnNoiBat">
 
+      <div *ngFor="let mon of monAnNoiBat">
         <mat-card class="h-full flex flex-col rounded-2xl overflow-hidden border border-gray-100
                    shadow-sm hover:shadow-xl transition duration-300 bg-white">
 
@@ -220,14 +231,11 @@
               class="w-full h-full object-cover hover:scale-105 transition duration-300" />
 
             <button type="button" (click)="toggleYeuThich(mon)" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 shadow
-                     flex items-center justify-center hover:scale-110 transition">
-
+                       flex items-center justify-center hover:scale-110 transition">
               <span class="text-lg" [class.text-red-500]="isFavorite(mon.ma_mon_an)"
                 [class.text-gray-400]="!isFavorite(mon.ma_mon_an)">
-
                 {{ isFavorite(mon.ma_mon_an) ? '❤️' : '🤍' }}
               </span>
-
             </button>
           </div>
 
@@ -235,7 +243,6 @@
           <mat-card-content class="p-4 flex flex-col flex-1">
 
             <div class="flex items-center justify-between gap-2 mt-2">
-
               <h3 class="font-semibold text-lg text-gray-900">
                 {{ mon.ten_mon_an }}
               </h3>
@@ -245,7 +252,6 @@
                   info
                 </mat-icon>
               </button>
-
             </div>
 
             <p class="text-sm text-gray-500 mt-3 line-clamp-2">
@@ -253,24 +259,29 @@
             </p>
 
             <div class="mt-auto pt-5 flex items-center justify-between">
-
               <div>
                 <div class="text-green-600 font-bold text-xl">
                   {{ mon.gia_tien | number }} đ
                 </div>
+                <div class="flex items-center gap-1 text-yellow-500 mt-1">
 
-                <div class="text-sm text-yellow-500 mt-1">
-                  ★★★★☆ (4.8)
+                  <ng-container *ngFor="let i of [1,2,3,4,5]">
+                    <mat-icon class="text-lg">
+                      {{ i <= (ratingsMap[mon.ma_mon_an]?.avg_sao || 0) ? 'star' : 'star_border' }} </mat-icon>
+                  </ng-container>
+
+                  <span class="text-gray-600 text-xs ml-1 mt-2">
+                    ({{ ratingsMap[mon.ma_mon_an]?.avg_sao || 0 | number:'1.1-1' }})
+                  </span>
+
                 </div>
               </div>
 
-              <button (click)="addToGioHang(mon)" class="w-11 h-11 rounded-full bg-green-500 hover:bg-green-600
-                       text-white flex items-center justify-center shadow-md
-                       active:scale-95 transition" matTooltip="Thêm vào giỏ hàng">
-
-                <mat-icon>add_shopping_cart</mat-icon>
+              <button (click)="addToGioHang(mon)" class="h-10 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white 
+               flex items-center gap-1.5 font-medium text-sm shadow-sm hover:shadow 
+               active:scale-95 transition duration-200 mt-4" matTooltip="Thêm vào giỏ hàng">
+                <span>Thêm</span>
               </button>
-
             </div>
 
           </mat-card-content>
@@ -442,15 +453,8 @@
               </span>
             </div>
 
-            <div *ngIf="gg.giam_toi_da">
-              Giảm tối đa:
-              <span class="font-semibold text-green-800">
-                {{ gg.giam_toi_da | number }}đ
-              </span>
-            </div>
-
             <div *ngIf="gg.is_active" class="text-green-700 font-semibold">
-              Active
+              Đang hoạt động
             </div>
 
           </div>

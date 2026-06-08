@@ -21,6 +21,8 @@ import {
 import { HoaDonService } from '../../../core/services/HoaDon.Service';
 import { QuanLyNhanVienService } from '../../../core/services/QuanLyNhanVien.service';
 import { AdminService } from '../../../core/services/admin.service';
+import { DanhGiaService } from '../../../core/services/DanhGia.service';
+import { forkJoin } from 'rxjs';
 
 export interface PeriodicElement {
   name: string;
@@ -132,14 +134,19 @@ export class Dashboardcomponent implements OnInit {
   soDonNam = 0;
   namHienTai = '';
 
+  //danhgia
+  soDanhGiaHomNay: number = 0;
+  ngayDanhGia: string = '';
 
-  // Pie chart
-  public pieChartOptions: PieChartOptions;
+
+
+
   // Area chart
   public areaChartOptions: AreaChartOptions;
   public RadialbarChartOptions: RadialbarChartOptions;
   public BarChartOptions: BarChartOptions;
   public AreaBasicChartOptions: AreaBasicChartOptions;
+  public pieChartOptions: PieChartOptions;
 
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = ELEMENT_DATA;
@@ -147,215 +154,147 @@ export class Dashboardcomponent implements OnInit {
   constructor(
     private hoaDonService: HoaDonService,
     private nhanVienService: QuanLyNhanVienService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private danhGiaService: DanhGiaService
   ) {
-    // Pie chart
+
     this.pieChartOptions = {
-      series: [44, 55, 13, 43, 22],
-      chart: { width: 380, type: 'pie' },
-      labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+      series: [],
+      chart: {
+        type: 'pie',
+        width: 380
+      },
+      labels: [],
       responsive: [
         {
           breakpoint: 480,
-          options: { chart: { width: 200 }, legend: { position: 'bottom' } }
+          options: {
+            chart: { width: 200 },
+            legend: { position: 'bottom' }
+          }
         }
       ]
     };
-
-    // Area chart
+    // ================= AREA CHART (DOANH THU) =================
     this.areaChartOptions = {
-      series: [
-        { name: 'series1', data: [31, 40, 28, 51, 42, 109, 100] },
-        { name: 'series2', data: [11, 32, 45, 32, 34, 52, 41] }
-      ],
-      chart: { height: 350, type: 'area' },
-      dataLabels: { enabled: false },
-      stroke: { curve: 'smooth' },
-      xaxis: {
-        type: 'datetime',
-        categories: [
-          '2018-09-19T00:00:00.000Z',
-          '2018-09-19T01:30:00.000Z',
-          '2018-09-19T02:30:00.000Z',
-          '2018-09-19T03:30:00.000Z',
-          '2018-09-19T04:30:00.000Z',
-          '2018-09-19T05:30:00.000Z',
-          '2018-09-19T06:30:00.000Z'
-        ]
-      },
-      tooltip: { x: { format: 'dd/MM/yy HH:mm' } }
-    };
+      series: [],
 
-    this.RadialbarChartOptions = {
-      series: [44, 55, 67, 83],
       chart: {
         height: 350,
-        type: "radialBar"
+        type: 'area',
+
+        // 🔒 QUAN TRỌNG: tắt hoàn toàn zoom
+        zoom: {
+          enabled: false
+        },
+
+        // ẩn toolbar
+        toolbar: {
+          show: false
+        }
+      },
+
+      dataLabels: {
+        enabled: false
+      },
+
+      stroke: {
+        curve: 'smooth',
+        width: 2
+      },
+
+      xaxis: {
+        type: 'category',   // 🔒 ÉP TRỤC X LÀ CATEGORY
+        categories: []      // ngày: ['01/06', '02/06', ...]
+      },
+
+      tooltip: {
+        enabled: true,
+        x: {
+          format: 'dd/MM/yyyy'
+        }
+      }
+    };
+
+    // ================= RADIAL BAR (TỶ LỆ HOÀN THÀNH) =================
+    this.RadialbarChartOptions = {
+      series: [],
+      chart: {
+        height: 350,
+        type: 'radialBar'
       },
       plotOptions: {
         radialBar: {
           dataLabels: {
-            name: {
-              fontSize: "22px"
-            },
-            value: {
-              fontSize: "16px"
-            },
+            name: { fontSize: '18px' },
+            value: { fontSize: '26px' },
             total: {
               show: true,
-              label: "Total",
-              formatter: function (w) {
-                return "249";
-              }
+              label: 'Hoàn thành',
+              formatter: () => '0%'
             }
           }
         }
       },
-      labels: ["Apples", "Oranges", "Bananas", "Berries"]
+      labels: []
     };
+
+    // ================= BAR CHART =================
     this.BarChartOptions = {
-      series: [
-        {
-          data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
-        }
-      ],
+      series: [],
       chart: {
-        type: "bar",
+        type: 'bar',
         height: 380
       },
       plotOptions: {
         bar: {
-          barHeight: "100%",
-          distributed: true,
           horizontal: true,
-          dataLabels: {
-            position: "bottom"
-          }
+          distributed: true
         }
       },
-      colors: [
-        "#33b2df",
-        "#546E7A",
-        "#d4526e",
-        "#13d8aa",
-        "#A5978B",
-        "#2b908f",
-        "#f9a3a4",
-        "#90ee7e",
-        "#f48024",
-        "#69d2e7"
-      ],
-      dataLabels: {
-        enabled: true,
-        textAnchor: "start",
-        style: {
-          colors: ["#fff"]
-        },
-        formatter: function (val, opt) {
-          return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val;
-        },
-        offsetX: 0,
-        dropShadow: {
-          enabled: true
-        }
-      },
-      stroke: {
-        width: 1,
-        colors: ["#fff"]
-      },
-      xaxis: {
-        categories: [
-          "South Korea",
-          "Canada",
-          "United Kingdom",
-          "Netherlands",
-          "Italy",
-          "France",
-          "Japan",
-          "United States",
-          "China",
-          "India"
-        ]
-      },
-      yaxis: {
-        labels: {
-          show: false
-        }
-      },
-      title: {
-        text: "Custom DataLabels",
-        align: "center",
-        floating: true
-      },
-      subtitle: {
-        text: "Category Names as DataLabels inside bars",
-        align: "center"
-      },
-      tooltip: {
-        x: {
-          show: false
-        },
-        y: {
-          title: {
-            formatter: function () {
-              return "";
-            }
-          }
-        }
-      }
+      dataLabels: { enabled: false },
+      stroke: { width: 1 },
+      xaxis: { categories: [] },
+      yaxis: { labels: { show: false } },
+      tooltip: {},
+      colors: [],
+      title: { text: '' },
+      subtitle: { text: '' }
     };
+
+    // ================= AREA BASIC CHART =================
     this.AreaBasicChartOptions = {
-      series: [
-        {
-          name: "STOCK ABC",
-          data: series.monthDataSeries1.prices
-        }
-      ],
+      series: [],
       chart: {
-        type: "area",
+        type: 'area',
         height: 350,
-        zoom: {
-          enabled: false
-        }
+        zoom: { enabled: false }
       },
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        curve: "straight"
-      },
-
-      title: {
-        text: "Fundamental Analysis of Stocks",
-        align: "left"
-      },
-      subtitle: {
-        text: "Price Movements",
-        align: "left"
-      },
-      labels: series.monthDataSeries1.dates,
+      dataLabels: { enabled: false },
+      stroke: { curve: 'straight' },
       xaxis: {
-        type: "datetime"
+        type: 'datetime'
       },
-      yaxis: {
-        opposite: true
-      },
-      legend: {
-        horizontalAlign: "left"
-      }
+      yaxis: {},
+      labels: [],
+      legend: { horizontalAlign: 'left' },
+      title: { text: '' },
+      subtitle: { text: '' }
     };
-
-
   }
   ngOnInit(): void {
     this.loadTongHoaDon();
     this.loadTongKhachHang();
-    this.loadTongHoaDonHuy()
-    this.loadDonHangDaGiao()
-    this.layDoanhThuHomNay()
+    this.loadTongHoaDonHuy();
+    this.loadDonHangDaGiao();
+    this.layDoanhThuHomNay();
 
-    this.layDoanhThuThang()
-    this.layDoanhThuNam()
+    this.layDoanhThuThang();
+    this.layDoanhThuNam();
+    this.laySoLuongDanhGiaHomNay();
+    this.loadPieChartMonAnBanChay();
+    this.loadAreaChartDoanhThuNgay();
+    this.loadRadialHoanThanh();
   }
   loadTongHoaDon() {
     this.dangTai = true;
@@ -478,19 +417,137 @@ export class Dashboardcomponent implements OnInit {
     });
   }
   layDoanhThuNam() {
-  const now = new Date();
+    const now = new Date();
 
-  this.adminService.getDoanhThuNam(now.getFullYear()).subscribe({
-    next: (res) => {
-      const data = res.data;
-      this.doanhThuNam = data.doanh_thu;
-      this.soDonNam = data.so_don;
-      this.namHienTai = `Năm ${data.nam}`;
-    },
-    error: (err) => {
-      console.error('Lỗi lấy doanh thu năm:', err);
-      this.doanhThuNam = 0;
+    this.adminService.getDoanhThuNam(now.getFullYear()).subscribe({
+      next: (res) => {
+        const data = res.data;
+        this.doanhThuNam = data.doanh_thu;
+        this.soDonNam = data.so_don;
+        this.namHienTai = `Năm ${data.nam}`;
+      },
+      error: (err) => {
+        console.error('Lỗi lấy doanh thu năm:', err);
+        this.doanhThuNam = 0;
+      }
+    });
+  }
+  laySoLuongDanhGiaHomNay() {
+    this.danhGiaService.getSoLuongDanhGia().subscribe({
+      next: (res) => {
+        const data = res.data;
+        this.soDanhGiaHomNay = data.so_danh_gia;
+        this.ngayDanhGia = `Hôm nay (${data.ngay})`;
+      },
+      error: (err) => {
+        console.error('Lỗi lấy số lượng đánh giá hôm nay:', err);
+        this.soDanhGiaHomNay = 0;
+      }
+    });
+  }
+
+  loadPieChartMonAnBanChay() {
+    this.hoaDonService.getTopMonAnBanChay(5).subscribe({
+      next: (res) => {
+        const data = res.data;
+
+        this.pieChartOptions = {
+          ...this.pieChartOptions,
+          series: data.map((item: any) => item.so_luong),
+          labels: data.map((item: any) => item.ten_mon_an)
+        };
+      },
+      error: (err) => {
+        console.error('Lỗi load pie chart món ăn bán chạy', err);
+      }
+    });
+  }
+
+  loadAreaChartDoanhThuNgay() {
+    const today = new Date();
+    const days = 7;
+
+    const requests = [];
+    const labels: string[] = [];
+
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+
+      const ngay = d.toISOString().split('T')[0]; // yyyy-mm-dd
+      labels.push(ngay);
+
+      requests.push(this.adminService.LayDoanhThuNgay(ngay));
     }
-  });
-}
+
+    forkJoin(requests).subscribe({
+      next: (responses) => {
+        const doanhThuData = responses.map(res => res.data.doanh_thu);
+
+        this.areaChartOptions = {
+          series: [
+            {
+              name: 'Doanh thu',
+              data: doanhThuData
+            }
+          ],
+          chart: {
+            type: 'area',
+            height: 350,
+            toolbar: { show: false }
+          },
+          stroke: {
+            curve: 'smooth'
+          },
+          dataLabels: {
+            enabled: false
+          },
+          xaxis: {
+            categories: labels
+          },
+          tooltip: {
+            y: {
+              formatter: (val: number) =>
+                val.toLocaleString('vi-VN') + ' ₫'
+            }
+          }
+        };
+      },
+      error: (err) => {
+        console.error('Lỗi load area chart doanh thu ngày', err);
+      }
+    });
+  }
+  loadRadialHoanThanh() {
+    this.adminService.getTiLeHoanThanhHomNay().subscribe(res => {
+      const tiLe = res.data.ti_le;
+
+      this.RadialbarChartOptions = {
+        series: [tiLe],
+        chart: {
+          height: 350,
+          type: 'radialBar'
+        },
+        plotOptions: {
+          radialBar: {
+            dataLabels: {
+              name: {
+                fontSize: '18px'
+              },
+              value: {
+                fontSize: '26px',
+                formatter: () => tiLe + '%'
+              },
+              total: {
+                show: true,
+                label: 'Hoàn thành',
+                formatter: () => `${tiLe}%`
+              }
+            }
+          }
+        },
+        labels: ['Đơn hôm nay']
+      };
+    });
+  }
 }

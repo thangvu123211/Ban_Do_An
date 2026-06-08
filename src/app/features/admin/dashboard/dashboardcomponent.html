@@ -164,26 +164,33 @@
       </div>
     </div>
 
-    <div
-      class="rounded-2xl shadow-lg p-5 flex items-center justify-between hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
+    <div class="rounded-2xl shadow-lg p-5 flex items-center justify-between
+         hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
+
       <div>
         <h5 class="text-xs font-semibold uppercase tracking-wider">
-          DOANH THU ĐÃ BÁN
+          SỐ LƯỢNG ĐÁNH GIÁ HÔM NAY
         </h5>
-        <span class="text-3xl font-bold">49,65%</span>
-        <p class="text-sm mt-2">
-          <span class="text-green-500 mr-2"><i class="fas fa-arrow-up"></i> 12%</span>
-          So với tháng trước
+
+        <span class="text-3xl font-bold">
+          {{ soDanhGiaHomNay }}
+        </span>
+        <p class="text-xs text-gray-500 mt-1">
+           {{ ngayHomNay }}
         </p>
       </div>
-      <div class="bg-blue-500 rounded-full p-2 shadow-md flex items-center justify-center
-         cursor-pointer hover:bg-red-600 hover:scale-110 transition-all duration-200" title="Xem Chi Tiết">
+
+      <div class="bg-yellow-500 rounded-full p-2 shadow-md flex items-center justify-center
+           cursor-pointer hover:bg-yellow-600 hover:scale-110 transition-all duration-200"
+        title="Xem chi tiết đánh giá">
+
         <mat-icon class="!text-base !leading-none flex items-center justify-center"
-          style="display: flex; align-items: center; justify-content: center; line-height: 0; font-size: 18px;">
-          keyboard_arrow_down
+          style="line-height: 0; font-size: 18px;">
+          star_rate
         </mat-icon>
+
       </div>
-  </div>
+    </div>
   </div>
 </mat-card>
 
@@ -193,14 +200,14 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Sales Value Chart -->
     <mat-card>
-      <h3 class="font-bold mb-2 mt-2 ml-4">Pie Chart</h3>
+      <h3 class="font-bold mb-2 mt-2 ml-4">Món ăn được yêu thích nhất</h3>
       <apx-chart [series]="pieChartOptions.series" [chart]="pieChartOptions.chart" [labels]="pieChartOptions.labels"
         [responsive]="pieChartOptions.responsive">
       </apx-chart>
     </mat-card>
 
     <mat-card>
-      <h3 class="font-bold mb-2 mt-2 ml-4">Area Chart</h3>
+      <h3 class="font-bold mb-2 mt-2 ml-4">% Đơn hoàn thành trong ngày hôm nay</h3>
       <apx-chart [series]="RadialbarChartOptions.series" [chart]="RadialbarChartOptions.chart"
         [plotOptions]="RadialbarChartOptions.plotOptions" [labels]="RadialbarChartOptions.labels">
       </apx-chart>
@@ -208,7 +215,7 @@
 
     <!-- Area Chart (full width) -->
     <mat-card class="lg:col-span-2 shadow rounded-lg p-4 mt-6">
-      <h3 class="font-bold mb-2 mt-2 ml-4">Area Chart</h3>
+      <h3 class="font-bold mb-2 mt-2 ml-4">Doanh thu theo từng ngày</h3>
       <apx-chart [series]="areaChartOptions.series" [chart]="areaChartOptions.chart" [xaxis]="areaChartOptions.xaxis"
         [stroke]="areaChartOptions.stroke" [tooltip]="areaChartOptions.tooltip"
         [dataLabels]="areaChartOptions.dataLabels">

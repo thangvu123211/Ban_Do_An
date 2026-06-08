@@ -1,263 +1,197 @@
-<div class="grid grid-cols-1 xl:grid-cols-3 gap-8 h-full min-h-[85vh] bg-gray-50/50 p-1">
+<div class="relative h-96 flex items-center justify-start px-10 bg-gradient-to-r">
+  <div class="z-10">
+    <h1 class="text-5xl font-bold mb-4">Quản Lý Option Món Ăn</h1>
+    <p class="text-lg max-w-lg">
+      Thiết lập các nhóm tùy chọn (Size, Topping, Mức độ cay...) và giá tiền cộng thêm một cách dễ dàng cho từng món ăn.
+    </p>
+  </div>
+</div>
 
-  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
-
-    <div class="mb-5 pb-3 border-b border-gray-100 flex justify-between items-center">
-      <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2.5">
-        <span class="p-2 bg-orange-100 text-orange-600 rounded-xl text-base">🍽️</span>
-        Danh sách món ăn
-      </h2>
-      <span class="text-xs font-semibold px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full">
-        {{MonAn.length || 0}} món
-      </span>
-    </div>
-
-    <div class="overflow-y-auto max-h-[75vh] pr-2 space-y-3 custom-scrollbar">
-
-      <div *ngFor="let mon of MonAn" (click)="chonMonAn(mon)"
-        class="flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all duration-200 border-2" [ngClass]="{
-             'bg-orange-50/70 border-orange-500 shadow-sm ring-1 ring-orange-500/15': monAnDangChon?.ma_mon_an === mon.ma_mon_an,
-             'bg-white border-gray-100 hover:border-gray-300 hover:bg-gray-50/80 shadow-sm': monAnDangChon?.ma_mon_an !== mon.ma_mon_an
-           }">
-
-        <div class="w-14 h-14 rounded-xl overflow-hidden bg-gray-50 shrink-0 border border-gray-100">
-          <img *ngIf="mon.anh_mon_an?.length; else noImg" [src]="mon.anh_mon_an[0].url"
-            class="w-full h-full object-cover" />
-          <ng-template #noImg>
-            <div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 text-xs">No Img</div>
-          </ng-template>
+<div class="container mx-auto px-6 mt-10 mb-10">
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 min-h-[75vh]">
+    
+    <div class="xl:col-span-1">
+      <mat-card class="w-full shadow-xl rounded-2xl p-6 flex flex-col h-full bg-white">
+        <div class="mb-5 pb-3 border-b border-gray-100 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2.5 m-0">
+            <span class="p-2 bg-orange-100 text-orange-600 rounded-xl text-base flex items-center justify-center"></span>
+            Danh sách món ăn
+          </h2>
         </div>
 
-        <div class="flex-1 min-w-0">
-          <p class="font-bold text-gray-900 text-base truncate mb-1">{{ mon.ten_mon_an }}</p>
-          <p class="text-red-500 font-extrabold text-sm tracking-wide">
-            {{ mon.gia_tien | number }} đ
+        <div class="overflow-y-auto max-h-[65vh] pr-1 space-y-3">
+          <div *ngFor="let mon of MonAn" (click)="chonMonAn(mon)"
+            class="flex items-center gap-4 p-3 rounded-xl cursor-pointer transition-all duration-200 border-2" 
+            [ngClass]="{
+               'bg-orange-50/70 border-orange-500 shadow-sm': monAnDangChon?.ma_mon_an === mon.ma_mon_an,
+               'bg-white border-gray-100 hover:border-gray-300 hover:bg-gray-50/80': monAnDangChon?.ma_mon_an !== mon.ma_mon_an
+             }">
+
+            <div class="w-14 h-14 rounded-xl overflow-hidden bg-gray-50 shrink-0 border border-gray-100 flex-shrink-0">
+              <img *ngIf="mon.anh_mon_an?.length; else noImg" [src]="mon.anh_mon_an[0].url" class="w-full h-full object-cover" />
+              <ng-template #noImg>
+                <div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 text-xs font-medium">No Img</div>
+              </ng-template>
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <p class="font-bold text-gray-900 text-base truncate mb-0.5">{{ mon.ten_mon_an }}</p>
+              <p class="text-red-500 font-extrabold text-sm tracking-wide m-0">
+                {{ mon.gia_tien | number }} đ
+              </p>
+            </div>
+
+            <div *ngIf="monAnDangChon?.ma_mon_an === mon.ma_mon_an" class="text-orange-500 font-bold flex items-center">
+              <mat-icon>arrow_forward</mat-icon>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="xl:col-span-2">
+      <mat-card class="w-full shadow-xl rounded-2xl p-6 h-full bg-white" *ngIf="monAnDangChon; else emptyState">
+        
+        <div class="mb-6 pb-4 border-b border-gray-100 flex flex-col justify-between gap-2">
+          <h2 class="text-2xl font-bold text-gray-900 flex items-center flex-wrap gap-2 m-0">
+            ⚙️ Cấu hình Option cho món: 
+            <span class="text-orange-500 bg-orange-50 px-3 py-0.5 rounded-xl border border-orange-200 text-xl font-bold">
+              {{ monAnDangChon.ten_mon_an }}
+            </span>
+          </h2>
+          <p class="text-sm text-gray-500 m-0">
+            Tạo nhóm lựa chọn bắt buộc hoặc tùy chọn kèm giá tiền cộng thêm cho món ăn này.
           </p>
         </div>
 
-        <div *ngIf="monAnDangChon?.ma_mon_an === mon.ma_mon_an" class="text-orange-500 font-bold text-lg">
-          ➔
-        </div>
-      </div>
+        <div class="bg-gray-50/80 border border-gray-200 rounded-2xl p-5 mb-6">
+          <h3 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+            <mat-icon class="text-blue-500 scale-90">add_circle</mat-icon> Thêm nhóm option mới
+          </h3>
 
-    </div>
-  </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <mat-form-field appearance="outline" class="md:col-span-2 w-full density-compact">
+              <mat-label>Tên nhóm option</mat-label>
+              <input matInput placeholder="Ví dụ: Chọn Size, Topping đi kèm, Mức độ cay..." [(ngModel)]="nhomOption.ten_nhom" />
+            </mat-form-field>
 
-  <div class="xl:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-8"
-    *ngIf="monAnDangChon; else emptyState">
-
-    <div class="mb-6 pb-5 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h2 class="text-2xl font-black text-gray-900 flex items-center flex-wrap gap-2">
-          ⚙️ Cấu hình Option cho món:
-          <span class="text-orange-500 bg-orange-50 px-3 py-1 rounded-xl border border-orange-200 text-xl font-bold">
-            {{ monAnDangChon.ten_mon_an }}
-          </span>
-        </h2>
-        <p class="text-sm text-gray-500 mt-1.5">
-          Tạo nhóm lựa chọn bắt buộc hoặc tùy chọn kèm giá tiền cộng thêm cho món ăn này.
-        </p>
-      </div>
-    </div>
-
-    <div class="bg-gray-50/80 border border-gray-200/80 rounded-2xl p-6 mb-8 shadow-inner">
-      <h3 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
-        <span class="text-blue-500 text-lg">➕</span> Thêm nhóm option mới
-      </h3>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-        <div class="md:col-span-2">
-          <input
-            class="w-full text-base border border-gray-300 rounded-xl px-4 py-3 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 outline-none transition bg-white shadow-sm placeholder:text-gray-400 font-medium"
-            placeholder="Ví dụ: Chọn Size, Topping đi kèm, Mức độ cay..." [(ngModel)]="nhomOption.ten_nhom" />
-        </div>
-
-        <div
-          class="flex items-center gap-6 text-sm font-semibold text-gray-700 bg-white border border-gray-200 px-4 py-3 rounded-xl h-full shadow-sm">
-          <label class="flex items-center gap-2.5 cursor-pointer select-none group">
-            <input type="checkbox" class="w-4 h-4 accent-orange-500 rounded cursor-pointer"
-              [(ngModel)]="nhomOption.bat_buoc" />
-            <span class="group-hover:text-orange-500 transition">Bắt buộc chọn 1</span>
-          </label>
-
-          <label class="flex items-center gap-2.5 cursor-pointer select-none group">
-            <input type="checkbox" class="w-4 h-4 accent-orange-500 rounded cursor-pointer"
-              [(ngModel)]="nhomOption.chon_nhieu" />
-            <span class="group-hover:text-orange-500 transition">Chọn nhiều</span>
-          </label>
-        </div>
-      </div>
-
-      <button
-        class="mt-4 w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white py-3 px-6 rounded-xl font-bold text-base transition shadow-md hover:shadow-lg flex items-center justify-center gap-2"
-        (click)="themNhomOption()">
-        <span>✨ Khởi tạo nhóm option này</span>
-      </button>
-    </div>
-
-    <div class="space-y-4 overflow-y-auto max-h-[48vh] pr-2">
-
-      <div *ngFor="let nhom of danhSachNhomOption"
-        class="bg-white border border-gray-100 rounded-xl shadow-sm p-5 hover:shadow-md transition">
-
-        <!-- ================= HEADER ================= -->
-        <div class="flex items-start justify-between mb-4">
-
-          <!-- NAME -->
-          <div class="flex items-center gap-3 flex-1 min-w-0">
-
-            <span class="text-gray-400 text-lg">📋</span>
-
-            <div class="flex-1 min-w-0">
-
-              <!-- EDIT -->
-              <input *ngIf="editingId === nhom.ma_nhom_option; else viewName" [(ngModel)]="nhom.ten_nhom"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-400 outline-none" />
-
-              <!-- VIEW -->
-              <ng-template #viewName>
-                <h4 class="font-bold text-gray-900 text-base truncate">
-                  {{ nhom.ten_nhom }}
-                </h4>
-              </ng-template>
-
-              <p class="text-xs text-gray-400">ID: {{ nhom.ma_nhom_option }}</p>
-
+            <div class="flex items-center gap-4 bg-white border border-gray-200 px-4 py-3 rounded-xl h-[56px] justify-around">
+              <mat-checkbox color="primary" class="accent-orange-500" [(ngModel)]="nhomOption.bat_buoc">
+                <span class="text-sm font-medium text-gray-700">Bắt buộc</span>
+              </mat-checkbox>
+              <mat-checkbox color="primary" class="accent-orange-500" [(ngModel)]="nhomOption.chon_nhieu">
+                <span class="text-sm font-medium text-gray-700">Chọn nhiều</span>
+              </mat-checkbox>
             </div>
           </div>
 
-          <!-- ACTIONS -->
-          <div class="flex items-center gap-2">
-
-            <button (click)="editingId = nhom.ma_nhom_option" class="p-2 rounded-lg hover:bg-blue-50 text-blue-500">
-              ✏️
-            </button>
-
-            <button (click)="saveNhomOption(nhom)" class="p-2 rounded-lg hover:bg-green-50 text-green-600">
-              💾
-            </button>
-
-            <button (click)="xoaNhomOption(nhom)" class="p-2 rounded-lg hover:bg-red-50 text-red-500">
-              🗑️
-            </button>
-
-          </div>
-        </div>
-
-        <!-- ================= SETTINGS ================= -->
-        <div class="flex gap-3 mb-4">
-
-          <!-- BẮT BUỘC -->
-          <label class="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer"
-            [ngClass]="nhom.bat_buoc ? 'border-red-300 bg-red-50' : 'border-gray-200'">
-
-            <input type="checkbox" [(ngModel)]="nhom.bat_buoc" (change)="toggleBatBuoc(nhom)" class="accent-red-500" />
-
-            <span class="text-sm font-medium" [ngClass]="nhom.bat_buoc ? 'text-red-600' : 'text-gray-500'">
-              Bắt buộc
-            </span>
-          </label>
-
-          <!-- CHỌN NHIỀU -->
-          <label class="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer"
-            [ngClass]="nhom.chon_nhieu ? 'border-orange-300 bg-orange-50' : 'border-gray-200'">
-
-            <input type="checkbox" [(ngModel)]="nhom.chon_nhieu" (change)="toggleChonNhieu(nhom)"
-              class="accent-orange-500" />
-
-            <span class="text-sm font-medium" [ngClass]="nhom.chon_nhieu ? 'text-orange-600' : 'text-gray-500'">
-              Chọn nhiều
-            </span>
-          </label>
-
-        </div>
-
-        <!-- ================= OPTIONS LIST ================= -->
-        <div class="space-y-2 mb-4">
-
-          <div *ngFor="let opt of nhom.option_items"
-            class="flex justify-between items-center bg-gray-50 hover:bg-gray-100 rounded-lg px-4 py-2">
-
-            <!-- LEFT -->
-            <div class="flex flex-col flex-1">
-
-              <input *ngIf="opt.editing" [(ngModel)]="opt.ten_option" class="border px-2 py-1 rounded text-sm mb-1" />
-
-              <span *ngIf="!opt.editing" class="text-sm font-medium">
-                {{ opt.ten_option }}
-              </span>
-
-              <input *ngIf="opt.editing" type="number" [(ngModel)]="opt.gia_them"
-                class="border px-2 py-1 rounded text-sm w-24" />
-
-              <span *ngIf="!opt.editing" class="text-xs text-gray-500">
-                +{{ opt.gia_them | number }}đ
-              </span>
-            </div>
-
-            <!-- ACTIONS -->
-            <div class="flex items-center gap-2">
-
-              <button (click)="opt.editing = !opt.editing" class="text-blue-500">
-                ✏️
-              </button>
-
-              <button *ngIf="opt.editing" (click)="saveOptionItem(opt)" class="text-green-600">
-                💾
-              </button>
-
-              <button (click)="deleteOptionItem(opt)" class="text-red-500">
-                ❌
-              </button>
-
-            </div>
-          </div>
-
-          <ng-template #empty>
-            <div class="text-sm text-gray-400 bg-gray-50 rounded-lg py-3 text-center">
-              Chưa có option
-            </div>
-          </ng-template>
-
-        </div>
-
-        <!-- ================= ADD OPTION ================= -->
-        <div class="flex gap-2">
-
-          <input class="flex-1 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-200"
-            placeholder="Tên option..." [(ngModel)]="nhom.newOption.ten_option" />
-
-          <input class="w-28 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-200" type="number"
-            placeholder="Giá" [(ngModel)]="nhom.newOption.gia_them" />
-
-          <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 rounded-lg text-sm"
-            (click)="themOptionItem(nhom)">
-            + Thêm
+          <button mat-flat-button color="primary" class="w-full mt-3 !py-6 bg-orange-500 hover:bg-orange-600 font-bold text-base rounded-xl" (click)="themNhomOption()">
+            <mat-icon class="mr-1">auto_awesome</mat-icon> Khởi tạo nhóm option này
           </button>
-
         </div>
 
-      </div>
+        <div class="space-y-4 overflow-y-auto max-h-[50vh] pr-1">
+          <div *ngFor="let nhom of danhSachNhomOption" class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition">
+            
+            <div class="flex items-center justify-between mb-3 gap-4">
+              <div class="flex items-center gap-2 flex-1 min-w-0">
+                <mat-icon class="text-gray-400">assignment</mat-icon>
+                <div class="flex-1 min-w-0">
+                  <div *ngIf="editingId === nhom.ma_nhom_option; else viewName" class="w-full">
+                    <input [(ngModel)]="nhom.ten_nhom" class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-orange-400 outline-none" />
+                  </div>
+                  <ng-template #viewName>
+                    <h4 class="font-bold text-gray-900 text-base truncate m-0">{{ nhom.ten_nhom }}</h4>
+                  </ng-template>
+                  <p class="text-xs text-gray-400 m-0">ID: {{ nhom.ma_nhom_option }}</p>
+                </div>
+              </div>
 
+              <div class="flex items-center gap-1">
+                <button mat-icon-button color="primary" matTooltip="Sửa tên" (click)="editingId = nhom.ma_nhom_option">
+                  <mat-icon class="text-blue-500">edit</mat-icon>
+                </button>
+                <button mat-icon-button color="accent" matTooltip="Lưu" (click)="saveNhomOption(nhom)">
+                  <mat-icon class="text-green-600">save</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" matTooltip="Xóa nhóm" (click)="xoaNhomOption(nhom)">
+                  <mat-icon class="text-red-500">delete</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex gap-4 mb-4 border-b pb-3">
+              <mat-checkbox color="warn" [(ngModel)]="nhom.bat_buoc" (change)="toggleBatBuoc(nhom)">
+                <span class="text-sm font-semibold" [ngClass]="nhom.bat_buoc ? 'text-red-600' : 'text-gray-500'">Bắt buộc chọn</span>
+              </mat-checkbox>
+
+              <mat-checkbox color="primary" [(ngModel)]="nhom.chon_nhieu" (change)="toggleChonNhieu(nhom)">
+                <span class="text-sm font-semibold" [ngClass]="nhom.chon_nhieu ? 'text-orange-600' : 'text-gray-500'">Cho phép chọn nhiều</span>
+              </mat-checkbox>
+            </div>
+
+            <div class="space-y-2 mb-4">
+              <div *ngFor="let opt of nhom.option_items" class="flex justify-between items-center bg-gray-50 hover:bg-gray-100 rounded-lg px-4 py-2">
+                
+                <div class="flex flex-col flex-1 min-w-0">
+                  <div *ngIf="opt.editing; else viewOpt" class="flex flex-col gap-1 pr-4">
+                    <input [(ngModel)]="opt.ten_option" class="border px-2 py-1 rounded text-sm w-full" placeholder="Tên..." />
+                    <input type="number" [(ngModel)]="opt.gia_them" class="border px-2 py-1 rounded text-sm w-32" placeholder="Giá..." />
+                  </div>
+                  <ng-template #viewOpt>
+                    <span class="text-sm font-medium text-gray-800 truncate">{{ opt.ten_option }}</span>
+                    <span class="text-xs text-gray-500 font-bold">+{{ opt.gia_them | number }}đ</span>
+                  </ng-template>
+                </div>
+
+                <div class="flex items-center gap-1">
+                  <button mat-icon-button (click)="opt.editing = !opt.editing" class="scale-90">
+                    <mat-icon class="text-blue-500">edit</mat-icon>
+                  </button>
+                  <button mat-icon-button *ngIf="opt.editing" (click)="saveOptionItem(opt)" class="scale-90">
+                    <mat-icon class="text-green-600">save</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="deleteOptionItem(opt)" class="scale-90">
+                    <mat-icon class="text-red-500">clear</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="!nhom.option_items?.length" class="text-sm text-gray-400 bg-gray-50/50 border border-dashed rounded-lg py-3 text-center">
+                Chưa có option con nào được tạo
+              </div>
+            </div>
+
+            <div class="flex gap-2 items-center pt-2">
+              <input class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-200 outline-none"
+                placeholder="Tên option con (Ví dụ: Trân châu, Size L...)" [(ngModel)]="nhom.newOption.ten_option" />
+
+              <input class="w-28 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-200 outline-none" type="number"
+                placeholder="Giá thêm" [(ngModel)]="nhom.newOption.gia_them" />
+
+              <button mat-flat-button color="primary" class="bg-orange-500 hover:bg-orange-600 !rounded-lg h-[38px]" (click)="themOptionItem(nhom)">
+                + Thêm
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </mat-card>
+
+      <ng-template #emptyState>
+        <mat-card class="w-full border-2 border-dashed border-gray-300 p-12 flex flex-col items-center justify-center text-center min-h-[65vh] bg-gray-50/30 shadow-none rounded-2xl">
+          <div class="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center text-3xl mb-4 text-orange-500 animate-bounce shadow-sm">
+            👈
+          </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-1">Chưa chọn món ăn</h3>
+          <p class="text-gray-400 text-sm max-w-sm m-0">
+            Vui lòng click vào một món ăn ở danh sách bên trái để tiến hành cấu hình các nhóm tùy chọn (Topping, Kích cỡ...).
+          </p>
+        </mat-card>
+      </ng-template>
     </div>
 
   </div>
-
-  <ng-template #emptyState>
-    <div
-      class="xl:col-span-2 bg-white rounded-2xl border border-dashed border-gray-200 p-12 flex flex-col items-center justify-center text-center min-h-[60vh]">
-      <div
-        class="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center text-3xl mb-4 text-orange-500 animate-bounce">
-        👈
-      </div>
-      <h3 class="text-xl font-bold text-gray-800 mb-1">Chưa chọn món ăn</h3>
-      <p class="text-gray-400 text-sm max-w-sm">
-        Vui lòng click vào một món ăn ở danh sách bên trái để tiến hành cấu hình các nhóm tùy chọn (Topping, Kích
-        cỡ...).
-      </p>
-    </div>
-  </ng-template>
-
 </div>
 
 <app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

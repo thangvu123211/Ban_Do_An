@@ -8,6 +8,7 @@ import { DanhGiaService } from '../../../../core/services/DanhGia.service';
 import { ThongTinMonAn } from '../../../guest/dialogs/thong-tin-mon-an/thong-tin-mon-an';
 import { Router } from '@angular/router';
 import { QuanLyMonAn } from '../../../../core/services/QuanLyMonAn.service';
+import { HoaDonService } from '../../../../core/services/HoaDon.Service';
 
 @Component({
   selector: 'app-thong-tin-don-hang',
@@ -26,7 +27,13 @@ export class ThongTinDonHang implements OnInit {
     type: 'success' as 'success' | 'warn' | 'error'
   };
 
+  showQR = false;
+  qrUrl = '';
+  maHoaDonDangThanhToan: number | null = null;
+
   daDanhGia = false;
+  daThanhToan = false;
+  daXuLyThanhToan = false;
 
   steps = [
     { key: 'cho_xac_nhan', label: 'Chờ xác nhận' },
@@ -34,6 +41,7 @@ export class ThongTinDonHang implements OnInit {
     { key: 'dang_giao', label: 'Đang giao hàng' },
     { key: 'da_giao', label: 'Đã giao hàng' }
   ];
+  showSuccessModal = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -42,7 +50,8 @@ export class ThongTinDonHang implements OnInit {
     private dialog: MatDialog,
     private danhGiaService: DanhGiaService,
     private router: Router,
-    private monAnService: QuanLyMonAn
+    private monAnService: QuanLyMonAn,
+    private hoaDonService: HoaDonService
   ) {
     this.hoaDon = data;
   }
@@ -80,6 +89,47 @@ export class ThongTinDonHang implements OnInit {
           ...this.hoaDon,
           trang_thai: 'da_huy'
         };
+      }
+
+      if (msg.type === 'payment_success') {
+
+        console.log('PAYMENT SUCCESS:', msg);
+
+        const hdId =
+          msg.payload?.hoa_don_id ||
+          msg.payload?.ma_hd ||
+          msg.payload?.id;
+
+        if (Number(hdId) !== Number(this.hoaDon.ma_hd)) return;
+        if (this.daXuLyThanhToan) return;
+
+        this.daXuLyThanhToan = true;
+
+        this.hoaDonService.getHoaDonById(this.hoaDon.ma_hd).subscribe((res: any) => {
+
+          this.hoaDon = res.data || res;
+
+          this.daThanhToan = true;
+          this.showQR = false;
+
+          this.showToast('Thanh toán thành công!', 'success');
+        });
+      }
+
+      if (msg.type === 'update_trang_thai_thanh_toan') {
+
+        if (Number(msg.payload.ma_hd) !== Number(this.hoaDon.ma_hd)) return;
+
+        this.hoaDon = {
+          ...this.hoaDon,
+          trang_thai_thanh_toan: msg.payload.trang_thai_thanh_toan
+        };
+
+        // ⭐ FIX QUAN TRỌNG
+        if (msg.payload.trang_thai_thanh_toan === 'da_thanh_toan') {
+          this.showQR = false;
+          this.showSuccessModal = true;
+        }
       }
     });
   }
@@ -147,6 +197,22 @@ export class ThongTinDonHang implements OnInit {
       });
 
     });
+  }
+
+  moThanhToan() {
+    if (!this.hoaDon?.ma_hd) return;
+
+    this.maHoaDonDangThanhToan = this.hoaDon.ma_hd;
+
+    const amount = this.hoaDon.tong_tien;
+
+    const content = `HD${this.hoaDon.ma_hd}`;
+
+    this.qrUrl =
+      `https://qr.sepay.vn/img?acc=0123456789&bank=MBBank` +
+      `&amount=${amount}&des=${encodeURIComponent(content)}`;
+
+    this.showQR = true;
   }
 
 

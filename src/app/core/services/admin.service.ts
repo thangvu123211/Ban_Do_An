@@ -82,4 +82,8 @@ export class AdminService {
       { headers: this.getAuthHeaders() }
     );
   }
+
+  getTiLeHoanThanhHomNay() {
+    return this.http.get<any>(`${environment.apiUrl}/hoa-don/ti-le-hoan-thanh-hom-nay`);
+  }
 }

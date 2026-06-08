@@ -135,10 +135,10 @@ export class CartService {
   }
 
   clearDB(userId: number) {
-    return this.http.delete(
-      `${environment.apiUrl}/gio-hang/clear`
-    );
-  }
+  return this.http.delete(
+    `${environment.apiUrl}/gio-hang/clear?userId=${userId}`
+  );
+}
 
   loadCountFromDB(userId: number) {
     this.getByUser(userId).subscribe({

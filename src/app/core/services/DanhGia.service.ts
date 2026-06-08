@@ -32,4 +32,7 @@ export class DanhGiaService {
     return this.http.get(`${environment.apiUrl}/danh-gia/mon/${id}`);
   }
 
+  getSoLuongDanhGia(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/danh-gia/so_luong_danh_gia`);
+  }
 }

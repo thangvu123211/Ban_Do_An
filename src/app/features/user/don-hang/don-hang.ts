@@ -79,13 +79,7 @@ export class DonHang implements OnInit {
             );
 
             if (index !== -1) {
-              this.hoaDons[index] = {
-                ...this.hoaDons[index],
-                trang_thai: msg.payload.trang_thai
-              };
-
-              // ép change detection
-              this.hoaDons = [...this.hoaDons];
+              this.hoaDons[index].trang_thai = msg.payload.trang_thai;
             }
             break;
           }
@@ -121,8 +115,22 @@ export class DonHang implements OnInit {
             }
             break;
           }
-        }
 
+          case 'update_trang_thai_thanh_toan': {
+            const index = this.hoaDons.findIndex(
+              h => h.ma_hd === msg.payload.ma_hd
+            );
+
+            if (index !== -1) {
+              this.hoaDons[index].trang_thai_thanh_toan =
+                msg.payload.trang_thai_thanh_toan;
+
+              // ép Angular render lại
+              this.hoaDons = [...this.hoaDons];
+            }
+            break;
+          }
+        }
       });
   }
 

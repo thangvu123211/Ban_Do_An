@@ -92,4 +92,19 @@ export class HoaDonService {
   huyThanhToan(id: number) {
     return this.http.put(`${environment.apiUrl}/hoa-don/${id}/huy_thanh_toan`, {});
   }
+
+  getHoaDonChoThanhToan(): Observable<any> {
+    const token = localStorage.getItem('token');
+
+    return this.http.get(`${environment.apiUrl}/hoa-don/cho-thanh-toan`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+  getTopMonAnBanChay(limit: number = 5) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/hoa-don/mon-an-ban-chay?limit=${limit}`
+    );
+  }
 }

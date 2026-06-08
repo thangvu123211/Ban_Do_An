@@ -11,6 +11,8 @@ import { ThongTinMonAn } from '../dialogs/thong-tin-mon-an/thong-tin-mon-an';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { QuanLyGiamGiaService } from '../../../core/services/QuanLyGiamGia';
+import { ThemGioHangDialog } from '../dialogs/them-gio-hang-dialog/them-gio-hang-dialog';
+import { OptionService } from '../../../core/services/option.service';
 
 @Component({
   selector: 'app-home-components',
@@ -33,6 +35,7 @@ export class HomeComponents implements OnInit, OnDestroy {
   danhSachLoaiMonAn: any[] = [];
   monAnNoiBat: any[] = [];
   danhSach: any[] = [];
+  ratingsMap: any = {};
 
   favoriteIds = new Set<number>();
   _loadingFav = false;
@@ -56,7 +59,8 @@ export class HomeComponents implements OnInit, OnDestroy {
     private yeuThichService: YeuThichService,
     private dialog: MatDialog,
     private router: Router,
-    private giamGiaService: QuanLyGiamGiaService
+    private giamGiaService: QuanLyGiamGiaService,
+    private optionService: OptionService
   ) { }
 
   showToast(message: string, type: 'success' | 'warn' | 'error') {
@@ -89,9 +93,6 @@ export class HomeComponents implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-
-
-    // this.startAutoSlide();
     this.loadLoaiMonAn();
     this.loadMonAnNoiBat();
     this.loadFavorites();
@@ -169,77 +170,138 @@ export class HomeComponents implements OnInit, OnDestroy {
   }
   toggleYeuThich(mon: any) {
     const token = localStorage.getItem('token');
-    const maMonAn = mon.ma_mon_an;
-
+    const maMonAn = Number(mon.ma_mon_an);
     const tenMon = mon.ten_mon_an || 'món ăn';
 
-    // ❌ CHƯA LOGIN → LOCAL
-    if (!token) {
-      if (this.favoriteIds.has(maMonAn)) {
-        this.yeuThichService.removeLocal(maMonAn);
-        this.favoriteIds.delete(maMonAn);
+    const isFav = this.favoriteIds.has(maMonAn);
 
+    // ================= CHƯA LOGIN → LOCAL =================
+    if (!token) {
+      if (isFav) {
+        this.favoriteIds.delete(maMonAn);
+        this.yeuThichService.removeLocal(maMonAn);
         this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
       } else {
-        this.yeuThichService.addLocal(mon);
         this.favoriteIds.add(maMonAn);
-
+        this.yeuThichService.addLocal(mon);
         this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
       }
+
+      // 🔥 badge update NGAY
+      this.yeuThichService.setCount(this.favoriteIds.size);
       return;
     }
 
-    // 🔥 CHỐNG CLICK NHANH
+    // ================= LOGIN =================
     if (this._loadingFav) return;
     this._loadingFav = true;
 
-    if (this.favoriteIds.has(maMonAn)) {
-      this.yeuThichService.removeDB(maMonAn).subscribe({
-        next: () => {
-          this.favoriteIds.delete(maMonAn);
-          this._loadingFav = false;
-
-          this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
-        },
-        error: () => {
-          this._loadingFav = false;
-          this.showToast(`Không thể bỏ yêu thích ${tenMon}`, 'error');
-        }
-      });
+    // 🔥🔥🔥 UPDATE UI + BADGE NGAY
+    if (isFav) {
+      this.favoriteIds.delete(maMonAn);
+      this.yeuThichService.setCount(this.favoriteIds.size);
     } else {
-      this.yeuThichService.addDB(maMonAn).subscribe({
-        next: () => {
-          this.favoriteIds.add(maMonAn);
-          this._loadingFav = false;
-
-          this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
-        },
-        error: () => {
-          this._loadingFav = false;
-          this.showToast(`Không thể thêm ${tenMon}`, 'error');
-        }
-      });
+      this.favoriteIds.add(maMonAn);
+      this.yeuThichService.setCount(this.favoriteIds.size);
     }
+
+    const req$ = isFav
+      ? this.yeuThichService.removeDB(maMonAn)
+      : this.yeuThichService.addDB(maMonAn);
+
+    req$.subscribe({
+      next: () => {
+        this._loadingFav = false;
+        this.showToast(
+          isFav
+            ? `Đã bỏ yêu thích ${tenMon}`
+            : `Đã thêm ${tenMon} vào yêu thích`,
+          isFav ? 'warn' : 'success'
+        );
+      },
+      error: () => {
+        // 🔥 ROLLBACK nếu API fail
+        if (isFav) {
+          this.favoriteIds.add(maMonAn);
+        } else {
+          this.favoriteIds.delete(maMonAn);
+        }
+
+        this.yeuThichService.setCount(this.favoriteIds.size);
+        this._loadingFav = false;
+
+        this.showToast(
+          `Không thể ${isFav ? 'bỏ' : 'thêm'} yêu thích ${tenMon}`,
+          'error'
+        );
+      }
+    });
   }
 
   addToGioHang(mon: any) {
-    const token = localStorage.getItem('token');
 
-    if (!token) {
-      this.cartService.addLocal(mon);
-      this.showToast('Đã thêm vào giỏ hàng', 'success');
-      return;
-    }
+    // 1. Lấy option theo món (GIỐNG ADMIN)
+    this.optionService.getAllNhomOption().subscribe((res: any) => {
 
-    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+      const nhomOptions = (res.data || [])
+        .filter((n: any) => n.ma_mon_an === mon.ma_mon_an)
+        .map((n: any) => ({
+          ...n,
+          option_items: n.OptionItems || []
+        }));
 
-    this.cartService.addDB({
-      ma_mon_an: mon.ma_mon_an,
-      so_luong: 1,
-      options: []
-    }).subscribe(() => {
-      this.cartService.loadCountFromDB(userId);
-      this.showToast('Đã thêm vào giỏ hàng', 'success');
+      // 2. Mở dialog
+      const dialogRef = this.dialog.open(ThemGioHangDialog, {
+        data: {
+          mon: mon,              // chỉ cần data món từ list
+          options: nhomOptions   // lấy riêng option
+        },
+        width: '85vw',
+        maxWidth: '900px',
+        height: '80vh'
+      });
+
+      // 3. handle result
+      dialogRef.afterClosed().subscribe(result => {
+
+        if (!result) return;
+
+        const { mon, soLuong, selectedOptions } = result;
+        const token = localStorage.getItem('token');
+
+        const payload = {
+          ma_mon_an: mon.ma_mon_an,
+          so_luong: soLuong,
+          options: selectedOptions.map((o: any) => ({
+            ma_nhom_option: o.ma_nhom_option,
+            ma_option_item: o.ma_option_item,
+            ten_nhom_option: o.ten_nhom_option,
+            ten_option: o.ten_option,
+            gia_them: o.gia_them
+          }))
+        };
+
+        // ❌ GUEST → LOCAL
+        if (!token) {
+          this.cartService.addLocal({
+            ...mon,
+            soLuong,
+            options: payload.options
+          });
+          this.showToast('Đã thêm vào giỏ hàng', 'success');
+          return;
+        }
+
+        // ✅ LOGIN → DB
+        const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+        this.cartService.addDB(payload).subscribe(() => {
+          this.cartService.loadCountFromDB(userId);
+          this.showToast('Đã thêm vào giỏ hàng', 'success');
+        });
+
+      });
+
     });
   }
   loadMonAnNoiBat() {

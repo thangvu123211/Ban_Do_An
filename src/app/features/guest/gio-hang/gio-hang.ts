@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, HostListener, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { CartService } from "../../../core/services/cart.service";
 import { MATERIAL } from "../../../Shared/material";
@@ -41,7 +41,7 @@ interface DiaChi {
   templateUrl: "./gio-hang.html",
   styleUrl: "./gio-hang.scss"
 })
-export class GioHang implements OnInit {
+export class GioHang implements OnInit, OnDestroy {
 
 
   giamGiaList: any[] = [];
@@ -59,6 +59,8 @@ export class GioHang implements OnInit {
   loaded: boolean = false;
 
   // ================= STATE =================
+
+
   gioHang: any[] = [];
   tongTien = 0;
   currentStep = 0;
@@ -106,7 +108,8 @@ export class GioHang implements OnInit {
   };
   //thanh toan
   daThanhToan: boolean = false;
-  //
+  //chothanhtoan
+  pendingPayments: any[] = [];
   isCheckoutDone = false;
   // ================= TOAST =================
   toast = {
@@ -127,7 +130,21 @@ export class GioHang implements OnInit {
     private paymentService: PaymentService,
     private websocketService: WebsocketService,
     private sanitizer: DomSanitizer,
+    private hoaDonService: HoaDonService
   ) { }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnloadHandler(event: BeforeUnloadEvent) {
+    if (this.maHoaDonDangThanhToan && !this.daThanhToan) {
+      this.saveCheckoutState();
+
+      const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+      this.cartService.clearDB(userId).subscribe();
+
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  }
 
   // ================= LOGIN =================
   get isLoggedIn(): boolean {
@@ -170,6 +187,9 @@ export class GioHang implements OnInit {
 
   // ================= INIT =================
   ngOnInit() {
+    if (this.isLoggedIn) {
+      this.loadPendingPayments();
+    }
     const saved = localStorage.getItem('payment_state');
 
     if (saved) {
@@ -358,6 +378,8 @@ export class GioHang implements OnInit {
 
       this.tinhTong();
     });
+
+
   }
   isVoucherValid(v: any): boolean {
     if (!v?.don_toi_thieu) return true;
@@ -764,6 +786,7 @@ export class GioHang implements OnInit {
             this.showQR = true;
             this.isCreatingPayment = false;
             this.currentStep = 3;
+            this.loadPendingPayments();
 
             localStorage.setItem('payment_state', JSON.stringify({
               ma_hd: order.ma_hd,
@@ -822,9 +845,6 @@ export class GioHang implements OnInit {
 
   close() {
     this.router.navigate(['/thucdon']);
-  }
-  goToDonHang() {
-    this.router.navigate(['/user/don-hang']);
   }
   apDungMa(code: string) {
 
@@ -943,7 +963,8 @@ export class GioHang implements OnInit {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
+    this.handleLeaveCheckout();
     this.websocketService.disconnect();
   }
 
@@ -980,31 +1001,100 @@ export class GioHang implements OnInit {
 
   huyHoaDonDangThanhToan() {
 
-  if (!this.maHoaDonDangThanhToan) return;
+    if (!this.maHoaDonDangThanhToan) return;
 
-  this.hoadonservice.huyThanhToan(this.maHoaDonDangThanhToan)
-    .subscribe({
+    this.hoadonservice.huyThanhToan(this.maHoaDonDangThanhToan)
+      .subscribe({
+        next: () => {
+          this.showToast('Đã hủy hóa đơn', 'success');
+
+
+          // ✅ reset toàn bộ state thanh toán
+          this.showQR = false;
+          this.qrUrl = '';
+          this.currentStep = 0;
+          this.maHoaDonDangThanhToan = null as any;
+          this.daThanhToan = false;
+
+          // ✅ clear localStorage
+          localStorage.removeItem('pending_hoa_don');
+          localStorage.removeItem('payment_state');
+          localStorage.removeItem('cart'); // nếu m lưu cart ở đây
+
+        },
+        error: (err) => {
+          this.showToast(err.error?.error || 'Không thể hủy hóa đơn', 'error');
+        }
+      });
+  }
+
+  handleLeaveCheckout() {
+    if (!this.maHoaDonDangThanhToan || this.daThanhToan) return;
+
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    this.cartService.clearDB(userId).subscribe({
       next: () => {
-        this.showToast('Đã hủy hóa đơn', 'success');
-
-
-        // ✅ reset toàn bộ state thanh toán
-        this.showQR = false;
-        this.qrUrl = '';
-        this.currentStep = 0;
-        this.maHoaDonDangThanhToan = null as any;
-        this.daThanhToan = false;
-
-        // ✅ clear localStorage
-        localStorage.removeItem('pending_hoa_don');
-        localStorage.removeItem('payment_state');
-        localStorage.removeItem('cart'); // nếu m lưu cart ở đây
-
+        this.cartService.setCount(0);
+        this.showToast('Đã xóa giỏ hàng do thoát thanh toán', 'warn');
       },
-      error: (err) => {
-        this.showToast(err.error?.error || 'Không thể hủy hóa đơn', 'error');
+      error: () => {
+        this.showToast('Không thể xóa giỏ hàng', 'error');
       }
     });
-}
 
+    this.showToast('Bạn đang có hóa đơn cần thanh toán', 'warn');
+
+    // reset FE luôn
+    this.resetPaymentState();
+    this.gioHang = [];
+    this.tongTien = 0;
+    this.tongSauGiam = 0;
+    this.currentStep = 0;
+  }
+  saveCheckoutState() {
+    if (!this.maHoaDonDangThanhToan || this.daThanhToan) return;
+
+    localStorage.setItem('checkout_dang_thoat', JSON.stringify({
+      ma_hd: this.maHoaDonDangThanhToan,
+      time: Date.now()
+    }));
+  }
+
+
+  loadPendingPayments() {
+    this.hoaDonService.getHoaDonChoThanhToan()
+      .subscribe({
+        next: (res) => {
+          console.log('HÓA ĐƠN CHỜ:', res);
+
+          this.pendingPayments = res.data || [];
+        },
+        error: (err) => {
+          console.error('LỖI API:', err);
+        }
+      });
+  }
+
+
+  checkResumeCheckout() {
+    const data = localStorage.getItem('checkout_dang_thoat');
+    if (!data) return;
+
+    const state = JSON.parse(data);
+
+    if (state?.ma_hd) {
+      this.maHoaDonDangThanhToan = state.ma_hd;
+      this.currentStep = 3;
+      this.showQR = true;
+    }
+  }
+  clearAfterSuccess() {
+    this.cartService.clearLocal?.();
+    localStorage.removeItem('gio_hang');
+    localStorage.removeItem('checkout_dang_thoat');
+  }
+  goToDonHang() {
+    this.router.navigate(['/user/don-hang']);
+  }
 }
