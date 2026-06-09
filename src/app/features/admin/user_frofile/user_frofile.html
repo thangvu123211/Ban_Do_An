@@ -42,6 +42,7 @@
             <!-- <th class="px-4 py-3 text-center border">Địa chỉ</th> -->
             <th class="px-4 py-3 text-center border">Email</th>
             <th class="px-4 py-3 text-center border">Loại nhân viên</th>
+            <th class="px-4 py-3 text-center border">Trạng thái tài khoản</th>
             <th class="px-4 py-3 text-center border">Hành động</th>
           </tr>
         </thead>
@@ -65,6 +66,16 @@
             <!-- <td class="px-4 py-7 text-center border">{{ user.dia_chi }}</td> -->
             <td class="px-4 py-7 text-center border">{{ user.email }}</td>
             <td class="px-4 py-7 text-center border">{{ user.loai_nguoi_dung }}</td>
+            <td class="px-4 py-7 text-center border">
+              <span class="px-3 py-1 rounded-full text-sm font-medium" [ngClass]="{
+                  'bg-red-100 text-red-700': user.trang_thai === 'khoa',
+                  'bg-green-100 text-green-700': user.trang_thai === 'hoat_dong'
+                }">
+                {{ user.trang_thai === 'khoa'
+                ? 'Tài khoản đã bị khóa'
+                : 'Tài khoản đang hoạt động' }}
+              </span>
+            </td>
 
             <!-- ACTION BUTTONS -->
             <td class="px-4 py-7 text-center border">

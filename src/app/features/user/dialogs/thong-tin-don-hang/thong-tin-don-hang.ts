@@ -73,7 +73,7 @@ export class ThongTinDonHang implements OnInit {
       const payload = msg.payload;
 
       // chỉ update đúng đơn này
-      if (payload?.ma_hd !== this.hoaDon.ma_hd) return;
+      if (payload?.ma_hoa_don !== this.hoaDon.ma_hd) return;
 
       if (msg.type === 'update_trang_thai_hoa_don_user') {
 
@@ -97,7 +97,7 @@ export class ThongTinDonHang implements OnInit {
 
         const hdId =
           msg.payload?.hoa_don_id ||
-          msg.payload?.ma_hd ||
+          msg.payload?.ma_hoa_don ||
           msg.payload?.id;
 
         if (Number(hdId) !== Number(this.hoaDon.ma_hd)) return;
@@ -118,7 +118,7 @@ export class ThongTinDonHang implements OnInit {
 
       if (msg.type === 'update_trang_thai_thanh_toan') {
 
-        if (Number(msg.payload.ma_hd) !== Number(this.hoaDon.ma_hd)) return;
+        if (Number(msg.payload.ma_hoa_don) !== Number(this.hoaDon.ma_hd)) return;
 
         this.hoaDon = {
           ...this.hoaDon,

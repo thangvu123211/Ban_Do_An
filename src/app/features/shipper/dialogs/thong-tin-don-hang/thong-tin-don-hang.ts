@@ -46,7 +46,7 @@ export class ThongTinDonHang implements OnInit {
       const payload = msg.payload;
 
       // chỉ update đúng đơn này
-      if (payload?.ma_hd !== this.hoaDon.ma_hd) return;
+      if (payload?.ma_hoa_don !== this.hoaDon.ma_hd) return;
 
       if (msg.type === 'update_trang_thai_hoa_don_user') {
 

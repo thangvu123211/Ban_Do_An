@@ -71,7 +71,7 @@ export class DonHang implements OnInit {
 
         case 'update_trang_thai_hoa_don_user': {
           const index = this.hoaDons.findIndex(
-            h => h.ma_hd === msg.payload.ma_hd
+            h => h.ma_hd === msg.payload.ma_hoa_don
           );
 
           if (index !== -1) {
@@ -82,7 +82,7 @@ export class DonHang implements OnInit {
 
         case 'cancel_hoa_don_user': {
           const index = this.hoaDons.findIndex(
-            h => h.ma_hd === msg.payload.ma_hd
+            h => h.ma_hd === msg.payload.ma_hoa_don
           );
 
           if (index !== -1) {

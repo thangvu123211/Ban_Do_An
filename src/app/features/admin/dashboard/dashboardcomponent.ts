@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MATERIAL } from '../../../Shared/material';
-import { series } from './data';
 
 import { NgApexchartsModule, ChartComponent } from 'ng-apexcharts';
 import {
@@ -98,6 +97,8 @@ export type AreaBasicChartOptions = {
   subtitle: ApexTitleSubtitle;
 };
 
+
+
 @Component({
   selector: 'app-dashboardcomponent',
   standalone: true,
@@ -138,7 +139,8 @@ export class Dashboardcomponent implements OnInit {
   soDanhGiaHomNay: number = 0;
   ngayDanhGia: string = '';
 
-
+  //shipper
+  shippers: any[] = [];
 
 
   // Area chart
@@ -148,14 +150,20 @@ export class Dashboardcomponent implements OnInit {
   public AreaBasicChartOptions: AreaBasicChartOptions;
   public pieChartOptions: PieChartOptions;
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = ELEMENT_DATA;
+  displayedColumns: string[] = [
+    'ma_hoa_don',
+    'ten_khach_hang',
+    'thanh_tien',
+    'trang_thai'
+  ];
+  dataSource: any[] = [];
 
   constructor(
     private hoaDonService: HoaDonService,
     private nhanVienService: QuanLyNhanVienService,
     private adminService: AdminService,
-    private danhGiaService: DanhGiaService
+    private danhGiaService: DanhGiaService,
+    private quanlynguoidung:QuanLyNhanVienService
   ) {
 
     this.pieChartOptions = {
@@ -295,6 +303,10 @@ export class Dashboardcomponent implements OnInit {
     this.loadPieChartMonAnBanChay();
     this.loadAreaChartDoanhThuNgay();
     this.loadRadialHoanThanh();
+    this.loadTop9monbanchaynhat();
+    this.loadSoDonTheoNgay();
+    this.loadDonHangDaGiaoHomNay();
+    this.loadShippers();
   }
   loadTongHoaDon() {
     this.dangTai = true;
@@ -550,4 +562,95 @@ export class Dashboardcomponent implements OnInit {
       };
     });
   }
+
+  loadTop9monbanchaynhat() {
+    this.adminService.getTopMonBanChay(9).subscribe({
+      next: (res) => {
+        const data = res;
+
+        const tenMon = data.map((x: any) => x.ten_mon_an);
+        const soLuong = data.map((x: any) => x.tong_ban); // 🔥 SỬA Ở ĐÂY
+
+        this.BarChartOptions = {
+          ...this.BarChartOptions,
+          series: [
+            {
+              name: 'Số lượng bán',
+              data: soLuong
+            }
+          ],
+          xaxis: {
+            categories: tenMon
+          },
+          title: {
+            text: 'Top 9 món bán chạy nhất'
+          },
+          subtitle: {
+            text: 'Thống kê theo số lượng bán'
+          }
+        };
+      },
+      error: (err) => {
+        console.error('Lỗi load top món bán chạy', err);
+      }
+    });
+  }
+
+  loadSoDonTheoNgay() {
+    this.adminService.getSoDonTheoNgay().subscribe({
+      next: (res) => {
+        if (!res || res.length === 0) {
+          console.warn('Không có dữ liệu số đơn');
+          return;
+        }
+
+        const ngay = res.map(x => x.ngay);
+        const soDon = res.map(x => x.so_don);
+
+        this.AreaBasicChartOptions = {
+          ...this.AreaBasicChartOptions,
+          series: [
+            {
+              name: 'Số đơn hàng',
+              data: soDon
+            }
+          ],
+          xaxis: {
+            categories: ngay
+          },
+          title: {
+            text: 'Số đơn hàng theo ngày'
+          },
+          subtitle: {
+            text: 'Chỉ tính đơn hoàn thành & đã thanh toán'
+          }
+        };
+      },
+      error: (err) => {
+        console.error('Lỗi load số đơn theo ngày', err);
+      }
+    });
+  }
+  loadDonHangDaGiaoHomNay() {
+    this.adminService.getDonDaGiaoHomNay().subscribe({
+      next: (res) => {
+        this.dataSource = res;
+      },
+      error: (err) => {
+        console.error('Lỗi load đơn hàng đã giao', err);
+      }
+    });
+  }
+
+  loadShippers() {
+    this.quanlynguoidung.getShippers().subscribe({
+      next: (res) => {
+        this.shippers = res;
+      },
+      error: (err) => {
+        console.error('Lỗi load shipper', err);
+      }
+    });
+  }
+
 }

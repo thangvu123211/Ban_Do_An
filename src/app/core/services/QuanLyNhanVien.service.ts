@@ -96,5 +96,10 @@ export class QuanLyNhanVienService {
     );
   }
 
+  getShippers() {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/nhanvien/shippers`
+    );
+  }
 
 }

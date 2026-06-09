@@ -86,4 +86,19 @@ export class AdminService {
   getTiLeHoanThanhHomNay() {
     return this.http.get<any>(`${environment.apiUrl}/hoa-don/ti-le-hoan-thanh-hom-nay`);
   }
+
+  getTopMonBanChay(limit = 9) {
+    return this.http.get<any[]>(`${environment.apiUrl}/hoa-don/top-mon-ban-chay-nhat?limit=${limit}`
+    );
+  }
+  getSoDonTheoNgay() {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/hoa-don/so-don-theo-ngay`
+    );
+  }
+  getDonDaGiaoHomNay() {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/hoa-don/don-da-giao-hom-nay`
+    );
+  }
 }

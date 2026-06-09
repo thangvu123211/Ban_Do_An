@@ -176,7 +176,7 @@
           {{ soDanhGiaHomNay }}
         </span>
         <p class="text-xs text-gray-500 mt-1">
-           {{ ngayHomNay }}
+          {{ ngayHomNay }}
         </p>
       </div>
 
@@ -239,8 +239,8 @@
       <apx-chart [series]="AreaBasicChartOptions.series" [chart]="AreaBasicChartOptions.chart"
         [xaxis]="AreaBasicChartOptions.xaxis" [stroke]="AreaBasicChartOptions.stroke"
         [dataLabels]="AreaBasicChartOptions.dataLabels" [yaxis]="AreaBasicChartOptions.yaxis"
-        [labels]="AreaBasicChartOptions.labels" [legend]="AreaBasicChartOptions.legend"
-        [title]="AreaBasicChartOptions.title" [subtitle]="AreaBasicChartOptions.subtitle"></apx-chart>
+        [legend]="AreaBasicChartOptions.legend" [title]="AreaBasicChartOptions.title"
+        [subtitle]="AreaBasicChartOptions.subtitle"></apx-chart>
     </mat-card>
 
   </div>
@@ -248,90 +248,94 @@
   <!-- Tables -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
 
-    <div class="lg:col-span-2 bg-gray-900 shadow rounded-lg">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <div class="lg:col-span-2 shadow rounded-lg p-4">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Đơn hàng đã giao
+        </h2>
 
-        <!--- Note that these columns can be defined in any order.
-        The actual rendered columns are set as a property on the row definition" -->
+        <span class="text-s">
+          Hôm nay
+        </span>
+      </div>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-full">
 
-        <!-- Position Column -->
-        <ng-container matColumnDef="position">
-          <th mat-header-cell *matHeaderCellDef> STT </th>
-          <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+        <!-- Mã đơn hàng -->
+        <ng-container matColumnDef="ma_hoa_don">
+          <th mat-header-cell *matHeaderCellDef> Mã đơn </th>
+          <td mat-cell *matCellDef="let element">
+            #{{ element.ma_hoa_don }}
+          </td>
         </ng-container>
 
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef> Tên khách hàng </th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        <!-- Tên khách hàng -->
+        <ng-container matColumnDef="ten_khach_hang">
+          <th mat-header-cell *matHeaderCellDef> Khách hàng </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.ten_khach_hang }}
+          </td>
         </ng-container>
 
-        <!-- Weight Column -->
-        <ng-container matColumnDef="weight">
-          <th mat-header-cell *matHeaderCellDef> Thành tiền</th>
-          <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+        <!-- Thành tiền -->
+        <ng-container matColumnDef="thanh_tien">
+          <th mat-header-cell *matHeaderCellDef> Thành tiền </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.thanh_tien | number }} ₫
+          </td>
         </ng-container>
 
-        <!-- Symbol Column -->
-        <ng-container matColumnDef="symbol">
-          <th mat-header-cell *matHeaderCellDef> Symbol </th>
-          <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+        <!-- Trạng thái -->
+        <ng-container matColumnDef="trang_thai">
+          <th mat-header-cell *matHeaderCellDef> Trạng thái </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-black">Đã giao </span>
+          </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
       </table>
     </div>
-    <div class="shadow rounded-lg">
+    <div class="shadow rounded-lg bg-white">
       <div class="p-4 border-b flex justify-between items-center">
-        <h3 class="text-lg font-bold ">Nhân viên xác nhận</h3>
-        <a href="#!" class="text-sm bg-blue-600 text-white px-3 py-1 rounded">Xem tất cả</a>
+        <h3 class="text-lg font-bold">Shipper đang hoạt động</h3>
       </div>
-      <div class="p-4">
+
+      <div class="p-4 overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 text-sm">
-          <thead class="text-xs uppercase ">
+          <thead class="text-xs uppercase text-gray-600">
             <tr>
-              <th class="px-4 py-2 text-left">Ảnh</th>
-              <th class="px-4 py-2 text-left">Tên</th>
-              <th class="px-4 py-2 text-left">Số tiền đã nhận</th>
-              <th class="px-4 py-2"></th>
+              <th class="px-4 py-2 text-center">Ảnh</th>
+              <th class="px-4 py-2 text-center">Tên shipper</th>
+              <th class="px-4 py-2 text-center">Trạng thái</th>
             </tr>
           </thead>
-          <tbody class="divide-y ">
-            <tr>
-              <td class="px-4 py-2">Facebook</td>
-              <td class="px-4 py-2">1,480</td>
+
+          <tbody class="divide-y">
+            <tr *ngFor="let shipper of shippers">
+              <!-- Ảnh -->
               <td class="px-4 py-2">
-                <div class="flex items-center">
-                  <span class="mr-2">60%</span>
-                  <div class="w-full bg-gray-200 h-2 rounded">
-                    <div class="bg-red-500 h-2 rounded" style="width:60%"></div>
-                  </div>
-                </div>
+                <img *ngIf="shipper.anh_nguoi_dung?.length" [src]="shipper.anh_nguoi_dung[0].url" alt="Ảnh shipper"
+                  class="w-10 h-10 rounded-full object-cover mx-auto shadow" />
+              </td>
+
+              <!-- Tên -->
+              <td class="px-4 py-2 font-medium text-center">
+                {{ shipper.ho_ten }}
+              </td>
+
+              <!-- Trạng thái -->
+              <td class="px-4 py-2 text-center">
+                <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
+                  Đang hoạt động
+                </span>
               </td>
             </tr>
-            <tr>
-              <td class="px-4 py-2">Google</td>
-              <td class="px-4 py-2">4,807</td>
-              <td class="px-4 py-2">
-                <div class="flex items-center">
-                  <span class="mr-2">80%</span>
-                  <div class="w-full bg-gray-200 h-2 rounded">
-                    <div class="bg-blue-500 h-2 rounded" style="width:80%"></div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td class="px-4 py-2">Twitter</td>
-              <td class="px-4 py-2">2,645</td>
-              <td class="px-4 py-2">
-                <div class="flex items-center">
-                  <span class="mr-2">30%</span>
-                  <div class="w-full bg-gray-200 h-2 rounded">
-                    <div class="bg-yellow-500 h-2 rounded" style="width:30%"></div>
-                  </div>
-                </div>
+
+            <!-- Không có dữ liệu -->
+            <tr *ngIf="shippers.length === 0">
+              <td colspan="4" class="text-center py-4 text-gray-400">
+                Không có shipper hoạt động
               </td>
             </tr>
           </tbody>
