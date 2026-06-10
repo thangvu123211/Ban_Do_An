@@ -8,6 +8,16 @@
       <p class="text-sm text-gray-500">
         Theo dõi trạng thái đơn hàng
       </p>
+      <div class="mt-2 text-sm text-gray-600 flex gap-2">
+        <mat-icon class="text-gray-400 !text-base">schedule</mat-icon>
+        <span>
+          {{ hoaDon.ngay | date:'dd/MM/yyyy' }}
+        </span>
+        <span class="text-gray-400">•</span>
+        <span>
+          {{ hoaDon.ngay | date:'HH:mm' }}
+        </span>
+      </div>
     </div>
 
     <button (click)="close()" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100">

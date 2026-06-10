@@ -101,4 +101,10 @@ export class AdminService {
       `${environment.apiUrl}/hoa-don/don-da-giao-hom-nay`
     );
   }
+  assignShipper(maHoaDon: number, maShipper: number) {
+    return this.http.post(`${environment.apiUrl}/nhanvien/assign-shipper`, {
+      ma_hoa_don: maHoaDon,
+      ma_shipper: maShipper
+    });
+  }
 }

@@ -7,6 +7,8 @@ import { DanhGiaService } from '../../../../core/services/DanhGia.service';
 import { Router } from '@angular/router';
 import { QuanLyMonAn } from '../../../../core/services/QuanLyMonAn.service';
 import { HoaDonService } from '../../../../core/services/HoaDon.Service';
+import { QuanLyNhanVienService } from '../../../../core/services/QuanLyNhanVien.service';
+import { AdminService } from '../../../../core/services/admin.service';
 
 @Component({
   selector: 'app-thong-tin-hoa-don',
@@ -27,6 +29,9 @@ export class ThongTinHoaDon implements OnInit {
     type: 'success' as 'success' | 'warn' | 'error'
   };
 
+  shippers: any[] = [];
+  selectedShipper: any = null;
+
   daDanhGia = false;
   originalTrangThai: string = '';
 
@@ -42,9 +47,9 @@ export class ThongTinHoaDon implements OnInit {
     private dialogRef: MatDialogRef<ThongTinHoaDon>,
     private wsService: WebsocketService,
     private dialog: MatDialog,
-    private danhGiaService: DanhGiaService,
+    private adminService: AdminService,
     private router: Router,
-    private monAnService: QuanLyMonAn,
+    private nguoiDungService: QuanLyNhanVienService,
     private hoaDonService: HoaDonService
   ) {
     this.hoaDon = data;
@@ -59,6 +64,7 @@ export class ThongTinHoaDon implements OnInit {
 
   ngOnInit(): void {
     this.wsService.connect();
+    this.loadShippers();
     this.originalTrangThai = this.hoaDon.trang_thai;
     this.wsService.messages$.subscribe((msg: any) => {
       if (!msg?.type) return;
@@ -86,13 +92,56 @@ export class ThongTinHoaDon implements OnInit {
     });
   }
 
+  loadShippers() {
+    this.nguoiDungService.getShippers().subscribe({
+      next: (res) => this.shippers = res,
+      error: () => alert('Không load được shipper')
+    });
+  }
+
+  assignShipper(maHoaDon: number) {
+    if (!this.selectedShipper) {
+      this.showToast('Chưa chọn shipper', 'warn');
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.adminService
+      .assignShipper(maHoaDon, this.selectedShipper.ma_nguoi_dung)
+      .subscribe({
+        next: (res: any) => {
+          this.isLoading = false;
+
+          // cập nhật luôn hóa đơn đang mở
+          this.hoaDon = {
+            ...this.hoaDon,
+            shipper: res.data.shipper,
+            trang_thai: res.data.trang_thai
+          };
+
+          this.showToast('Đã gán shipper thành công 🚚', 'success');
+        },
+        error: () => {
+          this.isLoading = false;
+          this.showToast('Gán shipper thất bại', 'error');
+        }
+      });
+  }
+  selectShipper(shipper: any) {
+    if (shipper.trang_thai !== 'hoat_dong') return;
+
+    this.selectedShipper = shipper;
+    this.openShipper = false;
+  }
+
 
   get isDisableUpdate(): boolean {
     return (
       this.isLoading ||
       this.hoaDon?.trang_thai === this.originalTrangThai ||
       this.hoaDon?.trang_thai === 'dang_giao' ||
-      this.hoaDon?.trang_thai === 'da_giao' 
+      this.hoaDon?.trang_thai === 'da_giao'
     );
   }
   capNhatTrangThai() {

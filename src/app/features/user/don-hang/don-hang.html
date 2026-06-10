@@ -53,8 +53,13 @@
               <td class="px-4 py-7 text-center border">{{ hd.ho_ten }}</td>
               <td class="px-4 py-7 text-center border">{{ hd.sdt }}</td>
               <td class="px-4 py-7 text-center border">{{ hd.dia_chi }}</td>
-              <td class="px-4 py-7 text-center border">
-                {{ hd.ngay | date:'dd/MM/yyyy' }}
+              <td class="px-4 py-4 text-center border">
+                <div class="font-medium text-gray-800">
+                  {{ hd.ngay | date:'dd/MM/yyyy' }}
+                </div>
+                <div class="text-xs text-gray-500">
+                  {{ hd.ngay | date:'HH:mm' }}
+                </div>
               </td>
               <td class="px-4 py-7 text-center border">
                 {{ hd.tong_tien | number }} đ
@@ -97,7 +102,7 @@
                     <mat-icon>info</mat-icon>
                   </button>
 
-                
+
                   <button mat-icon-button matTooltip="Hủy đơn hàng">
                     <mat-icon>cancel</mat-icon>
                   </button>
@@ -105,7 +110,7 @@
               </td>
             </tr>
 
-            
+
 
           </ng-container>
         </tbody>

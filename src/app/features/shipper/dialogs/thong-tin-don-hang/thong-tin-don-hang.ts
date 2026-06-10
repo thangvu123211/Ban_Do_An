@@ -45,23 +45,51 @@ export class ThongTinDonHang implements OnInit {
 
       const payload = msg.payload;
 
-      // chỉ update đúng đơn này
-      if (payload?.ma_hoa_don !== this.hoaDon.ma_hd) return;
+      switch (msg.type) {
 
-      if (msg.type === 'update_trang_thai_hoa_don_user') {
+        // 🔄 user / admin update trạng thái
+        case 'update_trang_thai_hoa_don_user': {
+          if (payload?.ma_hoa_don !== this.hoaDon.ma_hd) return;
 
-        this.hoaDon = {
-          ...this.hoaDon,
-          trang_thai: payload.trang_thai
-        };
+          this.hoaDon = {
+            ...this.hoaDon,
+            trang_thai: payload.trang_thai
+          };
+          break;
+        }
 
-      }
+        // ❌ user hủy đơn
+        case 'cancel_hoa_don_user': {
+          if (payload?.ma_hoa_don !== this.hoaDon.ma_hd) return;
 
-      if (msg.type === 'cancel_hoa_don_user') {
-        this.hoaDon = {
-          ...this.hoaDon,
-          trang_thai: 'da_huy'
-        };
+          this.hoaDon = {
+            ...this.hoaDon,
+            trang_thai: 'da_huy'
+          };
+          break;
+        }
+
+        // 🚚 SHIPPER NHẬN ĐƠN MỚI (ASSIGN)
+        case 'shipper_new_order': {
+          // nếu đang mở dialog chi tiết → bỏ qua
+          if (this.hoaDon?.ma_hd) return;
+
+          this.hoaDon = payload;
+
+          this.showToast('Bạn có đơn hàng mới', 'success');
+          break;
+        }
+
+        // 💰 cập nhật thanh toán
+        case 'update_trang_thai_thanh_toan': {
+          if (payload?.ma_hoa_don !== this.hoaDon.ma_hd) return;
+
+          this.hoaDon = {
+            ...this.hoaDon,
+            trang_thai_thanh_toan: payload.trang_thai_thanh_toan
+          };
+          break;
+        }
       }
     });
   }
@@ -85,32 +113,32 @@ export class ThongTinDonHang implements OnInit {
 
   capNhatTrangThai(trangThai: string) {
 
-  // 🚫 CHẶN SAI LUỒNG
-  if (trangThai === 'dang_giao' && this.hoaDon.trang_thai !== 'da_xac_nhan') {
-    return;
+    // 🚫 CHẶN SAI LUỒNG
+    if (trangThai === 'dang_giao' && this.hoaDon.trang_thai !== 'da_xac_nhan') {
+      return;
+    }
+
+    if (trangThai === 'da_giao' && this.hoaDon.trang_thai !== 'dang_giao') {
+      return;
+    }
+
+    this.hoaDonService.updateTrangThai(this.hoaDon.ma_hd, trangThai)
+      .subscribe({
+        next: () => {
+          this.hoaDon.trang_thai = trangThai;
+
+          this.showToast(
+            trangThai === 'dang_giao'
+              ? '🚚 Shipper đang giao đơn hàng'
+              : '✅ Đơn hàng đã giao thành công',
+            'success'
+          );
+        },
+        error: () => {
+          this.showToast('❌ Cập nhật trạng thái thất bại', 'error');
+        }
+      });
   }
-
-  if (trangThai === 'da_giao' && this.hoaDon.trang_thai !== 'dang_giao') {
-    return;
-  }
-
-  this.hoaDonService.updateTrangThai(this.hoaDon.ma_hd, trangThai)
-    .subscribe({
-      next: () => {
-        this.hoaDon.trang_thai = trangThai;
-
-        this.showToast(
-          trangThai === 'dang_giao'
-            ? '🚚 Shipper đang giao đơn hàng'
-            : '✅ Đơn hàng đã giao thành công',
-          'success'
-        );
-      },
-      error: () => {
-        this.showToast('❌ Cập nhật trạng thái thất bại', 'error');
-      }
-    });
-}
   close() {
     this.dialogRef.close();
   }

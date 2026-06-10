@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MATERIAL } from '../../../Shared/material';
 import { HoaDonService } from '../../../core/services/HoaDon.Service';
@@ -16,6 +16,8 @@ import { ThongTinHoaDon } from './thong-tin-hoa-don/thong-tin-hoa-don';
   styleUrls: ['./hoa-don.scss']
 })
 export class HoaDon implements OnInit {
+
+  trangDangChon: 'CHO_XAC_NHAN' | 'CHUA_THANH_TOAN' | 'DA_HUY' | 'DANG_XU_LY' = 'CHO_XAC_NHAN';
 
   hoaDons: any[] = [];
   loading = false;
@@ -39,6 +41,10 @@ export class HoaDon implements OnInit {
     this.toast.message = message;
     this.toast.type = type;
     setTimeout(() => this.toast.show = false, 3000);
+  }
+
+  chonTrang(trang: any) {
+    this.trangDangChon = trang;
   }
 
   ngOnInit(): void {
@@ -123,6 +129,25 @@ export class HoaDon implements OnInit {
           }
           break;
         }
+        case 'admin_assign_shipper': {
+          const index = this.hoaDons.findIndex(
+            h => h.ma_hd === msg.payload.ma_hd
+          );
+
+          if (index !== -1) {
+            // 🔥 cập nhật toàn bộ hóa đơn
+            this.hoaDons[index] = {
+              ...this.hoaDons[index],
+              ...msg.payload
+            };
+
+            // ép Angular render
+            this.hoaDons = [...this.hoaDons];
+
+            this.showToast('Đã phân công shipper', 'success');
+          }
+          break;
+        }
       }
     });
   }
@@ -174,5 +199,35 @@ export class HoaDon implements OnInit {
       data: hoaDon
     });
   }
+  get hoaDonsDaLoc() {
+    switch (this.trangDangChon) {
+
+      case 'CHO_XAC_NHAN':
+        return this.hoaDons.filter(
+          x => x.trang_thai === 'cho_xac_nhan' &&
+            x.trang_thai_thanh_toan === 'da_thanh_toan'
+        );
+
+      case 'CHUA_THANH_TOAN':
+        return this.hoaDons.filter(
+          x => x.trang_thai_thanh_toan === 'chua_thanh_toan'
+        );
+
+      case 'DA_HUY':
+        return this.hoaDons.filter(
+          x => x.trang_thai === 'da_huy'
+        );
+
+      case 'DANG_XU_LY':
+        return this.hoaDons.filter(
+          x =>
+            ['da_xac_nhan', 'dang_giao', 'da_giao'].includes(x.trang_thai)
+        );
+
+      default:
+        return this.hoaDons;
+    }
+  }
 
 }
+

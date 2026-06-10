@@ -63,76 +63,96 @@ export class ThongTinDonHang implements OnInit {
     setTimeout(() => this.toast.show = false, 3000);
   }
 
-  ngOnInit(): void {
-    this.wsService.connect();
-    this.checkDanhGia();
+ngOnInit(): void {
+  this.wsService.connect();
+  this.checkDanhGia();
 
-    this.wsService.messages$.subscribe((msg: any) => {
-      if (!msg?.type) return;
+  this.wsService.messages$.subscribe((msg: any) => {
+    if (!msg?.type) return;
 
-      const payload = msg.payload;
+    const payload = msg.payload;
 
-      // chỉ update đúng đơn này
-      if (payload?.ma_hoa_don !== this.hoaDon.ma_hd) return;
+    // ⚠️ chỉ xử lý đúng hóa đơn đang xem
+    if (
+      payload?.ma_hoa_don &&
+      Number(payload.ma_hoa_don) !== Number(this.hoaDon.ma_hd)
+    ) return;
 
-      if (msg.type === 'update_trang_thai_hoa_don_user') {
+    switch (msg.type) {
 
+      // 🔄 User cập nhật trạng thái đơn
+      case 'update_trang_thai_hoa_don_user': {
         this.hoaDon = {
           ...this.hoaDon,
           trang_thai: payload.trang_thai
         };
-
+        break;
       }
 
-      if (msg.type === 'cancel_hoa_don_user') {
+      // ❌ User hủy đơn
+      case 'cancel_hoa_don_user': {
         this.hoaDon = {
           ...this.hoaDon,
           trang_thai: 'da_huy'
         };
+        break;
       }
 
-      if (msg.type === 'payment_success') {
-
-        console.log('PAYMENT SUCCESS:', msg);
-
+      // 💳 Thanh toán thành công
+      case 'payment_success': {
         const hdId =
-          msg.payload?.hoa_don_id ||
-          msg.payload?.ma_hoa_don ||
-          msg.payload?.id;
+          payload?.hoa_don_id ||
+          payload?.ma_hoa_don ||
+          payload?.id;
 
         if (Number(hdId) !== Number(this.hoaDon.ma_hd)) return;
         if (this.daXuLyThanhToan) return;
 
         this.daXuLyThanhToan = true;
 
-        this.hoaDonService.getHoaDonById(this.hoaDon.ma_hd).subscribe((res: any) => {
+        this.hoaDonService
+          .getHoaDonById(this.hoaDon.ma_hd)
+          .subscribe((res: any) => {
 
-          this.hoaDon = res.data || res;
+            this.hoaDon = res.data || res;
+            this.daThanhToan = true;
+            this.showQR = false;
 
-          this.daThanhToan = true;
-          this.showQR = false;
-
-          this.showToast('Thanh toán thành công!', 'success');
-        });
+            this.showToast('Thanh toán thành công!', 'success');
+          });
+        break;
       }
 
-      if (msg.type === 'update_trang_thai_thanh_toan') {
-
-        if (Number(msg.payload.ma_hoa_don) !== Number(this.hoaDon.ma_hd)) return;
-
+      // 💰 Update trạng thái thanh toán
+      case 'update_trang_thai_thanh_toan': {
         this.hoaDon = {
           ...this.hoaDon,
-          trang_thai_thanh_toan: msg.payload.trang_thai_thanh_toan
+          trang_thai_thanh_toan: payload.trang_thai_thanh_toan
         };
 
-        // ⭐ FIX QUAN TRỌNG
-        if (msg.payload.trang_thai_thanh_toan === 'da_thanh_toan') {
+        if (payload.trang_thai_thanh_toan === 'da_thanh_toan') {
           this.showQR = false;
           this.showSuccessModal = true;
         }
+        break;
       }
-    });
-  }
+
+      // 🚚 Admin gán shipper (realtime cho user)
+      case 'assign_shipper_user': {
+        this.hoaDon = {
+          ...this.hoaDon,
+          shipper: payload.shipper
+        };
+
+        this.showToast('Đơn hàng đã được điều phối tài xế 🚚', 'success');
+        break;
+      }
+
+      default:
+        break;
+    }
+  });
+}
 
   openDanhGia(item: any) {
     const dialogRef = this.dialog.open(DanhGia, {

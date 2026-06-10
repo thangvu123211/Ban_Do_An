@@ -18,6 +18,9 @@ export class DonHang implements OnInit {
   hoaDons: any[] = [];
   loading = false;
 
+  isShowDelivered = false;
+  viewMode: 'all' | 'delivered' = 'all';
+
   expandedHoaDonId: number | null = null;
 
   toast = {
@@ -45,7 +48,34 @@ export class DonHang implements OnInit {
   }
   loadHoaDons() {
     this.loading = true;
-    this.hoaDonService.getAllHoaDon().subscribe({
+
+    const api =
+      this.viewMode === 'delivered'
+        ? this.hoaDonService.getALLHoaDonByShipper()
+        : this.hoaDonService.getHoaDonByShipper();
+
+    api.subscribe({
+      next: (res: any) => {
+        this.hoaDons = res;
+        this.loading = false;
+      },
+      error: () => {
+        this.showToast('Lỗi tải dữ liệu', 'error');
+        this.loading = false;
+      }
+    });
+  }
+
+  toggleDeliveredOrders() {
+    this.viewMode =
+      this.viewMode === 'all' ? 'delivered' : 'all';
+
+    this.loadHoaDons();
+  }
+
+  loadALLHoaDons() {
+    this.loading = true;
+    this.hoaDonService.getALLHoaDonByShipper().subscribe({
       next: (res: any) => {
         this.hoaDons = res; // backend trả { data: [...] }
         this.loading = false;
@@ -57,6 +87,8 @@ export class DonHang implements OnInit {
     });
   }
 
+
+
   connectRealtime() {
     this.wsService.connect(); // tham số không dùng, giữ cho đúng interface
 
@@ -64,10 +96,12 @@ export class DonHang implements OnInit {
 
       switch (msg.type) {
 
-        case 'new_hoa_don':
+        case 'shipper_new_order': {
           this.hoaDons = [msg.payload, ...this.hoaDons];
-          this.showToast('Có đơn hàng mới', 'success');
+
+          this.showToast('Bạn có đơn hàng mới', 'success');
           break;
+        }
 
         case 'update_trang_thai_hoa_don_user': {
           const index = this.hoaDons.findIndex(
@@ -124,21 +158,6 @@ export class DonHang implements OnInit {
       this.expandedHoaDonId === ma_hd ? null : ma_hd;
   }
 
-  // ThongTinDonHang(hoaDon: any) {
-  //   this.dialog.open(ThongTinDonHang, {
-  //     width: '1000px',
-  //     maxWidth: '95vw',
-  //     height: '85vh',
-  //     data: hoaDon
-  //   });
-  // }
 
-  // huyHoaDon(id: number) {
-  //   if (!confirm('Bạn có chắc muốn hủy hóa đơn này?')) return;
-
-  //   this.hoaDonService.huyHoaDon(id).subscribe(() => {
-  //     this.loadHoaDons();
-  //   });
-  // }
 
 }

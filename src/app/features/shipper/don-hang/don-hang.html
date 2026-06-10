@@ -1,10 +1,12 @@
 <div class="relative h-96 flex items-center justify-start px-10">
     <div class=" z-10">
-        <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
+        <h1 class="text-5xl font-bold mb-4">Hello Shipper</h1>
         <p class="text-lg max-w-lg">
             Đây là trang quản lý đơn hàng. Bạn có thể xem tất cả đơn hàng ở đây
         </p>
     </div>
+
+
 </div>
 
 
@@ -16,11 +18,15 @@
         <div class="flex justify-between items-center mb-6 border-b pb-4">
 
             <h3 class="text-2xl font-semibold">
-                Danh Sách Nhân Viên
+                {{ viewMode === 'delivered'
+                ? 'Danh Sách Đơn Hàng Đã Giao'
+                : 'Danh Sách Đơn Hàng Đang Chờ Giao' }}
             </h3>
 
-            <button mat-flat-button>
-                Thêm Mới
+            <button mat-flat-button color="primary" (click)="toggleDeliveredOrders()">
+                {{ viewMode === 'delivered'
+                ? 'Xem đơn đang xử lý'
+                : 'Xem đơn đã giao' }}
             </button>
         </div>
 
@@ -52,8 +58,13 @@
                             <td class="px-4 py-7 text-center border">{{ hd.ho_ten }}</td>
                             <td class="px-4 py-7 text-center border">{{ hd.sdt }}</td>
                             <td class="px-4 py-7 text-center border">{{ hd.dia_chi }}</td>
-                            <td class="px-4 py-7 text-center border">
-                                {{ hd.ngay | date:'dd/MM/yyyy' }}
+                            <td class="px-4 py-4 text-center border">
+                                <div class="font-medium text-gray-800">
+                                    {{ hd.ngay | date:'dd/MM/yyyy' }}
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    {{ hd.ngay | date:'HH:mm' }}
+                                </div>
                             </td>
                             <td class="px-4 py-7 text-center border">
                                 {{ hd.tong_tien | number }} đ
@@ -97,18 +108,9 @@
                             <!-- THAO TÁC -->
                             <td class="px-4 py-7 text-center border">
                                 <div class="flex justify-center gap-2">
-                                    <button mat-icon-button matTooltip="Cập nhật" (click)="ThongTinDonHang(hd)">
-                                        <mat-icon>edit</mat-icon>
-                                    </button>
-
-                                    <button mat-icon-button matTooltip="Xem chi tiết" (click)="toggleExpand(hd.ma_hd)">
-                                        <mat-icon>
-                                            {{ expandedHoaDonId === hd.ma_hd ? 'expand_less' : 'expand_more' }}
-                                        </mat-icon>
-                                    </button>
-
-                                    <button mat-icon-button matTooltip="Xóa">
-                                        <mat-icon>delete</mat-icon>
+                                    <button mat-icon-button matTooltip="Thông tin đơn hàng"
+                                        (click)="ThongTinDonHang(hd)">
+                                        <mat-icon>info</mat-icon>
                                     </button>
                                 </div>
                             </td>

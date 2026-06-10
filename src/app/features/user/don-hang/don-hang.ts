@@ -130,7 +130,29 @@ export class DonHang implements OnInit {
             }
             break;
           }
+          case 'assign_shipper_user': {
+            const index = this.hoaDons.findIndex(
+              h => h.ma_hd === msg.payload.ma_hoa_don
+            );
+
+            if (index !== -1) {
+              this.hoaDons[index] = {
+                ...this.hoaDons[index],
+                shipper: msg.payload.shipper
+              };
+
+              // ép Angular detect change
+              this.hoaDons = [...this.hoaDons];
+            }
+
+            this.showToast('Đơn hàng đã được điều phối tài xế 🚚', 'success');
+            break;
+          }
+
+          default:
+            break;
         }
+
       });
   }
 

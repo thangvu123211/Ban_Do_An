@@ -17,6 +17,8 @@ import { SuaGioHang } from "../dialogs/sua-gio-hang/sua-gio-hang";
 import { PaymentService } from "../../../core/services/payment.service";
 import { WebsocketService } from "../../../core/services/websocket.service";
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ConfirmDialogComponent } from "../../../Shared/dialogs/confirm-dialog/confirm-dialog";
+import { XacNhanThanhToan } from "../dialogs/xac-nhan-thanh-toan/xac-nhan-thanh-toan";
 
 // STEP COMPONENTS
 interface DiaChi {
@@ -576,16 +578,31 @@ export class GioHang implements OnInit, OnDestroy {
   // ================= STEP =================
   nextStep() {
     if (this.maHoaDonDangThanhToan && !this.daThanhToan) {
-      this.showToast('Bạn đang chờ thanh toán', 'warn');
+      this.showToast('Đang chờ thanh toán', 'warn');
       return;
     }
 
+    // ❌ Step 2 nhưng chưa đăng nhập
     if (this.currentStep === 2 && !this.isLoggedIn) {
       this.showToast('Vui lòng đăng nhập!', 'warn');
       this.router.navigate(['/login']);
       return;
     }
 
+    // ❌ Step 2 nhưng thiếu thông tin giao hàng
+    if (this.currentStep === 2) {
+      const isEmpty =
+        !this.tenNguoiNhan?.trim() ||
+        !this.soDienThoai?.trim() ||
+        !this.diaChi?.trim();
+
+      if (isEmpty) {
+        this.showToast('Vui lòng nhập đầy đủ thông tin để có thể tiếp tục', 'warn');
+        return; // ⛔ chặn không cho sang step 3
+      }
+    }
+
+    // ✅ Cho phép qua bước tiếp theo
     if (this.currentStep < 4) {
       this.currentStep++;
     }
@@ -593,7 +610,7 @@ export class GioHang implements OnInit, OnDestroy {
 
   prevStep() {
     if (this.maHoaDonDangThanhToan && !this.daThanhToan) {
-      this.showToast('Bạn đang chờ thanh toán', 'warn');
+      this.showToast('Đang chờ thanh toán', 'warn');
       return;
     }
     if (this.currentStep > 0) {
@@ -817,6 +834,28 @@ export class GioHang implements OnInit, OnDestroy {
       }
     });
   }
+
+  openThanhToanDialog() {
+  if (this.isCreatingPayment) return;
+
+  const dialogRef = this.dialog.open(XacNhanThanhToan, {
+    width: '500px',
+    disableClose: true,
+    data: {
+      tongTien: this.tinhTienSauGiam(),
+      tenNguoiNhan: this.tenNguoiNhan,
+      sdt: this.soDienThoai,
+      diaChi: this.diaChi,
+      hinhThuc: 'QR SePay'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === true) {
+      this.thanhToan(); // 🔥 GỌI HÀM BẠN ĐÃ VIẾT
+    }
+  });
+}
 
   tinhTienSauGiam(): number {
 

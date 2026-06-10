@@ -31,7 +31,6 @@ export class QuanLyDatBanService {
   LayDanhSachDatBan(): Observable<any> {
     return this.http.get(
       `${environment.apiUrl}/dat-ban`,
-      { headers: this.getAuthHeaders() }
     );
   }
 

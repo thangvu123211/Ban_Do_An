@@ -107,4 +107,19 @@ export class HoaDonService {
       `${environment.apiUrl}/hoa-don/mon-an-ban-chay?limit=${limit}`
     );
   }
+
+  getHoaDonByShipper(): Observable<any[]> {
+    return this.http
+      .get<any>(`${environment.apiUrl}/ship`)
+      .pipe(
+        map(res => res.data) // 🔥 LẤY ĐÚNG data
+      );
+  }
+  getALLHoaDonByShipper(): Observable<any[]> {
+    return this.http
+      .get<any>(`${environment.apiUrl}/ship/all-hoa-don`)
+      .pipe(
+        map(res => res.data) // 🔥 LẤY ĐÚNG data
+      );
+  }
 }

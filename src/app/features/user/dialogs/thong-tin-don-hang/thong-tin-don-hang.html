@@ -8,6 +8,16 @@
       <p class="text-xs text-gray-500 mt-0.5">
         Theo dõi trạng thái và thông tin đơn hàng
       </p>
+      <div class="mt-2 text-sm text-gray-600 flex gap-2">
+        <mat-icon class="text-gray-400 !text-base">schedule</mat-icon>
+        <span>
+          {{ hoaDon.ngay | date:'dd/MM/yyyy' }}
+        </span>
+        <span class="text-gray-400">•</span>
+        <span>
+          {{ hoaDon.ngay | date:'HH:mm' }}
+        </span>
+      </div>
     </div>
     <button (click)="close()"
       class="w-9 h-9 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all">
@@ -154,21 +164,39 @@
 
     <div class="w-[32%] border-l border-gray-100 flex flex-col bg-white hidden lg:flex">
       <div class="p-5 border-b border-gray-100 bg-gray-50/30">
-        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Tài xế giao hàng</p>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+          Tài xế giao hàng
+        </p>
+
         <div class="flex items-center gap-3">
-          <div
-            class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">
-            {{ (hoaDon.shipper?.ten || 'C') | slice:0:1 }}
+
+          <!-- ẢNH SHIPPER -->
+          <img *ngIf="hoaDon.shipper?.anh_nguoi_dung?.length" [src]="hoaDon.shipper.anh_nguoi_dung[0].url"
+            alt="Ảnh shipper" class="w-10 h-10 rounded-full object-cover shadow shrink-0" />
+
+          <!-- FALLBACK: CHỮ CÁI -->
+          <div *ngIf="!hoaDon.shipper?.anh_nguoi_dung?.length" class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700
+               flex items-center justify-center font-bold text-lg">
+            {{ hoaDon.shipper?.ho_ten?.slice(0,1) || 'C' }}
           </div>
+
+          <!-- THÔNG TIN -->
           <div>
-            <p class="text-sm font-bold text-gray-800">{{ hoaDon.shipper?.ten || 'Chưa điều phối' }}</p>
-            <p class="text-xs text-gray-500 font-medium mt-0.5">{{ hoaDon.shipper?.sdt || '---' }}</p>
+            <p class="text-sm font-bold text-gray-800">
+              Họ Tên: {{ hoaDon.shipper?.ho_ten || 'Chưa điều phối' }}
+            </p>
+            <p class="text-xs text-gray-500 font-medium mt-0.5">
+              SĐT: {{ hoaDon.shipper?.sdt || '---' }}
+            </p>
           </div>
+
         </div>
       </div>
+
       <div class="flex-1 bg-gray-100 relative">
         <iframe class="w-full h-full border-0" src="https://maps.google.com/maps?q=ho%20chi%20minh&z=15&output=embed"
-          allowfullscreen loading="lazy"></iframe>
+          loading="lazy">
+        </iframe>
       </div>
     </div>
 

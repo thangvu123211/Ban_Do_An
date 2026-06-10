@@ -1,103 +1,140 @@
-<div class="relative h-96 flex items-center justify-start px-10">
-    <div class=" z-10">
-        <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
-        <p class="text-lg max-w-lg">
-            Đây là trang quản lý đơn hàng. Bạn có thể xem tất cả đơn hàng ở đây
+<div class="relative h-80 flex items-center px-10 bg-white">
+    <div>
+        <h1 class="text-4xl font-bold mb-3 text-gray-800">
+            Quản lý Đơn hàng
+        </h1>
+        <p class="text-gray-600 max-w-xl">
+            Danh sách các đơn hàng đang chờ xác nhận.
         </p>
     </div>
 </div>
 
+<!-- ===== TAB TRẠNG THÁI (STYLE GOOGLE) ===== -->
+<div class="bg-white border-b sticky top-0 z-30">
+    <div class="flex gap-8 px-10">
 
-<div class="container mx-auto px-6 mt-10">
+        <button (click)="chonTrang('CHO_XAC_NHAN')" class="py-4 text-sm font-semibold border-b-2 transition" [ngClass]="trangDangChon === 'CHO_XAC_NHAN'
+                ? 'border-indigo-600 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:text-gray-800'">
+            Chờ xác nhận
+        </button>
 
-    <mat-card class="w-full shadow-xl rounded-2xl p-6">
+        <button (click)="chonTrang('CHUA_THANH_TOAN')" class="py-4 text-sm font-semibold border-b-2 transition"
+            [ngClass]="trangDangChon === 'CHUA_THANH_TOAN'
+                ? 'border-emerald-600 text-emerald-600'
+                : 'border-transparent text-gray-500 hover:text-gray-800'">
+            Chưa thanh toán
+        </button>
 
-        <!-- HEADER -->
-        <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <button (click)="chonTrang('DANG_XU_LY')" class="py-4 text-sm font-semibold border-b-2 transition" [ngClass]="trangDangChon === 'DANG_XU_LY'
+                ? 'border-amber-600 text-amber-600'
+                : 'border-transparent text-gray-500 hover:text-gray-800'">
+            Xử lý đơn hàng và shipper
+        </button>
 
-            <h3 class="text-2xl font-semibold">
-                Danh Sách Nhân Viên
+        <button (click)="chonTrang('DA_HUY')" class="py-4 text-sm font-semibold border-b-2 transition" [ngClass]="trangDangChon === 'DA_HUY'
+                ? 'border-red-600 text-red-600'
+                : 'border-transparent text-gray-500 hover:text-gray-800'">
+            Đã hủy
+        </button>
+
+    </div>
+</div>
+
+<!-- ===== TABLE ===== -->
+<div class="container mx-auto px-6 mt-6">
+
+    <mat-card class="w-full shadow-lg rounded-xl p-6">
+
+        <!-- HEADER TABLE -->
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold">
+                Danh sách đơn hàng
             </h3>
 
-            <button mat-flat-button>
-                Thêm Mới
+            <button mat-flat-button color="primary">
+                Thêm mới
             </button>
         </div>
 
-        <!-- TABLE -->
-        <div class="overflow-x-auto">
-            <table class="min-w-full border rounded-lg overflow-hidden text-sm">
+        <!-- TABLE CONTENT -->
+        <div class="overflow-x-auto rounded-lg border">
+            <table class="min-w-full text-sm">
 
-                <thead class="text-sm">
+                <thead class="bg-gray-100">
                     <tr>
-                        <th class="px-4 py-3 text-center border">Mã đơn hàng</th>
-                        <th class="px-4 py-3 text-center border">Tên khách hàng</th>
-                        <th class="px-4 py-3 text-center border">SĐT</th>
-                        <th class="px-4 py-3 text-center border">Địa chỉ</th>
-                        <th class="px-4 py-3 text-center border">Ngày</th>
-                        <th class="px-4 py-3 text-center border">Tổng tiền</th>
-                        <th class="px-4 py-3 text-center border">Ghi chú</th>
-                        <th class="px-4 py-3 text-center border">trạng thái đơn hàng</th>
-                        <th class="px-4 py-3 text-center border">trạng thái thanh toán</th>
-                        <th class="px-4 py-3 text-center border">Thao tác</th>
+                        <th class="px-4 py-3 text-center">Mã đơn</th>
+                        <th class="px-4 py-3 text-center">Khách hàng</th>
+                        <th class="px-4 py-3 text-center">SĐT</th>
+                        <th class="px-4 py-3 text-center">Địa chỉ</th>
+                        <th class="px-4 py-3 text-center">Ngày và giờ</th>
+                        <th class="px-4 py-3 text-center">Tổng tiền</th>
+                        <th class="px-4 py-3 text-center">Ghi chú</th>
+                        <th class="px-4 py-3 text-center">Trạng thái</th>
+                        <th class="px-4 py-3 text-center">Thanh toán</th>
+                        <th class="px-4 py-3 text-center">Shipper</th>
+                        <th class="px-4 py-3 text-center">Thao tác</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <ng-container *ngFor="let hd of hoaDons">
+                    <ng-container *ngFor="let hd of hoaDonsDaLoc">
 
-                        <!-- ===== DÒNG HÓA ĐƠN ===== -->
-                        <tr>
-                            <td class="px-4 py-7 text-center border">{{ hd.ma_hd }}</td>
-                            <td class="px-4 py-7 text-center border">{{ hd.ho_ten }}</td>
-                            <td class="px-4 py-7 text-center border">{{ hd.sdt }}</td>
-                            <td class="px-4 py-7 text-center border">{{ hd.dia_chi }}</td>
-                            <td class="px-4 py-7 text-center border">
-                                {{ hd.ngay | date:'dd/MM/yyyy' }}
+                        <tr class="hover:bg-gray-50 transition">
+
+                            <td class="px-4 py-4 text-center border">{{ hd.ma_hd }}</td>
+                            <td class="px-4 py-4 text-center border">{{ hd.ho_ten }}</td>
+                            <td class="px-4 py-4 text-center border">{{ hd.sdt }}</td>
+                            <td class="px-4 py-4 text-center border">{{ hd.dia_chi }}</td>
+
+                            <td class="px-4 py-4 text-center border">
+                                <div class="font-medium text-gray-800">
+                                    {{ hd.ngay | date:'dd/MM/yyyy' }}
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    {{ hd.ngay | date:'HH:mm' }}
+                                </div>
                             </td>
-                            <td class="px-4 py-7 text-center border">
+
+                            <td class="px-4 py-4 text-center border">
                                 {{ hd.tong_tien | number }} đ
                             </td>
 
-                            <!-- GHI CHÚ (an toàn null) -->
-                            <td class="px-4 py-7 text-center border text-gray-600 italic">
+                            <td class="px-4 py-4 text-center border text-gray-500 italic">
                                 {{ hd.ghi_chu || '—' }}
                             </td>
 
-                            <!-- TRẠNG THÁI -->
-                            <td class="px-4 py-7 text-center border">
+                            <!-- TRẠNG THÁI ĐƠN -->
+                            <td class="px-4 py-4 text-center border">
                                 <span *ngIf="trangThaiDonHangMap[hd.trang_thai]"
                                     [ngClass]="trangThaiDonHangMap[hd.trang_thai].classes">
                                     {{ trangThaiDonHangMap[hd.trang_thai].label }}
                                 </span>
-
-                                <ng-template #unknownStatus>
-                                    <span
-                                        class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-600">
-                                        Không xác định
-                                    </span>
-                                </ng-template>
                             </td>
 
-                            <td class="px-4 py-7 text-center border">
+                            <!-- TRẠNG THÁI THANH TOÁN -->
+                            <td class="px-4 py-4 text-center border">
                                 <span *ngIf="trangThaiThanhToanMap[hd.trang_thai_thanh_toan]"
                                     [ngClass]="trangThaiThanhToanMap[hd.trang_thai_thanh_toan].classes">
                                     {{ trangThaiThanhToanMap[hd.trang_thai_thanh_toan].label }}
                                 </span>
+                            </td>
 
-                                <ng-template #unknownStatus>
-                                    <span
-                                        class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-600">
-                                        Không xác định
-                                    </span>
+                            <!-- SHIPPER -->
+                            <td class="px-4 py-4 text-center border">
+                                <span *ngIf="hd.shipper; else noShipper"
+                                    class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm">
+                                    {{ hd.shipper.ho_ten }}
+                                </span>
+
+                                <ng-template #noShipper>
+                                    <span class="text-gray-400 italic">Chưa phân công</span>
                                 </ng-template>
                             </td>
 
-
-                            <!-- THAO TÁC -->
-                            <td class="px-4 py-7 text-center border">
+                            <!-- ACTION -->
+                            <td class="px-4 py-4 text-center border">
                                 <div class="flex justify-center gap-2">
-                                    
 
                                     <button mat-icon-button matTooltip="Xem chi tiết" (click)="ThongTinHoaDon(hd)">
                                         <mat-icon>info</mat-icon>
@@ -106,17 +143,21 @@
                                     <button mat-icon-button matTooltip="Xóa">
                                         <mat-icon>delete</mat-icon>
                                     </button>
+
                                 </div>
                             </td>
-                        </tr>
 
+                        </tr>
 
                     </ng-container>
                 </tbody>
+
             </table>
         </div>
 
     </mat-card>
-
 </div>
-<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>
+
+<!-- TOAST -->
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type">
+</app-toast-message>
