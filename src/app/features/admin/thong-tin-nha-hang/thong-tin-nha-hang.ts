@@ -11,6 +11,7 @@ import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-mess
 })
 export class ThongTinNhaHang implements OnInit {
 
+
   // ===== STATE =====
   hasNhaHang: boolean | null = null;
   showCreateForm = false;
@@ -23,9 +24,14 @@ export class ThongTinNhaHang implements OnInit {
     ten_nha_hang: '',
     trang_thai: 1,
     dia_chi: '',
-    so_tai_khoan:0,
-    ngan_hang:'',
-    ten_nguoi_nhan:''
+    so_tai_khoan: 0,
+    ngan_hang: '',
+    ten_nguoi_nhan: '',
+
+    // 🔥 NEW FIELDS
+    gio_mo_cua: '',
+    gio_dong_cua: '',
+    mo_ta: ''
   };
 
   selectedFile?: File;
@@ -37,7 +43,7 @@ export class ThongTinNhaHang implements OnInit {
     type: 'success' as 'success' | 'warn' | 'error'
   };
 
-  constructor(private nhaHangService: NhaHangService) {}
+  constructor(private nhaHangService: NhaHangService) { }
 
   ngOnInit() {
     this.loadNhaHangByUser();
@@ -62,6 +68,9 @@ export class ThongTinNhaHang implements OnInit {
           this.nhaHang.so_tai_khoan = nh.so_tai_khoan;
           this.nhaHang.ngan_hang = nh.ngan_hang;
           this.nhaHang.ten_nguoi_nhan = nh.ten_nguoi_nhan;
+          this.nhaHang.gio_mo_cua = nh.gio_mo_cua;
+          this.nhaHang.gio_dong_cua = nh.gio_dong_cua;
+          this.nhaHang.mo_ta = nh.mo_ta;
 
           if (nh.anh_nha_hang?.length) {
             this.previewImage = nh.anh_nha_hang[0].url;
@@ -132,7 +141,18 @@ export class ThongTinNhaHang implements OnInit {
   }
 
   resetForm() {
-    this.nhaHang = { ten_nha_hang: '', trang_thai: 1, ma_dia_chi: 1 };
+    this.nhaHang = {
+      ten_nha_hang: '',
+      trang_thai: 1,
+      dia_chi: '',
+      so_tai_khoan: 0,
+      ngan_hang: '',
+      ten_nguoi_nhan: '',
+      gio_mo_cua: '',
+      gio_dong_cua: '',
+      mo_ta: ''
+    };
+
     this.previewImage = undefined;
     this.selectedFile = undefined;
     this.currentNhaHangId = undefined;

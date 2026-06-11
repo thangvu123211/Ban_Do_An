@@ -18,10 +18,8 @@ export class SidebarUser implements OnInit {
     { link: '/user', icon: 'dashboard', text: 'Trang quản trị' },
     { link: '/user/trang-ca-nhan', icon: 'account_circle', text: 'Trang cá nhân' },
     { link: '/user/don-hang', icon: 'local_shipping', text: 'Đơn hàng' },
-    { link: '/user/quan-ly-binh-luan', icon: 'comment', text: 'Quản lý bình luận' },
-    { link: '/user/quan-ly-danh-gia', icon: 'stars_2', text: 'Quản lý đánh giá' },
+    { link: '/user/quan-ly-danh-gia', icon: 'stars_2', text: 'Quản lý Đgiá & Bluận' },
     { link: '/user/quan-ly-dat-ban', icon: 'table_bar', text: 'Quản lý đặt bàn' },
-    { link: '/user/danh_gia', icon: 'start', text: 'Đánh giá' },
   ];
 
   

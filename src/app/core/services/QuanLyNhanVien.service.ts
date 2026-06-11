@@ -78,6 +78,7 @@ export class QuanLyNhanVienService {
     }
 
     if (userData.gioi_tinh) formData.append('gioi_tinh', userData.gioi_tinh);
+    if (userData.trang_thai) formData.append('trang_thai', userData.trang_thai);
 
     if (userData.mat_khau_cu) formData.append('mat_khau_cu', userData.mat_khau_cu);
     if (userData.mat_khau_moi) formData.append('mat_khau_moi', userData.mat_khau_moi);

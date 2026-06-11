@@ -1,0 +1,99 @@
+<div class="relative p-6 ">
+
+    <!-- ❌ NÚT ĐÓNG -->
+    <div class="flex justify-end">
+        <button mat-icon-button (click)="close()" class="absolute right-2 hover:bg-yellow-900">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <!-- 🟨 TIÊU ĐỀ -->
+    <h2 class="text-2xl font-semibold text-center mb-6">
+        Chi Tiết Đặt Bàn
+    </h2>
+
+    <!-- 🧱 NỘI DUNG 2 BÊN -->
+    <div class="flex flex-col md:flex-row gap-6">
+
+        <!-- 🟦 BÊN TRÁI: THÔNG TIN KHÁCH HÀNG -->
+        <div class="flex-1 rounded-xl p-5 shadow">
+            <h3 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
+                Thông tin khách hàng
+            </h3>
+
+            <p class="mb-2">
+                <strong>Tên khách hàng:</strong>
+                {{ data.ten_khach_hang }}
+            </p>
+
+            <p class="mb-2">
+                <strong>SĐT:</strong>
+                {{ data.sdt }}
+            </p>
+
+            <p class="flex items-center gap-2 mb-2">
+                <strong class="whitespace-nowrap">Email:</strong>
+                <span class="truncate">{{ data.email }}</span>
+            </p>
+
+            <p>
+                <strong>Ghi chú:</strong>
+                {{ data.ghi_chu || 'Không có' }}
+            </p>
+        </div>
+
+        <!-- 🟩 BÊN PHẢI: THÔNG TIN ĐẶT BÀN -->
+        <div class="flex-1 rounded-xl p-5 shadow">
+            <h3 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
+                Thông tin đặt bàn
+            </h3>
+
+            <p class="mb-2">
+                <strong>Bàn:</strong>
+                {{ BanAnMap[data.ma_ban_an] || 'Chưa chọn' }}
+            </p>
+
+            <p class="mb-2">
+                <strong>Ngày:</strong>
+                {{ data.ngay ? (data.ngay | date:'dd/MM/yyyy') : 'Chưa chọn' }}
+            </p>
+
+            <p class="mb-2">
+                <strong>Giờ:</strong>
+                {{ data.gio !== null && data.gio !== undefined ? (data.gio + ':00') : 'Chưa chọn' }}
+            </p>
+
+            <p class="flex items-center gap-2 mt-3">
+                <strong class="whitespace-nowrap">Trạng thái:</strong>
+
+                <span *ngIf="data.trang_thai === 'dang_xu_ly'"
+                    class="px-3 py-1 rounded-full bg-yellow-600 text-black font-semibold text-sm whitespace-nowrap">
+                    Đang chờ xử lý
+                </span>
+
+                <span *ngIf="data.trang_thai === 'da_xac_nhan'"
+                    class="px-3 py-1 rounded-full bg-green-600 text-white font-semibold text-sm whitespace-nowrap">
+                    Đã xác nhận
+                </span>
+                <span *ngIf="data.trang_thai === 'da_huy'"
+                    class="px-3 py-1 rounded-full bg-red-600 text-white font-semibold text-sm whitespace-nowrap">
+                    Đã hủy
+                </span>
+            </p>
+        </div>
+
+    </div>
+
+    <!-- 🔘 NÚT -->
+    <div class="flex justify-end gap-3 mt-6">
+
+        <button mat-raised-button (click)="close()">
+            Hủy
+        </button>
+    </div>
+
+</div>
+
+<!-- 🔔 TOAST -->
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type">
+</app-toast-message>

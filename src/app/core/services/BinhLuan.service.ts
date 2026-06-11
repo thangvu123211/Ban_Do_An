@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,9 @@ export class BinhLuanService {
 
   delete(id: number) {
     return this.http.delete(`${environment.apiUrl}/binh-luan/${id}`);
+  }
+
+  getAllBinhLuanByNguoiDung(maMonAn: number): Observable<any> {
+      return this.http.get(`${environment.apiUrl}/binh-luan/get-all-binh-luan-by-nguoi-dung`,{ params: { ma_mon_an: maMonAn } });
   }
 }

@@ -26,6 +26,7 @@ export class ThemNhanVien implements OnInit {
     ngay_sinh: null,
     loai_nguoi_dung: 'user',
     trang_thai: 'hoat_dong',
+    sdt:''
   };
   loading = false;
 

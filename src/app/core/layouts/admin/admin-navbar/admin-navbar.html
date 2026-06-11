@@ -40,7 +40,7 @@
   <!-- RIGHT: User + Notifications + Dark Mode -->
   <div class="flex items-center gap-4 mr-10">
     <!-- User -->
-    
+
 
     <!-- Notifications -->
     <button mat-icon-button [matMenuTriggerFor]="notifMenu" matTooltip="Thông báo">
@@ -64,9 +64,9 @@
     <mat-icon class="text-black">person</mat-icon>
     <span class="text-black">Trang Cá Nhân</span>
   </button>
-  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
+  <button mat-menu-item class="!flex !items-center !gap-3 !py-2" (click)="openExportDialog()">
     <mat-icon class="text-black">print</mat-icon>
-    <span class="text-black">in Báo Cáo</span>
+    <span class="text-black">In Báo Cáo</span>
   </button>
   <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
     <mat-icon class="text-black">chat</mat-icon>

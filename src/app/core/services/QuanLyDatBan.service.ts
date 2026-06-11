@@ -67,4 +67,14 @@ export class QuanLyDatBanService {
       { headers: this.getAuthHeaders() }
     );
   }
+
+  LayDanhSachDatBanCuaNguoiDung(): Observable<any> {
+    return this.http.get(
+      `${environment.apiUrl}/dat-ban/lay-danh-sach-dat-ban-cua-nguoi-dung`,
+    );
+  }
+
+  HuyDatBan(id: number): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/dat-ban/huy-dat-ban/${id}`, {});
+  }
 }

@@ -122,4 +122,12 @@ export class HoaDonService {
         map(res => res.data) // 🔥 LẤY ĐÚNG data
       );
   }
+
+  getALLHoaDontheoNgay(): Observable<any[]> {
+    return this.http
+      .get<any>(`${environment.apiUrl}/hoa-don/lay-hoa-don-theo-ngay`)
+      .pipe(
+        map(res => res.data) // 🔥 LẤY ĐÚNG data
+      );
+  }
 }

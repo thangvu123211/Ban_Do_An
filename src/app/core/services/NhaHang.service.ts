@@ -33,7 +33,7 @@ export class NhaHangService {
   // GET /nha-hang/user
   // ========================
   getNhaHangByUser(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/nha-hang/user`);
+    return this.http.get(`${environment.apiUrl}/nha-hang/all`);
   }
 
   // ========================
@@ -57,6 +57,9 @@ export class NhaHangService {
     formData.append('so_tai_khoan', data.so_tai_khoan);
     formData.append('ngan_hang', data.ngan_hang);
     formData.append('ten_nguoi_nhan', data.ten_nguoi_nhan);
+    formData.append('gio_mo_cua', data.gio_mo_cua);
+    formData.append('gio_dong_cua', data.gio_dong_cua);
+    formData.append('mo_ta', data.mo_ta);
 
     if (image) {
       formData.append('image', image);
@@ -91,6 +94,15 @@ export class NhaHangService {
     }
     if (data.ten_nguoi_nhan) {
       formData.append('ten_nguoi_nhan', data.ten_nguoi_nhan);
+    }
+    if (data.gio_mo_cua) {
+      formData.append('gio_mo_cua', data.gio_mo_cua);
+    }
+    if (data.gio_dong_cua) {
+      formData.append('gio_dong_cua', data.gio_dong_cua);
+    }
+    if (data.mo_ta) {
+      formData.append('mo_ta', data.mo_ta);
     }
 
     if (image) {

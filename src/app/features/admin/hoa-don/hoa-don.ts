@@ -17,7 +17,7 @@ import { ThongTinHoaDon } from './thong-tin-hoa-don/thong-tin-hoa-don';
 })
 export class HoaDon implements OnInit {
 
-  trangDangChon: 'CHO_XAC_NHAN' | 'CHUA_THANH_TOAN' | 'DA_HUY' | 'DANG_XU_LY' = 'CHO_XAC_NHAN';
+  trangDangChon: 'ALL' | 'CHO_XAC_NHAN' | 'CHUA_THANH_TOAN' | 'DA_HUY' | 'DANG_XU_LY' = 'CHO_XAC_NHAN';
 
   hoaDons: any[] = [];
   loading = false;
@@ -45,13 +45,34 @@ export class HoaDon implements OnInit {
 
   chonTrang(trang: any) {
     this.trangDangChon = trang;
+
+    if (trang === 'ALL') {
+      this.LoadAllHoaDon();
+    } else {
+      this.loadHoaDonTheoNgay();
+    }
   }
 
   ngOnInit(): void {
-    this.loadHoaDons();
+    this.loadHoaDonTheoNgay();
     this.connectRealtime();
   }
-  loadHoaDons() {
+
+  
+  loadHoaDonTheoNgay() {
+    this.loading = true;
+    this.hoaDonService.getALLHoaDontheoNgay().subscribe({
+      next: (res: any) => {
+        this.hoaDons = res; // backend trả { data: [...] }
+        this.loading = false;
+        console.log(this.hoaDons);
+      },
+      error: () => {
+        this.showToast('Lỗi không thể tải tất cả đơn hàng', 'error');
+      }
+    });
+  }
+  LoadAllHoaDon() {
     this.loading = true;
     this.hoaDonService.getAllHoaDon().subscribe({
       next: (res: any) => {
@@ -64,6 +85,7 @@ export class HoaDon implements OnInit {
       }
     });
   }
+
 
   connectRealtime() {
     this.wsService.connect(); // tham số không dùng, giữ cho đúng interface
@@ -165,7 +187,7 @@ export class HoaDon implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
         this.showToast('Cập nhật đơn hàng thành công', 'success');
-        this.loadHoaDons();
+        this.loadHoaDonTheoNgay();
       } else if (result === false) {
         this.showToast('Bạn đã hủy sửa đơn hàng', 'warn');
       }
@@ -177,6 +199,7 @@ export class HoaDon implements OnInit {
     da_xac_nhan: { label: 'Đã xác nhận', classes: 'bg-blue-100 text-blue-700' },
     dang_giao: { label: 'Đang giao', classes: 'bg-indigo-100 text-indigo-700' },
     da_giao: { label: 'Đã giao', classes: 'bg-green-100 text-green-700' },
+    da_giao_shipper: { label: 'Shipper đã lấy hàng', classes: 'bg-green-100 text-green-700' },
     da_huy: { label: 'Đã hủy', classes: 'bg-red-100 text-red-700' },
   };
 
@@ -201,6 +224,8 @@ export class HoaDon implements OnInit {
   }
   get hoaDonsDaLoc() {
     switch (this.trangDangChon) {
+      case 'ALL':
+        return this.hoaDons;
 
       case 'CHO_XAC_NHAN':
         return this.hoaDons.filter(
@@ -221,7 +246,7 @@ export class HoaDon implements OnInit {
       case 'DANG_XU_LY':
         return this.hoaDons.filter(
           x =>
-            ['da_xac_nhan', 'dang_giao', 'da_giao'].includes(x.trang_thai)
+            ['da_xac_nhan', 'dang_giao', 'da_giao','da_giao_shipper'].includes(x.trang_thai)
         );
 
       default:

@@ -193,24 +193,25 @@
 
                                     <button (click)="openShipper = !openShipper" type="button"
                                         class="w-full flex items-center justify-between bg-white border border-gray-200 text-gray-900 rounded-xl pl-4 pr-3.5 py-3.5 text-sm font-medium focus:ring-4 focus:ring-gray-100 focus:border-gray-900 focus:outline-none transition-all shadow-sm cursor-pointer">
-                                        <span *ngIf="!selectedShipper" class="text-gray-400">
+                                        <span *ngIf="!hoaDon?.shipper" class="text-gray-400">
                                             -- Chọn shipper sẵn sàng --
                                         </span>
 
-                                        <span *ngIf="selectedShipper" class="flex items-center gap-2">
-                                            <img *ngIf="selectedShipper.anh_nguoi_dung?.length"
-                                                [src]="selectedShipper.anh_nguoi_dung[0].url"
+                                        <span *ngIf="hoaDon?.shipper" class="flex items-center gap-2">
+                                            <img *ngIf="hoaDon.shipper.anh_nguoi_dung?.length"
+                                                [src]="hoaDon.shipper.anh_nguoi_dung[0].url"
                                                 class="w-6 h-6 rounded-full object-cover shadow" />
 
                                             <span class="font-semibold">
-                                                {{ selectedShipper.ho_ten }}
+                                                {{ hoaDon.shipper.ho_ten }}
                                             </span>
 
                                             <span class="text-xs px-2 py-0.5 rounded-md font-semibold" [ngClass]="{
-                                                'bg-green-50 text-green-700': selectedShipper.trang_thai === 'hoat_dong',
-                                                'bg-gray-100 text-gray-500': selectedShipper.trang_thai === 'khoa'
+                                                'bg-green-50 text-green-700': hoaDon.shipper.trang_thai === 'hoat_dong',
+                                                'bg-gray-100 text-gray-500': hoaDon.shipper.trang_thai === 'khoa'
                                                 }">
-                                                {{ selectedShipper.trang_thai === 'hoat_dong' ? 'Hoạt động' : 'Không hoạt động' }}
+                                                {{ hoaDon.shipper.trang_thai === 'hoat_dong' ? 'Hoạt động' : 'Không hoạt
+                                                động' }}
                                             </span>
                                         </span>
                                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
@@ -257,7 +258,7 @@
                                     [disabled]="!selectedShipper || hoaDon.trang_thai !== 'da_xac_nhan'" class="px-6 py-3.5 bg-gray-900 hover:bg-gray-800 active:scale-[0.98]
                                     text-white text-sm font-bold rounded-xl transition-all shadow-sm shrink-0
                                     disabled:bg-gray-300 disabled:cursor-not-allowed">
-                                        Giao đơn
+                                    Giao đơn
                                 </button>
                             </div>
                         </div>
@@ -282,11 +283,15 @@
                                         class="px-4 py-3.5 bg-gray-100 rounded-xl text-sm font-semibold text-gray-700 flex items-center justify-between">
 
                                         <span *ngIf="hoaDon.trang_thai === 'dang_giao'">
-                                            🚚 Đơn hàng đang giao
+                                            Đơn hàng đang giao
+                                        </span>
+
+                                        <span *ngIf="hoaDon.trang_thai === 'da_giao_shipper'">
+                                            Shipper đã lấy hàng
                                         </span>
 
                                         <span *ngIf="hoaDon.trang_thai === 'da_giao'">
-                                            ✅ Đơn hàng đã giao
+                                            Đơn hàng đã giao
                                         </span>
                                     </div>
 
@@ -301,6 +306,11 @@
                                                     <span *ngSwitchCase="'cho_xac_nhan'"
                                                         class="flex items-center gap-1.5 text-amber-700 font-semibold">⏳
                                                         Chờ xác nhận</span>
+
+                                                    <span *ngSwitchCase="'da_giao_shipper'"
+                                                        class="flex items-center gap-1.5 text-amber-700 font-semibold">⏳
+                                                        Shipper đã lấy hàng</span>
+
                                                     <span *ngSwitchCase="'da_xac_nhan'"
                                                         class="flex items-center gap-1.5 text-blue-700 font-semibold">📦
                                                         Đã xác nhận</span>

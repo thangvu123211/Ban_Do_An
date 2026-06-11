@@ -69,6 +69,27 @@ export class AdminService {
       headers: this.getAuthHeaders()
     });
   }
+
+  exportExportDoanhThuNgay(ngay?: string) {
+    let url = `${environment.apiUrl}/hoa-don/export-doanh-thu-ngay`;
+
+    if (ngay) {
+      url += `?ngay=${ngay}`;
+    }
+
+    return this.http.get(url, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob' // ⭐ quan trọng để download file Excel
+    });
+  }
+
+  LayDanhSachNgayDoanhThu() {
+    return this.http.get<any>(
+      `${environment.apiUrl}/hoa-don/danh-sach-doanh-thu-ngay`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
   getDoanhThuThang(thang: number, nam: number) {
     return this.http.get<any>(
       `${environment.apiUrl}/hoa-don/doanh-thu-thang?thang=${thang}&nam=${nam}`,

@@ -60,7 +60,20 @@ export class ThongTinMonAn implements OnInit {
     this.wsService.messages$.subscribe((msg: any) => {
 
       if (msg.type === 'new_binh_luan') {
-        this.binhLuans.unshift(msg.payload);
+        const cmt = msg.payload;
+
+        // ✅ COMMENT CHA
+        if (!cmt.parent_id) {
+          this.binhLuans.unshift(cmt);
+        }
+        // ✅ REPLY
+        else {
+          const parent = this.binhLuans.find(x => x.id === cmt.parent_id);
+          if (parent) {
+            parent.replies = parent.replies || [];
+            parent.replies.push(cmt);
+          }
+        }
       }
 
       if (msg.type === 'update_binh_luan') {

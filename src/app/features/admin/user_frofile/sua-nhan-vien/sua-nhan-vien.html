@@ -102,16 +102,7 @@
           </mat-form-field>
         </div>
 
-        <!-- Mật khẩu -->
-        <div class="flex flex-col gap-1 col-span-2">
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Mật khẩu</mat-label>
-            <input matInput [(ngModel)]="NhanVien.mat_khau_moi" autocomplete="new-password">
-          </mat-form-field>
-        </div>
-
-        <!-- Loại nhân viên -->
-        <div class="flex flex-col gap-1 col-span-2">
+        <div class="flex flex-col gap-1 ">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Loại nhân viên</mat-label>
 
@@ -126,6 +117,35 @@
             </mat-error>
           </mat-form-field>
         </div>
+
+        <div class="flex flex-col gap-1">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Số điện thoại</mat-label>
+
+            <input matInput [(ngModel)]="NhanVien.sdt" name="sdt" required pattern="^0[0-9]{9}$"
+              placeholder="0123456789" autocomplete="off" #sdt="ngModel" />
+
+            <mat-error *ngIf="sdt.touched && sdt.errors?.['required']">
+              Số điện thoại không được để trống
+            </mat-error>
+
+            <mat-error *ngIf="sdt.touched && sdt.errors?.['pattern']">
+              Số điện thoại phải bắt đầu bằng 0 và đủ 10 số
+            </mat-error>
+
+          </mat-form-field>
+        </div>
+
+        <!-- Mật khẩu -->
+        <div class="flex flex-col gap-1 col-span-2">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Mật khẩu</mat-label>
+            <input matInput [(ngModel)]="NhanVien.mat_khau_moi" autocomplete="new-password">
+          </mat-form-field>
+        </div>
+
+        <!-- Loại nhân viên -->
+
         <div class="flex flex-col gap-1 col-span-2">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Trạng thái tài khoản</mat-label>
@@ -148,11 +168,11 @@
 
 
       <button matButton="filled" type="button" (click)="capNhatNhanVien()" [disabled]="editForm.invalid || loading"
-      class="flex items-center gap-2">
-      <mat-icon *ngIf="loading" class="animate-spin">refresh</mat-icon>
-      <mat-icon *ngIf="!loading">check</mat-icon>
-      {{ loading ? 'Đang cập nhật...' : 'Cập nhật' }}
-    </button>
+        class="flex items-center gap-2">
+        <mat-icon *ngIf="loading" class="animate-spin">refresh</mat-icon>
+        <mat-icon *ngIf="!loading">check</mat-icon>
+        {{ loading ? 'Đang cập nhật...' : 'Cập nhật' }}
+      </button>
 
       <!-- Button Hủy -->
       <button mat-raised-button (click)="close()">

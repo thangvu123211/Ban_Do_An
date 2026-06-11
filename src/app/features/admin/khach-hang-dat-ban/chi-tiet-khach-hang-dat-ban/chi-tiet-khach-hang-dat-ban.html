@@ -1,4 +1,4 @@
-<div class="relative p-6 bg-gray-800 datban text-white">
+<div class="relative p-6 ">
 
     <!-- ❌ NÚT ĐÓNG -->
     <div class="flex justify-end">
@@ -74,6 +74,10 @@
                 <span *ngIf="data.trang_thai === 'da_xac_nhan'"
                     class="px-3 py-1 rounded-full bg-green-600 text-white font-semibold text-sm whitespace-nowrap">
                     Đã xác nhận
+                </span>
+                <span *ngIf="data.trang_thai === 'da_huy'"
+                    class="px-3 py-1 rounded-full bg-red-600 text-white font-semibold text-sm whitespace-nowrap">
+                    Đã hủy
                 </span>
             </p>
         </div>

@@ -1,13 +1,13 @@
-<!-- HEADER -->
-<div class="relative h-96 flex items-center justify-start px-10">
-  <div class=" z-10">
-    <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
-    <p class="text-lg max-w-lg">
-      Đây là trang quản lý nhân viên. Bạn có thể thêm, sửa hoặc xóa thông tin nhân viên tại đây.
+
+
+<div class="relative h-80 flex items-center px-10 bg-white">
+  <div>
+    <h1 class="text-4xl font-bold mb-3 text-gray-800">
+     TRANG QUẢN LÝ NGƯỜI DÙNG
+    </h1>
+    <p class="text-gray-600 max-w-xl">
+        Đây là trang quản lý người dùng. Bạn có thể thêm, sửa hoặc xóa thông tin người dùng tại đây.
     </p>
-    <button matButton="filled" (click)="ThemNhanVien()" class="px-5 py-2.5 mt-4">
-      Thêm Mới Nhân Viên
-    </button>
   </div>
 </div>
 
@@ -20,7 +20,7 @@
     <div class="flex justify-between items-center mb-6 border-b pb-4">
 
       <h3 class="text-2xl font-semibold">
-        Danh Sách Nhân Viên
+        Danh Sách Người Dùng
       </h3>
 
       <button mat-flat-button (click)="ThemNhanVien()">
@@ -39,7 +39,7 @@
             <th class="px-4 py-3 text-center border">Ảnh</th>
             <th class="px-4 py-3 text-center border">Giới tính</th>
             <th class="px-4 py-3 text-center border">Ngày sinh</th>
-            <!-- <th class="px-4 py-3 text-center border">Địa chỉ</th> -->
+            <th class="px-4 py-3 text-center border">Sđt</th>
             <th class="px-4 py-3 text-center border">Email</th>
             <th class="px-4 py-3 text-center border">Loại nhân viên</th>
             <th class="px-4 py-3 text-center border">Trạng thái tài khoản</th>
@@ -63,7 +63,7 @@
 
             <td class="px-4 py-7 text-center border">{{ user.gioi_tinh }}</td>
             <td class="px-4 py-7 text-center border">{{ user.ngay_sinh | date:'dd/MM/yyyy' }}</td>
-            <!-- <td class="px-4 py-7 text-center border">{{ user.dia_chi }}</td> -->
+            <td class="px-4 py-7 text-center border">{{ user.sdt }}</td>
             <td class="px-4 py-7 text-center border">{{ user.email }}</td>
             <td class="px-4 py-7 text-center border">{{ user.loai_nguoi_dung }}</td>
             <td class="px-4 py-7 text-center border">

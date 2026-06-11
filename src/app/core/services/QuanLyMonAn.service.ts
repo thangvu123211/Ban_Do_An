@@ -57,5 +57,10 @@ export class QuanLyMonAn {
     return this.http.get<any>(`${environment.apiUrl}mon_an/search?q=${keyword}`);
   }
 
-
+  getMonAnCoBinhLuanVaDanhGia(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/mon_an/get-mon-an-co-binh-luan-va-danh-gia`);
+  }
+  getMonAnCoBinhLuanVaDanhGiaCuaNguoiDung(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/mon_an/get-mon-an-co-binh-luan-va-danh-gia-cua-nguoi-dung`);
+  }
 }

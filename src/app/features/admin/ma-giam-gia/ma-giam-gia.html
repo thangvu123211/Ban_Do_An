@@ -1,12 +1,14 @@
-<!-- HEADER -->
-<div class="relative h-96 flex items-center justify-start px-10">
-    <div class="z-10">
-        <h1 class="text-5xl font-bold mb-4">Hello Admin</h1>
-        <p class="text-lg max-w-lg">
-            Đây là trang quản lý mã giảm giá
-        </p>
 
-    </div>
+
+<div class="relative h-80 flex items-center px-10 bg-white">
+  <div>
+    <h1 class="text-4xl font-bold mb-3 text-gray-800">
+      QUẢN LÝ MÃ GIẢM GIÁ
+    </h1>
+    <p class="text-gray-600 max-w-xl">
+       Đây là trang quản lý mã giảm giá
+    </p>
+  </div>
 </div>
 
 <!-- KHUNG DỮ LIỆU -->
@@ -38,7 +40,6 @@
                         <th class="px-4 py-4 text-center border">Loại</th>
                         <th class="px-4 py-4 text-center border">Giá trị</th>
                         <th class="px-4 py-4 text-center border">Đơn tối thiểu</th>
-                        <th class="px-4 py-4 text-center border">Giảm tối đa</th>
                         <th class="px-4 py-4 text-center border">Hiệu lực</th>
                         <th class="px-4 py-4 text-center border">Trạng thái</th>
                         <th class="px-4 py-4 text-center border">Hành động</th>
@@ -74,9 +75,6 @@
                         </td>
                         <td class="px-4 py-4 text-center border">
                             {{ gg.don_toi_thieu ? money.formatVND(gg.don_toi_thieu) + 'đ' : '-' }}
-                        </td>
-                        <td class="px-4 py-4 text-center border">
-                            {{ gg.giam_toi_da ? money.formatVND(gg.giam_toi_da) + 'đ' : '-' }}
                         </td>
                         <td class="px-4 py-4 text-center border">
                             {{ gg.ngay_bat_dau | date:'dd/MM/yyyy' }}

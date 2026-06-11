@@ -18,6 +18,7 @@ export class ThongTinDonHang implements OnInit {
   steps = [
     { key: 'cho_xac_nhan', label: 'Chờ xác nhận' },
     { key: 'da_xac_nhan', label: 'Đã xác nhận' },
+    { key: 'da_giao_shipper', label: 'Shipper đã lấy hàng' },
     { key: 'dang_giao', label: 'Đang giao hàng' },
     { key: 'da_giao', label: 'Đã giao hàng' }
   ];
@@ -107,14 +108,17 @@ export class ThongTinDonHang implements OnInit {
   }
 
   isStepActive(stepKey: string): boolean {
-    const order = ['cho_xac_nhan', 'da_xac_nhan', 'dang_giao', 'da_giao'];
+    const order = ['cho_xac_nhan', 'da_xac_nhan','da_giao_shipper', 'dang_giao', 'da_giao'];
     return order.indexOf(this.hoaDon.trang_thai) >= order.indexOf(stepKey);
   }
 
   capNhatTrangThai(trangThai: string) {
 
     // 🚫 CHẶN SAI LUỒNG
-    if (trangThai === 'dang_giao' && this.hoaDon.trang_thai !== 'da_xac_nhan') {
+    if (trangThai === 'da_giao_shipper' && this.hoaDon.trang_thai !== 'da_xac_nhan') {
+      return;
+    }
+    if (trangThai === 'dang_giao' && this.hoaDon.trang_thai !== 'da_giao_shipper') {
       return;
     }
 
@@ -128,7 +132,7 @@ export class ThongTinDonHang implements OnInit {
           this.hoaDon.trang_thai = trangThai;
 
           this.showToast(
-            trangThai === 'dang_giao'
+            trangThai === 'da_giao_shipper'
               ? '🚚 Shipper đang giao đơn hàng'
               : '✅ Đơn hàng đã giao thành công',
             'success'

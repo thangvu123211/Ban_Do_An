@@ -2,7 +2,7 @@
 <div class="relative h-80 flex items-center px-10 bg-white">
   <div>
     <h1 class="text-4xl font-bold mb-3 text-gray-800">
-      Quản lý liên hệ
+      QUẢN LÝ LIÊN HỆ
     </h1>
     <p class="text-gray-600 max-w-xl">
       Danh sách các liên hệ từ khách hàng gửi về hệ thống. Bạn có thể xem chi tiết hoặc xóa liên hệ.
@@ -38,7 +38,6 @@
             <th class="px-4 py-3 text-left border">Tiêu đề</th>
             <th class="px-4 py-3 text-left border">Nội dung</th>
             <th class="px-4 py-3 text-center border">Ngày gửi</th>
-            <th class="px-4 py-3 text-center border">Trạng thái</th>
             <th class="px-4 py-3 text-center border">Hành động</th>
           </tr>
         </thead>
@@ -81,16 +80,6 @@
             <!-- NGÀY -->
             <td class="px-4 py-4 text-center border text-gray-500">
               {{ lh.ngay_tao | date:'dd/MM/yyyy HH:mm' }}
-            </td>
-
-            <!-- TRẠNG THÁI -->
-            <td class="px-4 py-4 text-center border">
-              <span class="px-3 py-1 text-xs rounded-full font-semibold" [ngClass]="lh.trang_thai === 'chua_xu_ly'
-                  ? 'bg-yellow-100 text-yellow-700'
-                  : 'bg-green-100 text-green-700'">
-
-                {{ lh.trang_thai }}
-              </span>
             </td>
 
             <!-- ACTIONS -->

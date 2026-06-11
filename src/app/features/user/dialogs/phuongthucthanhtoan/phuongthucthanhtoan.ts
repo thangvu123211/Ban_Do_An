@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { environment } from '../../../../../environments/environment.prod';
 
 @Component({
   selector: 'app-phuongthucthanhtoan',
@@ -33,36 +34,39 @@ export class Phuongthucthanhtoan implements OnInit {
 
   /** ✅ Thanh toán VNPay (Chuyển khoản) */
   /** ✅ Thanh toán VNPay (Chuyển khoản) */
-thanhToanVNPay() {
-  this.isLoading = true;
+  thanhToanVNPay() {
+    this.isLoading = true;
 
-  const payload = {
-    MA_HD: this.data.MA_HD,
-    TONGTIEN: this.data.TONGTIEN
-  };
+    const payload = {
+      MA_HD: this.data.MA_HD,
+      TONGTIEN: this.data.TONGTIEN
+    };
 
-  this.http.post<any>('http://localhost:3000/payment/VNpayCreate-Qr', payload)
-    .subscribe({
-      next: (res) => {
-        console.log("VNPay response:", res);
-        this.isLoading = false;
+    this.http.post<any>(
+      `${environment.apiUrl}${environment.payment.vnPayCreateQr}`,
+      payload
+    )
+      .subscribe({
+        next: (res) => {
+          console.log("VNPay response:", res);
+          this.isLoading = false;
 
-        const url = typeof res === 'string' ? res : res?.paymentUrl;
+          const url = typeof res === 'string' ? res : res?.paymentUrl;
 
-        if (url) {
-          // 🚀 Chuyển sang trang thanh toán VNPay
-          window.location.href = url;
-        } else {
-          alert("Không nhận được link thanh toán từ server!");
+          if (url) {
+            // 🚀 Chuyển sang trang thanh toán VNPay
+            window.location.href = url;
+          } else {
+            alert("Không nhận được link thanh toán từ server!");
+          }
+        },
+        error: (err) => {
+          console.error("Lỗi tạo QR VNPay:", err);
+          this.isLoading = false;
+          alert("Không thể tạo mã QR thanh toán!");
         }
-      },
-      error: (err) => {
-        console.error("Lỗi tạo QR VNPay:", err);
-        this.isLoading = false;
-        alert("Không thể tạo mã QR thanh toán!");
-      }
-    });
-}
+      });
+  }
 
 
 }

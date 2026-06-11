@@ -19,7 +19,6 @@ import { QuanLyNhanVienService } from '../../../core/services/QuanLyNhanVien.ser
 export class KhachHangDatBan implements OnInit {
   danhsachdatban: any[] = [];
   BanAnMap: { [key: number]: string } = {};
-  NhanVienMap: { [key: number]: string } = {};
 
   toast = {
     show: false,
@@ -35,17 +34,14 @@ export class KhachHangDatBan implements OnInit {
   }
 
   constructor(
-    private http: HttpClient,
     private dialog: MatDialog,
     private quanlidatban: QuanLyDatBanService,
     private quanlibanan: QuanLyBanAnService,
-    private quanlinhanvien: QuanLyNhanVienService,
   ) { }
 
   ngOnInit(): void {
     this.loadListDatBan();
     this.loadBanAnMap();
-    this.loadNhanVienMap();
   }
 
   loadListDatBan() {
@@ -65,6 +61,8 @@ export class KhachHangDatBan implements OnInit {
         return 'Đang chờ xử lý';
       case 'da_xac_nhan':
         return 'Đã xác nhận';
+      case 'da_huy':
+        return 'Đã hủy';
       default:
         return 'Không xác định';
     }
@@ -80,26 +78,7 @@ export class KhachHangDatBan implements OnInit {
     });
   }
 
-  loadNhanVienMap() {
-    this.quanlinhanvien.LayTatCaNhanVien().subscribe((res: any) => {
 
-      const data = res.data || res;
-
-      if (Array.isArray(data)) {
-        data.forEach((nv: any) => {
-          if (nv && nv.ma_nguoi_dung) {
-            this.NhanVienMap[nv.ma_nguoi_dung] = nv.ho_ten;
-          }
-        });
-      }
-      else if (data && data.ma_nguoi_dung) {
-        // trường hợp API trả về 1 object
-        this.NhanVienMap[data.ma_nguoi_dung] = data.ho_ten;
-      }
-
-      console.log("NhanVienMap:", this.NhanVienMap);
-    });
-  }
 
   xemChiTiet(datBan: any): void {
     const dialogRef = this.dialog.open(ChiTietKhachHangDatBan, {

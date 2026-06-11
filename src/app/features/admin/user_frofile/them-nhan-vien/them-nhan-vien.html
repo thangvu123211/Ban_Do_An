@@ -99,6 +99,32 @@
         </mat-error>
       </mat-form-field>
 
+      <mat-form-field appearance="outline">
+        <mat-label>Loại nhân viên</mat-label>
+        <mat-select [(ngModel)]="NhanVien.loai_nguoi_dung" name="loai_nguoi_dung" required #loaiNV="ngModel">
+          <mat-option value="admin">Admin</mat-option>
+          <mat-option value="user">User</mat-option>
+          <mat-option value="shipper">Shipper</mat-option>
+        </mat-select>
+
+        <mat-error *ngIf="loaiNV.touched && loaiNV.errors?.['required']">
+          Vui lòng chọn loại nhân viên
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Số điện thoại</mat-label>
+        <input matInput [(ngModel)]="NhanVien.sdt" name="sdt" required pattern="^0[0-9]{9}$" #sdt="ngModel" />
+
+        <mat-error *ngIf="sdt.touched && sdt.errors?.['required']">
+          Số điện thoại không được để trống
+        </mat-error>
+
+        <mat-error *ngIf="sdt.touched && sdt.errors?.['pattern']">
+          Số điện thoại không đúng định dạng
+        </mat-error>
+      </mat-form-field>
+
       <!-- MẬT KHẨU -->
       <mat-form-field appearance="outline" class="col-span-2">
         <mat-label>Mật khẩu</mat-label>
@@ -115,21 +141,10 @@
       </mat-form-field>
 
       <!-- LOẠI NHÂN VIÊN -->
-      <mat-form-field appearance="outline" class="col-span-2">
-        <mat-label>Loại nhân viên</mat-label>
-        <mat-select [(ngModel)]="NhanVien.loai_nguoi_dung" name="loai_nguoi_dung" required #loaiNV="ngModel">
-          <mat-option value="admin">Admin</mat-option>
-          <mat-option value="user">User</mat-option>
-          <mat-option value="shipper">Shipper</mat-option>
-        </mat-select>
 
-        <mat-error *ngIf="loaiNV.touched && loaiNV.errors?.['required']">
-          Vui lòng chọn loại nhân viên
-        </mat-error>
-      </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-span-2">
-        <mat-label>Loại nhân viên</mat-label>
+        <mat-label>Trạng thái tài khoản</mat-label>
         <mat-select [(ngModel)]="NhanVien.trang_thai" name="trang_thai" required #trangThai="ngModel">
           <mat-option value="khoa">Khóa tài khoản</mat-option>
           <mat-option value="hoat_dong">Đang hoạt động</mat-option>

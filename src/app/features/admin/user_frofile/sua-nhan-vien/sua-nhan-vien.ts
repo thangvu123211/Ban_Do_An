@@ -96,7 +96,8 @@ export class SuaNhanVien implements OnInit {
       ngay_sinh: this.NhanVien.ngay_sinh,
       dia_chi: this.NhanVien.dia_chi,
       loai_nhan_vien: this.NhanVien.loai_nguoi_dung,
-      trang_thai: this.NhanVien.trang_thai
+      trang_thai: this.NhanVien.trang_thai,
+      sdt:this.NhanVien.sdt
     };
 
     // ✅ CHỈ THÊM KHI CÓ NHẬP

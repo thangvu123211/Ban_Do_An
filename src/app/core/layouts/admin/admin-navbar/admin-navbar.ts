@@ -6,6 +6,8 @@ import { AuthService } from '../../../services/auth.service';
 
 import { MATERIAL } from '../../../../Shared/material';
 import { SidebarService } from '../../../services/WebService/sidebar.service';
+import { MatDialog } from '@angular/material/dialog';
+import { BaoCao } from '../Dialog/bao-cao/bao-cao';
 
 
 @Component({
@@ -16,10 +18,11 @@ import { SidebarService } from '../../../services/WebService/sidebar.service';
   styleUrls: ['./admin-navbar.scss']
 })
 export class AdminNavbar implements OnInit {
-  
+
   adminInfo: any = null;
   previewImage: string = 'assets/user.jpg';
   isExpanded = false;
+
 
   constructor(
     private location: Location,
@@ -28,7 +31,53 @@ export class AdminNavbar implements OnInit {
     private authAdmin: AdminService,
     private authService: AuthService,
     private sidebarService: SidebarService,
+    private dialog: MatDialog
   ) {
+  }
+  openExportDialog() {
+    const dialogRef = this.dialog.open(BaoCao, {
+      width: '100%',         // Cho phép responsive tự co giãn
+      maxWidth: '576px',     // Tăng kích thước tối đa lên 576px (rộng rãi và đẹp hơn)
+      panelClass: 'custom-dialog-container' // Thêm nếu bạn muốn custom sâu bằng CSS bên ngoài
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.exportBaoCao(result);
+      }
+    });
+  }
+  exportBaoCao(data: any) {
+
+    if (data.type === 'ngay') {
+      this.authAdmin.exportExportDoanhThuNgay(data.ngay)
+        .subscribe(res => this.downloadFile(res, 'doanh_thu_ngay.xlsx'));
+    }
+
+    // else if (data.type === 'thang') {
+    //   this.authAdmin.exportExportDoanhThuNgay(data.thang, data.nam)
+    //     .subscribe(res => this.downloadFile(res, 'doanh_thu_thang.xlsx'));
+    // }
+
+    // else if (data.type === 'nam') {
+    //   this.authAdmin.exportExportDoanhThuNgay(data.nam)
+    //     .subscribe(res => this.downloadFile(res, 'doanh_thu_nam.xlsx'));
+    // }
+  }
+
+  downloadFile(data: Blob, fileName: string) {
+    const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+
+    window.URL.revokeObjectURL(url);
   }
 
   toggleSidebar() {

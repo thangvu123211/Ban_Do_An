@@ -64,6 +64,7 @@ export class DonHang implements OnInit {
       .subscribe((msg: any) => {
 
         if (!msg?.type) return;
+        const payload = msg.payload;
 
         switch (msg.type) {
 
@@ -138,14 +139,40 @@ export class DonHang implements OnInit {
             if (index !== -1) {
               this.hoaDons[index] = {
                 ...this.hoaDons[index],
-                shipper: msg.payload.shipper
+                shipper: msg.payload.shipper,
+                trang_thai: 'da_giao_shipper'   // 🔥 THÊM DÒNG NÀY
               };
 
-              // ép Angular detect change
               this.hoaDons = [...this.hoaDons];
             }
 
             this.showToast('Đơn hàng đã được điều phối tài xế 🚚', 'success');
+            break;
+          }
+          case 'payment_success': {
+
+            const hdId =
+              payload?.hoa_don_id ||
+              payload?.ma_hoa_don ||
+              payload?.id;
+
+            const index = this.hoaDons.findIndex(
+              h => Number(h.ma_hd) === Number(hdId)
+            );
+
+            if (index === -1) return;
+
+            if (this.hoaDons[index].trang_thai_thanh_toan === 'da_thanh_toan') return;
+
+            this.hoaDons[index] = {
+              ...this.hoaDons[index],
+              trang_thai_thanh_toan: 'da_thanh_toan'
+            };
+
+            this.hoaDons = [...this.hoaDons];
+
+            this.showToast('Thanh toán thành công 💰', 'success');
+
             break;
           }
 
@@ -173,6 +200,7 @@ export class DonHang implements OnInit {
     cho_xac_nhan: { label: 'Chờ xác nhận', classes: 'bg-yellow-100 text-yellow-700' },
     da_xac_nhan: { label: 'Đã xác nhận', classes: 'bg-blue-100 text-blue-700' },
     dang_giao: { label: 'Đang giao', classes: 'bg-indigo-100 text-indigo-700' },
+    da_giao_shipper: { label: 'Shipper đã lấy hàng', classes: 'bg-indigo-100 text-indigo-700' },
     da_giao: { label: 'Đã giao', classes: 'bg-green-100 text-green-700' },
     da_huy: { label: 'Đã hủy', classes: 'bg-red-100 text-red-700' },
   };

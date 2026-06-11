@@ -23,7 +23,7 @@ export class DanhGiaService {
   createDanhGia(data: any) {
     return this.http.post(`${environment.apiUrl}/danh-gia`, data);
   }
-  
+
   getRatingByMon(): Observable<any> {
     return this.http.get(`${environment.apiUrl}/danh-gia/mon`);
   }
@@ -34,5 +34,36 @@ export class DanhGiaService {
 
   getSoLuongDanhGia(): Observable<any> {
     return this.http.get(`${environment.apiUrl}/danh-gia/so_luong_danh_gia`);
+  }
+
+  delete(id: number) {
+    return this.http.delete(`${environment.apiUrl}/danh-gia/${id}`);
+  }
+  AnDanhGia(id: number) {
+    return this.http.put(
+      `${environment.apiUrl}/danh-gia/an-danh-gia/${id}`,
+      {}
+    );
+  }
+  HienDanhGia(id: number) {
+    return this.http.put(
+      `${environment.apiUrl}/danh-gia/hien-danh-gia/${id}`,
+      {}
+    );
+  }
+  getAllDanhGiaByNguoiDung(maMonAn: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/danh-gia/get-all-danh-gia-by-nguoi-dung`, { params: { ma_mon_an: maMonAn } });
+  }
+
+  TatCaDanhGiaCuaAdmin(maMonAn: number): Observable<any> {
+    return this.http.get(
+      `${environment.apiUrl}/danh-gia/tat-ca-danh-gia/${maMonAn}`
+    );
+  }
+  UpdateDanhGia(id: number, data: any) {
+    return this.http.put(
+      `${environment.apiUrl}/danh-gia/${id}`,
+      data
+    );
   }
 }

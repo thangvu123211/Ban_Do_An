@@ -19,6 +19,7 @@ import { WebsocketService } from "../../../core/services/websocket.service";
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ConfirmDialogComponent } from "../../../Shared/dialogs/confirm-dialog/confirm-dialog";
 import { XacNhanThanhToan } from "../dialogs/xac-nhan-thanh-toan/xac-nhan-thanh-toan";
+import { environment } from "../../../../environments/environment.prod";
 
 // STEP COMPONENTS
 interface DiaChi {
@@ -790,7 +791,7 @@ export class GioHang implements OnInit, OnDestroy {
 
             // ✅ CHỈ DÙNG QR TỰ TẠO (KHÔNG DÙNG r.qr_url)
             this.qrUrl =
-              `https://qr.sepay.vn/img?acc=0123456789&bank=MBBank` +
+              `${environment.qrBaseUrl}?acc=${environment.qrAcc}&bank=${environment.qrBank}` +
               `&amount=${amount}&des=${encodeURIComponent(content)}`;
 
             console.log('QR URL:', this.qrUrl);
@@ -836,26 +837,26 @@ export class GioHang implements OnInit, OnDestroy {
   }
 
   openThanhToanDialog() {
-  if (this.isCreatingPayment) return;
+    if (this.isCreatingPayment) return;
 
-  const dialogRef = this.dialog.open(XacNhanThanhToan, {
-    width: '500px',
-    disableClose: true,
-    data: {
-      tongTien: this.tinhTienSauGiam(),
-      tenNguoiNhan: this.tenNguoiNhan,
-      sdt: this.soDienThoai,
-      diaChi: this.diaChi,
-      hinhThuc: 'QR SePay'
-    }
-  });
+    const dialogRef = this.dialog.open(XacNhanThanhToan, {
+      width: '500px',
+      disableClose: true,
+      data: {
+        tongTien: this.tinhTienSauGiam(),
+        tenNguoiNhan: this.tenNguoiNhan,
+        sdt: this.soDienThoai,
+        diaChi: this.diaChi,
+        hinhThuc: 'QR SePay'
+      }
+    });
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (result === true) {
-      this.thanhToan(); // 🔥 GỌI HÀM BẠN ĐÃ VIẾT
-    }
-  });
-}
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.thanhToan(); // 🔥 GỌI HÀM BẠN ĐÃ VIẾT
+      }
+    });
+  }
 
   tinhTienSauGiam(): number {
 

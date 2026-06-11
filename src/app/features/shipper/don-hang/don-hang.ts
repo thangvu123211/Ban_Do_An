@@ -143,6 +143,7 @@ export class DonHang implements OnInit {
   trangThaiDonHangMap: Record<string, any> = {
     cho_xac_nhan: { label: 'Chờ xác nhận', classes: 'bg-yellow-100 text-yellow-700' },
     da_xac_nhan: { label: 'Đã xác nhận', classes: 'bg-blue-100 text-blue-700' },
+    da_giao_shipper: { label: 'Shipper đã lấy hàng', classes: 'bg-blue-100 text-blue-700' },
     dang_giao: { label: 'Đang giao', classes: 'bg-indigo-100 text-indigo-700' },
     da_giao: { label: 'Đã giao', classes: 'bg-green-100 text-green-700' },
     da_huy: { label: 'Đã hủy', classes: 'bg-red-100 text-red-700' },
