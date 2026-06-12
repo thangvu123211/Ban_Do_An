@@ -788,10 +788,11 @@ export class GioHang implements OnInit, OnDestroy {
 
             const amount = order.tong_tien;
             const content = `HD${order.ma_hd}`;
+            const pay = environment.payment;
 
             // ✅ CHỈ DÙNG QR TỰ TẠO (KHÔNG DÙNG r.qr_url)
             this.qrUrl =
-              `${environment.qrBaseUrl}?acc=${environment.qrAcc}&bank=${environment.qrBank}` +
+              `${pay.qrBaseUrl}?acc=${pay.qrAcc}&bank=${pay.qrBank}` +
               `&amount=${amount}&des=${encodeURIComponent(content)}`;
 
             console.log('QR URL:', this.qrUrl);

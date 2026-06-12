@@ -9,6 +9,11 @@ import { ThongTinMonAn } from '../../../guest/dialogs/thong-tin-mon-an/thong-tin
 import { Router } from '@angular/router';
 import { QuanLyMonAn } from '../../../../core/services/QuanLyMonAn.service';
 import { HoaDonService } from '../../../../core/services/HoaDon.Service';
+import { environment } from '../../../../../environments/environment.prod';
+
+const base = environment.payment.qrBaseUrl;
+const acc = environment.payment.qrAcc;
+const bank = environment.payment.qrBank;
 
 @Component({
   selector: 'app-thong-tin-don-hang',
@@ -17,7 +22,12 @@ import { HoaDonService } from '../../../../core/services/HoaDon.Service';
   templateUrl: './thong-tin-don-hang.html',
   styleUrl: './thong-tin-don-hang.scss'
 })
+
 export class ThongTinDonHang implements OnInit {
+
+  bankName = environment.payment.qrBank;
+  accountName = environment.payment.qrName;
+  accountNumber = environment.payment.qrAcc;
 
   hoaDon: any;
 
@@ -236,7 +246,7 @@ export class ThongTinDonHang implements OnInit {
     const content = `HD${this.hoaDon.ma_hd}`;
 
     this.qrUrl =
-      `https://qr.sepay.vn/img?acc=0123456789&bank=MBBank` +
+      `${base}?acc=${acc}&bank=${bank}` +
       `&amount=${amount}&des=${encodeURIComponent(content)}`;
 
     this.showQR = true;

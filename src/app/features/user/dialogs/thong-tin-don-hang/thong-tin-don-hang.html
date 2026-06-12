@@ -252,12 +252,26 @@
             <div class="border-b border-gray-100 pb-4">
               <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Thông tin tài khoản nhận</p>
               <div class="space-y-1">
-                <p class="text-sm text-gray-600">Ngân hàng: <span class="font-semibold text-gray-900">Vietcombank</span>
+                <p class="text-sm text-gray-600">
+                  Ngân hàng:
+                  <span class="font-semibold text-gray-900">
+                    {{ bankName }}
+                  </span>
                 </p>
-                <p class="text-sm text-gray-600">Chủ tài khoản: <span class="font-semibold text-gray-900">CONG TY TNHH
-                    FOODTECH</span></p>
-                <p class="text-sm text-gray-600">Số tài khoản: <span
-                    class="font-mono font-bold text-lg text-emerald-700">1234567890</span></p>
+
+                <p class="text-sm text-gray-600">
+                  Chủ tài khoản:
+                  <span class="font-semibold text-gray-900">
+                    {{ accountName }}
+                  </span>
+                </p>
+
+                <p class="text-sm text-gray-600">
+                  Số tài khoản:
+                  <span class="font-mono font-bold text-lg text-emerald-700">
+                    {{ accountNumber }}
+                  </span>
+                </p>
               </div>
             </div>
 

@@ -1,12 +1,14 @@
-<mat-toolbar color="transparent"
-  class="fixed top-0 left-0 w-full px-4 py-3 shadow-md h-20 z-50 bg-white flex justify-between">
+<mat-toolbar 
+  class="fixed top-0 left-0 w-full px-4 py-3 shadow-md h-20 z-50 flex justify-between">
   <!-- LEFT: Menu + Logo -->
   <div class="flex items-center gap-4 h-full">
     <button mat-icon-button (click)="toggleSidebar()">
       <mat-icon>menu</mat-icon>
     </button>
 
-
+    <a routerLink="/" class="flex items-center">
+      <img src="assets/Logo/FoodHub.png" alt="Logo" class="h-[35px] md:h-[60px] w-auto cursor-pointer" />
+    </a>
   </div>
 
   <!-- CENTER: Search -->

@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, Output, output } from '@angular/core';
 import { MATERIAL } from '../../../../../Shared/material';
 import { SafeHtml } from '@angular/platform-browser';
+import { environment } from '../../../../../../environments/environment.prod';
+
 
 @Component({
   selector: 'app-step-thanh-toan',
@@ -9,6 +11,10 @@ import { SafeHtml } from '@angular/platform-browser';
   templateUrl: './step-thanh-toan.html'
 })
 export class StepThanhToanComponent {
+
+  bankName = environment.payment.qrBank;
+  accountName = environment.payment.qrName;
+  accountNumber = environment.payment.qrAcc;
 
   @Input() gioHang: any[] = [];
   @Input() tongTien = 0;

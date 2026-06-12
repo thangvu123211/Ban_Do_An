@@ -62,19 +62,22 @@ export class ThongTinHoaDon implements OnInit {
     this.toast.type = type;
     setTimeout(() => this.toast.show = false, 3000);
   }
-  
+
 
   ngOnInit(): void {
     this.wsService.connect();
     this.loadShippers();
     this.originalTrangThai = this.hoaDon.trang_thai;
+    if (this.hoaDon.shipper) {
+      this.selectedShipper = this.hoaDon.shipper;
+    }
     this.wsService.messages$.subscribe((msg: any) => {
       if (!msg?.type) return;
 
       const payload = msg.payload;
 
       // chỉ update đúng đơn này
-      if (payload?.ma_hoa_don  !== this.hoaDon.ma_hd) return;
+      if (payload?.ma_hoa_don !== this.hoaDon.ma_hd) return;
 
       if (msg.type === 'update_trang_thai_hoa_don_user') {
 
@@ -84,7 +87,7 @@ export class ThongTinHoaDon implements OnInit {
         };
 
       }
-      
+
 
       if (msg.type === 'cancel_hoa_don_user') {
         this.hoaDon = {
@@ -123,6 +126,8 @@ export class ThongTinHoaDon implements OnInit {
             trang_thai: res.data.trang_thai
           };
 
+          this.selectedShipper = res.data.shipper;
+
           this.showToast('Đã gán shipper thành công 🚚', 'success');
         },
         error: () => {
@@ -144,7 +149,7 @@ export class ThongTinHoaDon implements OnInit {
       this.isLoading ||
       this.hoaDon?.trang_thai === this.originalTrangThai ||
       this.hoaDon?.trang_thai === 'dang_giao' ||
-      this.hoaDon?.trang_thai === 'da_giao'||
+      this.hoaDon?.trang_thai === 'da_giao' ||
       this.hoaDon?.trang_thai === 'da_giao_shipper'
     );
   }
@@ -176,7 +181,7 @@ export class ThongTinHoaDon implements OnInit {
   }
 
   isStepActive(stepKey: string): boolean {
-    const order = ['cho_xac_nhan', 'da_xac_nhan','da_giao_shipper' , 'dang_giao', 'da_giao'];
+    const order = ['cho_xac_nhan', 'da_xac_nhan', 'da_giao_shipper', 'dang_giao', 'da_giao'];
     return order.indexOf(this.hoaDon.trang_thai) >= order.indexOf(stepKey);
   }
 

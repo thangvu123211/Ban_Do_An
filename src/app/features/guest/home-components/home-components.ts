@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { QuanLyGiamGiaService } from '../../../core/services/QuanLyGiamGia';
 import { ThemGioHangDialog } from '../dialogs/them-gio-hang-dialog/them-gio-hang-dialog';
 import { OptionService } from '../../../core/services/option.service';
+import { DanhGiaService } from '../../../core/services/DanhGia.service';
 
 @Component({
   selector: 'app-home-components',
@@ -60,7 +61,8 @@ export class HomeComponents implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private router: Router,
     private giamGiaService: QuanLyGiamGiaService,
-    private optionService: OptionService
+    private optionService: OptionService,
+    private danhGiaService:DanhGiaService
   ) { }
 
   showToast(message: string, type: 'success' | 'warn' | 'error') {
@@ -97,6 +99,7 @@ export class HomeComponents implements OnInit, OnDestroy {
     this.loadMonAnNoiBat();
     this.loadFavorites();
     this.loadGiamGia();
+    this.loadRatings();
   }
 
   copyCode(code: string) {
@@ -337,6 +340,20 @@ export class HomeComponents implements OnInit, OnDestroy {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+  }
+
+  loadRatings() {
+    this.danhGiaService.getRatingByMon().subscribe((res: any) => {
+
+      this.ratingsMap = {};
+
+      const data = res?.data || res || [];
+
+      data.forEach((item: any) => {
+        this.ratingsMap[item.ma_mon_an] = item;
+      });
+
+    });
   }
 
   @ViewChild('homeScrollContainer', { static: false })

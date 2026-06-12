@@ -14,9 +14,9 @@ export class SidebarShipper implements OnInit {
   email = '';
 
   public menuItems = [
-    { link: '/shipper', icon: 'dashboard', text: 'Trang quản trị' },
+    { link: '/shipper', icon: 'dashboard', text: 'Trang thống kê' },
     { link: '/shipper/trang-ca-nhan', icon: 'account_circle', text: 'Trang cá nhân' },
-    { link: '/shipper/don-hang', icon: 'local_shipping', text: 'Trang cá nhân' },
+    { link: '/shipper/quan-ly-don-hang', icon: 'local_shipping', text: 'Quản lý đơn hàng' },
   ];
 
 
