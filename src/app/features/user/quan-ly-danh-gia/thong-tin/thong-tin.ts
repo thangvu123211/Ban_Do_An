@@ -25,6 +25,9 @@ export class ThongTin implements OnInit {
   danhGias: any[] = [];
   hasChanged = false;
 
+  editId: number | null = null;
+  editNoiDung = '';
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public mon: any,
     private dialogRef: MatDialogRef<ThongTin>,
@@ -95,6 +98,39 @@ export class ThongTin implements OnInit {
           this.showToast('Xóa bình luận không thành công', 'error');
         }
       });
+    });
+  }
+
+  openEditCMT(c: any) {
+    this.editId = c.id;
+    this.editNoiDung = c.noi_dung; // lấy nội dung cũ
+  }
+
+  cancelEditCMT() {
+    this.editId = null;
+    this.editNoiDung = '';
+  }
+  submitEdit(id: number) {
+    if (!this.editNoiDung.trim()) {
+      this.showToast('Nội dung bình luận không được để trống', 'warn');
+      return;
+    }
+
+    this.binhLuanService.updateBinhLuan(id, {
+      noi_dung: this.editNoiDung
+    }).subscribe({
+      next: () => {
+        this.showToast('Sửa bình luận thành công', 'success');
+
+        this.editId = null;
+        this.editNoiDung = '';
+
+        this.hasChanged = true;
+        this.loadBinhLuan(); // reload lại danh sách
+      },
+      error: () => {
+        this.showToast('Sửa bình luận không thành công', 'error');
+      }
     });
   }
 

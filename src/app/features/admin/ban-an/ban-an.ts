@@ -81,26 +81,25 @@ export class BanAn implements OnInit {
       }
     });
   }
-  SuaBanAn(ma_ban: number) {
-    const dialogRef = this.dialog.open(SuaBanAn, {
-      width: '900px',
-      maxWidth: '110vw',
-      data: {
-        ma_ban
-      },
-      panelClass: 'custom-dialog'
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.showToast('Cập nhật bàn ăn thành công', 'success');
-        this.loadBanAn();
-        const payload = {
-        };
-      } else {
-        this.showToast('Bạn đã hủy sửa bàn ăn', 'warn');
-      }
-    });
-  }
+  SuaBanAn(banAn: any) {
+  const dialogRef = this.dialog.open(SuaBanAn, {
+    width: '900px',
+    maxWidth: '110vw',
+    data: {
+      banAn: { ...banAn } // clone để tránh sửa trực tiếp
+    },
+    panelClass: 'custom-dialog'
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.showToast('Cập nhật bàn ăn thành công', 'success');
+      this.loadBanAn();
+    } else {
+      this.showToast('Bạn đã hủy sửa bàn ăn', 'warn');
+    }
+  });
+}
   XoaBanAn(ma_ban: number) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',

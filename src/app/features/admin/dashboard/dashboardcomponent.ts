@@ -459,7 +459,7 @@ export class Dashboardcomponent implements OnInit {
   }
 
   loadPieChartMonAnBanChay() {
-    this.hoaDonService.getTopMonAnBanChay(5).subscribe({
+    this.adminService.getTopMonAnBanChay(5).subscribe({
       next: (res) => {
         const data = res.data;
 

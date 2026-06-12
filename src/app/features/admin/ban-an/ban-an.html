@@ -33,7 +33,7 @@
 
         <thead class="text-sm">
           <tr>
-            <th class="px-4 py-4 text-center border">STT</th>
+            <th class="px-4 py-4 text-center border">Mã bàn</th>
             <th class="px-4 py-4 text-center border">Ảnh bàn</th>
             <th class="px-4 py-4 text-center border">Tên Bàn</th>
             <th class="px-4 py-4 text-center border">Số Chỗ Ngồi</th>
@@ -46,7 +46,7 @@
 
           <tr *ngFor="let items of BanAn; let i = index">
 
-            <td class="px-4 py-4 text-center border">{{ i + 1 }}</td>
+            <td class="px-4 py-4 text-center border">{{ items.ma_ban }}</td>
 
             <!-- Ảnh bàn -->
             <td class="px-4 py-4 text-center border">
@@ -79,14 +79,14 @@
               <div class="flex justify-center gap-2">
 
                 <!-- Sửa -->
-                <button mat-icon-button matTooltip="Sửa" (click)="SuaBanAn(items.ma_ban)">
+                <button mat-icon-button matTooltip="Sửa" (click)="SuaBanAn(items)">
                   <mat-icon>edit</mat-icon>
                 </button>
 
                 <!-- Xóa -->
-                <button mat-icon-button matTooltip="Xóa" (click)="XoaBanAn(items.ma_ban)">
+                <!-- <button mat-icon-button matTooltip="Xóa" (click)="XoaBanAn(items.ma_ban)">
                   <mat-icon>delete</mat-icon>
-                </button>
+                </button> -->
 
               </div>
             </td>

@@ -95,10 +95,15 @@
           Thay Đổi Ảnh Đại Diện
         </button>
 
-        <!-- Lưu ảnh chỉ hiện khi chọn -->
-        <button matButton="filled" (click)="capNhatAdmin()" *ngIf="selectedFile" class="px-4 py-2">
-          Lưu Ảnh
-        </button>
+        <button matButton="filled" (click)="capNhatAdmin()" *ngIf="selectedFile" [disabled]="f.invalid || isLoading"
+            class="px-4 py-2 flex items-center gap-2">
+            <mat-icon *ngIf="isLoading" class="animate-spin">refresh</mat-icon>
+            <mat-icon *ngIf="!isLoading">check</mat-icon>
+
+            <span>
+              {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật' }}
+            </span>
+          </button>
       </div>
 
     </div>

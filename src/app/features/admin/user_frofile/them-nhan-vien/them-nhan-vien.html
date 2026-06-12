@@ -88,7 +88,8 @@
       <!-- EMAIL -->
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
-        <input matInput [(ngModel)]="NhanVien.email" name="email" required email #email="ngModel" />
+        <input matInput [(ngModel)]="NhanVien.email" name="email_fake" type="email" required email #email="ngModel"
+          autocomplete="off" />
 
         <mat-error *ngIf="email.touched && email.errors?.['required']">
           Email không được để trống
@@ -128,8 +129,8 @@
       <!-- MẬT KHẨU -->
       <mat-form-field appearance="outline" class="col-span-2">
         <mat-label>Mật khẩu</mat-label>
-        <input matInput type="password" [(ngModel)]="NhanVien.mat_khau" name="mat_khau" required minlength="6"
-          #matKhau="ngModel" />
+        <input matInput type="password" [(ngModel)]="NhanVien.mat_khau" name="new_password_fake" required minlength="6"
+          #matKhau="ngModel" autocomplete="new-password" />
 
         <mat-error *ngIf="matKhau.touched && matKhau.errors?.['required']">
           Mật khẩu không được để trống

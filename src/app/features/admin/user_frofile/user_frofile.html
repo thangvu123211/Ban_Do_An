@@ -34,7 +34,7 @@
 
         <thead class="text-sm">
           <tr>
-            <th class="px-4 py-3 text-center border">STT</th>
+            <th class="px-4 py-3 text-center border">Mã người dùng</th>
             <th class="px-4 py-3 text-center border">Họ tên</th>
             <th class="px-4 py-3 text-center border">Ảnh</th>
             <th class="px-4 py-3 text-center border">Giới tính</th>
@@ -51,7 +51,7 @@
 
           <tr *ngFor="let user of NhanVien; let i = index">
 
-            <td class="px-4 py-7 text-center border">{{ i + 1 }}</td>
+            <td class="px-4 py-7 text-center border">{{ user.ma_nguoi_dung }}</td>
             <td class="px-4 py-7 text-center border">{{ user.ho_ten }}</td>
 
             <td class="px-4 py-7 text-center border">
@@ -85,9 +85,9 @@
                   <mat-icon>edit</mat-icon>
                 </button>
 
-                <button mat-icon-button matTooltip="Xóa" (click)="deleteUser(user.ma_nguoi_dung)">
+                <!-- <button mat-icon-button matTooltip="Xóa" (click)="deleteUser(user.ma_nguoi_dung)">
                   <mat-icon>delete</mat-icon>
-                </button>
+                </button> -->
 
               </div>
             </td>

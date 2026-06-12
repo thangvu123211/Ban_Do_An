@@ -102,11 +102,7 @@ export class HoaDonService {
       }
     });
   }
-  getTopMonAnBanChay(limit: number = 5) {
-    return this.http.get<any>(
-      `${environment.apiUrl}/hoa-don/mon-an-ban-chay?limit=${limit}`
-    );
-  }
+  
 
   getHoaDonByShipper(): Observable<any[]> {
     return this.http

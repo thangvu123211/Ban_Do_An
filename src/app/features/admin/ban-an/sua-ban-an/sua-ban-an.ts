@@ -12,7 +12,7 @@ import { MATERIAL } from '../../../../Shared/material';
   templateUrl: './sua-ban-an.html',
   styleUrl: './sua-ban-an.scss'
 })
-export class SuaBanAn implements OnInit{
+export class SuaBanAn implements OnInit {
   banAn: any = {};
   selectedFile?: File;
   previewImage: string | ArrayBuffer | null = null;
@@ -22,20 +22,17 @@ export class SuaBanAn implements OnInit{
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<SuaBanAn>,
     private QuanLyBanAnService: QuanLyBanAnService
-  ) {}
+  ) { }
 
   ngOnInit() {
-  this.QuanLyBanAnService.LayBanAnTheoID(this.data.ma_ban).subscribe((res: any) => {
-    this.banAn = res.data ?? res;
+    this.banAn = this.data.banAn;
 
-    // ⭐ ĐÚNG KEY: anh_ban
-    if (this.banAn.anh_ban?.length) {
+    if (this.banAn?.anh_ban?.length) {
       this.previewImage = this.banAn.anh_ban[0].url;
     } else {
       this.previewImage = 'assets/user.jpg';
     }
-  });
-}
+  }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -49,28 +46,28 @@ export class SuaBanAn implements OnInit{
   }
 
   capNhat() {
-  this.isLoading = true;
+    this.isLoading = true;
 
-  const payload = {
-    ten_ban: this.banAn.ten_ban,
-    so_cho_ngoi: this.banAn.so_cho_ngoi,
-    trang_thai: this.banAn.trang_thai
-  };
+    const payload = {
+      ten_ban: this.banAn.ten_ban,
+      so_cho_ngoi: this.banAn.so_cho_ngoi,
+      trang_thai: this.banAn.trang_thai
+    };
 
-  this.QuanLyBanAnService
-    .CapNhatBanAn(this.data.ma_ban, payload, this.selectedFile)
-    .subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.dialogRef.close(true);
-      },
-      error: (err) => {
-        console.log(err);
-        this.isLoading = false;
-        alert("Lỗi cập nhật");
-      }
-    });
-}
+    this.QuanLyBanAnService
+      .CapNhatBanAn(this.banAn.ma_ban, payload, this.selectedFile) // ✅ SỬA Ở ĐÂY
+      .subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.dialogRef.close(true);
+        },
+        error: (err) => {
+          console.log(err);
+          this.isLoading = false;
+          alert('Lỗi cập nhật');
+        }
+      });
+  }
 
   close() {
     this.dialogRef.close(false);

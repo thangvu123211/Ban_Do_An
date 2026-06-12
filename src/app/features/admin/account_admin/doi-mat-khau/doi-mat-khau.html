@@ -21,9 +21,9 @@
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Mật khẩu mới</mat-label>
 
-          <input matInput type="password" placeholder="Nhập mật khẩu mới" name="mat_khau"
-            [(ngModel)]="admin.mat_khau_moi" #passwordCtrl="ngModel" required minlength="6" maxlength="32"
-            (blur)="passwordCtrl.control.markAsTouched()" />
+          <input matInput type="password" placeholder="Nhập mật khẩu mới" name="mat_khau_moi"
+            [(ngModel)]="admin.mat_khau_moi" autocomplete="new-password" #passwordCtrl="ngModel" required minlength="6"
+            maxlength="32" (blur)="passwordCtrl.control.markAsTouched()" />
 
           <!-- ❌ Lỗi Angular Material -->
           <mat-error *ngIf="passwordCtrl.invalid && passwordCtrl.touched">
@@ -54,7 +54,7 @@
       </span>
     </button>
 
-    
+
 
     <button mat-raised-button (click)="close()">
       <mat-icon>close</mat-icon>

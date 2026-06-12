@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class BinhLuanService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getByMonAn(maMonAn: number) {
     return this.http.get(`${environment.apiUrl}/binh-luan/mon-an/${maMonAn}`);
@@ -31,6 +31,13 @@ export class BinhLuanService {
   }
 
   getAllBinhLuanByNguoiDung(maMonAn: number): Observable<any> {
-      return this.http.get(`${environment.apiUrl}/binh-luan/get-all-binh-luan-by-nguoi-dung`,{ params: { ma_mon_an: maMonAn } });
+    return this.http.get(`${environment.apiUrl}/binh-luan/get-all-binh-luan-by-nguoi-dung`, { params: { ma_mon_an: maMonAn } });
+  }
+
+  updateBinhLuan(id: number, data: { noi_dung: string }) {
+    return this.http.put(
+      `${environment.apiUrl}/binh-luan/${id}`,
+      data
+    );
   }
 }

@@ -20,8 +20,7 @@ export class OptionMonAn implements OnInit {
 
   nhomOption = {
     ten_nhom: '',
-    bat_buoc: false,
-    chon_nhieu: false,
+    loai: 'bat_buoc',
     so_luong_toi_da: 1,
     so_luong_toi_thieu: 0
   };
@@ -52,6 +51,8 @@ export class OptionMonAn implements OnInit {
     this.toast.type = type;
     setTimeout(() => this.toast.show = false, 3000);
   }
+
+
 
   ngOnInit() {
     this.load_list_mon_an();
@@ -90,12 +91,17 @@ export class OptionMonAn implements OnInit {
 
     const payload = {
       ma_mon_an: this.monAnDangChon.ma_mon_an,
-      ...this.nhomOption
+      ten_nhom: this.nhomOption.ten_nhom,
+      bat_buoc: this.nhomOption.loai === 'bat_buoc',
+      chon_nhieu: this.nhomOption.loai === 'chon_nhieu',
+      so_luong_toi_da: this.nhomOption.so_luong_toi_da,
+      so_luong_toi_thieu: this.nhomOption.so_luong_toi_thieu
     };
 
     this.optionService.createNhomOption(payload).subscribe({
       next: () => {
         this.nhomOption.ten_nhom = '';
+        this.nhomOption.loai = 'bat_buoc';
         this.showToast('Tạo nhóm option thành công', 'success');
         this.loadNhomOption();
       },
@@ -113,9 +119,11 @@ export class OptionMonAn implements OnInit {
         .map((n: any) => ({
           ...n,
 
-          // ✅ ĐÚNG FIELD JSON TỪ BACKEND
+          // 🔥 MAP backend → radio
+          loai: n.bat_buoc ? 'bat_buoc' : 'chon_nhieu',
+
           option_items: (n.OptionItems || []).map((opt: any) => ({
-            id: opt.ma_option_item,   // ✅ FIX QUAN TRỌNG
+            id: opt.ma_option_item,
             ten_option: opt.ten_option,
             gia_them: opt.gia_them
           })),
@@ -126,7 +134,6 @@ export class OptionMonAn implements OnInit {
           }
         }));
 
-      console.log('NHÓM OPTION:', this.danhSachNhomOption);
     });
   }
   /* ================= OPTION ITEM ================= */
@@ -190,22 +197,15 @@ export class OptionMonAn implements OnInit {
   saveNhomOption(nhom: any) {
     const payload = {
       ten_nhom: nhom.ten_nhom,
-      bat_buoc: nhom.bat_buoc,
-      chon_nhieu: nhom.chon_nhieu
+      bat_buoc: nhom.loai === 'bat_buoc',
+      chon_nhieu: nhom.loai === 'chon_nhieu'
     };
 
     this.optionService.updateNhomOption(nhom.ma_nhom_option, payload)
       .subscribe({
-        next: (res: any) => {
-
-          this.editingNhomId = null; // ✅ đúng biến
-
-          this.showToast(
-            `Cập nhật thành công`,
-            'success'
-          );
-
-          // 🔥 QUAN TRỌNG: reload lại data để sync UI
+        next: () => {
+          this.editingId = null;
+          this.showToast('Cập nhật thành công', 'success');
           this.loadNhomOption();
         },
         error: () => {
@@ -214,21 +214,7 @@ export class OptionMonAn implements OnInit {
       });
   }
 
-  toggleBatBuoc(nhom: any) {
-    if (nhom.bat_buoc) {
-      nhom.chon_nhieu = false; // 🔥 tắt cái kia
-    }
 
-    this.saveNhomOption(nhom);
-  }
-
-  toggleChonNhieu(nhom: any) {
-    if (nhom.chon_nhieu) {
-      nhom.bat_buoc = false; // 🔥 tắt cái kia
-    }
-
-    this.saveNhomOption(nhom);
-  }
 
   saveOptionItem(opt: any) {
 

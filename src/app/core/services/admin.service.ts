@@ -59,7 +59,7 @@ export class AdminService {
 
   LayDoanhThuNgay(ngay?: string): Observable<any> {
 
-    let url = `${environment.apiUrl}/hoa-don/doanh-thu-ngay`;
+    let url = `${environment.apiUrl}/admin/doanh-thu-ngay`;
 
     if (ngay) {
       url += `?ngay=${ngay}`; // yyyy-mm-dd
@@ -71,7 +71,7 @@ export class AdminService {
   }
 
   exportExportDoanhThuNgay(ngay?: string) {
-    let url = `${environment.apiUrl}/hoa-don/export-doanh-thu-ngay`;
+    let url = `${environment.apiUrl}/admin/export-doanh-thu-ngay`;
 
     if (ngay) {
       url += `?ngay=${ngay}`;
@@ -85,31 +85,37 @@ export class AdminService {
 
   LayDanhSachNgayDoanhThu() {
     return this.http.get<any>(
-      `${environment.apiUrl}/hoa-don/danh-sach-doanh-thu-ngay`,
+      `${environment.apiUrl}/admin/danh-sach-doanh-thu-ngay`,
       { headers: this.getAuthHeaders() }
     );
   }
 
   getDoanhThuThang(thang: number, nam: number) {
     return this.http.get<any>(
-      `${environment.apiUrl}/hoa-don/doanh-thu-thang?thang=${thang}&nam=${nam}`,
+      `${environment.apiUrl}/admin/doanh-thu-thang?thang=${thang}&nam=${nam}`,
       { headers: this.getAuthHeaders() }
     );
   }
 
   getDoanhThuNam(nam: number) {
     return this.http.get<any>(
-      `${environment.apiUrl}/hoa-don/doanh-thu-nam?nam=${nam}`,
+      `${environment.apiUrl}/admin/doanh-thu-nam?nam=${nam}`,
       { headers: this.getAuthHeaders() }
     );
   }
 
   getTiLeHoanThanhHomNay() {
-    return this.http.get<any>(`${environment.apiUrl}/hoa-don/ti-le-hoan-thanh-hom-nay`);
+    return this.http.get<any>(`${environment.apiUrl}/admin/ti-le-hoan-thanh-hom-nay`);
   }
 
   getTopMonBanChay(limit = 9) {
-    return this.http.get<any[]>(`${environment.apiUrl}/hoa-don/top-mon-ban-chay-nhat?limit=${limit}`
+    return this.http.get<any[]>(`${environment.apiUrl}/admin/top-mon-ban-chay-nhat?limit=${limit}`
+    );
+  }
+
+  getTopMonAnBanChay(limit: number = 5) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/admin/mon-an-ban-chay?limit=${limit}`
     );
   }
   getSoDonTheoNgay() {

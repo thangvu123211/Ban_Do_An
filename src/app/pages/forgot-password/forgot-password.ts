@@ -16,6 +16,7 @@ export class ForgotPassword {
   email = '';
   otp = '';
   newPassword = '';
+  loadingSendOtp = false;
 
   toast = {
     show: false,
@@ -42,13 +43,17 @@ export class ForgotPassword {
       return;
     }
 
+    this.loadingSendOtp = true;
+
     this.authService.sendOtp(this.email).subscribe({
       next: () => {
         this.showToast('Đã gửi OTP về email', 'success');
         this.step = 2;
+        this.loadingSendOtp = false;
       },
       error: (err) => {
         this.showToast(err.error?.error || 'Lỗi gửi OTP', 'error');
+        this.loadingSendOtp = false;
       }
     });
   }
