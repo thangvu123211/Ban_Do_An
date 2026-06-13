@@ -1,7 +1,6 @@
 <div class="w-full space-y-5">
 
-  <div *ngFor="let item of gioHang"
-    (click)="onClickSua(item)"
+  <div *ngFor="let item of gioHang" (click)="onClickSua(item)"
     class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-4 hover:shadow-md transition-all duration-200 cursor-pointer active:scale-[0.99]">
 
     <div class="flex gap-4 w-full items-start">
@@ -54,14 +53,17 @@
 
         <button (click)="xoa.emit(item); $event.stopPropagation()"
           class="text-slate-300 hover:text-rose-500 p-1 rounded-xl hover:bg-rose-50/80 transition-colors duration-150 -mr-1 -mt-1">
-          <mat-icon style="font-size: 18px; width: 18px; height: 18px;" class="flex items-center justify-center">close</mat-icon>
+          <mat-icon style="font-size: 18px; width: 18px; height: 18px;"
+            class="flex items-center justify-center">close</mat-icon>
         </button>
 
-        <div (click)="$event.stopPropagation()" class="flex items-center bg-slate-100 rounded-full p-0.5 border border-slate-200/50 shadow-sm">
+        <div (click)="$event.stopPropagation()"
+          class="flex items-center bg-slate-100 rounded-full p-0.5 border border-slate-200/50 shadow-sm">
 
           <button (click)="change.emit({ item, type: 'minus' })"
             class="w-6 h-6 flex items-center justify-center bg-white text-slate-600 rounded-full shadow-sm hover:bg-slate-50 active:scale-90 transition-all">
-            <mat-icon style="font-size: 14px; width: 14px; height: 14px;" class="flex items-center justify-center">remove</mat-icon>
+            <mat-icon style="font-size: 14px; width: 14px; height: 14px;"
+              class="flex items-center justify-center">remove</mat-icon>
           </button>
 
           <span class="w-6 text-center font-black text-slate-700 text-xs select-none">
@@ -70,7 +72,8 @@
 
           <button (click)="change.emit({ item, type: 'plus' })"
             class="w-6 h-6 flex items-center justify-center bg-emerald-500 text-white rounded-full shadow-sm hover:bg-emerald-600 active:scale-90 transition-all">
-            <mat-icon style="font-size: 14px; width: 14px; height: 14px;" class="flex items-center justify-center">add</mat-icon>
+            <mat-icon style="font-size: 14px; width: 14px; height: 14px;"
+              class="flex items-center justify-center">add</mat-icon>
           </button>
 
         </div>
@@ -89,17 +92,26 @@
     </textarea>
   </div>
 
-  <div class="w-full rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-500 to-teal-600 p-5 shadow-lg shadow-emerald-500/10 text-white flex justify-between items-center">
-    <div class="space-y-0.5">
+  <div class="w-full rounded-2xl border border-emerald-100 
+            bg-gradient-to-r from-emerald-500 to-teal-600 
+            p-4 sm:p-5 shadow-lg shadow-emerald-500/10 
+            text-white flex flex-col sm:flex-row 
+            sm:justify-between sm:items-center gap-2 sm:gap-0">
+
+    <div class="space-y-1">
       <span class="font-bold tracking-tight text-sm sm:text-base opacity-95">
         Tạm tính giỏ hàng
       </span>
-      <p class="text-[11px] opacity-80 font-medium">Giá đã bao gồm các topping kèm theo và giá món ăn</p>
+
+      <p class="text-[11px] sm:text-[12px] opacity-80 font-medium leading-snug">
+        Giá đã bao gồm các topping kèm theo và giá món ăn
+      </p>
     </div>
 
-    <span class="text-2xl sm:text-3xl font-black tracking-tight drop-shadow-sm">
-      {{ (tongTien) | number }} đ
+    <span class="text-xl sm:text-3xl font-black tracking-tight drop-shadow-sm">
+      {{ tongTien | number }} đ
     </span>
+
   </div>
 
 </div>

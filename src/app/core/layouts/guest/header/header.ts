@@ -21,6 +21,8 @@ import { Observable } from 'rxjs';
 
 export class HeaderComponent implements OnInit {
 
+  isMobileMenuOpen = false;
+
   cartBadgeCount = 0;
   tongYeuThich$!: Observable<number>;
 

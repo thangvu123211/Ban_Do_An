@@ -48,3 +48,31 @@
   line-height: 80px;
   overflow: visible;
 }
+
+::ng-deep .mat-horizontal-stepper-header {
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center;
+}
+
+::ng-deep .mat-step-label {
+  margin-top: 4px;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+::ng-deep .mat-step-text-label {
+  font-size: 11px;
+  text-align: center;
+}
+
+::ng-deep .mat-step-icon {
+  margin-right: 0 !important;
+}
+@media (max-width: 640px) {
+  ::ng-deep .mat-step-text-label {
+    font-size: 10px;
+    max-width: 60px;
+  }
+}

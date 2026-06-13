@@ -13,36 +13,41 @@
   </div>
 
   <!-- ===== BODY (NGANG STRONGER) ===== -->
-  <div class="flex flex-1 overflow-hidden">
+  <div class="flex flex-col md:flex-row flex-1 overflow-hidden">
 
     <!-- ================= LEFT (NHỎ LẠI) ================= -->
-    <div class="w-4/12 bg-gray-50 flex flex-col items-center justify-start p-4 gap-4">
+    <div class="w-full md:w-4/12 bg-gray-50 flex flex-col items-center justify-start 
+            p-3 md:p-4 gap-3 md:gap-4">
 
-      <img [src]="mon.anh || 'assets/no-image.png'" class="w-full h-64 object-cover rounded-xl shadow" />
+      <!-- IMAGE -->
+      <img [src]="mon.anh || 'assets/no-image.png'"
+        class="w-full h-40 md:h-64 object-cover rounded-lg md:rounded-xl shadow" />
 
+      <!-- INFO -->
       <div class="text-center">
-        <p class="text-lg font-semibold text-gray-900">
+        <p class="text-base md:text-lg font-semibold text-gray-900">
           {{ mon.ten_mon_an }}
         </p>
 
-        <p class="text-green-600 text-xl font-bold mt-1">
+        <p class="text-green-600 text-lg md:text-xl font-bold mt-1">
           {{ mon.gia_goc | number }} đ
         </p>
       </div>
 
-      <!-- SỐ LƯỢNG (đưa sang trái cho gọn UI) -->
-      <div class="flex items-center gap-2 bg-white border rounded-full px-3 py-1 shadow-sm">
+      <!-- QUANTITY -->
+      <div class="flex items-center gap-2 bg-white border rounded-full 
+              px-2 md:px-3 py-1 shadow-sm">
 
         <button mat-icon-button (click)="giamSoLuong()" [disabled]="soLuong === 1">
-          <mat-icon>remove</mat-icon>
+          <mat-icon class="text-sm md:text-base">remove</mat-icon>
         </button>
 
-        <span class="w-6 text-center font-semibold text-sm">
+        <span class="w-6 text-center font-semibold text-sm md:text-base">
           {{ soLuong }}
         </span>
 
         <button mat-icon-button (click)="tangSoLuong()">
-          <mat-icon>add</mat-icon>
+          <mat-icon class="text-sm md:text-base">add</mat-icon>
         </button>
 
       </div>
@@ -50,7 +55,7 @@
     </div>
 
     <!-- ================= RIGHT (RỘNG HƠN) ================= -->
-    <div class="w-8/12 px-6 py-6 overflow-y-auto space-y-6">
+    <div class="w-full md:w-8/12 px-4 md:px-6 py-4 md:py-6 overflow-y-auto space-y-6">
 
       <!-- OPTIONS -->
       <div class="space-y-5">
@@ -69,7 +74,7 @@
           </div>
 
           <!-- OPTIONS -->
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
 
             <label *ngFor="let opt of nhom.option_items" class="flex items-center justify-between
                           px-3 py-2 rounded-lg border bg-white
@@ -77,8 +82,7 @@
 
               <div class="flex items-center gap-2">
                 <input [type]="nhom.chon_nhieu ? 'checkbox' : 'radio'" [name]="'nhom_' + nhom.ma_nhom_option"
-                  [checked]="isChecked(opt)" (change)="toggleOption(nhom, opt)"
-                  class="accent-green-500 w-4 h-4" />
+                  [checked]="isChecked(opt)" (change)="toggleOption(nhom, opt)" class="accent-green-500 w-4 h-4" />
 
                 <span class="text-sm text-gray-800">
                   {{ opt.ten_option }}
@@ -96,12 +100,7 @@
         </div>
       </div>
 
-      <!-- GHI CHÚ -->
-      <div>
-        <p class="font-semibold text-gray-800 mb-2">Ghi chú</p>
-        <textarea rows="3" placeholder="Ví dụ: ít hành, không tiêu..." class="w-full border rounded-lg p-3">
-        </textarea>
-      </div>
+
 
       <!-- TỔNG TIỀN -->
       <div class="flex justify-between items-center pt-4 border-t">
@@ -115,15 +114,16 @@
   </div>
 
   <!-- ===== FOOTER ===== -->
-  <div class="flex justify-between items-center px-6 py-4 border-t bg-white">
+  <div
+    class="flex flex-col sm:flex-row gap-3 sm:gap-0 justify-between items-stretch sm:items-center px-4 md:px-6 py-4 border-t bg-white">
 
     <span class="text-gray-600 text-sm">
       Giá đã bao gồm topping
     </span>
 
-    <div class="flex gap-3">
-      <button mat-stroked-button (click)="huy()">Hủy</button>
-      <button mat-flat-button color="primary" (click)="xacNhan()">
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+      <button mat-stroked-button class="w-full sm:w-auto" (click)="huy()">Hủy</button>
+      <button mat-flat-button class="w-full sm:w-auto" (click)="xacNhan()">
         Cập nhật giỏ hàng
       </button>
     </div>

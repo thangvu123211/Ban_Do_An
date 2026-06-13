@@ -21,11 +21,15 @@
       </h2>
 
       <p class="text-gray-500 mt-2">
-        Vui lòng hoàn tất thanh toán trước khi tiếp tục mua hàng
+        Vui lòng hoàn tất thanh toán để nhà hàng có thể đi đơn cho bạn.
       </p>
 
       <button (click)="goToDonHang()" class="mt-6 w-full bg-orange-500 text-white py-3 rounded-xl">
         Đi đến đơn hàng
+      </button>
+
+      <button (click)="close()" class="mt-6 w-full bg-emerald-500 text-white py-3 rounded-xl">
+        Tiếp tục mua sắm
       </button>
 
     </div>
@@ -51,24 +55,25 @@
   </div>
 
   <div *ngIf="loaded && gioHang && gioHang.length > 0"
-    class="w-full max-w-7xl mx-auto px-4 md:px-6 flex-1 space-y-6 relative">
+    class="w-full max-w-7xl mx-auto px-3 sm:px-6 flex-1 space-y-4 sm:space-y-6 relative">
 
     <div
-      class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex flex-col items-center text-center gap-6">
+      class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-4 sm:p-6 flex flex-col items-center text-center gap-4 sm:gap-6">
 
       <div class="space-y-1.5 flex flex-col items-center">
-        <h2 class="text-xl font-black text-slate-800 flex items-center gap-2 tracking-tight justify-center">
+        <h2 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2 tracking-tight justify-center">
           <mat-icon class="text-emerald-500">shopping_cart</mat-icon> Chi tiết đơn hàng của bạn
         </h2>
         <span
-          class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-100 w-max">
+          class="inline-flex items-center px-2 sm:px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] sm:text-xs font-bold border border-emerald-100 w-max">
           Tổng số lượng: {{ tongSoMon }} món ăn
         </span>
       </div>
 
-      <div class="w-full max-w-3xl overflow-x-auto flex justify-center custom-stepper-container">
+      <div class="w-full max-w-3xl overflow-x-auto px-2 sm:px-0 flex justify-start sm:justify-center"
+          style="overflow-y: visible;">
         <mat-horizontal-stepper [selectedIndex]="currentStep"
-          class="custom-stepper readonly-stepper bg-transparent w-full">
+          class="custom-stepper readonly-stepper bg-transparent min-w-[360px] sm:w-full">
           <mat-step label="Giỏ hàng"></mat-step>
           <mat-step label="Tạm tính"></mat-step>
           <mat-step label="Giao hàng"></mat-step>
@@ -79,7 +84,7 @@
       <div *ngIf="(pendingPayments?.length || 0) > 0" class="w-full max-w-5xl mx-auto mt-4 mb-2">
 
         <div
-          class="bg-orange-50 border border-orange-200 shadow-sm rounded-xl px-4 py-3 flex items-center justify-between">
+          class="bg-orange-50 border border-orange-200 shadow-sm rounded-xl px-3 sm:px-4 py-3 flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
 
           <div class="flex items-center gap-3">
 
@@ -100,7 +105,7 @@
           </div>
 
           <button (click)="goToDonHang()"
-            class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+            class="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
             Đi đến đơn hàng
           </button>
 
@@ -109,7 +114,7 @@
 
     </div>
 
-    <div class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-6 min-h-[400px]">
+    <div class="w-full bg-white rounded-2xl border border-slate-100 shadow-sm p-3 sm:p-6 min-h-[400px]">
       <app-step-gio-hang *ngIf="currentStep === 0" [gioHang]="gioHang" [tongTien]="tongTien" [ghiChu]="ghiChu"
         (change)="changeSoLuong($event)" (xoa)="removeFromGioHang($event)" (ghiChuChange)="ghiChu = $event"
         (sua)="moSuaItem($event)">
@@ -154,7 +159,7 @@
     </div>
 
     <div *ngIf="loaded && gioHang && gioHang.length > 0"
-      class="sticky bottom-0 w-full bg-white border border-slate-100 py-4 px-6 rounded-2xl shadow-[0_-12px_30px_rgba(0,0,0,0.03)] flex items-center justify-between gap-4 z-40 backdrop-blur-md bg-white/95">
+      class="sticky bottom-0 w-full bg-white border border-slate-100 py-3 sm:py-4 px-3 sm:px-6 rounded-2xl shadow-[0_-12px_30px_rgba(0,0,0,0.03)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-4 z-40 backdrop-blur-md bg-white/95">
 
       <!-- <div class="hidden sm:flex flex-col">
         <span class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Tạm tính đơn hàng</span>
@@ -166,17 +171,17 @@
       <div class="flex items-center gap-3 w-full sm:w-auto ml-auto">
 
         <button *ngIf="currentStep > 0 && currentStep < 4" (click)="prevStep()"
-          class="flex-1 sm:flex-none px-6 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl font-bold text-sm transition-all active:scale-[0.98]">
+          class="w-full sm:flex-none px-6 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl font-bold text-sm transition-all active:scale-[0.98]">
           Quay lại
         </button>
 
         <button *ngIf="currentStep < 3" (click)="nextStep()"
-          class="flex-1 sm:flex-none px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl font-bold text-sm shadow-md shadow-emerald-500/10 transition-all active:scale-[0.98]">
+          class="w-full sm:flex-none px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl font-bold text-sm shadow-md shadow-emerald-500/10 transition-all active:scale-[0.98]">
           Tiếp tục hành trình
         </button>
 
         <button *ngIf="currentStep === 4" (click)="close()"
-          class="w-full sm:w-auto px-8 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold text-sm transition-all active:scale-[0.98]">
+          class="w-full sm:flex-none px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold text-sm transition-all active:scale-[0.98]">
           Hoàn tất đóng lại
         </button>
 

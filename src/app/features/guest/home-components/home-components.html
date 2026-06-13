@@ -190,7 +190,7 @@
 </section>
 
 <!-- ================= MÓN ĂN NỔI BẬT ================= -->
-<section class="py-16 bg-white border-t border-gray-200">
+<section class="py-10 sm:py-16 bg-white border-t border-gray-200">
   <div class="max-w-7xl mx-auto px-4 md:px-6">
 
     <!-- HEADER (STYLE GIỐNG VOUCHER) -->
@@ -218,17 +218,19 @@
     </div>
 
     <!-- GRID -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 
 
       <div *ngFor="let mon of monAnNoiBat">
-        <mat-card class="h-full flex flex-col rounded-2xl overflow-hidden border border-gray-100
-                   shadow-sm hover:shadow-xl transition duration-300 bg-white">
+        <mat-card class="h-full flex flex-col rounded-2xl overflow-hidden
+         border border-gray-100 bg-white
+         shadow-sm hover:shadow-xl transition duration-300
+         pb-3 sm:pb-0">
 
           <!-- IMAGE -->
-          <div class="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
+          <div class="relative w-full aspect-[1/1] sm:aspect-[4/3] bg-gray-100 overflow-hidden">
             <img [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
-              class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+              class="w-full h-full object-cover transition duration-300 hover:scale-105" />
 
             <button type="button" (click)="toggleYeuThich(mon)" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 shadow
                        flex items-center justify-center hover:scale-110 transition">
@@ -258,9 +260,9 @@
               {{ mon.mo_ta || 'Món ăn được chế biến từ nguyên liệu tươi ngon.' }}
             </p>
 
-            <div class="mt-auto pt-5 flex items-center justify-between">
+            <div class="pt-4 sm:mt-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <div class="text-green-600 font-bold text-xl">
+                <div class="text-green-600 font-bold text-lg sm:text-xl">
                   {{ mon.gia_tien | number }} đ
                 </div>
                 <div class="flex items-center gap-1 text-yellow-500 mt-1">
@@ -277,9 +279,18 @@
                 </div>
               </div>
 
-              <button (click)="addToGioHang(mon)" class="h-10 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white 
-               flex items-center gap-1.5 font-medium text-sm shadow-sm hover:shadow 
-               active:scale-95 transition duration-200 mt-4" matTooltip="Thêm vào giỏ hàng">
+              <button (click)="addToGioHang(mon)" class="
+              w-full sm:w-auto
+              h-9 sm:h-10
+              px-3 sm:px-4
+              rounded-xl
+              bg-emerald-500 hover:bg-emerald-600
+              text-white 
+              flex items-center justify-center gap-1.5
+              font-medium text-xs sm:text-sm
+              shadow-sm hover:shadow 
+              active:scale-95
+              transition duration-200" matTooltip="Thêm vào giỏ hàng">
                 <span>Thêm</span>
               </button>
             </div>

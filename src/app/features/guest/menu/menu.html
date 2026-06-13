@@ -1,49 +1,95 @@
 <div class="min-h-screen bg-gray-50 pb-12">
 
-  <div class="relative w-full h-[380px] md:h-[480px] bg-gray-900 overflow-hidden">
-    <img [src]="getAnhDaiDien()"
-      class="w-full h-full object-cover object-center opacity-85 scale-100 group-hover:scale-105 transition duration-700"
-      alt="Restaurant Big Cover">
+  <div class="relative w-full
+  min-h-[220px] sm:min-h-[280px] md:h-[480px]
+  bg-gray-900 overflow-hidden">
 
-    <div class="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-black/40 to-black/20"></div>
+    <!-- Ảnh cover -->
+    <img [src]="getAnhDaiDien()" class="absolute inset-0 w-full h-full object-cover object-center opacity-85"
+      alt="Restaurant Big Cover" />
 
-    <button
-      class="absolute top-6 left-6 flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white rounded-full border border-white/20 shadow-lg transition font-medium text-sm active:scale-95">
-      <mat-icon class="scale-90">arrow_back</mat-icon> Quay lại trang chủ
-    </button>
+    <!-- Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-t
+    from-gray-950/90 via-black/40 to-black/20">
+    </div>
 
-    <div *ngIf="nhaHang" class="absolute bottom-0 inset-x-0 w-full">
-      <div
-        class="max-w-7xl mx-auto px-4 md:px-6 pb-8 md:pb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+    <!-- CONTENT -->
+    <div *ngIf="nhaHang" class="
+      relative
+      md:absolute md:bottom-0 md:inset-x-0
+      w-full
+    ">
 
-        <div class="flex flex-col sm:flex-row items-center sm:items-end gap-6 w-full md:w-auto">
-          <div
-            class="w-28 h-28 md:w-32 md:h-32 rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl shrink-0 bg-white backdrop-blur-md">
-            <img [src]="getAnhDaiDien()" class="w-full h-full object-cover" alt="Restaurant Logo">
+      <div class="max-w-7xl mx-auto
+      px-4 md:px-6
+      pt-20 md:pt-0
+      pb-4 sm:pb-6 md:pb-12
+      flex flex-col md:flex-row
+      justify-between items-center md:items-end
+      gap-4 md:gap-6">
+
+        <!-- LEFT -->
+        <div class="flex flex-col sm:flex-row
+        items-center sm:items-end
+        gap-3 sm:gap-5
+        w-full md:w-auto">
+
+          <!-- Logo -->
+          <div class="
+            w-16 h-16
+            sm:w-24 sm:h-24
+            md:w-32 md:h-32
+            rounded-xl sm:rounded-2xl md:rounded-3xl
+            overflow-hidden
+            border-2 sm:border-4 border-white/20
+            shadow-xl
+            bg-white
+            shrink-0
+          ">
+            <img [src]="getAnhDaiDien()" class="w-full h-full object-cover" alt="Restaurant Logo" />
           </div>
 
-          <div class="text-center sm:text-left text-white mb-2">
-            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-2">
-              <h1 class="text-3xl md:text-4xl font-black tracking-tight drop-shadow-md">
-                {{ nhaHang.ten_nha_hang }}
-              </h1>
+          <!-- Text -->
+          <div class="text-center sm:text-left text-white">
 
-              <span
-                class="px-3 py-1 backdrop-blur-md text-xs font-bold rounded-full border flex items-center gap-1.5 shadow-sm"
-                [ngClass]="nhaHang.trang_thai === 1
+            <h1 class="
+            text-xl
+            sm:text-2xl
+            md:text-4xl
+            font-black
+            tracking-tight
+            drop-shadow-md
+            mb-2
+          ">
+              {{ nhaHang.ten_nha_hang }}
+            </h1>
+
+            <span class="
+              inline-flex items-center gap-1.5
+              px-3 py-1
+              text-xs font-bold
+              rounded-full border
+              backdrop-blur-md
+              mb-2
+            " [ngClass]="nhaHang.trang_thai === 1
               ? 'bg-green-500/20 text-green-400 border-green-500/30'
               : 'bg-red-500/20 text-red-400 border-red-500/30'">
 
-                <span class="w-2 h-2 rounded-full"
-                  [ngClass]="nhaHang.trang_thai === 1 ? 'bg-green-400 animate-ping' : 'bg-red-400'">
-                </span>
-
-                {{ nhaHang.trang_thai === 1 ? 'Đang mở cửa' : 'Đang đóng cửa' }}
+              <span class="w-2 h-2 rounded-full" [ngClass]="nhaHang.trang_thai === 1
+                ? 'bg-green-400 animate-ping'
+                : 'bg-red-400'">
               </span>
-            </div>
 
-            <p
-              class="text-gray-300 text-sm md:text-base flex items-center justify-center sm:justify-start gap-1 mb-3 drop-shadow">
+              {{ nhaHang.trang_thai === 1 ? 'Đang mở cửa' : 'Đang đóng cửa' }}
+            </span>
+
+            <p class="
+            text-gray-300
+            text-sm
+            flex items-center justify-center sm:justify-start
+            gap-1
+            drop-shadow
+          ">
               <mat-icon class="text-green-400 scale-90">location_on</mat-icon>
               {{ nhaHang.dia_chi }}
             </p>
@@ -51,33 +97,42 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-3 w-full md:w-auto text-center md:text-right mb-2 text-center">
-          <div class="bg-white/10 backdrop-blur-md p-3.5 px-5 rounded-2xl border border-white/10 shadow-lg">
-            <div class="text-green-400 font-black text-xl">
+        <!-- RIGHT -->
+        <div class="
+        grid
+  grid-cols-3
+  gap-2 sm:gap-3
+  w-full md:w-auto
+  text-center
+      ">
+
+          <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/10">
+            <div class="text-green-400 font-black text-base sm:text-lg">
               {{ nhaHang.ten_nguoi_nhan }}
             </div>
-            <div class="text-gray-300 text-xs mt-1 font-medium">
+            <div class="text-gray-300 text-xs mt-1">
               Chủ nhà hàng
             </div>
           </div>
 
-          <div class="bg-white/10 backdrop-blur-md p-3.5 px-5 rounded-2xl border border-white/10 shadow-lg text-center">
-            <div class="text-green-400 font-black text-xl">
+          <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/10">
+            <div class="text-green-400 font-black text-base sm:text-lg">
               {{ nhaHang.gio_mo_cua || '--:--' }}
             </div>
-            <div class="text-gray-300 text-xs mt-1 font-medium">
+            <div class="text-gray-300 text-xs mt-1">
               Giờ mở cửa
             </div>
           </div>
 
-          <div class="bg-white/10 backdrop-blur-md p-3.5 px-5 rounded-2xl border border-white/10 shadow-lg text-center">
-            <div class="text-red-400 font-black text-xl">
+          <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/10">
+            <div class="text-green-400 font-black text-base sm:text-lg">
               {{ nhaHang.gio_dong_cua || '--:--' }}
             </div>
-            <div class="text-gray-300 text-xs mt-1 font-medium">
+            <div class="text-gray-300 text-xs mt-1">
               Giờ đóng cửa
             </div>
           </div>
+
         </div>
 
       </div>
@@ -138,75 +193,130 @@
       </div>
     </section>
 
-    <div
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-gray-200">
-      <div>
-        <h3 class="text-lg font-bold text-gray-900">Món ăn theo loại: {{ selectedLoaiName || 'Tất cả món ăn' }}</h3>
-        <p class="text-sm text-gray-500">Danh sách các món ăn thuộc danh mục đang chọn</p>
+    <div class="
+    flex flex-col
+    md:flex-row
+    justify-between
+    items-start md:items-center
+    gap-4
+    mb-6 pb-4
+    border-b border-gray-200
+  ">
+
+      <!-- LEFT: TITLE -->
+      <div class="w-full md:w-auto">
+        <h3 class="text-lg font-bold text-gray-900">
+          Món ăn theo loại: {{ selectedLoaiName || 'Tất cả món ăn' }}
+        </h3>
+        <p class="text-sm text-gray-500">
+          Danh sách các món ăn thuộc danh mục đang chọn
+        </p>
       </div>
 
-      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-        <div class="relative flex-1 sm:flex-none">
-          <input type="text" placeholder="Tìm món trong nhà hàng..." [(ngModel)]="keyword" (input)="onSearch()"
-            class="w-full sm:w-60 pl-9 pr-10 py-2 text-sm bg-white border border-gray-300 rounded-full focus:outline-none focus:border-green-500 transition" />
+      <!-- RIGHT: FILTER -->
+      <div class="
+      flex flex-col
+      sm:flex-row
+      items-stretch sm:items-center
+      gap-3
+      w-full md:w-auto
+    ">
 
+        <!-- SEARCH -->
+        <div class="relative w-full sm:w-60">
+          <input type="text" placeholder="Tìm món trong nhà hàng..." [(ngModel)]="keyword" (input)="onSearch()" class="
+          w-full
+          pl-9 pr-10 py-2
+          text-sm
+          bg-white
+          border border-gray-300
+          rounded-full
+          focus:outline-none
+          focus:border-green-500
+          transition
+        " />
 
-          <!-- nút kính lúp -->
           <button (click)="onSearch(true)" class="absolute right-2 top-1.5 text-gray-500 hover:text-green-600">
             <mat-icon>search</mat-icon>
           </button>
         </div>
 
-        <button (click)="getAllMonAn()" class="px-4 py-2 rounded-full bg-green-500 text-white font-medium shadow
-               hover:bg-green-600 transition active:scale-95">
+        <!-- ALL -->
+        <button (click)="getAllMonAn()" class="
+        w-full sm:w-auto
+        px-4 py-2
+        rounded-full
+        bg-green-500
+        text-white
+        font-medium
+        shadow
+        hover:bg-green-600
+        transition
+        active:scale-95
+      ">
           Tất cả món ăn
         </button>
 
-        <div class="relative">
-          <div class="relative" (click)="openSort = !openSort">
+        <!-- SORT -->
+        <div class="relative w-full sm:w-56">
+          <button (click)="openSort = !openSort" class="
+          flex items-center justify-between
+          w-full
+          px-4 py-2
+          rounded-full
+          border border-gray-300
+          bg-white
+          shadow-sm
+          hover:border-green-500
+          transition
+        ">
+            <span class="text-gray-700 text-sm truncate">
+              {{
+              sortPrice === 'asc'
+              ? 'Giá: Thấp → Cao'
+              : sortPrice === 'desc'
+              ? 'Giá: Cao → Thấp'
+              : 'Sắp xếp giá'
+              }}
+            </span>
+            <span class="text-gray-500">▼</span>
+          </button>
 
-            <button class="flex items-center justify-between gap-3 w-56 px-4 py-2 rounded-full
-                 border border-gray-300 bg-white shadow-sm
-                 hover:border-green-500 transition">
-              <span class="text-gray-700">
-                {{
-                sortPrice === 'asc'
-                ? 'Giá: Thấp → Cao'
-                : sortPrice === 'desc'
-                ? 'Giá: Cao → Thấp'
-                : 'Sắp xếp giá'
-                }}
-              </span>
-              <span class="text-gray-500">▼</span>
-            </button>
+          <div *ngIf="openSort" class="
+          absolute right-0 mt-2
+          w-full
+          bg-white
+          border border-gray-200
+          rounded-xl
+          shadow-lg
+          z-50
+          overflow-hidden
+        ">
+            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              (click)="sortPrice='asc'; sortMonAn(); openSort=false">
+              Giá: Thấp → Cao
+            </div>
 
-            <div *ngIf="openSort"
-              class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
-
-              <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                (click)="sortPrice='asc'; sortMonAn(); openSort=false">
-                Giá: Thấp → Cao
-              </div>
-
-              <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                (click)="sortPrice='desc'; sortMonAn(); openSort=false">
-                Giá: Cao → Thấp
-              </div>
-
+            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              (click)="sortPrice='desc'; sortMonAn(); openSort=false">
+              Giá: Cao → Thấp
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <section class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 
       <div *ngFor="let mon of pagedMonAn">
-        <mat-card class="h-full flex flex-col rounded-2xl overflow-hidden border border-gray-100
-                   shadow-sm hover:shadow-xl transition duration-300 bg-white">
+        <mat-card class="h-full flex flex-col rounded-2xl overflow-hidden
+         border border-gray-100 bg-white
+         shadow-sm hover:shadow-xl transition duration-300
+         pb-3 sm:pb-0">
 
           <!-- IMAGE -->
-          <div class="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
+          <div class="relative w-full aspect-[1/1] sm:aspect-[4/3] bg-gray-100 overflow-hidden">
             <img [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
               class="w-full h-full object-cover hover:scale-105 transition duration-300" />
 
@@ -238,7 +348,7 @@
               {{ mon.mo_ta || 'Món ăn được chế biến từ nguyên liệu tươi ngon.' }}
             </p>
 
-            <div class="mt-auto pt-5 flex items-center justify-between">
+            <div class="pt-4 sm:mt-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
                 <div class="text-green-600 font-bold text-xl">
                   {{ mon.gia_tien | number }} đ
@@ -257,9 +367,17 @@
                 </div>
               </div>
 
-              <button (click)="addToGioHang(mon)" class="h-10 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white 
-               flex items-center gap-1.5 font-medium text-sm shadow-sm hover:shadow 
-               active:scale-95 transition duration-200 mt-4" matTooltip="Thêm vào giỏ hàng">
+              <button (click)="addToGioHang(mon)" class="w-full sm:w-auto
+              h-9 sm:h-10
+              px-3 sm:px-4
+              rounded-xl
+              bg-emerald-500 hover:bg-emerald-600
+              text-white 
+              flex items-center justify-center gap-1.5
+              font-medium text-xs sm:text-sm
+              shadow-sm hover:shadow 
+              active:scale-95
+              transition duration-200" matTooltip="Thêm vào giỏ hàng">
                 <span>Thêm</span>
               </button>
             </div>
