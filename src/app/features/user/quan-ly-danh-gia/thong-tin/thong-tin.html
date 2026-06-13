@@ -8,62 +8,12 @@
         </button>
     </div>
 
-    <!-- TAB -->
-    <div class="flex gap-2 mb-4">
-        <button mat-flat-button (click)="tab='comment'" [color]="tab==='comment' ? 'primary' : undefined">
-            Bình luận
-        </button>
 
-        <button mat-flat-button (click)="tab='rating'" [color]="tab==='rating' ? 'primary' : undefined">
-            Đánh giá
-        </button>
-    </div>
 
-    <!-- ================= BÌNH LUẬN ================= -->
-    <div *ngIf="tab==='comment'" class="space-y-4 max-h-[60vh] overflow-y-auto">
 
-        <div *ngFor="let c of binhLuans" class="border rounded-xl p-4 bg-gray-50">
-
-            <!-- Header -->
-            <div class="flex justify-between items-center">
-                <b>{{ c.nguoi_dung?.ho_ten || 'Ẩn danh' }}</b>
-
-                <div class="flex gap-1">
-                    <!-- Sửa -->
-                    <button mat-icon-button color="primary" (click)="openEditCMT(c)">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-
-                    <!-- Xóa -->
-                    <button mat-icon-button color="warn" (click)="deleteBinhLuan(c.id)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Nội dung -->
-            <p *ngIf="editId !== c.id" class="mt-2">
-                {{ c.noi_dung }}
-            </p>
-
-            <!-- Form sửa -->
-            <div *ngIf="editId === c.id" class="mt-3 space-y-2">
-                <textarea [(ngModel)]="editNoiDung" rows="3"
-                    class="w-full border rounded-lg p-2 focus:outline-none focus:ring"></textarea>
-
-                <div class="flex justify-end gap-2">
-                    <button mat-stroked-button (click)="cancelEditCMT()">Hủy</button>
-                    <button mat-raised-button color="primary" (click)="submitEdit(c.id)">
-                        Sửa
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
 
     <!-- ================= ĐÁNH GIÁ ================= -->
-    <div *ngIf="tab==='rating'" class="space-y-4 max-h-[60vh] overflow-y-auto">
+    <div class="space-y-4 max-h-[60vh] overflow-y-auto">
 
         <div *ngFor="let r of danhGias" class="border rounded-xl p-4 bg-white">
 

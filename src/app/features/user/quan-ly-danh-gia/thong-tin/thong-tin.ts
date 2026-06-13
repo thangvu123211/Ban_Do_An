@@ -37,7 +37,7 @@ export class ThongTin implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadBinhLuan();
+    //this.loadBinhLuan();
     this.loadDanhGia();
   }
   showToast(message: string, type: 'success' | 'warn' | 'error') {

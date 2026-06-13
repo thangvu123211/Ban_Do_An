@@ -1,12 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MATERIAL } from '../../../../Shared/material';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CartService } from '../../../../core/services/cart.service';
 import { ToastMessageComponent } from '../../../../Shared/toasts_message/toast-message/toast-message';
 import { BinhLuanService } from '../../../../core/services/BinhLuan.service';
 import { FormsModule } from '@angular/forms';
 import { WebsocketService } from '../../../../core/services/websocket.service';
 import { DanhGiaService } from '../../../../core/services/DanhGia.service';
+import { ConfirmDialogComponent } from '../../../../Shared/dialogs/confirm-dialog/confirm-dialog';
 @Component({
   selector: 'app-thong-tin-mon-an',
   standalone: true,
@@ -36,53 +37,43 @@ export class ThongTinMonAn implements OnInit {
   diemDanhGia = 5;
   noiDungDanhGia = '';
 
+  currentUserId = Number(localStorage.getItem('ma_nguoi_dung'));
+
   constructor(
     public dialogRef: MatDialogRef<ThongTinMonAn>,
     private cartService: CartService,
     private binhLuanService: BinhLuanService,
     private wsService: WebsocketService,
     private danhGiaService: DanhGiaService,
+    private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
   ngOnInit(): void {
     this.loadBinhLuan();
+
     console.log('ANH MON:', this.data.anh_mon_an);
+
     this.activeTab = this.data.openTab || 'info';
+
     if (this.activeTab === 'rating') {
       this.loadDanhGia();
     }
 
-    // join room realtime
+    // connect websocket
     this.wsService.connect();
 
-    // listen event
+    // listen realtime
     this.wsService.messages$.subscribe((msg: any) => {
 
-      if (msg.type === 'new_binh_luan') {
-        const cmt = msg.payload;
-
-        // ✅ COMMENT CHA
-        if (!cmt.parent_id) {
-          this.binhLuans.unshift(cmt);
-        }
-        // ✅ REPLY
-        else {
-          const parent = this.binhLuans.find(x => x.id === cmt.parent_id);
-          if (parent) {
-            parent.replies = parent.replies || [];
-            parent.replies.push(cmt);
-          }
-        }
-      }
-
-      if (msg.type === 'update_binh_luan') {
-        const index = this.binhLuans.findIndex(x => x.id === msg.payload.id);
-        if (index !== -1) this.binhLuans[index] = msg.payload;
-      }
-
-      if (msg.type === 'delete_binh_luan') {
-        this.binhLuans = this.binhLuans.filter(x => x.id != msg.payload.id);
+      if (
+        msg.type === 'new_binh_luan' ||
+        msg.type === 'update_binh_luan' ||
+        msg.type === 'delete_binh_luan'
+      ) {
+        // ✅ QUAN TRỌNG: reload lại toàn bộ comment
+        this.loadBinhLuan();
+        return;
       }
 
     });
@@ -211,6 +202,29 @@ export class ThongTinMonAn implements OnInit {
 
       });
   }
+
+  deleteBinhLuan(id: number) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: { message: 'Bạn có chắc muốn xóa bình luận này?' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) return;
+
+      this.binhLuanService.delete(id).subscribe({
+        next: () => {
+          this.showToast('Xóa bình luận thành công', 'success');
+          // reload lại danh sách
+          this.loadBinhLuan();
+        },
+        error: () => {
+          this.showToast('Xóa bình luận không thành công', 'error');
+        }
+      });
+    });
+  }
+
 
 
 }
