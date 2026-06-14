@@ -29,6 +29,13 @@ export class TokenInterceptor implements HttpInterceptor {
           'ngrok-skip-browser-warning': '69420'
         }
       });
+    }else{
+      modifiedReq = req.clone({
+        setHeaders: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': '69420'
+        }
+      });
     }
 
     return next.handle(modifiedReq).pipe(
