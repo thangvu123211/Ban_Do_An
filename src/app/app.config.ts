@@ -8,6 +8,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 
 import localeVi from '@angular/common/locales/vi';
 import { registerLocaleData } from '@angular/common';
+import { TokenInterceptor } from './core/interceptors/token.interceptor';
 
 // 🔥 Đăng ký locale VI
 registerLocaleData(localeVi);
@@ -34,11 +35,11 @@ export const appConfig: ApplicationConfig = {
 
     provideHttpClient(withInterceptorsFromDi()),
 
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   //useClass: TokenInterceptor,
-    //   multi: true
-    // },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
 
     provideAnimations(),
   ],
