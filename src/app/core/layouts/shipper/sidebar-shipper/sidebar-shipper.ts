@@ -47,7 +47,6 @@ export class SidebarShipper implements OnInit {
 
 
   ngOnInit(): void {
-    this.sidebarService.collapsed$.subscribe(value => this.collapsed = value);
   }
 
 }

@@ -1,6 +1,9 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000',
+  // apiUrl: 'http://localhost:3000',
+  apiUrl: 'https://chubby-anything-deranged.ngrok-free.dev',
+
+  
 
   payment: {
     qrBaseUrl: 'https://qr.sepay.vn/img',

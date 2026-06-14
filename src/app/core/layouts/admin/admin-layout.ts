@@ -18,7 +18,4 @@ import { SidebarService } from '../../services/WebService/sidebar.service';
 export class AdminLayout {
   collapsed$!: Observable<boolean>;
 
-  constructor(private sidebarService: SidebarService) {
-    this.collapsed$ = this.sidebarService.collapsed$;
-  }
 }

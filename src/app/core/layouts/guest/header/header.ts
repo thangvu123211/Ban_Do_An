@@ -32,6 +32,8 @@ export class HeaderComponent implements OnInit {
     type: 'success' as 'success' | 'warn' | 'error'
   };
 
+  isMobile = false;
+
   constructor(
     private router: Router,
     private cartService: CartService,
@@ -73,23 +75,37 @@ export class HeaderComponent implements OnInit {
         0
       ));
     }
-     this.initYeuThich();
+    this.initYeuThich();
+    this.checkScreen();
+
+    window.addEventListener('resize', () => {
+      this.checkScreen();
+    });
+  }
+  go(path: string) {
+    this.router.navigate([path]);
+    this.isMobileMenuOpen = false;
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
   }
 
   initYeuThich() {
-  const token = localStorage.getItem('token');
-  const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-  if (!token) {
-    const local = this.yeuThichService.getLocal();
-    this.yeuThichService.setCount(local.length); // 🔥 quan trọng
-    return;
+    if (!token) {
+      const local = this.yeuThichService.getLocal();
+      this.yeuThichService.setCount(local.length); // 🔥 quan trọng
+      return;
+    }
+
+    this.yeuThichService.getByUser(userId).subscribe(res => {
+      this.yeuThichService.setCount(res?.length || 0); // 🔥 quan trọng
+    });
   }
 
-  this.yeuThichService.getByUser(userId).subscribe(res => {
-    this.yeuThichService.setCount(res?.length || 0); // 🔥 quan trọng
-  });
-}
 
   goToHome() {
     this.router.navigate(['/']);
@@ -101,6 +117,9 @@ export class HeaderComponent implements OnInit {
 
   moGioHang() {
     this.router.navigate(['/gio_hang']);
+  }
+  checkScreen() {
+    this.isMobile = window.innerWidth < 768; // md breakpoint Tailwind
   }
 
   moYeuThich() {

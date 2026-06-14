@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MATERIAL } from '../../../Shared/material';
 
 import { NgApexchartsModule, ChartComponent } from 'ng-apexcharts';
@@ -163,7 +163,7 @@ export class Dashboardcomponent implements OnInit {
     private nhanVienService: QuanLyNhanVienService,
     private adminService: AdminService,
     private danhGiaService: DanhGiaService,
-    private quanlynguoidung:QuanLyNhanVienService
+    private quanlynguoidung: QuanLyNhanVienService
   ) {
 
     this.pieChartOptions = {
@@ -652,5 +652,7 @@ export class Dashboardcomponent implements OnInit {
       }
     });
   }
+
+
 
 }

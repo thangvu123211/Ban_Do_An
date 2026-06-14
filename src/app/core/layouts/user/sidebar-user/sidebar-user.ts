@@ -51,7 +51,7 @@ export class SidebarUser implements OnInit {
 
 
   ngOnInit(): void {
-    this.sidebarService.collapsed$.subscribe(value => this.collapsed = value);
+
   }
 
 }

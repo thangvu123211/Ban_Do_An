@@ -1,18 +1,18 @@
-<mat-toolbar 
-  class="fixed top-0 left-0 w-full px-4 py-3 shadow-md h-20 z-50 flex justify-between">
+<mat-toolbar
+  class="fixed top-0 left-0 w-full px-3 sm:px-4 py-2 sm:py-3 shadow-md h-16 sm:h-20 z-50 flex justify-between">
   <!-- LEFT: Menu + Logo -->
+  <button mat-icon-button *ngIf="isMobile" (click)="sidebarService.toggleMobile()">
+    <mat-icon>menu</mat-icon>
+  </button>
   <div class="flex items-center gap-4 h-full">
-    <button mat-icon-button (click)="toggleSidebar()">
-      <mat-icon>menu</mat-icon>
-    </button>
 
     <a routerLink="/" class="flex items-center">
-      <img src="assets/Logo/FoodHub.png" alt="Logo" class="h-[35px] md:h-[60px] w-auto cursor-pointer" />
+      <img src="assets/Logo/FoodHub.png" alt="Logo" class="h-[30px] sm:h-[35px] md:h-[60px] w-auto cursor-pointer" />
     </a>
   </div>
 
   <!-- CENTER: Search -->
-  <div class="search-bar flex items-center ml-auto mr-4 gap-2">
+  <div class="hidden md:flex ml-auto mr-4 gap-2">
     <!-- Input tìm kiếm -->
     <div class="hidden md:flex ml-auto mr-4">
       <div class="flex items-center px-3 h-10 w-[350px] md:w-[500px]
@@ -32,15 +32,12 @@
       </div>
     </div>
 
-    <!-- Nút Mic -->
-    <button matIconButton matTooltip="Mic">
-      <mat-icon>mic</mat-icon>
-    </button>
+
 
   </div>
 
   <!-- RIGHT: User + Notifications + Dark Mode -->
-  <div class="flex items-center gap-4 mr-10">
+  <div class="flex items-center gap-2 sm:gap-4 mr-2 sm:mr-10">
     <!-- User -->
 
 
@@ -51,7 +48,7 @@
 
 
     <button [matMenuTriggerFor]="userMenu" matTooltip="Tài khoản">
-      <img [src]="previewImage" alt="User" class="h-8 w-8 rounded-full object-cover" />
+      <img [src]="previewImage" alt="User" class="h-7 w-7 sm:h-8 sm:w-8 rounded-full object-cover" />
     </button>
   </div>
 </mat-toolbar>

@@ -13,7 +13,7 @@ import { BaoCao } from '../Dialog/bao-cao/bao-cao';
 @Component({
   selector: 'app-admin-navbar',
   standalone: true,
-  imports: [...MATERIAL],
+  imports: [MATERIAL],
   templateUrl: './admin-navbar.html',
   styleUrls: ['./admin-navbar.scss']
 })
@@ -23,6 +23,8 @@ export class AdminNavbar implements OnInit {
   previewImage: string = 'assets/user.jpg';
   isExpanded = false;
 
+  isMobile = false;
+
 
   constructor(
     private location: Location,
@@ -30,7 +32,7 @@ export class AdminNavbar implements OnInit {
     private router: Router,
     private authAdmin: AdminService,
     private authService: AuthService,
-    private sidebarService: SidebarService,
+    public sidebarService: SidebarService,
     private dialog: MatDialog
   ) {
   }
@@ -80,9 +82,6 @@ export class AdminNavbar implements OnInit {
     window.URL.revokeObjectURL(url);
   }
 
-  toggleSidebar() {
-    this.sidebarService.toggle();
-  }
 
   ngOnInit() {
     this.authAdmin.adminInfo$.subscribe((admin) => {
@@ -102,6 +101,8 @@ export class AdminNavbar implements OnInit {
     if (ma_nguoi_dung) {
       this.loadNhanVienById(ma_nguoi_dung);
     }
+    this.checkScreen();
+    window.addEventListener('resize', () => this.checkScreen());
   }
 
   loadNhanVienById(ma_nguoi_dung: number) {
@@ -121,4 +122,8 @@ export class AdminNavbar implements OnInit {
   logout() {
     this.authService.logout();
   }
+  checkScreen() {
+    this.isMobile = window.innerWidth < 768;
+  }
+
 }

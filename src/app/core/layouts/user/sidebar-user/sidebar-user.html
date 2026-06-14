@@ -1,6 +1,6 @@
 <nav [ngClass]="collapsed ? 'w-20' : 'w-64'"
-     class="fixed top-20 left-0 h-[calc(100vh-5rem)] shadow-xl transition-all duration-300">
-  
+  class="fixed top-20 left-0 h-[calc(100vh-5rem)] shadow-xl transition-all duration-300">
+
 
   <!-- NAVIGATION -->
   <div class="flex-1 overflow-y-auto px-2 py-5">
@@ -13,13 +13,12 @@
           <mat-icon class="flex-shrink-0">{{ item.icon }}</mat-icon>
 
           <!-- CHỮ ẩn/mở -->
-          <span class="overflow-hidden transition-all duration-300 whitespace-nowrap" 
-      [ngStyle]="{
-        'max-width': collapsed ? '0px' : '200px',
-        'opacity': collapsed ? 0 : 1
-      }">
-  {{ item.text }}
-</span>
+          <span class="overflow-hidden transition-all duration-300 whitespace-nowrap" [ngStyle]="{
+              'max-width': collapsed ? '0px' : '200px',
+              'opacity': collapsed ? 0 : 1
+            }">
+            {{ item.text }}
+          </span>
         </a>
       </li>
 

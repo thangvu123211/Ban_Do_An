@@ -1,5 +1,5 @@
-import { Component,Output, EventEmitter, OnInit } from '@angular/core';
-import { Router,RouterModule } from '@angular/router';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 
 import { MATERIAL } from '../../../../Shared/material';
 import { SidebarService } from '../../../services/WebService/sidebar.service';
@@ -7,7 +7,7 @@ import { SidebarService } from '../../../services/WebService/sidebar.service';
 
 @Component({
   selector: 'app-admin-sidebar',
-  imports: [MATERIAL,RouterModule ],
+  imports: [MATERIAL, RouterModule],
   templateUrl: './admin-sidebar.html',
   styleUrl: './admin-sidebar.scss'
 })
@@ -34,9 +34,10 @@ export class AdminSidebar implements OnInit {
     { link: '/admin/quan_ly_danh_gia_va_binh_luan', icon: 'comment', text: 'Quản lí Đgiá & Bluận' },
   ];
 
-  constructor(private router: Router,private sidebarService: SidebarService) { }
+  constructor(private router: Router, public sidebarService: SidebarService) { }
+
 
   ngOnInit(): void {
-    this.sidebarService.collapsed$.subscribe(value => this.collapsed = value);
+
   }
 }

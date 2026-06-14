@@ -20,6 +20,5 @@ export class ShipperLayout {
   collapsed$!: Observable<boolean>;
 
   constructor(private sidebarService: SidebarService) {
-    this.collapsed$ = this.sidebarService.collapsed$;
   }
 }

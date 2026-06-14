@@ -24,33 +24,7 @@
          md:fixed" style="top: 32px">
 
   <!-- ================= MOBILE MENU ================= -->
-  <div *ngIf="isMobileMenuOpen" class="fixed top-[96px] left-0 w-full bg-white z-40
-            shadow-lg md:hidden">
 
-    <nav class="flex flex-col text-gray-800 font-medium text-lg">
-
-      <a routerLink="/home" (click)="isMobileMenuOpen = false" class="px-6 py-4 border-b">
-        Trang chủ
-      </a>
-
-      <a routerLink="/blog" (click)="isMobileMenuOpen = false" class="px-6 py-4 border-b">
-        Thông tin
-      </a>
-
-      <a routerLink="/datban" (click)="isMobileMenuOpen = false" class="px-6 py-4 border-b">
-        Đặt bàn
-      </a>
-
-      <a routerLink="/thucdon" (click)="isMobileMenuOpen = false" class="px-6 py-4 border-b">
-        Thực đơn
-      </a>
-
-      <a routerLink="/lienhe" (click)="isMobileMenuOpen = false" class="px-6 py-4">
-        Liên hệ
-      </a>
-
-    </nav>
-  </div>
 
   <!-- KHUNG GIỮA -->
   <div class="max-w-7xl mx-auto w-full px-4 md:px-6
@@ -79,22 +53,22 @@
     <!-- Icons -->
     <div class="flex items-center gap-4 text-gray-700">
 
-      <button mat-icon-button matTooltip="Trang cá nhân" class="hover:text-green-600" (click)="goToUserPage()">
+      <button mat-icon-button matTooltip="Trang cá nhân" class="hover:text-green-600" (click)="goToUserPage() ; closeMobileMenu()">
         <mat-icon>person</mat-icon>
       </button>
 
       <button mat-icon-button matTooltip="Giỏ hàng" [matBadge]="cartBadgeCount " matBadgeColor="warn"
-        [matBadgeHidden]="cartBadgeCount  === 0" class="hover:text-green-600" (click)="moGioHang()">
+        [matBadgeHidden]="cartBadgeCount  === 0" class="hover:text-green-600" (click)="moGioHang() ; closeMobileMenu()">
         <mat-icon>shopping_cart</mat-icon>
       </button>
 
       <button mat-icon-button matTooltip="Trang yêu thích" [matBadge]="(tongYeuThich$ | async) || null"
         [matBadgeHidden]="(tongYeuThich$ | async) === 0" matBadgeColor="warn" class="hover:text-green-600"
-        (click)="moYeuThich()">
+        (click)="moYeuThich() ; closeMobileMenu()">
         <mat-icon>favorite</mat-icon>
       </button>
 
-      <button mat-icon-button class="md:hidden hover:text-green-600" (click)="isMobileMenuOpen = !isMobileMenuOpen">
+      <button *ngIf="isMobile" mat-icon-button class="md:hidden hover:text-green-600" (click)="isMobileMenuOpen = !isMobileMenuOpen">
         <mat-icon>menu</mat-icon>
       </button>
 
@@ -102,6 +76,37 @@
 
   </div>
 </mat-toolbar>
+
+<div *ngIf="isMobileMenuOpen" class="absolute left-0 right-0 mt-1.5
+            mx-4
+            bg-white shadow-xl border z-[9999]
+            rounded-xl overflow-hidden">
+
+  <div class="flex flex-col text-sm text-gray-700">
+
+    <span (click)="go('/home')" class="px-4 py-3 hover:bg-gray-100 cursor-pointer">
+      Trang chủ
+    </span>
+
+    <span (click)="go('/blog')" class="px-4 py-3 hover:bg-gray-100 cursor-pointer">
+      Thông tin
+    </span>
+
+    <span (click)="go('/datban')" class="px-4 py-3 hover:bg-gray-100 cursor-pointer">
+      Đặt bàn
+    </span>
+
+    <span (click)="go('/thucdon')" class="px-4 py-3 hover:bg-gray-100 cursor-pointer">
+      Thực đơn
+    </span>
+
+    <span (click)="go('/lienhe')" class="px-4 py-3 hover:bg-gray-100 cursor-pointer">
+      Liên hệ
+    </span>
+
+  </div>
+
+</div>
 
 <app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type">
 </app-toast-message>
