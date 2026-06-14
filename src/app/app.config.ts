@@ -4,7 +4,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { TokenInterceptor } from './core/interceptors/token.interceptor';
+//import { TokenInterceptor } from './core/interceptors/token.interceptor';
 
 import localeVi from '@angular/common/locales/vi';
 import { registerLocaleData } from '@angular/common';
@@ -34,11 +34,11 @@ export const appConfig: ApplicationConfig = {
 
     provideHttpClient(withInterceptorsFromDi()),
 
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true
-    },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   //useClass: TokenInterceptor,
+    //   multi: true
+    // },
 
     provideAnimations(),
   ],
