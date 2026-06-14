@@ -30,7 +30,7 @@ export class SidebarUser implements OnInit {
 
   constructor(
     private router: Router,
-    private sidebarService: SidebarService
+    public sidebarService: SidebarService
   ) 
   {
     const token = localStorage.getItem('token');

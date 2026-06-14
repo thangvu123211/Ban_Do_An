@@ -1,12 +1,10 @@
-
-
 <div class="relative h-80 flex items-center px-10 bg-white">
   <div>
     <h1 class="text-4xl font-bold mb-3 text-gray-800">
-     TRANG QUẢN LÝ NGƯỜI DÙNG
+      TRANG QUẢN LÝ NGƯỜI DÙNG
     </h1>
     <p class="text-gray-600 max-w-xl">
-        Đây là trang quản lý người dùng. Bạn có thể thêm, sửa hoặc xóa thông tin người dùng tại đây.
+      Đây là trang quản lý người dùng. Bạn có thể thêm, sửa hoặc xóa thông tin người dùng tại đây.
     </p>
   </div>
 </div>
@@ -29,7 +27,7 @@
     </div>
 
     <!-- TABLE -->
-    <div class="overflow-x-auto">
+    <div class="hidden md:block overflow-x-auto">
       <table class="min-w-full border rounded-lg overflow-hidden text-sm">
 
         <thead class="text-sm">
@@ -96,6 +94,80 @@
 
         </tbody>
       </table>
+    </div>
+
+    <!-- ===== MOBILE CARD LIST ===== -->
+    <div class="block md:hidden space-y-4">
+
+      <mat-card *ngFor="let user of NhanVien" class="rounded-2xl p-4 shadow-md border border-gray-100">
+
+        <!-- ===== HEADER ===== -->
+        <div class="flex items-center justify-between mb-3">
+
+          <div class="flex items-center gap-3">
+            <img *ngIf="user.anh_nguoi_dung_url" [src]="user.anh_nguoi_dung_url"
+              class="w-12 h-12 rounded-full object-cover ring-2 ring-gray-200" />
+
+            <div>
+              <h4 class="font-semibold text-gray-800 leading-tight">
+                {{ user.ho_ten }}
+              </h4>
+              <p class="text-xs text-gray-500">
+                Mã: {{ user.ma_nguoi_dung }}
+              </p>
+            </div>
+          </div>
+
+          <!-- STATUS -->
+          <span class="px-3 py-1 rounded-full text-xs font-medium" [ngClass]="{
+              'bg-red-100 text-red-700': user.trang_thai === 'khoa',
+              'bg-green-100 text-green-700': user.trang_thai === 'hoat_dong'
+            }">
+            {{ user.trang_thai === 'khoa' ? 'Bị khóa' : 'Hoạt động' }}
+          </span>
+
+        </div>
+
+        <!-- ===== INFO GRID ===== -->
+        <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-700">
+
+          <div>
+            <p class="text-xs text-gray-500">Giới tính</p>
+            <p class="font-medium">{{ user.gioi_tinh }}</p>
+          </div>
+
+          <div>
+            <p class="text-xs text-gray-500">Ngày sinh</p>
+            <p class="font-medium">{{ user.ngay_sinh | date:'dd/MM/yyyy' }}</p>
+          </div>
+
+          <div>
+            <p class="text-xs text-gray-500">SĐT</p>
+            <p class="font-medium">{{ user.sdt }}</p>
+          </div>
+
+          <div>
+            <p class="text-xs text-gray-500">Loại</p>
+            <p class="font-medium">{{ user.loai_nguoi_dung }}</p>
+          </div>
+
+          <div class="col-span-2">
+            <p class="text-xs text-gray-500">Email</p>
+            <p class="font-medium break-all">{{ user.email }}</p>
+          </div>
+
+        </div>
+
+        <!-- ===== ACTION ===== -->
+        <div class="flex justify-end mt-4">
+          <button mat-flat-button color="primary" class="!rounded-lg !px-4 !py-1.5"
+            (click)="SuaNhanVien(user.ma_nguoi_dung)">
+            Sửa
+          </button>
+        </div>
+
+      </mat-card>
+
     </div>
 
   </mat-card>

@@ -32,6 +32,6 @@ export class DashboardUser implements OnInit {
     });
   }
   ngOnInit(): void {
- this.loadTongHoaDon();
+    this.loadTongHoaDon();
   }
 }

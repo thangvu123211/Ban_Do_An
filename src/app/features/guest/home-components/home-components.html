@@ -1,84 +1,93 @@
-<!-- ================= HERO / BANNER ================= -->
-<!-- ================= HERO / BANNER ================= -->
-<!-- ================= HERO / BANNER ================= -->
 <section class="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-green-100">
 
-  <!-- Background decorations (full width) -->
-  <div class="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-green-200/30"></div>
-  <div class="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-green-200/20"></div>
+  <!-- Background decorations (ẨN TRÊN MOBILE) -->
+  <div class="hidden md:block absolute -right-24 -top-24 h-80 w-80 rounded-full bg-green-200/30"></div>
+  <div class="hidden md:block absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-green-200/20"></div>
 
-  <!-- CONTENT CONTAINER (MATCH HEADER) -->
-  <div class="relative max-w-7xl mx-auto px-4 md:px-6 pt-28 pb-20">
-    <div class="grid items-center gap-12 lg:grid-cols-2 text-center lg:text-left">
+  <!-- CONTENT -->
+  <div class="relative max-w-7xl mx-auto px-4 md:px-6
+              pt-10 sm:pt-14 md:pt-28
+              pb-14 md:pb-20">
 
-      <!-- ================= CONTENT ================= -->
-      <div class="flex flex-col gap-6">
+    <div class="grid items-center gap-8 md:gap-10 lg:grid-cols-2 text-center lg:text-left">
+
+      <!-- ================= TEXT ================= -->
+      <div class="flex flex-col gap-4 md:gap-6">
 
         <!-- Badge -->
-        <div class="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 w-fit">
-          <span class="text-lg">🎉</span>
-          <span class="font-semibold text-green-700">
+        <div class="mx-auto lg:mx-0 inline-flex items-center gap-2
+                    rounded-full bg-green-100 px-4 py-2 w-fit">
+          <span>🎉</span>
+          <span class="text-sm md:text-base font-semibold text-green-700">
             Giảm 30% cho đơn đầu tiên
           </span>
         </div>
 
         <!-- Title -->
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
+        <h1 class="
+            text-3xl md:text-5xl lg:text-6xl
+            font-bold leading-tight text-gray-900
+          ">
           Đặt món ngon,
           <span class="text-green-600">giao nhanh</span><br />
           tận nơi
         </h1>
 
-        <!-- Description -->
-        <p class="max-w-xl text-lg text-gray-600">
+        <!-- Desc -->
+        <p class="max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-gray-600">
           Khám phá hàng ngàn món ăn từ các nhà hàng yêu thích.
-          Giao hàng nhanh chóng trong 30 phút, đảm bảo nóng hổi và tươi ngon.
+          Giao hàng nhanh chóng trong 30 phút.
         </p>
 
         <!-- Buttons -->
-        <div class="flex flex-wrap items-center gap-4">
-          <button routerLink="/datban"
-            class="flex items-center gap-2 rounded-full bg-green-600 px-8 py-4 text-white font-semibold hover:bg-green-700 transition">
+        <div class="flex flex-col sm:flex-row items-center gap-4 sm:justify-center lg:justify-start">
+          <button routerLink="/datban" class="w-full sm:w-auto flex items-center justify-center gap-2
+                   rounded-full bg-green-600 px-8 py-4
+                   text-white font-semibold hover:bg-green-700 transition">
             Đặt bàn ngay
-            <mat-icon class="text-white">arrow_forward</mat-icon>
+            <mat-icon>arrow_forward</mat-icon>
           </button>
 
-          <button routerLink="/thucdon"
-            class="rounded-full border border-green-300 px-8 py-4 font-semibold text-green-700 hover:bg-green-50 transition">
+          <button routerLink="/thucdon" class="w-full sm:w-auto rounded-full border border-green-300
+                   px-8 py-4 font-semibold text-green-700
+                   hover:bg-green-50 transition">
             Xem thực đơn
           </button>
         </div>
 
         <!-- Stats -->
-        <div class="mt-6 flex flex-wrap gap-8">
+        <div class="mt-6 grid grid-cols-3 gap-3 sm:gap-6">
 
-          <div class="flex items-center gap-3">
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-              <mat-icon class="text-green-600">restaurant</mat-icon>
+          <!-- Item 1 -->
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-green-100">
+              <mat-icon class="text-green-600 text-base sm:text-lg">restaurant</mat-icon>
             </div>
             <div>
-              <p class="text-2xl font-bold">1000+</p>
-              <p class="text-sm text-gray-600">Món ăn</p>
+              <p class="text-sm sm:text-lg font-bold">1000+</p>
+              <p class="text-[10px] sm:text-xs text-gray-600">Món ăn</p>
             </div>
           </div>
 
-          <div class="flex items-center gap-3">
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-              <mat-icon class="text-green-600">store</mat-icon>
+          <!-- Item 2 -->
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-green-100">
+              <mat-icon class="text-green-600 text-base sm:text-lg">store</mat-icon>
             </div>
             <div>
-              <p class="text-2xl font-bold">50+</p>
-              <p class="text-sm text-gray-600">Nhà hàng</p>
+              <p class="text-sm sm:text-lg font-bold">50+</p>
+              <p class="text-[10px] sm:text-xs text-gray-600">Nhà hàng</p>
             </div>
           </div>
 
-          <div class="flex items-center gap-3">
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-              <mat-icon class="text-green-600">schedule</mat-icon>
+          <!-- Item 3 -->
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-green-100">
+              <mat-icon class="text-green-600 text-base sm:text-lg">schedule</mat-icon>
             </div>
             <div>
-              <p class="text-2xl font-bold">30 phút</p>
-              <p class="text-sm text-gray-600">Giao hàng</p>
+              <p class="text-sm sm:text-lg font-bold">30 phút</p>
+              <p class="text-[10px] sm:text-xs text-gray-600">Giao hàng</p>
             </div>
           </div>
 
@@ -90,32 +99,40 @@
 
         <div class="relative">
 
-          <!-- Main Image -->
-          <div class="relative h-72 w-72 md:h-96 md:w-96 lg:h-[420px] lg:w-[420px]
-                      overflow-hidden rounded-full bg-green-200/30">
+          <!-- Image -->
+          <div class="
+              h-64 w-64
+              md:h-96 md:w-96
+              lg:h-[420px] lg:w-[420px]
+              overflow-hidden rounded-full bg-green-200/30
+            ">
             <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=600&fit=crop"
-              alt="Món ăn ngon" class="w-full h-full object-cover" />
+              class="w-full h-full object-cover" />
           </div>
 
           <!-- Rating -->
-          <div class="absolute -left-6 top-1/4 flex items-center gap-2 rounded-xl bg-white p-3 shadow-lg">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100">
-              <mat-icon class="text-yellow-500">star</mat-icon>
-            </div>
+          <div class="
+              absolute -left-3 md:-left-6 top-1/4
+              flex items-center gap-2 rounded-xl bg-white
+              p-2 md:p-3 shadow-lg
+            ">
+            <mat-icon class="text-yellow-500 text-lg">star</mat-icon>
             <div>
-              <p class="text-sm font-semibold">4.9</p>
-              <p class="text-xs text-gray-500">10k+ đánh giá</p>
+              <p class="text-xs md:text-sm font-semibold">4.9</p>
+              <p class="text-[10px] md:text-xs text-gray-500">10k+ đánh giá</p>
             </div>
           </div>
 
           <!-- Delivery -->
-          <div class="absolute -right-6 bottom-1/4 flex items-center gap-2 rounded-xl bg-white p-3 shadow-lg">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-              <mat-icon class="text-green-600">schedule</mat-icon>
-            </div>
+          <div class="
+              absolute -right-3 md:-right-6 bottom-1/4
+              flex items-center gap-2 rounded-xl bg-white
+              p-2 md:p-3 shadow-lg
+            ">
+            <mat-icon class="text-green-600 text-lg">schedule</mat-icon>
             <div>
-              <p class="text-sm font-semibold">Giao nhanh</p>
-              <p class="text-xs text-gray-500">Chỉ từ 15 phút</p>
+              <p class="text-xs md:text-sm font-semibold">Giao nhanh</p>
+              <p class="text-[10px] md:text-xs text-gray-500">15 phút</p>
             </div>
           </div>
 

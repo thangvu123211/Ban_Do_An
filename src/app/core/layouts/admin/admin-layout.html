@@ -1,16 +1,15 @@
 <div class="flex flex-col min-h-screen ">
   <!-- Navbar trên cùng -->
   <app-admin-navbar></app-admin-navbar>
-<app-admin-sidebar></app-admin-sidebar>
+  <app-admin-sidebar></app-admin-sidebar>
 
 
   <!-- Nội dung chính -->
-  <main 
-      class="flex-1 transition-all duration-300 pt-16 sm:pt-20 min-h-screen
+  <main class="flex-1 transition-all duration-300 pt-16 sm:pt-20 min-h-screen
          ml-0 md:ml-20 lg:ml-64">
-  <router-outlet></router-outlet>
-</main>
+    <router-outlet></router-outlet>
+  </main>
 
   <!-- Footer dưới cùng -->
-  <app-admin-footer ></app-admin-footer>
+  <app-admin-footer></app-admin-footer>
 </div>

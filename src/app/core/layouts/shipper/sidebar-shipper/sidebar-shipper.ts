@@ -27,7 +27,7 @@ export class SidebarShipper implements OnInit {
 
   constructor(
     private router: Router,
-    private sidebarService: SidebarService
+    public sidebarService: SidebarService
   ) {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');

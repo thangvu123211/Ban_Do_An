@@ -11,40 +11,10 @@
     </a>
   </div>
 
-  <!-- CENTER: Search -->
-  <div class="hidden md:flex ml-auto mr-4 gap-2">
-    <!-- Input tìm kiếm -->
-    <div class="hidden md:flex ml-auto mr-4">
-      <div class="flex items-center px-3 h-10 w-[350px] md:w-[500px]
-           rounded-full
-           shadow-sm border border-gray-200 
-           transition-colors">
-        <!-- Input -->
-        <input type="text" placeholder="Tìm kiếm..." class="flex-1 bg-transparent
-             focus:outline-none text-sm" />
 
-        <!-- Icon gọn trong input -->
-        <button class="h-8 w-8 flex items-center justify-center
-             rounded-full hover:bg-gray-200 
-             transition ml-6">
-          <i class="fa fa-search text-gray-600 dark:text-gray-300 text-xs"></i>
-        </button>
-      </div>
-    </div>
-
-
-
-  </div>
 
   <!-- RIGHT: User + Notifications + Dark Mode -->
   <div class="flex items-center gap-2 sm:gap-4 mr-2 sm:mr-10">
-    <!-- User -->
-
-
-    <!-- Notifications -->
-    <button mat-icon-button [matMenuTriggerFor]="notifMenu" matTooltip="Thông báo">
-      <mat-icon>notifications</mat-icon>
-    </button>
 
 
     <button [matMenuTriggerFor]="userMenu" matTooltip="Tài khoản">
@@ -98,25 +68,3 @@
   </button>
 </mat-menu>
 
-<!-- NOTIFICATIONS MENU -->
-<mat-menu #notifMenu="matMenu" class="!p-0 !rounded-xl !overflow-hidden !shadow-xl !min-w-[450px] mt-4">
-  <div class="px-4 py-3 border-b border-gray-700 text-black font-semibold">
-    Thông báo mới
-  </div>
-
-  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
-    <mat-icon>notifications</mat-icon>
-    <span>Thông báo 1</span>
-  </button>
-  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
-    <mat-icon>notifications</mat-icon>
-    <span>Thông báo 2</span>
-  </button>
-
-  <mat-divider></mat-divider>
-
-  <button mat-menu-item class="!flex !items-center !gap-3 !py-2">
-    <mat-icon>settings</mat-icon>
-    <span>Cài đặt thông báo</span>
-  </button>
-</mat-menu>

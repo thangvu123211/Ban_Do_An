@@ -1,20 +1,33 @@
 <!-- 🔹 Top bar -->
 <div class="bg-gray-100 text-sm py-2
             md:fixed md:top-0 w-full z-[60] text-gray-700">
-  <div class="max-w-7xl mx-auto px-4 md:px-6 flex justify-between items-center">
-    <div>
-      Hotline đặt bàn:
-      <span class="font-semibold text-gray-900">0933924075</span>
-      <span class="ml-1">(8:30–21:30, tất cả các ngày trong tuần)</span>
+  <div class="max-w-7xl mx-auto
+              px-4 md:px-6
+              flex items-center justify-between
+              gap-2">
+
+    <!-- Hotline -->
+    <div class="flex flex-col sm:flex-row sm:items-center">
+      <span class="whitespace-nowrap">
+        Hotline đặt bàn:
+        <span class="font-semibold text-gray-900">0933924075</span>
+      </span>
+
+      <span class="text-xs text-gray-500 sm:ml-1 sm:text-sm">
+        (8:30–21:30, tất cả các ngày trong tuần)
+      </span>
     </div>
 
-    <a [routerLink]="['/lienhe']" class="relative text-gray-800
+    <!-- Liên hệ -->
+    <a [routerLink]="['/lienhe']" (click)="closeMobileMenu()" class="shrink-0 whitespace-nowrap
+             relative text-gray-800
              after:absolute after:left-0 after:-bottom-1
              after:w-0 after:h-[2px] after:bg-green-600
              after:transition-all after:duration-300
              hover:after:w-full hover:text-green-600">
       Liên hệ
     </a>
+
   </div>
 </div>
 
@@ -32,7 +45,7 @@
 
     <!-- Logo -->
     <div class="flex items-center">
-      <a routerLink="/" class="flex items-center">
+      <a routerLink="/" class="flex items-center" (click)="closeMobileMenu()">
         <img src="assets/Logo/FoodHub.png" alt="Logo" class="h-[35px] md:h-[50px] w-auto cursor-pointer" />
       </a>
     </div>
@@ -53,7 +66,8 @@
     <!-- Icons -->
     <div class="flex items-center gap-4 text-gray-700">
 
-      <button mat-icon-button matTooltip="Trang cá nhân" class="hover:text-green-600" (click)="goToUserPage() ; closeMobileMenu()">
+      <button mat-icon-button matTooltip="Trang cá nhân" class="hover:text-green-600"
+        (click)="goToUserPage() ; closeMobileMenu()">
         <mat-icon>person</mat-icon>
       </button>
 
@@ -68,7 +82,8 @@
         <mat-icon>favorite</mat-icon>
       </button>
 
-      <button *ngIf="isMobile" mat-icon-button class="md:hidden hover:text-green-600" (click)="isMobileMenuOpen = !isMobileMenuOpen">
+      <button *ngIf="isMobile" mat-icon-button class="md:hidden hover:text-green-600"
+        (click)="isMobileMenuOpen = !isMobileMenuOpen">
         <mat-icon>menu</mat-icon>
       </button>
 

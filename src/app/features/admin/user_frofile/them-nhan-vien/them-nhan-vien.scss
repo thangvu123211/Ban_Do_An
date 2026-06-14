@@ -1,0 +1,20 @@
+/* ===== MATERIAL MOBILE COMPACT ===== */
+@media (max-width: 640px) {
+  .mat-sm {
+    --mat-form-field-container-height: 44px;
+  }
+
+  .mat-sm .mat-mdc-form-field-infix {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .mat-sm input,
+  .mat-sm mat-select {
+    font-size: 14px;
+  }
+
+  .mat-sm mat-label {
+    font-size: 12px;
+  }
+}

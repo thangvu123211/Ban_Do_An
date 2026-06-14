@@ -1,14 +1,42 @@
-<div class="min-h-screen mt-20 bg-gray-50">
+
+<section class="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-green-100">
+
+  <!-- Background decorations -->
+  <div class="hidden md:block absolute -right-24 -top-24 h-80 w-80 rounded-full bg-green-200/30"></div>
+  <div class="hidden md:block absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-green-200/20"></div>
+
+  <!-- CONTENT -->
+<div class="relative max-w-7xl mx-auto
+            px-4 md:px-6
+            pt-14 sm:pt-16 md:pt-28
+            pb-14 md:pb-20
+            mt-0 md:mt-2
+            text-center">
+
+    <p class="uppercase text-xs tracking-widest mb-3 text-gray-500">
+      Đặt Bàn Nhà Hàng
+    </p>
+
+    <h1 class="text-3xl md:text-5xl font-bold mb-4 text-green-600">
+      Chọn bàn và thời gian phù hợp với bạn
+    </h1>
+
+
+  </div>
+
+</section>
+
+<div class="min-h-screen
+            mt-6 sm:mt-10 md:mt-20">
   <div class="max-w-7xl mx-auto px-4 md:px-6 py-6">
 
-    <!-- Header -->
-    <div class="text-center mb-8 mt-12">
-      <h1 class="text-3xl font-bold mb-2">Đặt Bàn Nhà Hàng</h1>
-      <p>Chọn bàn và thời gian phù hợp với bạn</p>
-    </div>
-
     <!-- TABLE GRID -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 mt-4">
+    <div class="grid
+            grid-cols-2
+            sm:grid-cols-2
+            lg:grid-cols-4
+            gap-4 sm:gap-6
+            mb-8 mt-4">
 
       <div *ngFor="let table of BanAn">
 
@@ -23,7 +51,7 @@
 
           <!-- IMAGE -->
           <mat-card-header>
-            <div class="relative w-full h-48">
+            <div class="relative w-full h-36 sm:h-48">
 
               <img
                 [src]="table.anh_ban[0]?.url || 'https://via.placeholder.com/300x200?text=Bàn+' + table.ma_ban"
@@ -51,7 +79,7 @@
           </mat-card-header>
 
           <!-- CONTENT -->
-          <mat-card-content class="mt-2">
+          <mat-card-content class="mt-2 text-xs sm:text-sm">
             <div class="flex justify-between items-center text-sm mt-2">
               <div class="flex flex-col">
                 <span>Số chỗ ngồi: {{ table.so_cho_ngoi }}</span>
@@ -72,7 +100,7 @@
 
 
     <!-- TIME -->
-    <mat-card class="p-6 w-full home-card">
+    <mat-card class="p-4 sm:p-6 w-full home-card">
 
       <h2 class="text-2xl font-bold mb-2 text-center text-green-500">
         Chọn Thời Gian

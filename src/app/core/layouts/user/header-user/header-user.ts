@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../../core/services/auth.service';
 import { MATERIAL } from '../../../../Shared/material';
 import { QuanLyNhanVienService } from '../../../services/QuanLyNhanVien.service';
+import { SidebarService } from '../../../services/WebService/sidebar.service';
 
 @Component({
   selector: 'app-header-user',
@@ -15,10 +16,12 @@ export class HeaderUser implements OnInit {
 
   Thongtinnguoidung: any = null;
   Anhnguoidung: string = 'assets/user.jpg';
+  isMobile = false;
 
   constructor(
     private authService: AuthService,
-    private userService: QuanLyNhanVienService) { }
+    private userService: QuanLyNhanVienService,
+    public sidebarService: SidebarService,) { }
 
   loadUser(ma: number) {
     this.userService.LayNhanVienTheoID(ma).subscribe({
@@ -41,11 +44,16 @@ export class HeaderUser implements OnInit {
     if (ma) {
       this.loadUser(ma);
     }
+    this.checkScreen();
+    window.addEventListener('resize', () => this.checkScreen());
   }
 
 
 
   logout() {
     this.authService.logout();
+  }
+  checkScreen() {
+    this.isMobile = window.innerWidth < 768;
   }
 }

@@ -1,33 +1,36 @@
-<div class="p-6 max-w-7xl mx-auto">
-  <h2 class="text-2xl font-bold mb-6 text-white-800">Trang chủ nhân viên</h2>
 
-  <mat-card class="mt-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4 ml-4 mr-4 mb-4">
 
-      <!-- Card 1 -->
-      <div
-        class="rounded-2xl shadow-lg p-5 flex items-center justify-between hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 mb-4">
-        <div>
-          <h5 class="text-xs font-semibold uppercase tracking-wider">
-            SỐ TIỀN ĐÃ THANH TOÁN
-          </h5>
-          <span class="text-3xl font-bold">
+
+<mat-card class="mt-4">
+  <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mt-4 mx-4 mb-4">
+
+    <!-- Card 1 -->
+    <div class="rounded-2xl shadow-lg p-3 md:p-5 flex items-center justify-between
+              hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
+
+      <div>
+        <h5 class="text-[10px] md:text-xs font-semibold uppercase tracking-wider">
+          SỐ TIỀN ĐÃ THANH TOÁN
+        </h5>
+
+        <span class="text-xl md:text-3xl font-bold">
           {{ TongTienDaChi | number:'1.0-0' }} đ
         </span>
-          <p class="text-sm mt-2">
-            Tổng số tiền bạn đã thanh toán trong giỏ hàng
-          </p>
-        </div>
-        <div class="bg-red-500 rounded-full p-2 shadow-md flex items-center justify-center
-         cursor-pointer hover:bg-red-600 hover:scale-110 transition-all duration-200" title="Xem Chi Tiết">
-          <mat-icon class="!text-base !leading-none flex items-center justify-center"
-            style="display: flex; align-items: center; justify-content: center; line-height: 0; font-size: 18px;">
-            keyboard_arrow_down
-          </mat-icon>
-        </div>
+
+        <p class="text-[11px] md:text-sm mt-1 md:mt-2 text-gray-500">
+          Tổng số tiền bạn đã thanh toán trong giỏ hàng
+        </p>
+      </div>
+
+      <div class="bg-red-500 rounded-full p-2 shadow-md flex items-center justify-center
+                cursor-pointer hover:bg-red-600 hover:scale-110 transition-all duration-200">
+        <mat-icon class="!text-base">keyboard_arrow_down</mat-icon>
       </div>
 
     </div>
-  </mat-card>
 
-</div>
+
+
+  </div>
+
+</mat-card>

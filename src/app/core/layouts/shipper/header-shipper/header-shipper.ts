@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MATERIAL } from '../../../../Shared/material';
 import { AuthService } from '../../../services/auth.service';
 import { QuanLyNhanVienService } from '../../../services/QuanLyNhanVien.service';
+import { SidebarService } from '../../../services/WebService/sidebar.service';
 
 @Component({
   selector: 'app-header-shipper',
@@ -13,10 +14,12 @@ export class HeaderShipper implements OnInit {
 
   Thongtinnguoidung: any = null;
   Anhnguoidung: string = 'assets/user.jpg';
+  isMobile = false;
 
   constructor(
     private authService: AuthService,
-    private userService: QuanLyNhanVienService) { }
+    private userService: QuanLyNhanVienService,
+    public sidebarService: SidebarService) { }
 
   loadUser(ma: number) {
     this.userService.LayNhanVienTheoID(ma).subscribe({
@@ -39,11 +42,18 @@ export class HeaderShipper implements OnInit {
     if (ma) {
       this.loadUser(ma);
     }
+
+    this.checkScreen();
+    window.addEventListener('resize', () => this.checkScreen());
   }
 
 
 
   logout() {
     this.authService.logout();
+  }
+
+  checkScreen() {
+    this.isMobile = window.innerWidth < 768;
   }
 }
