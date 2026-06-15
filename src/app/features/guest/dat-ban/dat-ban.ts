@@ -115,9 +115,12 @@ export class DatBan implements OnInit {
     }
 
     const dialogRef = this.dialog.open(BookingDialog, {
-      width: '900px',
-      maxWidth: '110vw',
+      width: '900px',          // desktop
+      maxWidth: '95vw',        // mobile không tràn
+      maxHeight: '95vh',       // không che nút
       panelClass: 'custom-dialog',
+      autoFocus: false,
+
       data: {
         ngay: this.selectedDate,
         gio: this.selectedHour,
