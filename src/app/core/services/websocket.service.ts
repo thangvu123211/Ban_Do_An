@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { environment } from '../../../environments/environment.prod';
 
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
@@ -14,11 +15,11 @@ export class WebsocketService {
 
         const token = localStorage.getItem('token');
 
-        const url = token
-            ? `ws://localhost:3000/ws?token=${token}`
-            : `ws://localhost:3000/ws/public`;
+        const wsUrl = token
+            ? `${environment.wsUrl}?token=${token}`
+            : environment.wsPublicUrl;
 
-        this.ws = new WebSocket(url);
+        this.ws = new WebSocket(wsUrl);
 
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
