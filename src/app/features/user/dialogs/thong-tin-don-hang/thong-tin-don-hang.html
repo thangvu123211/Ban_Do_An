@@ -32,23 +32,40 @@
       </p>
     </div>
 
-    <div *ngIf="!isHuy()" class="flex items-center justify-between max-w-3xl mx-auto">
+    <div *ngIf="!isHuy()"
+      class="flex items-center justify-between max-w-3xl mx-auto px-2 md:px-0 scale-90 md:scale-100">
+
       <ng-container *ngFor="let step of steps; let i = index">
+
         <div class="flex flex-col items-center flex-1 relative">
+
           <div
-            class="w-6 h-6 rounded-full mb-2 flex items-center justify-center text-xs font-bold transition-all duration-300 z-10"
-            [ngClass]="isStepActive(step.key) ? 'bg-emerald-600 text-white ring-4 ring-emerald-100' : 'bg-gray-200 text-gray-400'">
+            class="w-5 h-5 md:w-6 md:h-6 rounded-full mb-1 md:mb-2 flex items-center justify-center text-[10px] md:text-xs font-bold transition-all duration-300 z-10"
+            [ngClass]="isStepActive(step.key)
+          ? 'bg-emerald-600 text-white ring-2 md:ring-4 ring-emerald-100'
+          : 'bg-gray-200 text-gray-400'">
+
             <span *ngIf="isStepActive(step.key)">✓</span>
           </div>
-          <span class="text-xs tracking-tight text-center"
-            [ngClass]="isStepActive(step.key) ? 'text-emerald-600 font-semibold' : 'text-gray-400'">
+
+          <span class="text-[10px] md:text-xs tracking-tight text-center leading-tight" [ngClass]="isStepActive(step.key)
+              ? 'text-emerald-600 font-semibold'
+              : 'text-gray-400'">
+
             {{ step.label }}
           </span>
+
         </div>
-        <div *ngIf="i < steps.length - 1" class="flex-1 h-[3px] -mt-6 mx-[-15px] transition-all duration-300"
-          [ngClass]="isStepActive(steps[i + 1].key) ? 'bg-emerald-600' : 'bg-gray-200'">
+
+        <div *ngIf="i < steps.length - 1"
+          class="flex-1 h-[2px] md:h-[3px] -mt-4 md:-mt-6 mx-[-10px] md:mx-[-15px] transition-all duration-300"
+          [ngClass]="isStepActive(steps[i + 1].key)
+           ? 'bg-emerald-600'
+           : 'bg-gray-200'">
         </div>
+
       </ng-container>
+
     </div>
   </div>
 
@@ -92,6 +109,35 @@
             </span>
           </div>
           <p class="text-xs text-gray-400 mt-2">Hệ thống tự động duyệt sau khi nhận được tiền.</p>
+        </div>
+
+        <div class="lg:hidden mt-4 px-4">
+
+          <div class="bg-white border rounded-xl p-4 shadow-sm flex items-center gap-3">
+
+            <img *ngIf="hoaDon.shipper?.anh_nguoi_dung?.length" [src]="hoaDon.shipper.anh_nguoi_dung[0].url"
+              class="w-10 h-10 rounded-full object-cover" />
+
+            <div *ngIf="!hoaDon.shipper?.anh_nguoi_dung?.length" class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700
+                flex items-center justify-center font-bold">
+              {{ hoaDon.shipper?.ho_ten?.slice(0,1) || 'C' }}
+            </div>
+
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-800">
+                {{ hoaDon.shipper?.ho_ten || 'Chưa có shipper' }}
+              </p>
+              <p class="text-xs text-gray-500">
+                {{ hoaDon.shipper?.sdt || '---' }}
+              </p>
+            </div>
+
+            <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">
+              Shipper
+            </span>
+
+          </div>
+
         </div>
       </div>
 
@@ -202,221 +248,242 @@
     </div>
 
     <div *ngIf="showQR" (click)="showQR = false"
-      class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all animate-fade-in/10 cursor-pointer">
+      class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 md:p-6">
 
+      <!-- MODAL -->
       <div (click)="$event.stopPropagation()"
-        class="bg-white rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl border border-gray-100 flex flex-col transform transition-transform scale-100 animate-slide-up cursor-default">
+        class="bg-white rounded-2xl w-full max-w-lg md:max-w-xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col">
 
+        <!-- HEADER -->
         <div
-          class="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4 text-white flex justify-between items-center">
+          class="bg-gradient-to-r from-emerald-600 to-teal-600 px-4 md:px-6 py-3 text-white flex justify-between items-center">
+
           <div>
-            <h3 class="font-bold text-lg">Thanh toán chuyển khoản</h3>
-            <p class="text-xs text-emerald-100">Quét mã QR bằng ứng dụng ngân hàng hoặc ví điện tử</p>
+            <h3 class="font-bold text-base md:text-lg">Thanh toán chuyển khoản</h3>
+            <p class="text-[10px] md:text-xs text-emerald-100">
+              Quét mã QR bằng ứng dụng ngân hàng
+            </p>
           </div>
+
           <button (click)="showQR = false"
-            class="text-white/80 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition-all">
+            class="text-white/80 hover:text-white bg-white/10 w-7 h-7 rounded-full flex items-center justify-center">
             ✕
           </button>
+
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-0 overflow-y-auto max-h-[75vh]">
+        <!-- CONTENT -->
+        <div class="flex flex-col md:flex-row max-h-[80vh] overflow-y-auto">
 
-          <div
-            class="md:col-span-2 bg-gray-50/50 p-6 flex flex-col items-center justify-center border-r border-gray-100 space-y-5">
+          <!-- LEFT -->
+          <div class="md:w-2/5 bg-gray-50 p-4 md:p-5 flex flex-col items-center gap-4">
 
-            <div class="bg-white border border-emerald-100 rounded-xl p-4 text-center w-full shadow-sm">
-              <span class="text-xs text-gray-500 font-medium uppercase tracking-wider">Số tiền cần thanh toán</span>
-              <p class="text-3xl font-black text-emerald-600 mt-1 tracking-tight">
+            <!-- AMOUNT -->
+            <div class="bg-white border border-emerald-100 rounded-xl p-3 text-center w-full">
+              <span class="text-[10px] text-gray-500 uppercase">Thanh toán</span>
+              <p class="text-xl md:text-2xl font-black text-emerald-600">
                 {{ hoaDon.tong_tien | number }}đ
               </p>
             </div>
 
+            <!-- QR -->
             <div
-              class="relative w-56 h-56 bg-white border-2 border-dashed border-gray-200 rounded-2xl p-3 flex items-center justify-center group shadow-inner">
-              <div class="absolute top-2 left-2 w-4 h-4 border-t-4 border-l-4 border-emerald-500 rounded-tl"></div>
-              <div class="absolute top-2 right-2 w-4 h-4 border-t-4 border-r-4 border-emerald-500 rounded-tr"></div>
-              <div class="absolute bottom-2 left-2 w-4 h-4 border-b-4 border-l-4 border-emerald-500 rounded-bl"></div>
-              <div class="absolute bottom-2 right-2 w-4 h-4 border-b-4 border-r-4 border-emerald-500 rounded-br"></div>
-
-              <img [src]="qrUrl" class="w-full h-full object-contain rounded-lg" alt="QR Code" />
+              class="w-40 h-40 md:w-48 md:h-48 bg-white border rounded-xl p-2 flex items-center justify-center shadow-sm">
+              <img [src]="qrUrl" class="w-full h-full object-contain" />
             </div>
 
-            <div
-              class="flex items-center gap-2 text-xs text-gray-400 text-center bg-white p-3 rounded-lg border border-dashed shadow-sm w-full">
-              <span class="animate-pulse w-2 h-2 rounded-full bg-emerald-500"></span>
-              <span>Đang kiểm tra giao dịch tự động...</span>
+            <!-- STATUS -->
+            <div class="text-[10px] md:text-xs text-gray-500 flex items-center gap-2">
+              <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+              Đang kiểm tra giao dịch...
             </div>
+
           </div>
 
-          <div class="md:col-span-3 p-8 space-y-6 bg-white">
-            <div class="border-b border-gray-100 pb-4">
-              <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Thông tin tài khoản nhận</p>
-              <div class="space-y-1">
-                <p class="text-sm text-gray-600">
-                  Ngân hàng:
-                  <span class="font-semibold text-gray-900">
-                    {{ bankName }}
-                  </span>
-                </p>
+          <!-- RIGHT -->
+          <div class="md:w-3/5 p-4 md:p-5 space-y-4">
 
-                <p class="text-sm text-gray-600">
-                  Chủ tài khoản:
-                  <span class="font-semibold text-gray-900">
-                    {{ accountName }}
-                  </span>
-                </p>
+            <!-- BANK INFO -->
+            <div class="space-y-2">
+              <p class="text-[10px] font-bold text-gray-400 uppercase">Tài khoản nhận</p>
 
-                <p class="text-sm text-gray-600">
-                  Số tài khoản:
-                  <span class="font-mono font-bold text-lg text-emerald-700">
-                    {{ accountNumber }}
-                  </span>
-                </p>
+              <div class="text-sm space-y-1">
+                <p>Ngân hàng: <span class="font-semibold">{{ bankName }}</span></p>
+                <p>Chủ TK: <span class="font-semibold">{{ accountName }}</span></p>
+                <p>Số TK: <span class="font-mono font-bold text-emerald-700">{{ accountNumber }}</span></p>
               </div>
             </div>
 
-            <div class="space-y-4">
-              <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Thông tin đơn hàng của bạn</p>
+            <!-- ORDER INFO -->
+            <div class="bg-gray-50 border rounded-xl p-3 text-xs space-y-2">
 
-              <div class="bg-gray-50 rounded-xl p-4 space-y-3 text-sm border border-gray-100 shadow-sm">
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-500">Mã đơn hàng:</span>
-                  <span class="font-mono font-bold text-gray-900 bg-white px-2 py-0.5 border rounded text-xs">
-                    HD{{ maHoaDonDangThanhToan || hoaDon.ma_hd }}
-                  </span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-500">Nội dung chuyển khoản:</span>
-                  <span
-                    class="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 border border-emerald-200 rounded text-xs">
-                    HD{{ maHoaDonDangThanhToan || hoaDon.ma_hd }}
-                  </span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-500">Khách hàng:</span>
-                  <span class="font-semibold text-gray-800">{{ hoaDon.ho_ten }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-500">Số điện thoại:</span>
-                  <span class="font-semibold text-gray-800">{{ hoaDon.sdt }}</span>
-                </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Mã đơn:</span>
+                <span class="font-mono font-bold">HD{{ maHoaDonDangThanhToan || hoaDon.ma_hd }}</span>
               </div>
+
+              <div class="flex justify-between">
+                <span class="text-gray-500">Nội dung:</span>
+                <span class="font-mono font-bold text-emerald-700">
+                  HD{{ maHoaDonDangThanhToan || hoaDon.ma_hd }}
+                </span>
+              </div>
+
+              <div class="flex justify-between">
+                <span class="text-gray-500">Khách:</span>
+                <span class="font-semibold">{{ hoaDon.ho_ten }}</span>
+              </div>
+
+              <div class="flex justify-between">
+                <span class="text-gray-500">SĐT:</span>
+                <span class="font-semibold">{{ hoaDon.sdt }}</span>
+              </div>
+
             </div>
 
-            <div class="bg-amber-50 border border-amber-100 text-amber-900 rounded-xl p-4 flex gap-3 text-sm">
-              <span class="text-lg mt-0.5">💡</span>
-              <p>Hệ thống sẽ tự động cập nhật trạng thái đơn hàng ngay sau khi nhận được thanh toán. Quá trình này
-                thường mất từ 1-3 phút.</p>
+            <!-- NOTE -->
+            <div class="bg-amber-50 border border-amber-100 rounded-xl p-3 text-xs">
+              💡 Hệ thống sẽ tự động cập nhật sau khi thanh toán (1–3 phút)
             </div>
+
           </div>
+
         </div>
 
       </div>
+
     </div>
 
-    <div *ngIf="showSuccessModal" (click)="showSuccessModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm z-50
-            flex items-center justify-center p-4 cursor-pointer">
+    <div *ngIf="showSuccessModal" (click)="showSuccessModal = false"
+      class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 md:p-6">
 
-      <!-- CARD -->
-      <div (click)="$event.stopPropagation()" class="bg-white rounded-2xl max-w-md w-full overflow-hidden
-           shadow-2xl border border-gray-100
-           flex flex-col animate-slide-up cursor-default">
+      <!-- MODAL -->
+      <div (click)="$event.stopPropagation()"
+        class="bg-white rounded-2xl w-full max-w-sm md:max-w-md overflow-hidden shadow-2xl border border-gray-100 flex flex-col">
 
         <!-- HEADER -->
-        <div class="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4
-             text-white flex justify-between items-center">
+        <div
+          class="bg-gradient-to-r from-emerald-600 to-teal-600 px-4 md:px-6 py-3 text-white flex justify-between items-center">
+
           <div>
-            <h3 class="font-bold text-lg">Thanh toán thành công</h3>
-            <p class="text-xs text-emerald-100">
-              Đơn hàng của bạn đã được xác nhận
+            <h3 class="font-bold text-base md:text-lg">Thanh toán thành công</h3>
+            <p class="text-[10px] md:text-xs text-emerald-100">
+              Đơn hàng đã được xác nhận
             </p>
           </div>
-          <button (click)="showQR = false" class="text-white/80 hover:text-white bg-white/10 hover:bg-white/20
-               w-8 h-8 rounded-full flex items-center justify-center transition-all">
+
+          <button (click)="showSuccessModal = false"
+            class="text-white/80 hover:text-white bg-white/10 w-7 h-7 rounded-full flex items-center justify-center">
             ✕
           </button>
+
         </div>
 
         <!-- BODY -->
-        <div class="p-8 flex flex-col items-center text-center space-y-5">
+        <div class="p-5 md:p-6 flex flex-col items-center text-center space-y-4">
 
           <!-- ICON -->
-          <div class="w-20 h-20 rounded-full bg-emerald-100
-               flex items-center justify-center shadow-inner">
-            <mat-icon class="text-emerald-600 text-5xl">
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-emerald-100 flex items-center justify-center">
+            <mat-icon class="text-emerald-600 text-4xl md:text-5xl">
               check_circle
             </mat-icon>
           </div>
 
           <!-- TEXT -->
           <div>
-            <h2 class="text-xl font-extrabold text-emerald-700">
+            <h2 class="text-lg md:text-xl font-bold text-emerald-700">
               Thanh toán thành công 🎉
             </h2>
-            <p class="text-sm text-gray-500 mt-1">
-              Hệ thống đã ghi nhận giao dịch của bạn
+            <p class="text-xs md:text-sm text-gray-500">
+              Hệ thống đã ghi nhận giao dịch
             </p>
           </div>
 
           <!-- INFO -->
-          <div class="bg-gray-50 border border-gray-100 rounded-xl p-4 w-full text-sm space-y-2">
+          <div class="bg-gray-50 border rounded-xl p-3 w-full text-xs md:text-sm space-y-2">
+
             <div class="flex justify-between">
-              <span class="text-gray-500">Mã đơn hàng</span>
-              <span class="font-mono font-bold text-gray-900">
+              <span class="text-gray-500">Mã đơn</span>
+              <span class="font-mono font-bold">
                 HD{{ hoaDon.ma_hd }}
               </span>
             </div>
+
             <div class="flex justify-between">
               <span class="text-gray-500">Tổng tiền</span>
               <span class="font-bold text-emerald-600">
                 {{ hoaDon.tong_tien | number }}đ
               </span>
             </div>
+
           </div>
 
           <!-- BUTTON -->
-          <button (click)="close()" class="w-full py-3 bg-emerald-600 text-white rounded-xl
-               font-semibold hover:bg-emerald-700 active:scale-95 transition">
-            Quay lại danh sách
+          <button (click)="showSuccessModal = false" class="w-full py-2.5 md:py-3 bg-emerald-600 text-white rounded-xl
+                     font-semibold hover:bg-emerald-700 active:scale-95 transition">
+            Quay lại
           </button>
 
         </div>
       </div>
+
     </div>
 
   </div>
 
-  <div class="p-4 bg-white border-t border-gray-100 shadow-[0_-4px_16px_rgba(0,0,0,0.01)] flex justify-start">
-    <div class="border border-gray-100 rounded-xl overflow-hidden max-w-xs w-full bg-gray-50/30 shadow-sm">
+  <div class="p-3 md:p-4 bg-white border-t border-gray-100 shadow-[0_-6px_20px_rgba(0,0,0,0.05)]">
 
-      <div class="p-2.5 space-y-1.5 text-[11px] border-b border-gray-150">
-        <div class="flex justify-between text-gray-500 px-0.5">
-          <span>Tạm tính:</span>
-          <span class="text-gray-800 font-semibold">{{ hoaDon.tam_tinh | number }}đ</span>
-        </div>
+    <!-- CARD WRAPPER -->
+    <div class="max-w-4xl mx-auto">
 
-        <div *ngIf="hoaDon.tien_giam > 0"
-          class="flex justify-between items-center text-red-600 bg-red-50/50 px-1.5 py-0.5 rounded border border-red-100/40">
-          <div class="flex items-center gap-1">
-            <span>🎟️</span>
-            <span>Giảm giá:</span>
-            <span *ngIf="hoaDon.giam_gia?.code"
-              class="text-[9px] font-mono font-bold bg-white px-1 py-0.5 border border-red-100 rounded text-red-500 scale-90">
-              {{ hoaDon.giam_gia.code }}
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3
+                bg-white border rounded-xl px-4 py-3 shadow-sm">
+
+        <!-- LEFT: INFO -->
+        <div class="flex flex-col gap-1 text-sm">
+
+          <div class="flex justify-between md:justify-start md:gap-4 text-gray-600">
+            <span>Tạm tính:</span>
+            <span class="font-semibold text-gray-900">
+              {{ hoaDon.tam_tinh | number }}đ
             </span>
           </div>
-          <span class="font-bold">-{{ hoaDon.tien_giam | number }}đ</span>
-        </div>
-      </div>
 
-      <div class="bg-gradient-to-r from-emerald-600 to-teal-600 px-3 py-2 flex justify-between items-center text-white">
-        <span class="text-[11px] font-bold uppercase tracking-wide text-emerald-100">Tổng tiền:</span>
-        <span class="font-black text-lg tracking-tight">
-          {{ hoaDon.tong_tien | number }}đ
-        </span>
+          <!-- DISCOUNT -->
+          <div *ngIf="hoaDon.tien_giam > 0" class="flex justify-between md:justify-start md:gap-4 text-red-600">
+
+            <span class="text-sm">Giảm giá:</span>
+
+            <span *ngIf="hoaDon.giam_gia?.code"
+              class="text-[10px] font-mono bg-red-50 px-1.5 py-0.5 border rounded text-red-500">
+              {{ hoaDon.giam_gia.code }}
+            </span>
+
+            <span class="font-bold ml-2">
+              -{{ hoaDon.tien_giam | number }}đ
+            </span>
+
+          </div>
+
+        </div>
+
+        <!-- RIGHT: TOTAL -->
+        <div class="flex items-center justify-between md:justify-end md:gap-4">
+
+          <span class="text-xs md:text-sm font-semibold text-gray-500 uppercase">
+            Tổng:
+          </span>
+
+          <span class="text-lg md:text-xl font-extrabold text-emerald-600">
+            {{ hoaDon.tong_tien | number }}đ
+          </span>
+
+        </div>
+
       </div>
 
     </div>
+
   </div>
 
   <div class="border-t border-gray-100 px-6 py-4 flex justify-end gap-3 bg-gray-50/50">

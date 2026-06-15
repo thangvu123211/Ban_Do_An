@@ -1,98 +1,170 @@
+<div class="relative
+            h-auto md:h-80
+            flex items-center
+            px-4 md:px-10
+            py-6 md:py-0
+            bg-white">
 
+    <div>
+        <h1 class="text-2xl md:text-4xl font-bold mb-2 md:mb-3 text-gray-800">
+            TRANG QUẢN LÝ MÓN ĂN
+        </h1>
 
-
-<div class="relative h-80 flex items-center px-10 bg-white">
-  <div>
-    <h1 class="text-4xl font-bold mb-3 text-gray-800">
-     TRANG QUẢN LÝ MÓN ĂN
-    </h1>
-    <p class="text-gray-600 max-w-xl">
-        Đây là trang quản lý món ăn. Bạn có thể thêm, sửa hoặc xóa thông tin món ăn tại đây.
-    </p>
-  </div>
+        <p class="text-sm md:text-base text-gray-600 max-w-xl">
+            Đây là trang quản lý món ăn. Bạn có thể thêm, sửa hoặc xóa thông tin món ăn tại đây.
+        </p>
+    </div>
 </div>
 
 <!-- KHUNG DỮ LIỆU -->
-<div class="container mx-auto px-6 mt-10">
+<div class="container mx-auto px-3 md:px-6 mt-6 md:mt-10">
 
-    <mat-card class="w-full shadow-xl rounded-2xl p-6">
+    <mat-card class="w-full shadow-xl rounded-2xl p-3 md:p-6">
 
         <!-- HEADER -->
-        <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <div class="flex flex-col md:flex-row
+            md:justify-between md:items-center
+            gap-3
+            mb-4 md:mb-6
+            border-b pb-3 md:pb-4">
 
-            <h3 class="text-2xl font-semibold">
+            <h3 class="text-lg md:text-2xl font-semibold text-center md:text-left">
                 Danh Sách Món Ăn
             </h3>
 
-            <button mat-flat-button (click)="ThemMonAn()">
+            <button mat-flat-button class="w-full md:w-auto" (click)="ThemMonAn()">
                 Thêm mới
             </button>
         </div>
 
         <!-- TABLE -->
-        <div class="overflow-x-auto">
-            <table class="min-w-full border rounded-lg overflow-hidden text-sm">
+        <div class="hidden md:block">
+            <div class="overflow-x-auto">
+                <table class="min-w-full border rounded-lg overflow-hidden text-sm">
 
-                <thead class="text-sm">
-                    <tr>
-                        <th class="px-4 py-4 text-center border">STT</th>
-                        <th class="px-4 py-4 text-center border">Ảnh Món Ăn</th>
-                        <th class="px-4 py-4 text-center border">Tên Món Ăn</th>
-                        <th class="px-4 py-4 text-center border">Giá Tiền</th>
-                        <th class="px-4 py-4 text-center border">Tên Loại Món Ăn</th>
-                        <th class="px-4 py-4 text-center border">Mô tả</th>
-                        <th class="px-4 py-4 text-center border">Trạng Thái</th>
-                        <th class="px-4 py-4 text-center border">Hành động</th>
-                    </tr>
-                </thead>
+                    <thead class="text-xs md:text-sm">
+                        <tr>
+                            <th class="px-4 py-4 text-center border">STT</th>
+                            <th class="px-4 py-4 text-center border">Ảnh Món Ăn</th>
+                            <th class="px-4 py-4 text-center border">Tên Món Ăn</th>
+                            <th class="px-4 py-4 text-center border">Giá Tiền</th>
+                            <th class="px-4 py-4 text-center border">Tên Loại Món Ăn</th>
+                            <th class="px-4 py-4 text-center border">Mô tả</th>
+                            <th class="px-4 py-4 text-center border">Trạng Thái</th>
+                            <th class="px-4 py-4 text-center border">Hành động</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    <tr *ngFor="let monan of MonAn; let i = index">
-                        <td class="px-4 py-7 text-center border">{{ monan.ma_mon_an }}</td>
-                        <td class="px-4 py-4 text-center border">
-                            <img *ngIf="monan.anh_mon_an?.length > 0" [src]="monan.anh_mon_an[0].url" alt="Ảnh món ăn"
-                                class="w-12 h-12 rounded-full object-cover mx-auto shadow" />
+                    <tbody>
+                        <tr *ngFor="let monan of MonAn; let i = index">
+                            <td class="px-4 py-7 text-center border">{{ monan.ma_mon_an }}</td>
+                            <td class="px-4 py-4 text-center border">
+                                <img *ngIf="monan.anh_mon_an?.length > 0" [src]="monan.anh_mon_an[0].url"
+                                    alt="Ảnh món ăn" class="w-12 h-12 rounded-full object-cover mx-auto shadow" />
 
-                            <span *ngIf="!monan.anh_mon_an|| monan.anh_mon_an.length === 0"
-                                class="text-gray-500 italic">
-                                Không có ảnh
-                            </span>
-                        </td>
-                        <td class="px-4 py-7 text-center border">{{ monan.ten_mon_an }}</td>
-                        <td class="px-4 py-7 text-center border">
-                            {{ monan.gia_tien | currency:'VND':'symbol':'1.0-0':'vi-VN' }}
-                        </td>
-                        <td class="px-4 py-7 text-center border">
+                                <span *ngIf="!monan.anh_mon_an|| monan.anh_mon_an.length === 0"
+                                    class="text-gray-500 italic">
+                                    Không có ảnh
+                                </span>
+                            </td>
+                            <td class="px-4 py-7 text-center border">{{ monan.ten_mon_an }}</td>
+                            <td class="px-4 py-7 text-center border">
+                                {{ monan.gia_tien | currency:'VND':'symbol':'1.0-0':'vi-VN' }}
+                            </td>
+                            <td class="px-4 py-7 text-center border">
+                                {{ LoaiMonAnMap[monan.ma_loai_mon_an] || '---' }}
+                            </td>
+                            <td class="px-4 py-7 text-center border">{{ monan.mo_ta }}</td>
+                            <td class="px-4 py-4 text-center border">
+                                <span *ngIf="monan.trang_thai == 1"
+                                    class="inline-block bg-green-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">
+                                    Còn bán
+                                </span>
+
+                                <span *ngIf="monan.trang_thai == 0"
+                                    class="inline-block bg-red-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">
+                                    Ngừng bán
+                                </span>
+                            </td>
+                            <td class="px-4 py-7 text-center border">
+                                <div class="flex justify-center gap-2">
+                                    <button mat-icon-button matTooltip="Sửa" (click)="suaMonAn(monan.ma_mon_an)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        <div class="md:hidden space-y-4 px-3">
+
+            <div *ngFor="let monan of MonAn" class="bg-white rounded-xl shadow-md p-4">
+
+                <!-- TOP -->
+                <div class="flex gap-3 items-center">
+
+                    <!-- IMAGE -->
+                    <img *ngIf="monan.anh_mon_an?.length > 0" [src]="monan.anh_mon_an[0].url"
+                        class="w-16 h-16 rounded-xl object-cover shadow" />
+
+                    <div *ngIf="!monan.anh_mon_an || monan.anh_mon_an.length === 0" class="w-16 h-16 rounded-xl bg-gray-200
+                  flex items-center justify-center text-xs text-gray-500">
+                        No Image
+                    </div>
+
+                    <!-- INFO -->
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-gray-800">
+                            {{ monan.ten_mon_an }}
+                        </h4>
+
+                        <p class="text-sm text-gray-500">
                             {{ LoaiMonAnMap[monan.ma_loai_mon_an] || '---' }}
-                        </td>
-                        <td class="px-4 py-7 text-center border">{{ monan.mo_ta }}</td>
-                        <td class="px-4 py-4 text-center border">
-                            <span *ngIf="monan.trang_thai == 1"
-                                class="inline-block bg-green-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">
-                                Còn bán
-                            </span>
+                        </p>
 
-                            <span *ngIf="monan.trang_thai == 0"
-                                class="inline-block bg-red-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">
-                                Ngừng bán
-                            </span>
-                        </td>
-                        <td class="px-4 py-7 text-center border">
-                            <div class="flex justify-center gap-2">
-                                <button mat-icon-button matTooltip="Sửa" (click)="suaMonAn(monan.ma_mon_an)">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
+                        <p class="font-bold text-green-600 mt-1">
+                            {{ monan.gia_tien | currency:'VND':'symbol':'1.0-0':'vi-VN' }}
+                        </p>
+                    </div>
 
-            </table>
+                    <!-- ACTION -->
+                    <button mat-icon-button (click)="suaMonAn(monan.ma_mon_an)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </div>
+
+                <!-- DESCRIPTION -->
+                <p class="text-sm text-gray-600 mt-3 line-clamp-2">
+                    {{ monan.mo_ta }}
+                </p>
+
+                <!-- STATUS -->
+                <div class="mt-3">
+                    <span *ngIf="monan.trang_thai == 1" class="inline-block bg-green-600 text-white
+                   text-xs px-3 py-1 rounded-full">
+                        Còn bán
+                    </span>
+
+                    <span *ngIf="monan.trang_thai == 0" class="inline-block bg-red-600 text-white
+                   text-xs px-3 py-1 rounded-full">
+                        Ngừng bán
+                    </span>
+                </div>
+
+            </div>
+
         </div>
 
     </mat-card>
 
 </div>
+
+
+<!-- ================= END MOBILE ================= -->
 
 
 <!-- TOAST -->

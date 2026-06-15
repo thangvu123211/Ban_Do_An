@@ -1,15 +1,20 @@
+<div class="relative
+            h-auto md:h-80
+            flex items-center
+            px-4 md:px-10
+            py-6 md:py-0
+            bg-white">
 
+    <div>
+        <h1 class="text-2xl md:text-4xl font-bold mb-2 md:mb-3 text-gray-800">
+            TRANG QUẢN LÝ NHÀ HÀNG
+        </h1>
 
-<div class="relative h-80 flex items-center px-10 bg-white">
-  <div>
-    <h1 class="text-4xl font-bold mb-3 text-gray-800">
-     TRANG QUẢN LÝ NHÀ HÀNG
-    </h1>
-    <p class="text-gray-600 max-w-xl">
-        Đây là trang quản lý cấu hình. Bạn có thể cập nhật thông tin chi tiết, trạng thái và địa chỉ vị trí của nhà
+        <p class="text-sm md:text-base text-gray-600 max-w-xl">
+            Đây là trang quản lý cấu hình. Bạn có thể cập nhật thông tin chi tiết, trạng thái và địa chỉ vị trí của nhà
             hàng tại đây.
-    </p>
-  </div>
+        </p>
+    </div>
 </div>
 
 <div *ngIf="hasNhaHang === false && !showCreateForm"

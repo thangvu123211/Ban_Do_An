@@ -1,19 +1,25 @@
-<!-- ================= HEADER ================= -->
-<div class="relative h-80 flex items-center px-10 bg-white">
+<div class="relative
+            h-auto md:h-80
+            flex items-center
+            px-4 md:px-10
+            py-6 md:py-0
+            bg-white">
+
   <div>
-    <h1 class="text-4xl font-bold mb-3 text-gray-800">
+    <h1 class="text-2xl md:text-4xl font-bold mb-2 md:mb-3 text-gray-800">
       QUẢN LÝ LIÊN HỆ
     </h1>
-    <p class="text-gray-600 max-w-xl">
+
+    <p class="text-sm md:text-base text-gray-600 max-w-xl">
       Danh sách các liên hệ từ khách hàng gửi về hệ thống. Bạn có thể xem chi tiết hoặc xóa liên hệ.
     </p>
   </div>
 </div>
 
 <!-- ================= CONTENT ================= -->
-<div class="container mx-auto px-6 mt-10">
+<div class="container mx-auto px-3 md:px-6 mt-6 md:mt-10">
 
-  <mat-card class="w-full shadow-xl rounded-2xl p-6">
+  <mat-card class="w-full shadow-xl rounded-2xl p-3 md:p-6">
 
     <!-- HEADER TABLE -->
     <div class="flex justify-between items-center mb-6 pb-4">
@@ -25,85 +31,142 @@
 
     </div>
 
-    <!-- TABLE -->
-    <div class="overflow-x-auto">
-      <table class="min-w-full border rounded-lg overflow-hidden text-sm">
+    <div class="hidden md:block">
+      <div class="overflow-x-auto">
+        <table class="min-w-full border rounded-lg overflow-hidden text-sm">
 
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-4 py-3 text-center border">STT</th>
-            <th class="px-4 py-3 text-left border">Họ tên</th>
-            <th class="px-4 py-3 text-left border">Email</th>
-            <th class="px-4 py-3 text-left border">SĐT</th>
-            <th class="px-4 py-3 text-left border">Tiêu đề</th>
-            <th class="px-4 py-3 text-left border">Nội dung</th>
-            <th class="px-4 py-3 text-center border">Ngày gửi</th>
-            <th class="px-4 py-3 text-center border">Hành động</th>
-          </tr>
-        </thead>
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-3 text-center border">STT</th>
+              <th class="px-4 py-3 text-left border">Họ tên</th>
+              <th class="px-4 py-3 text-left border">Email</th>
+              <th class="px-4 py-3 text-left border">SĐT</th>
+              <th class="px-4 py-3 text-left border">Tiêu đề</th>
+              <th class="px-4 py-3 text-left border">Nội dung</th>
+              <th class="px-4 py-3 text-center border">Ngày gửi</th>
+              <th class="px-4 py-3 text-center border">Hành động</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr *ngFor="let lh of danhSachLienHe; let i = index" class="hover:bg-gray-50 transition">
+          <tbody>
+            <tr *ngFor="let lh of danhSachLienHe; let i = index" class="hover:bg-gray-50 transition">
 
-            <!-- STT -->
-            <td class="px-4 py-4 text-center border">
-              {{ i + 1 }}
-            </td>
+              <!-- STT -->
+              <td class="px-4 py-4 text-center border">
+                {{ i + 1 }}
+              </td>
 
-            <!-- HỌ TÊN -->
-            <td class="px-4 py-4 border font-medium">
-              {{ lh.ho_ten }}
-            </td>
+              <!-- HỌ TÊN -->
+              <td class="px-4 py-4 border font-medium">
+                {{ lh.ho_ten }}
+              </td>
 
-            <!-- EMAIL -->
-            <td class="px-4 py-4 border">
-              {{ lh.email }}
-            </td>
+              <!-- EMAIL -->
+              <td class="px-4 py-4 border">
+                {{ lh.email }}
+              </td>
 
-            <!-- SĐT -->
-            <td class="px-4 py-4 border">
-              {{ lh.sdt || '---' }}
-            </td>
+              <!-- SĐT -->
+              <td class="px-4 py-4 border">
+                {{ lh.sdt || '---' }}
+              </td>
 
-            <!-- TIÊU ĐỀ -->
-            <td class="px-4 py-4 border font-semibold text-cyan-600">
-              {{ lh.tieu_de }}
-            </td>
+              <!-- TIÊU ĐỀ -->
+              <td class="px-4 py-4 border font-semibold text-cyan-600">
+                {{ lh.tieu_de }}
+              </td>
 
-            <!-- NỘI DUNG -->
-            <td class="px-4 py-4 border max-w-md">
-              <p class="line-clamp-2 text-gray-600">
-                {{ lh.noi_dung }}
-              </p>
-            </td>
+              <!-- NỘI DUNG -->
+              <td class="px-4 py-4 border max-w-md">
+                <p class="line-clamp-2 text-gray-600">
+                  {{ lh.noi_dung }}
+                </p>
+              </td>
 
-            <!-- NGÀY -->
-            <td class="px-4 py-4 text-center border text-gray-500">
-              {{ lh.ngay_tao | date:'dd/MM/yyyy HH:mm' }}
-            </td>
+              <!-- NGÀY -->
+              <td class="px-4 py-4 text-center border text-gray-500">
+                {{ lh.ngay_tao | date:'dd/MM/yyyy HH:mm' }}
+              </td>
 
-            <!-- ACTIONS -->
-            <td class="px-4 py-4 text-center border">
-              <div class="flex justify-center gap-2">
+              <!-- ACTIONS -->
+              <td class="px-4 py-4 text-center border">
+                <div class="flex justify-center gap-2">
 
-                <!-- XEM -->
-                <button mat-icon-button matTooltip="Chi tiết" (click)="xemChiTiet(lh)">
-                  <mat-icon>info</mat-icon>
-                </button>
+                  <!-- XEM -->
+                  <button mat-icon-button matTooltip="Chi tiết" (click)="xemChiTiet(lh)">
+                    <mat-icon>info</mat-icon>
+                  </button>
 
-                <!-- XÓA -->
-                <button mat-icon-button matTooltip="Xóa" color="warn" (click)="openDialogXoa(lh.ma_lien_he)">
-                  <mat-icon>delete</mat-icon>
-                </button>
+                  <!-- XÓA -->
+                  <button mat-icon-button matTooltip="Xóa" color="warn" (click)="openDialogXoa(lh.ma_lien_he)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
 
-              </div>
-            </td>
+                </div>
+              </td>
 
-          </tr>
-        </tbody>
+            </tr>
+          </tbody>
 
-      </table>
+        </table>
+      </div>
     </div>
+
+      <!-- ================= MOBILE CARD VIEW ================= -->
+      <div class="container mx-auto px-4 mt-6 block md:hidden space-y-4">
+
+        <div *ngFor="let lh of danhSachLienHe; let i = index" class="bg-white rounded-xl shadow border p-4">
+
+          <!-- HEADER -->
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <div class="text-xs text-gray-500">Liên hệ #{{ i + 1 }}</div>
+              <div class="font-semibold text-lg text-gray-800">
+                {{ lh.ho_ten }}
+              </div>
+              <div class="text-sm text-gray-500">
+                {{ lh.email }}
+              </div>
+            </div>
+
+            <div class="text-xs text-gray-400">
+              {{ lh.ngay_tao | date:'dd/MM HH:mm' }}
+            </div>
+          </div>
+
+          <!-- INFO -->
+          <div class="space-y-1 text-sm mt-2">
+            <div>
+              <span class="font-medium">SĐT:</span>
+              {{ lh.sdt || '---' }}
+            </div>
+
+            <div class="font-semibold text-cyan-600">
+              {{ lh.tieu_de }}
+            </div>
+
+            <div class="text-gray-600 italic line-clamp-3">
+              {{ lh.noi_dung }}
+            </div>
+          </div>
+
+          <!-- ACTION -->
+          <div class="flex justify-end gap-3 mt-4 border-t pt-3">
+
+            <button mat-stroked-button color="primary" (click)="xemChiTiet(lh)">
+              Chi tiết
+            </button>
+
+            <button mat-stroked-button color="warn" (click)="openDialogXoa(lh.ma_lien_he)">
+              Xóa
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
 
   </mat-card>
 </div>

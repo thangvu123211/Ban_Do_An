@@ -1,10 +1,16 @@
+<div class="relative
+            h-auto md:h-80
+            flex items-center
+            px-4 md:px-10
+            py-6 md:py-0
+            bg-white">
 
-<div class="relative h-80 flex items-center px-10 bg-white">
   <div>
-    <h1 class="text-4xl font-bold mb-3 text-gray-800">
+    <h1 class="text-2xl md:text-4xl font-bold mb-2 md:mb-3 text-gray-800">
       TRANG QUẢN LÝ BÀN ĂN
     </h1>
-    <p class="text-gray-600 max-w-xl">
+
+    <p class="text-sm md:text-base text-gray-600 max-w-xl">
       Đây là trang quản lý bàn ăn. Bạn có thể thêm, sửa hoặc xóa thông tin bàn ăn tại đây.
     </p>
   </div>
@@ -16,88 +22,147 @@
   <mat-card class="w-full shadow-xl rounded-2xl p-6">
 
     <!-- HEADER -->
-    <div class="flex justify-between items-center mb-6 border-b pb-4">
+    <div class="container mx-auto px-3 md:px-6 mt-6 md:mt-10">
 
-      <h3 class="text-2xl font-semibold">
-        Danh Sách Bàn Ăn
-      </h3>
+      <!-- HEADER -->
+      <div class="flex flex-col md:flex-row
+                md:justify-between md:items-center
+                gap-3
+                mb-4 md:mb-6
+                border-b pb-3 md:pb-4">
 
-      <button mat-flat-button (click)="ThemBanAn()">
-        Thêm mới
-      </button>
-    </div>
+        <h3 class="text-lg md:text-2xl font-semibold text-center md:text-left">
+          Danh Sách Bàn Ăn
+        </h3>
 
-    <!-- TABLE -->
-    <div class="overflow-x-auto">
-      <table class="min-w-full border rounded-lg overflow-hidden text-sm">
+        <button mat-flat-button class="w-full md:w-auto" (click)="ThemBanAn()">
+          Thêm mới
+        </button>
+      </div>
 
-        <thead class="text-sm">
-          <tr>
-            <th class="px-4 py-4 text-center border">Mã bàn</th>
-            <th class="px-4 py-4 text-center border">Ảnh bàn</th>
-            <th class="px-4 py-4 text-center border">Tên Bàn</th>
-            <th class="px-4 py-4 text-center border">Số Chỗ Ngồi</th>
-            <th class="px-4 py-4 text-center border">Trạng Thái</th>
-            <th class="px-4 py-4 text-center border">Hành động</th>
-          </tr>
-        </thead>
 
-        <tbody>
+      <div class="hidden md:block">
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+          <table class="min-w-full border rounded-lg overflow-hidden text-sm">
 
-          <tr *ngFor="let items of BanAn; let i = index">
+            <thead class="text-sm">
+              <tr>
+                <th class="px-4 py-4 text-center border">Mã bàn</th>
+                <th class="px-4 py-4 text-center border">Ảnh bàn</th>
+                <th class="px-4 py-4 text-center border">Tên Bàn</th>
+                <th class="px-4 py-4 text-center border">Số Chỗ Ngồi</th>
+                <th class="px-4 py-4 text-center border">Trạng Thái</th>
+                <th class="px-4 py-4 text-center border">Hành động</th>
+              </tr>
+            </thead>
 
-            <td class="px-4 py-4 text-center border">{{ items.ma_ban }}</td>
+            <tbody>
 
-            <!-- Ảnh bàn -->
-            <td class="px-4 py-4 text-center border">
-              <img *ngIf="items.anh_ban?.length > 0" [src]="items.anh_ban[0].url" alt="Ảnh bàn"
-                class="w-12 h-12 rounded-full object-cover mx-auto shadow" />
+              <tr *ngFor="let items of BanAn; let i = index">
 
-              <span *ngIf="!items.anh_ban || items.anh_ban.length === 0" class="text-gray-500 italic">
-                Không có ảnh
-              </span>
-            </td>
+                <td class="px-4 py-4 text-center border">{{ items.ma_ban }}</td>
 
-            <td class="px-4 py-4 text-center border">{{ items.ten_ban }}</td>
-            <td class="px-4 py-4 text-center border">{{ items.so_cho_ngoi }}</td>
+                <!-- Ảnh bàn -->
+                <td class="px-4 py-4 text-center border">
+                  <img *ngIf="items.anh_ban?.length > 0" [src]="items.anh_ban[0].url" alt="Ảnh bàn"
+                    class="w-12 h-12 rounded-full object-cover mx-auto shadow" />
 
-            <!-- Trạng thái -->
-            <td class="px-4 py-4 text-center border">
-              <span *ngIf="items.trang_thai == 1"
-                class="inline-block bg-green-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">
-                Còn bàn
-              </span>
+                  <span *ngIf="!items.anh_ban || items.anh_ban.length === 0" class="text-gray-500 italic">
+                    Không có ảnh
+                  </span>
+                </td>
 
-              <span *ngIf="items.trang_thai == 0"
-                class="inline-block bg-red-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">
-                Hết bàn
-              </span>
-            </td>
+                <td class="px-4 py-4 text-center border">{{ items.ten_ban }}</td>
+                <td class="px-4 py-4 text-center border">{{ items.so_cho_ngoi }}</td>
 
-            <!-- ACTION BUTTONS -->
-            <td class="px-4 py-4 text-center border">
-              <div class="flex justify-center gap-2">
+                <!-- Trạng thái -->
+                <td class="px-4 py-4 text-center border">
+                  <span *ngIf="items.trang_thai == 1"
+                    class="inline-block bg-green-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">
+                    Còn bàn
+                  </span>
 
-                <!-- Sửa -->
-                <button mat-icon-button matTooltip="Sửa" (click)="SuaBanAn(items)">
-                  <mat-icon>edit</mat-icon>
-                </button>
+                  <span *ngIf="items.trang_thai == 0"
+                    class="inline-block bg-red-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">
+                    Hết bàn
+                  </span>
+                </td>
 
-                <!-- Xóa -->
-                <!-- <button mat-icon-button matTooltip="Xóa" (click)="XoaBanAn(items.ma_ban)">
+                <!-- ACTION BUTTONS -->
+                <td class="px-4 py-4 text-center border">
+                  <div class="flex justify-center gap-2">
+
+                    <!-- Sửa -->
+                    <button mat-icon-button matTooltip="Sửa" (click)="SuaBanAn(items)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+
+                    <!-- Xóa -->
+                    <!-- <button mat-icon-button matTooltip="Xóa" (click)="XoaBanAn(items.ma_ban)">
                   <mat-icon>delete</mat-icon>
                 </button> -->
 
-              </div>
-            </td>
+                  </div>
+                </td>
 
-          </tr>
+              </tr>
 
-        </tbody>
+            </tbody>
 
-      </table>
+          </table>
+        </div>
+      </div>
+      <!-- ================= MOBILE ================= -->
+      <div class="md:hidden space-y-4">
+
+        <div *ngFor="let items of BanAn" class="bg-white rounded-xl shadow-md p-4">
+
+          <div class="flex gap-3 items-center">
+
+            <!-- IMAGE -->
+            <img *ngIf="items.anh_ban?.length > 0" [src]="items.anh_ban[0].url"
+              class="w-16 h-16 rounded-xl object-cover shadow" />
+
+            <div *ngIf="!items.anh_ban || items.anh_ban.length === 0" class="w-16 h-16 rounded-xl bg-gray-200
+                  flex items-center justify-center
+                  text-xs text-gray-500">
+              No Image
+            </div>
+
+            <!-- INFO -->
+            <div class="flex-1">
+              <h4 class="font-semibold text-gray-800">
+                {{ items.ten_ban }}
+              </h4>
+
+              <p class="text-sm text-gray-500">
+                Mã bàn: {{ items.ma_ban }} · {{ items.so_cho_ngoi }} chỗ
+              </p>
+
+              <span *ngIf="items.trang_thai == 1" class="inline-block mt-1 bg-green-600 text-white
+                     text-xs px-2 py-1 rounded-full">
+                Còn bàn
+              </span>
+
+              <span *ngIf="items.trang_thai == 0" class="inline-block mt-1 bg-red-600 text-white
+                     text-xs px-2 py-1 rounded-full">
+                Hết bàn
+              </span>
+            </div>
+
+            <!-- ACTION -->
+            <button mat-icon-button (click)="SuaBanAn(items)">
+              <mat-icon>edit</mat-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+      <!-- ================= END MOBILE ================= -->
     </div>
-
   </mat-card>
 
 </div>
