@@ -19,30 +19,26 @@ export class TokenInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     const token = this.auth.getToken();
+    let headers = req.headers
+      .set('ngrok-skip-browser-warning', '69420');
 
-    let modifiedReq = req;
-    if (token) {
-      modifiedReq = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': '69420'
-        }
-      });
-    }else{
-      modifiedReq = req.clone({
-        setHeaders: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': '69420'
-        }
-      });
+    // 👉 CHỈ set Content-Type khi KHÔNG phải FormData
+    if (!(req.body instanceof FormData)) {
+      headers = headers.set('Content-Type', 'application/json');
     }
+
+    // 👉 Gắn token nếu có
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    const modifiedReq = req.clone({ headers });
 
     return next.handle(modifiedReq).pipe(
       catchError((error: HttpErrorResponse) => {
 
         if (error.status === 401) {
-          this.auth.logout();  
+          this.auth.logout();
         }
 
         return throwError(() => error);

@@ -1,25 +1,31 @@
-<form #editForm="ngForm" class="relative p-6">
-  <div class="relative p-6 ">
-    <!-- Nút đóng -->
-    <button (click)="close()"
-      class="absolute right-3 top-3 text-white hover:text-red-500 transition-colors duration-200">
-      <mat-icon>close</mat-icon>
-    </button>
-
-    <!-- Tiêu đề -->
-    <h2 class="text-2xl font-semibold mb-8 text-center">
-      Chỉnh sửa thông tin nhân viên
+<div class="relative flex flex-col h-[90dvh] bg-white">
+  <div class="flex justify-between items-center p-3 border-b bg-white sticky top-0 z-10">
+    <h2 class="text-lg sm:text-xl font-semibold">
+      Chỉnh sửa thông tin người dùng
     </h2>
 
-    <div class="flex gap-8 flex-wrap lg:flex-nowrap">
+    <button mat-icon-button type="button" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <form #editForm="ngForm" class="flex flex-col h-full min-h-0">
+
+    <div class="flex-1 overflow-y-auto p-3 sm:p-6 min-h-0">
       <!-- Ảnh nhân viên + upload -->
-      <div class="flex flex-col items-center gap-3 w-full lg:w-1/3">
-        <div class="w-48 h-48 rounded-lg overflow-hidden shadow-md">
+      <div class="w-full lg:w-1/3 flex flex-col items-center
+            gap-4 sm:gap-5
+            mb-6 sm:mb-8 lg:mb-0">
+
+        <!-- Ảnh nhân viên -->
+        <div class="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48
+              rounded-xl overflow-hidden shadow-md bg-gray-100">
           <img [src]="previewImage || 'assets/user.jpg'" alt="Ảnh nhân viên" class="w-full h-full object-cover" />
         </div>
 
-        <button matButton="filled" (click)="fileInput.click()">
-          <mat-icon>upload</mat-icon> Thay ảnh
+        <!-- Nút thay ảnh -->
+        <button matButton="filled" class="w-full sm:w-auto px-4" (click)="fileInput.click()">
+          <mat-icon>upload</mat-icon>
+          <span class="ml-1">Thay ảnh</span>
         </button>
 
         <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*" />
@@ -104,7 +110,7 @@
 
         <div class="flex flex-col gap-1 ">
           <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Loại nhân viên</mat-label>
+            <mat-label>Loại người dùng</mat-label>
 
             <mat-select [(ngModel)]="NhanVien.loai_nguoi_dung" name="loai_nguoi_dung" required #loaiNV="ngModel">
               <mat-option value="admin">Admin</mat-option>
@@ -164,21 +170,21 @@
     </div>
 
     <!-- Nút hành động -->
-    <div class="flex justify-end gap-4 mt-8">
+    <div class="border-t bg-white p-3 flex gap-3 justify-end sticky bottom-0">
       <!-- Button Thêm mới -->
 
 
       <button matButton="filled" type="button" (click)="capNhatNhanVien()" [disabled]="editForm.invalid || loading"
-        class="flex items-center gap-2">
+        class="w-full sm:w-auto flex items-center gap-2">
         <mat-icon *ngIf="loading" class="animate-spin">refresh</mat-icon>
         <mat-icon *ngIf="!loading">check</mat-icon>
         {{ loading ? 'Đang cập nhật...' : 'Cập nhật' }}
       </button>
 
       <!-- Button Hủy -->
-      <button mat-raised-button (click)="close()">
+      <button mat-raised-button (click)="close()" class="w-full sm:w-auto">
         <mat-icon>close</mat-icon>Hủy
       </button>
     </div>
-  </div>
-</form>
+  </form>
+</div>

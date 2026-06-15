@@ -22,20 +22,23 @@
     </mat-form-field>
 
     <!-- Loại -->
-    <mat-form-field appearance="outline">
-      <mat-label>Loại giảm giá</mat-label>
-      <mat-select [(ngModel)]="giamGia.loai_giam_gia" (selectionChange)="onLoaiGiamGiaChange()">
-        <mat-option value="percent">Phần trăm (%)</mat-option>
-        <mat-option value="fixed">Tiền mặt (đ)</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div class="grid grid-cols-2 gap-3 col-span-full">
+      <mat-form-field appearance="outline">
+        <mat-label>Loại giảm giá</mat-label>
+        <mat-select [(ngModel)]="giamGia.loai_giam_gia" (selectionChange)="onLoaiGiamGiaChange()">
+          <mat-option value="percent">Phần trăm (%)</mat-option>
+          <mat-option value="fixed">Tiền mặt (đ)</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <!-- Giá trị giảm -->
-    <mat-form-field appearance="outline">
-      <mat-label>Giá trị giảm</mat-label>
-      <input matInput [value]="giaTriGiamDisplay" (input)="onGiaTriGiamInput($event.target.value)"
-        placeholder="VD: 10% hoặc 50.000đ">
-    </mat-form-field>
+      <!-- Giá trị giảm -->
+      <mat-form-field appearance="outline">
+        <mat-label>Giá trị giảm</mat-label>
+        <input matInput [value]="giaTriGiamDisplay" (input)="onGiaTriGiamInput($event.target.value)"
+          placeholder="VD: 10% hoặc 50.000đ">
+      </mat-form-field>
+    </div>
+
 
     <!-- Đơn tối thiểu -->
     <mat-form-field appearance="outline">
@@ -45,20 +48,23 @@
     </mat-form-field>
 
     <!-- Ngày bắt đầu -->
-    <mat-form-field appearance="outline">
-      <mat-label>Ngày bắt đầu</mat-label>
-      <input matInput [matDatepicker]="startPicker" [(ngModel)]="giamGia.ngay_bat_dau">
-      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-      <mat-datepicker #startPicker></mat-datepicker>
-    </mat-form-field>
+    <div class="grid grid-cols-2 gap-3 col-span-full">
+      <mat-form-field appearance="outline">
+        <mat-label>Ngày bắt đầu</mat-label>
+        <input matInput [matDatepicker]="startPicker" [(ngModel)]="giamGia.ngay_bat_dau">
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
 
-    <!-- Ngày kết thúc -->
-    <mat-form-field appearance="outline">
-      <mat-label>Ngày kết thúc</mat-label>
-      <input matInput [matDatepicker]="endPicker" [(ngModel)]="giamGia.ngay_ket_thuc">
-      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-      <mat-datepicker #endPicker></mat-datepicker>
-    </mat-form-field>
+      <!-- Ngày kết thúc -->
+      <mat-form-field appearance="outline">
+        <mat-label>Ngày kết thúc</mat-label>
+        <input matInput [matDatepicker]="endPicker" [(ngModel)]="giamGia.ngay_ket_thuc">
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
 
     <!-- Trạng thái -->
     <mat-form-field appearance="outline">

@@ -9,7 +9,7 @@ import { MATERIAL } from '../../../Shared/material';
 
 @Component({
   selector: 'app-user-frofile',
-  imports: [MATERIAL,ToastMessageComponent],
+  imports: [MATERIAL, ToastMessageComponent],
   templateUrl: './user_frofile.html',
   styleUrls: ['./user_frofile.scss']
 })
@@ -45,21 +45,21 @@ export class UserFrofileComponents implements OnInit {
   }
 
   load_list_user() {
-  this.QuanLyNhanVienService.LayTatCaNhanVien().subscribe({
-    next: (res) => {
-      if (Array.isArray(res)) {
-        // map để tạo trường mới anh_nhan_vien_url
-        this.NhanVien = res.map(u => ({
-          ...u,
-          anh_nguoi_dung_url: u.anh_nguoi_dung?.length ? u.anh_nguoi_dung[0].url : null
-        }));
+    this.QuanLyNhanVienService.LayTatCaNhanVien().subscribe({
+      next: (res) => {
+        if (Array.isArray(res)) {
+          // map để tạo trường mới anh_nhan_vien_url
+          this.NhanVien = res.map(u => ({
+            ...u,
+            anh_nguoi_dung_url: u.anh_nguoi_dung?.length ? u.anh_nguoi_dung[0].url : null
+          }));
+        }
+      },
+      error: (err) => {
+        console.error('🟥 Lỗi khi load nhân viên:', err);
       }
-    },
-    error: (err) => {
-      console.error('🟥 Lỗi khi load nhân viên:', err);
-    }
-  });
-}
+    });
+  }
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
@@ -70,7 +70,7 @@ export class UserFrofileComponents implements OnInit {
     }
   }
 
-  
+
 
   deleteUser(ma_nguoi_dung: number) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -91,12 +91,13 @@ export class UserFrofileComponents implements OnInit {
     });
   }
 
- 
+
 
   SuaNhanVien(ma_nguoi_dung: number) {
     const dialogRef = this.dialog.open(SuaNhanVien, {
       width: '900px',
-      maxWidth: '110vw',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
       data: {
         ma_nguoi_dung
       },
@@ -104,8 +105,8 @@ export class UserFrofileComponents implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-            this.showToast('Cập nhật nhân viên thành công', 'success');
-            this.load_list_user();
+        this.showToast('Cập nhật nhân viên thành công', 'success');
+        this.load_list_user();
         const payload = {
         };
       } else {
@@ -116,9 +117,11 @@ export class UserFrofileComponents implements OnInit {
 
   ThemNhanVien() {
     const dialogRef = this.dialog.open(ThemNhanVien, {
-      width: '900px',
-      maxWidth: '110vw',
-      panelClass: 'custom-dialog'
+      width: '900px',      // desktop
+      maxWidth: '95vw',    // mobile
+      maxHeight: '95vh',
+      panelClass: 'custom-dialog',
+      autoFocus: false
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
