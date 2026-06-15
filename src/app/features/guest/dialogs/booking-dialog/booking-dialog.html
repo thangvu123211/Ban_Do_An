@@ -1,4 +1,10 @@
-<div class="relative p-6 datban">
+<div class="
+    relative
+    p-4 md:p-6
+    datban
+    max-h-[90vh]
+    overflow-y-auto
+    ">
     <!-- Nút đóng -->
     <div class="flex justify-end">
         <button mat-icon-button (click)="close()" class="absolute right-2 hover:bg-yellow-900">
@@ -9,12 +15,22 @@
 
 
     <!-- Bố cục -->
-    <div class="flex gap-6 mt-6 ">
+    <div class="flex flex-col md:flex-row gap-4 md:gap-6 mt-4 md:mt-6">
         <!-- Ảnh bàn ăn -->
         <div>
             <div>
-                <img *ngIf="data.table?.anh_ban?.length" [src]="data.table.anh_ban[0].url"
-                    class="w-64 h-64 md:w-72 md:h-72 object-cover rounded-lg shadow-lg">
+                <img *ngIf="data.table?.anh_ban?.length" [src]="data.table.anh_ban[0].url" class="
+                w-full
+                max-w-[240px]
+                h-48
+                sm:h-56
+                md:w-72
+                md:h-72
+                object-cover
+                rounded-xl
+                shadow-lg
+                mx-auto
+            ">
             </div>
 
             <div class="flex justify-center pt-3 tooltipne">
@@ -25,7 +41,7 @@
             </div>
         </div>
         <!-- Nội dung -->
-        <div class="flex-1 ">
+        <div class="flex-1 min-w-0">
             <h2 class="text-2xl font-semibold mb-2">Xác nhận đặt bàn</h2>
             <p class="mb-4">
                 <strong>Bàn:</strong>
@@ -68,7 +84,15 @@
                     khách hàng đã đặt bàn</strong>
             </div>
             <!-- Nút -->
-            <div class="flex gap-2 mt-4 justify-end">
+            <div class="
+            flex gap-2 mt-4
+            justify-end
+            sticky bottom-0
+            bg-white
+            pt-3
+            pb-2
+            border-t
+            ">
                 <button matButton="filled" class="" (click)="confirm()">
                     <mat-icon>check</mat-icon>
                     Xác nhận</button>
