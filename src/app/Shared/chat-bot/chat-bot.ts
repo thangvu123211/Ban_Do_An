@@ -27,7 +27,7 @@ export class ChatBotComponent {
     {
       from: 'bot',
       type: 'text',
-      message: 'Nhà hàng xin chào 👋'
+      message: 'Xin chào! Rất vui được phục vụ bạn hôm nay. Bạn muốn khám phá thực đơn đặc sắc hay cần mình giúp gì ạ?'
     }
   ];
 

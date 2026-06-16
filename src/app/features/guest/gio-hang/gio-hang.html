@@ -1,4 +1,4 @@
-<div class="relative min-h-screen bg-slate-50/50 pb-12 pt-24 flex flex-col justify-between">
+<div class="relative min-h-[100dvh] bg-slate-50/50 pb-12 pt-16 md:pt-24 flex flex-col">
 
   <div *ngIf="!loaded" class="flex flex-col items-center justify-center flex-1 min-h-[60vh] gap-3">
     <div class="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
@@ -71,7 +71,7 @@
       </div>
 
       <div class="w-full max-w-3xl overflow-x-auto px-2 sm:px-0 flex justify-start sm:justify-center"
-          style="overflow-y: visible;">
+        style="overflow-y: visible;">
         <mat-horizontal-stepper [selectedIndex]="currentStep"
           class="custom-stepper readonly-stepper bg-transparent min-w-[360px] sm:w-full">
           <mat-step label="Giỏ hàng"></mat-step>
@@ -158,33 +158,36 @@
       </div>
     </div>
 
-    <div *ngIf="loaded && gioHang && gioHang.length > 0"
-      class="sticky bottom-0 w-full bg-white border border-slate-100 py-3 sm:py-4 px-3 sm:px-6 rounded-2xl shadow-[0_-12px_30px_rgba(0,0,0,0.03)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-4 z-40 backdrop-blur-md bg-white/95">
+    <div *ngIf="loaded && gioHang && gioHang.length > 0" class="sticky bottom-0 left-0 right-0 w-full z-40
+            bg-white/95 backdrop-blur-md
+            border-t border-slate-100
+            py-3 sm:py-4">
 
-      <!-- <div class="hidden sm:flex flex-col">
-        <span class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Tạm tính đơn hàng</span>
-        <span class="text-xl font-black text-emerald-600">
-          {{ (tongSauGiam || tongTien) | number }} đ
-        </span>
-      </div> -->
+      <!-- INNER CONTAINER -->
+      <div class="max-w-6xl mx-auto px-3 sm:px-6
+              flex flex-col sm:flex-row
+              items-stretch sm:items-center
+              justify-end gap-2 sm:gap-4">
 
-      <div class="flex items-center gap-3 w-full sm:w-auto ml-auto">
+        <div class="flex items-center gap-3 w-full sm:w-auto">
 
-        <button *ngIf="currentStep > 0 && currentStep < 4" (click)="prevStep()"
-          class="w-full sm:flex-none px-6 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl font-bold text-sm transition-all active:scale-[0.98]">
-          Quay lại
-        </button>
+          <button *ngIf="currentStep > 0 && currentStep < 4" (click)="prevStep()" class="w-full sm:w-auto px-6 py-3 border border-slate-200
+               hover:bg-slate-50 text-slate-600 rounded-xl font-bold text-sm">
+            Quay lại
+          </button>
 
-        <button *ngIf="currentStep < 3" (click)="nextStep()"
-          class="w-full sm:flex-none px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl font-bold text-sm shadow-md shadow-emerald-500/10 transition-all active:scale-[0.98]">
-          Tiếp tục hành trình
-        </button>
+          <button *ngIf="currentStep < 3" (click)="nextStep()" class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600
+               hover:from-emerald-600 hover:to-teal-700
+               text-white rounded-xl font-bold text-sm">
+            Tiếp tục hành trình
+          </button>
 
-        <button *ngIf="currentStep === 4" (click)="close()"
-          class="w-full sm:flex-none px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold text-sm transition-all active:scale-[0.98]">
-          Hoàn tất đóng lại
-        </button>
+          <button *ngIf="currentStep === 4" (click)="close()" class="w-full sm:w-auto px-6 py-3 bg-slate-800 hover:bg-slate-900
+               text-white rounded-xl font-bold text-sm">
+            Hoàn tất đóng lại
+          </button>
 
+        </div>
       </div>
     </div>
 
