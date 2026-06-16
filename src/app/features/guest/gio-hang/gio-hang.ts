@@ -1041,32 +1041,41 @@ export class GioHang implements OnInit, OnDestroy {
   }
 
   huyHoaDonDangThanhToan() {
-
     if (!this.maHoaDonDangThanhToan) return;
 
-    this.hoadonservice.huyThanhToan(this.maHoaDonDangThanhToan)
-      .subscribe({
-        next: () => {
-          this.showToast('Đã hủy hóa đơn', 'success');
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        message: 'Bạn có chắc chắn muốn hủy hóa đơn đang thanh toán không?'
+      }
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) return; // ❌ người dùng bấm Hủy
 
-          // ✅ reset toàn bộ state thanh toán
-          this.showQR = false;
-          this.qrUrl = '';
-          this.currentStep = 0;
-          this.maHoaDonDangThanhToan = null as any;
-          this.daThanhToan = false;
+      // ✅ người dùng xác nhận
+      this.hoadonservice.huyThanhToan(this.maHoaDonDangThanhToan)
+        .subscribe({
+          next: () => {
+            this.showToast('Đã hủy hóa đơn', 'success');
 
-          // ✅ clear localStorage
-          localStorage.removeItem('pending_hoa_don');
-          localStorage.removeItem('payment_state');
-          localStorage.removeItem('cart'); // nếu m lưu cart ở đây
+            // ✅ reset toàn bộ state thanh toán
+            this.showQR = false;
+            this.qrUrl = '';
+            this.currentStep = 0;
+            this.maHoaDonDangThanhToan = null as any;
+            this.daThanhToan = false;
 
-        },
-        error: (err) => {
-          this.showToast(err.error?.error || 'Không thể hủy hóa đơn', 'error');
-        }
-      });
+            // ✅ clear localStorage
+            localStorage.removeItem('pending_hoa_don');
+            localStorage.removeItem('payment_state');
+            localStorage.removeItem('cart');
+          },
+          error: (err) => {
+            this.showToast(err.error?.error || 'Không thể hủy hóa đơn', 'error');
+          }
+        });
+    });
   }
 
   handleLeaveCheckout() {
@@ -1136,6 +1145,8 @@ export class GioHang implements OnInit, OnDestroy {
     localStorage.removeItem('checkout_dang_thoat');
   }
   goToDonHang() {
-    this.router.navigate(['/user/don-hang']);
+    this.router.navigate(['/user/don-hang'], {
+      queryParams: { tab: 'CHUA_THANH_TOAN' }
+    });
   }
 }

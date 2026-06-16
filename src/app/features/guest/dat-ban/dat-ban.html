@@ -163,17 +163,8 @@
 
       <!-- BUTTON -->
       <div class="text-center mt-4">
-        <button matButton="filled" (click)="openQuickView()" [disabled]="
-            !isLoggedIn ||
-            !selectedTableId ||
-            !selectedDate ||
-            !selectedHour ||
-            dateCtrl.invalid ||
-            hourCtrl.invalid
-          ">
-
+        <button matButton="filled" (click)="openQuickView()">
           {{ isLoggedIn ? 'Đặt Bàn Ngay' : 'Đăng nhập để đặt bàn' }}
-
         </button>
       </div>
 

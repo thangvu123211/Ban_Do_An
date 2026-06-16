@@ -101,67 +101,81 @@ export class DatBan implements OnInit {
     this.selectedTableId = tableId;
   }
 
-  openQuickView() {
-    // ✅ check đăng nhập
-    if (!this.authService.isLoggedIn()) {
-      this.showToast('Vui lòng đăng nhập để đặt bàn!', 'warn');
-      this.router.navigate(['/login']);
-      return;
-    }
+openQuickView() {
 
-    if (!this.selectedTableId || !this.selectedDate || this.selectedHour === null) {
-      this.showToast('Vui lòng chọn bàn, ngày và giờ trước khi đặt bàn!', 'warn');
-      return;
-    }
-
-    const dialogRef = this.dialog.open(BookingDialog, {
-      width: '900px',          // desktop
-      maxWidth: '95vw',        // mobile không tràn
-      maxHeight: '95vh',       // không che nút
-      panelClass: 'custom-dialog',
-      autoFocus: false,
-
-      data: {
-        ngay: this.selectedDate,
-        gio: this.selectedHour,
-        table: this.BanAn.find(t => t.ma_ban === this.selectedTableId)
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (!result) {
-        this.showToast('Bạn đã hủy đặt bàn', 'warn');
-        return;
-      }
-
-      const user = this.authService.getUser();
-
-      const payload = {
-        ten_khach_hang: result.ten_khach_hang ?? user?.ho_ten,
-        email: user?.email,
-        sdt: result.sdt ?? user?.sdt,
-        ghi_chu: result.ghi_chu,
-        ma_ban_an: this.selectedTableId,
-        ngay: result.ngay,
-        gio: result.gio
-      };
-
-
-      this.QuanLyDatBanService.TaoDatBan(payload).subscribe({
-        next: () => {
-          this.showToast('Đặt bàn thành công!', 'success');
-          this.selectedTableId = null;
-          this.selectedDate = null;
-          this.selectedHour = null;
-          this.loadBanAn();
-        },
-        error: err => {
-          console.error(err);
-          this.showToast(err?.error?.error || 'Đặt bàn thất bại!', 'error');
-        }
-      });
-    });
+  // ❌ CHƯA ĐĂNG NHẬP
+  if (!this.authService.isLoggedIn()) {
+    this.showToast('Vui lòng đăng nhập để đặt bàn!', 'warn');
+    this.router.navigate(['/login']);
+    return;
   }
+
+  // ❌ CHƯA CHỌN BÀN
+  if (!this.selectedTableId) {
+    this.showToast('Vui lòng chọn bàn trước khi đặt!', 'warn');
+    return;
+  }
+
+  // ❌ CHƯA CHỌN NGÀY
+  if (!this.selectedDate) {
+    this.showToast('Vui lòng chọn ngày đặt bàn!', 'warn');
+    return;
+  }
+
+  // ❌ CHƯA CHỌN GIỜ (check NULL, không dùng !selectedHour)
+  if (this.selectedHour === null) {
+    this.showToast('Vui lòng chọn giờ đặt bàn!', 'warn');
+    return;
+  }
+
+
+  // ================== OK → MỞ DIALOG ==================
+  const dialogRef = this.dialog.open(BookingDialog, {
+    width: '900px',
+    maxWidth: '95vw',
+    maxHeight: '95vh',
+    panelClass: 'custom-dialog',
+    autoFocus: false,
+    data: {
+      ngay: this.selectedDate,
+      gio: this.selectedHour,
+      table: this.BanAn.find(t => t.ma_ban === this.selectedTableId)
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (!result) {
+      this.showToast('Bạn đã hủy đặt bàn', 'warn');
+      return;
+    }
+
+    const user = this.authService.getUser();
+
+    const payload = {
+      ten_khach_hang: result.ten_khach_hang ?? user?.ho_ten,
+      email: user?.email,
+      sdt: result.sdt ?? user?.sdt,
+      ghi_chu: result.ghi_chu,
+      ma_ban_an: this.selectedTableId,
+      ngay: result.ngay,
+      gio: result.gio
+    };
+
+    this.QuanLyDatBanService.TaoDatBan(payload).subscribe({
+      next: () => {
+        this.showToast('Đặt bàn thành công!', 'success');
+        this.selectedTableId = null;
+        this.selectedDate = null;
+        this.selectedHour = null;
+        this.loadBanAn();
+      },
+      error: err => {
+        console.error(err);
+        this.showToast(err?.error?.error || 'Đặt bàn thất bại!', 'error');
+      }
+    });
+  });
+}
 
 
 

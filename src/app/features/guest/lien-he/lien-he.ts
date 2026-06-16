@@ -1,15 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { LienHeService } from '../../../core/services/LienHe.service';
 import { MATERIAL } from '../../../Shared/material';
 import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-message/toast-message';
 import { NhaHangService } from '../../../core/services/NhaHang.service';
+import { NgForm } from '@angular/forms';
 @Component({
   selector: 'app-lien-he',
   imports: [MATERIAL , ToastMessageComponent],
   templateUrl: './lien-he.html',
   styleUrl: './lien-he.scss'
 })
+
 export class LienHe implements OnInit {
+
+  @ViewChild('lienHeForm') lienHeForm!: NgForm;
+  
   form = {
     ho_ten: '',
     email: '',
@@ -60,22 +65,34 @@ export class LienHe implements OnInit {
   }
 
   guiLienHe() {
-    this.lienHeService.GuiLienHe(this.form).subscribe({
-      next: (res) => {
-         this.showToast('Gửi liên hệ thành công !', 'success');
-        this.form = {
-          ho_ten: '',
-          email: '',
-          sdt: '',
-          tieu_de: '',
-          noi_dung: ''
-        };
-      },
-      error: (err) => {
-         this.showToast('Gửi liên hệ thất bại !', 'error');
-      }
+  // ❌ FORM KHÔNG HỢP LỆ
+  if (this.lienHeForm.invalid) {
+
+    // đánh dấu tất cả field là touched → hiện mat-error
+    Object.values(this.lienHeForm.controls).forEach(control => {
+      control.markAsTouched();
     });
+
+    this.showToast(
+      'Vui lòng điền đầy đủ và đúng thông tin liên hệ',
+      'error'
+    );
+    return;
   }
+
+  // ✅ FORM HỢP LỆ → GỌI API
+  this.lienHeService.GuiLienHe(this.form).subscribe({
+    next: () => {
+      this.showToast('Gửi liên hệ thành công!', 'success');
+
+      // reset form
+      this.lienHeForm.resetForm();
+    },
+    error: () => {
+      this.showToast('Gửi liên hệ thất bại!', 'error');
+    }
+  });
+}
 }
 
 
