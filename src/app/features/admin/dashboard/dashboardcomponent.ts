@@ -102,7 +102,7 @@ export type AreaBasicChartOptions = {
 @Component({
   selector: 'app-dashboardcomponent',
   standalone: true,
-  imports: [MATERIAL, NgApexchartsModule],
+  imports: [MATERIAL, NgApexchartsModule ],
   templateUrl: './dashboardcomponent.html',
   styleUrls: ['./dashboardcomponent.scss']
 })

@@ -17,5 +17,21 @@ export class UserService {
     );
   }
 
+  tongsohoadondathanhtoanvahuy(): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}/user/tong-hoa-don-da-thanh-toan-va-huy`
+    );
+  }
 
+  TongDonHangDaGiao(): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}/user/tong-hoa-don-da-giao`
+    );
+  }
+
+  tongTienTheoNgay(): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}/user/tong-tien-theo-ngay`
+    );
+  }
 }

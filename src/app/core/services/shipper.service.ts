@@ -41,5 +41,34 @@ export class shipperService {
         );
     }
 
+    TongSoTienDaGiaoTrongHomNay(): Observable<any> {
+        return this.http.get<any>(
+            `${environment.apiUrl}/ship/tong-tien-giao-hom-nay`
+        );
+    }
+
+    TongSoTienDaGiao(): Observable<any> {
+        return this.http.get<any>(
+            `${environment.apiUrl}/ship/tong-tien-giao`
+        );
+    }
+
+    TongSoHoadonDaGiao(): Observable<any> {
+        return this.http.get<any>(
+            `${environment.apiUrl}/ship/tong-don-hang-da-giao`
+        );
+    }
+
+    TongSoHoadonDaGiaoHomNay(): Observable<any> {
+        return this.http.get<any>(
+            `${environment.apiUrl}/ship/tong-don-hang-da-giao-ngay-hom-nay`
+        );
+    }
+
+    tongTienTheoNgaycuaship(): Observable<any> {
+        return this.http.get<any>(
+            `${environment.apiUrl}/ship/tong-tien-da-giao-theo-ngay`
+        );
+    }
 
 }
