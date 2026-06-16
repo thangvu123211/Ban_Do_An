@@ -125,5 +125,9 @@ export class AdminNavbar implements OnInit {
   checkScreen() {
     this.isMobile = window.innerWidth < 768;
   }
+  trangCaNhan()
+  {
+    this.router.navigate(['/admin/account_admin']);
+  }
 
 }

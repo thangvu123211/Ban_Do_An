@@ -154,49 +154,49 @@
 
         <!-- NÚT TRÁI -->
         <button mat-icon-button (click)="scrollLeft()" class="
-      bg-white text-gray-600 border border-gray-300
-      hover:bg-gray-100 hover:text-gray-900
-      rounded-full shrink-0 z-10 shadow
-      w-8 h-8 md:w-10 md:h-10
-    ">
+          bg-white text-gray-600 border border-gray-300
+          hover:bg-gray-100 hover:text-gray-900
+          rounded-full shrink-0 z-10 shadow
+          w-8 h-8 md:w-10 md:h-10
+        ">
           <mat-icon class="text-base md:text-xl">chevron_left</mat-icon>
         </button>
 
         <!-- KHUNG SCROLL -->
         <div class="flex-1 overflow-hidden">
           <div #scrollContainer class="
-        flex
-        gap-3 md:gap-8
-        overflow-x-auto
-        scroll-smooth
-        scrollbar-hide
-        py-1 md:py-2
-      ">
+            flex
+            gap-3 md:gap-8
+            overflow-x-auto
+            scroll-smooth
+            scrollbar-hide
+            py-1 md:py-2
+          ">
 
             <div *ngFor="let loai of loaimonan" class="flex-shrink-0 w-20 md:w-32 cursor-pointer"
               (click)="getMonAnTheoLoai(loai.ma_loai_mon_an, loai.ten_loai_mon_an)">
 
               <!-- ẢNH -->
               <div class="
-            w-20 h-20 md:w-32 md:h-32
-            mx-auto
-            rounded-full
-            overflow-hidden
-            border-2 md:border-4
-            transition
-          " [class.border-green-500]="selectedLoai === loai.ma_loai_mon_an"
+                w-20 h-20 md:w-32 md:h-32
+                mx-auto
+                rounded-full
+                overflow-hidden
+                border-2 md:border-4
+                transition
+              " [class.border-green-500]="selectedLoai === loai.ma_loai_mon_an"
                 [class.border-gray-300]="selectedLoai !== loai.ma_loai_mon_an">
                 <img [src]="loai.anh_loai_mon_an" class="w-full h-full object-cover" />
               </div>
 
               <!-- TÊN -->
               <p class="
-            mt-2 md:mt-3
-            text-xs md:text-sm
-            text-center
-            font-medium
-            transition
-          " [class.text-green-600]="selectedLoai === loai.ma_loai_mon_an"
+                mt-2 md:mt-3
+                text-xs md:text-sm
+                text-center
+                font-medium
+                transition
+              " [class.text-green-600]="selectedLoai === loai.ma_loai_mon_an"
                 [class.text-gray-700]="selectedLoai !== loai.ma_lo_mon_an">
                 {{ loai.ten_loai_mon_an }}
               </p>
@@ -207,11 +207,11 @@
 
         <!-- NÚT PHẢI -->
         <button mat-icon-button (click)="scrollRight()" class="
-      bg-white text-gray-600 border border-gray-300
-      hover:bg-gray-100 hover:text-gray-900
-      rounded-full shrink-0 z-10 shadow
-      w-8 h-8 md:w-10 md:h-10
-    ">
+            bg-white text-gray-600 border border-gray-300
+            hover:bg-gray-100 hover:text-gray-900
+            rounded-full shrink-0 z-10 shadow
+            w-8 h-8 md:w-10 md:h-10
+          ">
           <mat-icon class="text-base md:text-xl">chevron_right</mat-icon>
         </button>
 

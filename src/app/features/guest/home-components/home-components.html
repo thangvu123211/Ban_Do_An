@@ -174,22 +174,30 @@
         <div #homeScrollContainer class="flex gap-8 overflow-x-auto scroll-smooth scrollbar-hide py-2">
 
           <div *ngFor="let item of danhSachLoaiMonAn" (click)="goToMenuByLoai(item)"
-            class="flex-shrink-0 w-28 cursor-pointer group">
+            class="flex-shrink-0 w-20 md:w-32 cursor-pointer">
 
             <!-- IMAGE -->
-            <div class="w-28 h-28 mx-auto rounded-full overflow-hidden
-                        border-2 border-gray-200
-                        group-hover:border-green-500 transition">
+            <div class="w-20 h-20 md:w-32 md:h-32
+                mx-auto
+                rounded-full
+                overflow-hidden
+                border-2 md:border-4
+                transition">
 
               <img [src]="item.anh_loai_mon_an" class="w-full h-full object-cover" />
             </div>
 
             <!-- TEXT -->
-            <p class="mt-3 text-center font-medium transition">
+            <p class="mt-2 md:mt-3
+                text-xs md:text-sm
+                text-center
+                font-medium
+                transition">
               {{ item.ten_loai_mon_an }}
             </p>
 
           </div>
+          
 
         </div>
       </div>

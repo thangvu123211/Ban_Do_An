@@ -120,4 +120,9 @@ export class AuthService {
   verifyRegisterOtp(data: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}/auth/verify-register-otp`, data);
   }
+
+  clearToken() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refresh_token'); // nếu có
+  }
 }

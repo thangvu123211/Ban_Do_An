@@ -14,7 +14,7 @@ import { AuthService } from '../services/auth.service';
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
@@ -38,7 +38,8 @@ export class TokenInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
 
         if (error.status === 401) {
-          this.auth.logout();
+          this.auth.clearToken(); // ❌ chỉ xoá token
+          this.router.navigate(['/login']); // ❌ điều hướng
         }
 
         return throwError(() => error);
