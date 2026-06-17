@@ -51,20 +51,41 @@ export class AdminNavbar implements OnInit {
   }
   exportBaoCao(data: any) {
 
+    const fileName = this.formatFileName(data.type, data);
+
     if (data.type === 'ngay') {
       this.authAdmin.exportExportDoanhThuNgay(data.ngay)
-        .subscribe(res => this.downloadFile(res, 'doanh_thu_ngay.xlsx'));
+        .subscribe(res => this.downloadFile(res, fileName));
     }
 
-    // else if (data.type === 'thang') {
-    //   this.authAdmin.exportExportDoanhThuNgay(data.thang, data.nam)
-    //     .subscribe(res => this.downloadFile(res, 'doanh_thu_thang.xlsx'));
-    // }
+    else if (data.type === 'thang') {
+      this.authAdmin.exportExportDoanhThuThang(data.thang, data.nam)
+        .subscribe(res => this.downloadFile(res, fileName));
+    }
 
-    // else if (data.type === 'nam') {
-    //   this.authAdmin.exportExportDoanhThuNgay(data.nam)
-    //     .subscribe(res => this.downloadFile(res, 'doanh_thu_nam.xlsx'));
-    // }
+    else if (data.type === 'nam') {
+      this.authAdmin.exportDoanhThuNam(data.nam)
+        .subscribe(res => this.downloadFile(res, fileName));
+    }
+  }
+
+  formatFileName(type: string, data: any): string {
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    if (type === 'ngay') {
+      return `doanh_thu_ngay_${data.ngay}.xlsx`;
+    }
+
+    if (type === 'thang') {
+      return `doanh_thu_thang_${pad(data.thang)}-${data.nam}.xlsx`;
+    }
+
+    if (type === 'nam') {
+      return `doanh_thu_nam_${data.nam}.xlsx`;
+    }
+
+    return `bao_cao.xlsx`;
   }
 
   downloadFile(data: Blob, fileName: string) {
@@ -125,8 +146,7 @@ export class AdminNavbar implements OnInit {
   checkScreen() {
     this.isMobile = window.innerWidth < 768;
   }
-  trangCaNhan()
-  {
+  trangCaNhan() {
     this.router.navigate(['/admin/account_admin']);
   }
 

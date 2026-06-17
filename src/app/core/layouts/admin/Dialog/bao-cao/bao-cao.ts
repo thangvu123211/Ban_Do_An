@@ -13,14 +13,20 @@ export class BaoCao implements OnInit {
   data = {
     type: 'ngay',
     ngay: '',
-    thang: new Date().getMonth() + 1,
-    nam: new Date().getFullYear()
+    thang: '',
+    nam: ''
   };
 
   isOpenType: boolean = false;
   isOpenNgay: boolean = false;
 
   danhSachNgay: string[] = [];
+
+  danhSachThang: string[] = [];
+  danhSachNam: string[] = [];
+
+  isOpenThang = false;
+  isOpenNam = false;
 
   constructor(
     private dialogRef: MatDialogRef<BaoCao>,
@@ -36,5 +42,17 @@ export class BaoCao implements OnInit {
       .subscribe(res => {
         this.danhSachNgay = res.data || [];
       });
+    this.AdminService.LayDanhSachThangDoanhThu()
+      .subscribe(res => this.danhSachThang = res.data || []);
+
+    this.AdminService.LayDanhSachNamDoanhThu()
+      .subscribe(res => this.danhSachNam = res.data || []);
+  }
+  formatThang(value: string): string {
+    // value: "2026-06"
+    if (!value) return '';
+
+    const [year, month] = value.split('-');
+    return `${month}/${year}`; // 👉 Tháng trước năm sau
   }
 }

@@ -83,9 +83,44 @@ export class AdminService {
     });
   }
 
+  exportExportDoanhThuThang(thang: number, nam: number) {
+    const url = `${environment.apiUrl}/admin/export-doanh-thu-thang?thang=${thang}&nam=${nam}`;
+
+    return this.http.get(url, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
+
+  exportDoanhThuNam(nam?: number) {
+    let url = `${environment.apiUrl}/admin/export-doanh-thu-nam`;
+
+    if (nam) {
+      url += `?nam=${nam}`;
+    }
+
+    return this.http.get(url, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
+
+
   LayDanhSachNgayDoanhThu() {
     return this.http.get<any>(
       `${environment.apiUrl}/admin/danh-sach-doanh-thu-ngay`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+  LayDanhSachThangDoanhThu() {
+    return this.http.get<any>(
+      `${environment.apiUrl}/admin/danh-sach-doanh-thu-thang`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+  LayDanhSachNamDoanhThu() {
+    return this.http.get<any>(
+      `${environment.apiUrl}/admin/danh-sach-doanh-thu-nam`,
       { headers: this.getAuthHeaders() }
     );
   }
