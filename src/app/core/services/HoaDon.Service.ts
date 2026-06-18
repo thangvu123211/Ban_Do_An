@@ -126,4 +126,13 @@ export class HoaDonService {
         map(res => res.data) // 🔥 LẤY ĐÚNG data
       );
   }
+
+  downloadHoaDonPDF(mahd: number) {
+  return this.http.get(
+    `${environment.apiUrl}/hoa-don/xuat-hoa-don/${mahd}/pdf`,
+    {
+      responseType: 'blob', // QUAN TRỌNG
+    }
+  );
+}
 }

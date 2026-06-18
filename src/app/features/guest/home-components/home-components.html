@@ -219,27 +219,44 @@
   <div class="max-w-7xl mx-auto px-4 md:px-6">
 
     <!-- HEADER (STYLE GIỐNG VOUCHER) -->
-    <div class="flex items-center justify-between mb-10">
-      <!-- LEFT -->
-      <div>
-        <h2 class="text-2xl font-semibold text-gray-900">
-          Món ăn nổi bật
-        </h2>
-        <p class="text-sm text-gray-500 mt-2">
-          Khám phá các món được yêu thích nhất trong thực đơn
-        </p>
+    <div class="mb-10">
+
+      <!-- HEADER -->
+      <div class="flex items-start sm:items-center justify-between gap-4">
+        <!-- LEFT -->
+        <div>
+          <h2 class="text-2xl font-semibold text-gray-900">
+            Món ăn nổi bật
+          </h2>
+          <p class="text-sm text-gray-500 mt-2">
+            Khám phá các món được yêu thích nhất trong thực đơn
+          </p>
+        </div>
+
+        <!-- DESKTOP BUTTON -->
+        <button routerLink="/thucdon" class="hidden sm:flex items-center gap-3 px-7 py-3 rounded-full 
+             bg-green-600 text-white font-medium tracking-wide
+             shadow-md shadow-green-600/20 
+             transition-all duration-300 ease-in-out
+             hover:bg-green-700 hover:shadow-lg hover:shadow-green-700/30 hover:-translate-y-0.5
+             group">
+          <span>Xem thêm</span>
+          <mat-icon class="transition-transform duration-300 group-hover:translate-x-1">
+            arrow_forward
+          </mat-icon>
+        </button>
       </div>
 
-      <!-- RIGHT -->
-      <button routerLink="/thucdon" class="hidden sm:flex items-center gap-3 px-7 py-3 rounded-full 
-               bg-green-600 text-white font-medium tracking-wide
-               shadow-md shadow-green-600/20 
-               transition-all duration-300 ease-in-out
-               hover:bg-green-700 hover:shadow-lg hover:shadow-green-700/30 hover:-translate-y-0.5
-               group">
-        <span>Xem thêm</span>
-        <mat-icon class="transition-transform duration-300 group-hover:translate-x-1">arrow_forward</mat-icon>
+      <!-- MOBILE BUTTON -->
+      <button routerLink="/thucdon" class="sm:hidden mt-4 w-full
+           flex items-center justify-center gap-2
+           px-5 py-3 rounded-xl
+           bg-green-600 text-white font-semibold text-sm
+           shadow-sm hover:bg-green-700 transition">
+        <span>Xem thêm thực đơn</span>
+        <mat-icon class="text-base">arrow_forward</mat-icon>
       </button>
+
     </div>
 
     <!-- GRID -->

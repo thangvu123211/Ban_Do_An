@@ -184,10 +184,14 @@
                                 </div>
                             </div>
                         </div>
-                        <span
-                            class="text-[11px] bg-gray-900 text-white px-3 py-1.5 rounded-full font-semibold tracking-wider uppercase shadow-sm">
-                            Admin Control
-                        </span>
+                        <div class="flex gap-2 items-center">
+
+                            <!-- NÚT PDF -->
+                            <button *ngIf="hoaDon.trang_thai_thanh_toan === 'da_thanh_toan'" (click)="downloadPDF()"
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl shadow-sm">
+                                in báo cáo PDF
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Grid Content -->
@@ -431,9 +435,12 @@
                     </div>
                 </div>
 
+
+
             </div>
 
 
         </div>
+
 
         <app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

@@ -172,6 +172,31 @@ export class ThongTinHoaDon implements OnInit {
   }
 
 
+  downloadPDF() {
+    this.isLoading = true;
+
+    this.hoaDonService.downloadHoaDonPDF(this.hoaDon.ma_hd)
+      .subscribe({
+        next: (res: Blob) => {
+          this.isLoading = false;
+
+          const blob = new Blob([res], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(blob);
+
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `hoa_don_${this.hoaDon.ma_hd}.pdf`;
+          a.click();
+
+          window.URL.revokeObjectURL(url);
+        },
+        error: () => {
+          this.isLoading = false;
+          this.showToast('Xuất PDF thất bại', 'error');
+        }
+      });
+  }
+
   isHuy(): boolean {
     return this.hoaDon.trang_thai === 'da_huy';
   }
