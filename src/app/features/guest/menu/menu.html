@@ -336,9 +336,8 @@
 
       <div *ngFor="let mon of pagedMonAn">
         <mat-card class="h-full flex flex-col rounded-2xl overflow-hidden
-         border border-gray-100 bg-white
-         shadow-sm hover:shadow-xl transition duration-300
-         pb-3 sm:pb-0">
+             border border-gray-100 bg-white
+             shadow-sm hover:shadow-xl transition duration-300">
 
           <!-- IMAGE -->
           <div class="relative w-full aspect-[1/1] sm:aspect-[4/3] bg-gray-100 overflow-hidden">
@@ -346,7 +345,7 @@
               class="w-full h-full object-cover hover:scale-105 transition duration-300" />
 
             <button type="button" (click)="toggleYeuThich(mon)" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 shadow
-                       flex items-center justify-center hover:scale-110 transition">
+                 flex items-center justify-center hover:scale-110 transition">
               <span class="text-lg" [class.text-red-500]="isFavorite(mon.ma_mon_an)"
                 [class.text-gray-400]="!isFavorite(mon.ma_mon_an)">
                 {{ isFavorite(mon.ma_mon_an) ? '❤️' : '🤍' }}
@@ -355,10 +354,11 @@
           </div>
 
           <!-- CONTENT -->
-          <mat-card-content class="p-4 flex flex-col flex-1">
+          <mat-card-content class="p-4 pt-5 flex flex-col flex-1">
 
-            <div class="flex items-center justify-between gap-2 mt-2">
-              <h3 class="font-semibold text-lg text-gray-900">
+            <!-- TITLE -->
+            <div class="flex items-start justify-between gap-2">
+              <h3 class="font-semibold text-base sm:text-lg text-gray-900 line-clamp-1 mt-1.5">
                 {{ mon.ten_mon_an }}
               </h3>
 
@@ -369,48 +369,54 @@
               </button>
             </div>
 
-            <p class="text-sm text-gray-500 mt-3 line-clamp-2">
+            <!-- DESCRIPTION (CỐ ĐỊNH CHIỀU CAO) -->
+            <p class="text-sm text-gray-500 mt-2 line-clamp-2 min-h-[2.75rem]">
               {{ mon.mo_ta || 'Món ăn được chế biến từ nguyên liệu tươi ngon.' }}
             </p>
 
-            <div class="pt-4 sm:mt-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <!-- FOOTER – LUÔN NẰM ĐÁY -->
+            <div class="mt-auto pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
+              <!-- PRICE + RATING -->
               <div>
-                <div class="text-green-600 font-bold text-xl">
+                <div class="text-green-600 font-bold text-lg sm:text-xl">
                   {{ mon.gia_tien | number }} đ
                 </div>
-                <div class="flex items-center gap-1 text-yellow-500 mt-1">
 
+                <div class="flex items-center gap-1 text-yellow-500 mt-1">
                   <ng-container *ngFor="let i of [1,2,3,4,5]">
-                    <mat-icon class="text-lg">
+                    <mat-icon class="text-base">
                       {{ i <= (ratingsMap[mon.ma_mon_an]?.avg_sao || 0) ? 'star' : 'star_border' }} </mat-icon>
                   </ng-container>
 
-                  <span class="text-gray-600 text-xs ml-1 mt-2">
+                  <span class="text-gray-600 text-xs ml-1">
                     ({{ ratingsMap[mon.ma_mon_an]?.avg_sao || 0 | number:'1.1-1' }})
                   </span>
-
                 </div>
               </div>
 
-              <button (click)="addToGioHang(mon)" class="w-full sm:w-auto
-              h-9 sm:h-10
-              px-3 sm:px-4
+              <!-- BUTTON -->
+              <button (click)="addToGioHang(mon)" matTooltip="Thêm vào giỏ hàng" class="
+              w-full sm:w-auto
+              h-10
+              px-4
               rounded-xl
               bg-emerald-500 hover:bg-emerald-600
-              text-white 
-              flex items-center justify-center gap-1.5
-              font-medium text-xs sm:text-sm
-              shadow-sm hover:shadow 
+              text-white
+              flex items-center justify-center
+              font-medium text-sm
+              shadow-sm hover:shadow
               active:scale-95
-              transition duration-200" matTooltip="Thêm vào giỏ hàng">
-                <span>Thêm</span>
+              transition duration-200">
+                Thêm
               </button>
+
             </div>
 
           </mat-card-content>
         </mat-card>
-
       </div>
+
     </section>
 
   </div>

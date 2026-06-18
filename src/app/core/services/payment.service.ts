@@ -29,4 +29,5 @@ export class PaymentService {
       { responseType: 'text' }   // 👈 QUAN TRỌNG
     );
   }
+  
 }

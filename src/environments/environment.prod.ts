@@ -12,6 +12,12 @@ export const environment = {
     qrBank: 'MBBank',         // 👈 ví dụ: MBBank / Vietcombank
     qrName: 'Vũ Việt Thắng'   // 👈 tên chủ TK
   },
+  // payment: {
+  //   qrBaseUrl: 'https://qr.sepay.vn/img',
+  //   qrAcc: '0000000001',     // 👈 số tài khoản bạn
+  //   qrBank: 'VPBank',         // 👈 ví dụ: MBBank / Vietcombank
+  //   qrName: 'Vũ Việt Thắng'   // 👈 tên chủ TK
+  // },
 
 };
 
