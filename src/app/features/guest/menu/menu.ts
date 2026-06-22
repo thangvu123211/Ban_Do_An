@@ -319,23 +319,27 @@ export class Menu implements OnInit {
       const local = this.yeuThichService.getLocal();
       this.danhSach = local;
 
-      // 🔥 QUAN TRỌNG: set lại favoriteIds
-      this.favoriteIds = new Set(local.map(x => x.ma_mon_an));
+      // 🔥 set favoriteIds cho icon tim
+      this.favoriteIds = new Set(
+        local.map(x => Number(x.ma_mon_an))
+      );
 
       return;
     }
 
-    // 🔥 LOGIN → DB
+    // ✅ ĐÃ LOGIN → DB
     this.yeuThichService.getByUser(userId).subscribe((res: any[]) => {
 
-      this.danhSach = res.map(x => ({
-        ma_mon_an: x.mon_an?.ma_mon_an,
-        ten_mon_an: x.mon_an?.ten_mon_an,
-        gia_tien: x.mon_an?.gia_tien,
-        anh_mon_an: x.mon_an?.anh_mon_an
-      }));
+      this.danhSach = res
+        .filter(x => x.mon_an)
+        .map(x => ({
+          ma_mon_an: x.mon_an.ma_mon_an,
+          ten_mon_an: x.mon_an.ten_mon_an,
+          gia_tien: x.mon_an.gia_tien,
+          anh_mon_an: x.mon_an.anh_mon_an
+        }));
 
-      // 🔥 fix luôn case undefined + đồng bộ kiểu number
+      // 🔥 đồng bộ favoriteIds cho menu
       this.favoriteIds = new Set(
         res.map(x => Number(x.mon_an?.ma_mon_an))
       );
@@ -368,74 +372,74 @@ export class Menu implements OnInit {
   }
 
   toggleYeuThich(mon: any) {
-  const token = localStorage.getItem('token');
-  const maMonAn = Number(mon.ma_mon_an);
-  const tenMon = mon.ten_mon_an || 'món ăn';
+    const token = localStorage.getItem('token');
+    const maMonAn = Number(mon.ma_mon_an);
+    const tenMon = mon.ten_mon_an || 'món ăn';
 
-  const isFav = this.favoriteIds.has(maMonAn);
+    const isFav = this.favoriteIds.has(maMonAn);
 
-  // ================= CHƯA LOGIN → LOCAL =================
-  if (!token) {
-    if (isFav) {
-      this.favoriteIds.delete(maMonAn);
-      this.yeuThichService.removeLocal(maMonAn);
-      this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
-    } else {
-      this.favoriteIds.add(maMonAn);
-      this.yeuThichService.addLocal(mon);
-      this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
-    }
-
-    // 🔥 badge update NGAY
-    this.yeuThichService.setCount(this.favoriteIds.size);
-    return;
-  }
-
-  // ================= LOGIN =================
-  if (this._loadingFav) return;
-  this._loadingFav = true;
-
-  // 🔥🔥🔥 UPDATE UI + BADGE NGAY
-  if (isFav) {
-    this.favoriteIds.delete(maMonAn);
-    this.yeuThichService.setCount(this.favoriteIds.size);
-  } else {
-    this.favoriteIds.add(maMonAn);
-    this.yeuThichService.setCount(this.favoriteIds.size);
-  }
-
-  const req$ = isFav
-    ? this.yeuThichService.removeDB(maMonAn)
-    : this.yeuThichService.addDB(maMonAn);
-
-  req$.subscribe({
-    next: () => {
-      this._loadingFav = false;
-      this.showToast(
-        isFav
-          ? `Đã bỏ yêu thích ${tenMon}`
-          : `Đã thêm ${tenMon} vào yêu thích`,
-        isFav ? 'warn' : 'success'
-      );
-    },
-    error: () => {
-      // 🔥 ROLLBACK nếu API fail
+    // ================= CHƯA LOGIN → LOCAL =================
+    if (!token) {
       if (isFav) {
-        this.favoriteIds.add(maMonAn);
-      } else {
         this.favoriteIds.delete(maMonAn);
+        this.yeuThichService.removeLocal(maMonAn);
+        this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
+      } else {
+        this.favoriteIds.add(maMonAn);
+        this.yeuThichService.addLocal(mon);
+        this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
       }
 
+      // 🔥 badge update NGAY
       this.yeuThichService.setCount(this.favoriteIds.size);
-      this._loadingFav = false;
-
-      this.showToast(
-        `Không thể ${isFav ? 'bỏ' : 'thêm'} yêu thích ${tenMon}`,
-        'error'
-      );
+      return;
     }
-  });
-}
+
+    // ================= LOGIN =================
+    if (this._loadingFav) return;
+    this._loadingFav = true;
+
+    // 🔥🔥🔥 UPDATE UI + BADGE NGAY
+    if (isFav) {
+      this.favoriteIds.delete(maMonAn);
+      this.yeuThichService.setCount(this.favoriteIds.size);
+    } else {
+      this.favoriteIds.add(maMonAn);
+      this.yeuThichService.setCount(this.favoriteIds.size);
+    }
+
+    const req$ = isFav
+      ? this.yeuThichService.removeDB(maMonAn)
+      : this.yeuThichService.addDB(maMonAn);
+
+    req$.subscribe({
+      next: () => {
+        this._loadingFav = false;
+        this.showToast(
+          isFav
+            ? `Đã bỏ yêu thích ${tenMon}`
+            : `Đã thêm ${tenMon} vào yêu thích`,
+          isFav ? 'warn' : 'success'
+        );
+      },
+      error: () => {
+        // 🔥 ROLLBACK nếu API fail
+        if (isFav) {
+          this.favoriteIds.add(maMonAn);
+        } else {
+          this.favoriteIds.delete(maMonAn);
+        }
+
+        this.yeuThichService.setCount(this.favoriteIds.size);
+        this._loadingFav = false;
+
+        this.showToast(
+          `Không thể ${isFav ? 'bỏ' : 'thêm'} yêu thích ${tenMon}`,
+          'error'
+        );
+      }
+    });
+  }
 
   ngOnInit() {
     this.getAllLoaiMonAn();
