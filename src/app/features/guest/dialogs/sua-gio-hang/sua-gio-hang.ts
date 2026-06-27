@@ -97,13 +97,11 @@ export class SuaGioHang implements OnInit {
   toggleOption(nhom: any, opt: any) {
 
     if (!nhom.chon_nhieu) {
-
-      // 🔥 XOÁ HẾT OPTION CŨ CÙNG NHÓM (KỂ CẢ OPTION BỊ THIẾU ma_nhom_option)
+      // RADIO
       this.selectedOptions = this.selectedOptions.filter(
-        o => o.ma_nhom_option && o.ma_nhom_option !== nhom.ma_nhom_option
+        o => o.ma_nhom_option !== nhom.ma_nhom_option
       );
 
-      // ✅ GHI ĐÈ OPTION MỚI
       this.selectedOptions.push({
         ma_option_item: opt.ma_option_item,
         gia_them: opt.gia_them || 0,
@@ -112,8 +110,7 @@ export class SuaGioHang implements OnInit {
       });
 
     } else {
-
-      // CHỌN NHIỀU → GIỮ NGUYÊN
+      // CHECKBOX
       const exists = this.selectedOptions.some(
         o => o.ma_option_item === opt.ma_option_item
       );

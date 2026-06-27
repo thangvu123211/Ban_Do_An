@@ -36,14 +36,7 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Tên món ăn</mat-label>
 
-        <input
-          matInput
-          [(ngModel)]="MonAn.ten_mon_an"
-          name="ten_mon_an"
-          required
-          minlength="2"
-          #tenMon="ngModel"
-        />
+        <input matInput [(ngModel)]="MonAn.ten_mon_an" name="ten_mon_an" required minlength="2" #tenMon="ngModel" />
 
         <mat-error *ngIf="tenMon.touched && tenMon.errors?.['required']">
           Tên món không được để trống
@@ -58,14 +51,8 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Loại món ăn</mat-label>
 
-        <mat-select
-          [(ngModel)]="MonAn.ma_loai_mon_an"
-          name="ma_loai_mon_an"
-          required
-          #loaiMon="ngModel"
-        >
-          <mat-option *ngFor="let item of danhSachLoaiMonAn"
-                      [value]="item.ma_loai_mon_an">
+        <mat-select [(ngModel)]="MonAn.ma_loai_mon_an" name="ma_loai_mon_an" required #loaiMon="ngModel">
+          <mat-option *ngFor="let item of danhSachLoaiMonAn" [value]="item.ma_loai_mon_an">
             {{ item.ten_loai_mon_an }}
           </mat-option>
         </mat-select>
@@ -79,12 +66,7 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Trạng thái</mat-label>
 
-        <mat-select
-          [(ngModel)]="MonAn.trang_thai"
-          name="trang_thai"
-          required
-          #trangThai="ngModel"
-        >
+        <mat-select [(ngModel)]="MonAn.trang_thai" name="trang_thai" required #trangThai="ngModel">
           <mat-option [value]="0">Ngừng bán</mat-option>
           <mat-option [value]="1">Còn bán</mat-option>
         </mat-select>
@@ -98,14 +80,7 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Mô tả</mat-label>
 
-        <input
-          matInput
-          [(ngModel)]="MonAn.mo_ta"
-          name="mo_ta"
-          required
-          minlength="5"
-          #moTa="ngModel"
-        />
+        <input matInput [(ngModel)]="MonAn.mo_ta" name="mo_ta" required minlength="5" #moTa="ngModel" />
 
         <mat-error *ngIf="moTa.touched && moTa.errors?.['required']">
           Vui lòng nhập mô tả
@@ -120,15 +95,8 @@
       <mat-form-field appearance="outline" class="w-full col-span-2">
         <mat-label>Giá tiền</mat-label>
 
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="MonAn.gia_tien"
-          name="gia_tien"
-          required
-          min="1"
-          #giaTien="ngModel"
-        />
+        <input matInput type="number" [(ngModel)]="MonAn.gia_tien" name="gia_tien" required min="1"
+          #giaTien="ngModel" />
 
         <mat-error *ngIf="giaTien.touched && giaTien.errors?.['required']">
           Vui lòng nhập giá tiền
@@ -136,6 +104,25 @@
 
         <mat-error *ngIf="giaTien.touched && giaTien.errors?.['min']">
           Giá tiền phải lớn hơn 0
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full col-span-2">
+        <mat-label>Giảm giá</mat-label>
+
+        <input matInput type="number" [(ngModel)]="MonAn.gia_giam" name="gia_giam" required min="0"
+          [max]="MonAn.gia_tien" #giamGia="ngModel" />
+
+        <mat-error *ngIf="giamGia.touched && giamGia.errors?.['required']">
+          Vui lòng nhập giá tiền giảm
+        </mat-error>
+
+        <mat-error *ngIf="giamGia.touched && giamGia.errors?.['min']">
+          Giá giảm phải ≥ 0
+        </mat-error>
+
+        <mat-error *ngIf="giamGia.touched && giamGia.errors?.['max']">
+          Giá giảm không được lớn hơn giá tiền
         </mat-error>
       </mat-form-field>
 
@@ -147,14 +134,14 @@
 
 
 
-    <button matButton="filled" type="button" (click)="capNhat()"  [disabled]="editMonForm.invalid || isLoading">
+    <button matButton="filled" type="button" (click)="capNhat()" [disabled]="editMonForm.invalid || isLoading">
 
-        <mat-icon *ngIf="!isLoading">check</mat-icon>
-        <mat-icon *ngIf="isLoading" class="animate-spin">refresh</mat-icon>
+      <mat-icon *ngIf="!isLoading">check</mat-icon>
+      <mat-icon *ngIf="isLoading" class="animate-spin">refresh</mat-icon>
 
-        {{ isLoading ? 'Đang cập nhật món ăn...' : 'Cập nhật món ăn' }}
+      {{ isLoading ? 'Đang cập nhật món ăn...' : 'Cập nhật món ăn' }}
 
-      </button>
+    </button>
 
     <button mat-raised-button type="button" (click)="close()">
       <mat-icon>close</mat-icon>

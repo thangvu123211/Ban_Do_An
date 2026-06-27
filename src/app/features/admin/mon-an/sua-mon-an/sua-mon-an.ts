@@ -61,7 +61,8 @@ export class SuaMonAn implements OnInit {
       gia_tien: this.MonAn.gia_tien,
       trang_thai: this.MonAn.trang_thai,
       ma_loai_mon_an: this.MonAn.ma_loai_mon_an,
-      mo_ta: this.MonAn.mo_ta
+      mo_ta: this.MonAn.mo_ta,
+      gia_giam: this.MonAn.gia_giam,
     };
 
     this.QuanLyMonAn.CapNhatMonAn(

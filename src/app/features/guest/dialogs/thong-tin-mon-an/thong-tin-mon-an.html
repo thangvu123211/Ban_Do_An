@@ -58,13 +58,33 @@
             </div>
 
             <div class="flex justify-between items-center bg-green-50 p-4 rounded-2xl border">
+                <span class="text-gray-600 font-medium">Giá món</span>
 
-                <span class="text-gray-600">Giá món</span>
+                <div class="flex flex-col items-end gap-1.5">
 
-                <span class="text-2xl font-bold text-green-600">
-                    {{ data.gia_tien | number }} đ
-                </span>
+                    <span *ngIf="data.gia_giam > 0" class="text-gray-400 text-sm line-through">
+                        {{ data.gia_tien | number }} đ
+                    </span>
 
+                    <span *ngIf="data.gia_giam > 0" class="
+                        inline-flex items-center justify-center
+                        text-[11px] font-bold
+                        px-2 py-1
+                        min-w-[50px]
+                        rounded-md
+                        bg-red-50 text-red-600
+                        border border-red-200
+                        h-5
+                        leading-none
+                    ">
+                        -{{ data.gia_giam | number }}đ
+                    </span>
+
+                    <span class="text-2xl font-bold text-green-600">
+                        {{ data.gia_ban | number }} đ
+                    </span>
+
+                </div>
             </div>
 
         </div>

@@ -19,9 +19,10 @@ export class ThemMonAn implements OnInit {
     gia_tien: 0,
     trang_thai: '',
     mo_ta: '',
-  
+    gia_giam: 0,
   }
   giaTienDisplay: string = '';
+  giaTienGiamDisplay: string = '';
 
   loading = false;
   danhSachLoaiMonAn: any[] = [];
@@ -46,6 +47,7 @@ export class ThemMonAn implements OnInit {
     formData.append('gia_tien', String(this.MonAn.gia_tien));
     formData.append('trang_thai', String(this.MonAn.trang_thai));
     formData.append('mo_ta', String(this.MonAn.mo_ta));
+    formData.append('gia_giam', String(this.MonAn.gia_giam));
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
@@ -84,15 +86,25 @@ export class ThemMonAn implements OnInit {
     this.dialogRef.close(false);
   }
   onGiaTienInput(event: any) {
-  const value = event.target.value;
+    const value = event.target.value;
 
-  // convert raw number
-  const raw = this.money.rawNumber(value);
-  this.MonAn.gia_tien = raw;
+    // convert raw number
+    const raw = this.money.rawNumber(value);
+    this.MonAn.gia_tien = raw;
 
-  // format lại
-  this.giaTienDisplay = this.money.formatVND(raw);
-}
+    // format lại
+    this.giaTienDisplay = this.money.formatVND(raw);
+  }
+  onGiaTienGiamInput(event: any) {
+    const value = event.target.value;
+
+    // convert raw number
+    const raw = this.money.rawNumber(value);
+    this.MonAn.gia_giam = raw;
+
+    // format lại
+    this.giaTienGiamDisplay = this.money.formatVND(raw);
+  }
 
   ngOnInit(): void {
     this.QuanLyLoaiMonAn.LayTatCaLoaiMonAn().subscribe((res: any) => {

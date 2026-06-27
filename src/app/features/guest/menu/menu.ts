@@ -350,6 +350,8 @@ export class Menu implements OnInit {
       gia_tien: mon.gia_tien,
       mo_ta: mon.mo_ta ?? '',
       anh_mon_an: mon.anh_mon_an,
+      gia_giam: mon.gia_giam,
+      gia_ban: mon.gia_ban,
       openTab
     };
 

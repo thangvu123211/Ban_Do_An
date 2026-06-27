@@ -37,7 +37,7 @@ export class ThemGioHangDialog {
       });
     });
 
-    const giaMon = this.mon?.gia_tien || 0;
+    const giaMon = this.mon?.gia_ban || 0;
 
     return (giaMon + optionTotal) * this.soLuong;
   }
@@ -69,6 +69,8 @@ export class ThemGioHangDialog {
         ma_mon_an: this.mon.ma_mon_an,
         ten_mon_an: this.mon.ten_mon_an,
         gia_tien: this.mon.gia_tien,
+        gia_giam:this.mon.gia_giam,
+        gia_ban:this.mon.gia_ban,
         anh_mon_an: this.mon.anh_mon_an,
       },
       soLuong: this.soLuong,

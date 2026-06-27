@@ -103,45 +103,47 @@ export class ThongTinMonAn implements OnInit {
   }
 
   // ================= GIỎ HÀNG =================
-  addToGioHang(mon: any): void {
+  // addToGioHang(mon: any): void {
 
-    const token = localStorage.getItem('token');
-    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+  //   const token = localStorage.getItem('token');
+  //   const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-    const item = {
-      ma_mon_an: mon.ma_mon_an,
-      ten_mon_an: mon.ten_mon_an,
-      gia_tien: mon.gia_tien,
-      anh_mon_an: mon.anh_mon_an
-    };
+  //   const item = {
+  //     ma_mon_an: mon.ma_mon_an,
+  //     ten_mon_an: mon.ten_mon_an,
+  //     gia_tien: mon.gia_tien,
+  //     anh_mon_an: mon.anh_mon_an,
+  //     gia_giam: mon.gia_giam,
+  //     gia_ban: mon.gia_ban,
+  //   };
 
-    // =========================
-    // ❌ GUEST → LOCAL
-    // =========================
-    if (!token) {
+  //   // =========================
+  //   // ❌ GUEST → LOCAL
+  //   // =========================
+  //   if (!token) {
 
-      this.cartService.addLocal(item);
+  //     this.cartService.addLocal(item);
 
-      this.dialogRef.close({
-        success: true,
-        message: `Đã thêm ${mon.ten_mon_an} vào giỏ hàng`
-      });
+  //     this.dialogRef.close({
+  //       success: true,
+  //       message: `Đã thêm ${mon.ten_mon_an} vào giỏ hàng`
+  //     });
 
-      return;
-    }
+  //     return;
+  //   }
 
-    // =========================
-    // 🔥 LOGIN → DB
-    // =========================
-    this.cartService.addDB({
-      ma_mon_an: mon.ma_mon_an,
-      so_luong: 1,
-      options: []   // không có option thì để mảng rỗng
-    }).subscribe(() => {
-      this.cartService.loadCountFromDB(userId);
-      this.showToast('Đã thêm vào giỏ hàng', 'success');
-    });
-  }
+  //   // =========================
+  //   // 🔥 LOGIN → DB
+  //   // =========================
+  //   this.cartService.addDB({
+  //     ma_mon_an: mon.ma_mon_an,
+  //     so_luong: 1,
+  //     options: []   // không có option thì để mảng rỗng
+  //   }).subscribe(() => {
+  //     this.cartService.loadCountFromDB(userId);
+  //     this.showToast('Đã thêm vào giỏ hàng', 'success');
+  //   });
+  // }
 
   // ================= COMMENT =================
   guiBinhLuan(parentId?: number) {

@@ -48,6 +48,7 @@
                             <th class="px-4 py-4 text-center border">Ảnh Món Ăn</th>
                             <th class="px-4 py-4 text-center border">Tên Món Ăn</th>
                             <th class="px-4 py-4 text-center border">Giá Tiền</th>
+                            <th class="px-4 py-4 text-center border">Giá giảm</th>
                             <th class="px-4 py-4 text-center border">Tên Loại Món Ăn</th>
                             <th class="px-4 py-4 text-center border">Mô tả</th>
                             <th class="px-4 py-4 text-center border">Trạng Thái</th>
@@ -70,6 +71,9 @@
                             <td class="px-4 py-7 text-center border">{{ monan.ten_mon_an }}</td>
                             <td class="px-4 py-7 text-center border">
                                 {{ monan.gia_tien | currency:'VND':'symbol':'1.0-0':'vi-VN' }}
+                            </td>
+                            <td class="px-4 py-7 text-center border">
+                                {{ monan.gia_giam | currency:'VND':'symbol':'1.0-0':'vi-VN' }}
                             </td>
                             <td class="px-4 py-7 text-center border">
                                 {{ LoaiMonAnMap[monan.ma_loai_mon_an] || '---' }}

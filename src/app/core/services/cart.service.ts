@@ -68,7 +68,7 @@ export class CartService {
     );
 
     // ⭐ FIX GIÁ Ở ĐÂY
-    const giaGoc = mon.gia_tien ?? mon.gia ?? mon.price ?? 0;
+    const giaGoc = mon.gia_ban ?? mon.gia ?? mon.price ?? 0;
 
     if (found) {
       found.soLuong += qty;

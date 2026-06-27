@@ -354,7 +354,7 @@ export class GioHang implements OnInit, OnDestroy {
           0
         );
 
-        const giaGoc = x.MonAn?.gia_tien || 0;
+        const giaGoc = x.MonAn?.gia_ban || 0;
 
         return {
           // ===== ID =====

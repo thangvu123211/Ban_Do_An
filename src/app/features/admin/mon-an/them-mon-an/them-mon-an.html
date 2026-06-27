@@ -125,12 +125,34 @@
               Giá tiền phải lớn hơn 0
             </mat-error>
           </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Giá giảm</mat-label>
+
+            <input matInput type="text" name="gia_giam" [(ngModel)]="giaTienGiamDisplay" required
+              (input)="onGiaTienGiamInput($event)" #giaGiam="ngModel" placeholder="Nhập giá tiền giảm..." />
+
+            <!-- Required -->
+            <mat-error *ngIf="giaGiam.touched && giaGiam.errors?.['required']">
+              Vui lòng nhập giá tiền giảm
+            </mat-error>
+
+            <!-- <= 0 -->
+            <mat-error *ngIf="giaGiam.touched && MonAn.gia_giam <= 0">
+              Giá tiền giảm phải lớn hơn 0
+            </mat-error>
+
+            <!-- > giá tiền -->
+            <mat-error *ngIf="giaGiam.touched && MonAn.gia_giam > MonAn.gia_tien">
+              Giá tiền giảm không được lớn hơn giá tiền
+            </mat-error>
+          </mat-form-field>
         </div>
       </div>
     </div>
     <div class="flex justify-end gap-4 mt-8">
 
-      <button matButton="filled" type="button" (click)="addMonAn()"  [disabled]="monAnForm.invalid || loading">
+      <button matButton="filled" type="button" (click)="addMonAn()" [disabled]="monAnForm.invalid || loading">
 
         <mat-icon *ngIf="!loading">check</mat-icon>
         <mat-icon *ngIf="loading" class="animate-spin">refresh</mat-icon>
