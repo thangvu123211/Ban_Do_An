@@ -88,9 +88,6 @@ export class QuanLyDatBan implements OnInit {
               ? { ...x, trang_thai: 'da_huy' }
               : x
           );
-
-          this.showToast('Đặt bàn đã bị hủy', 'warn');
-
           break;
         }
       }
