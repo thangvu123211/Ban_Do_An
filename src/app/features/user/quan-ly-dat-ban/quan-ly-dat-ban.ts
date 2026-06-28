@@ -7,6 +7,7 @@ import { ConfirmDialogComponent } from '../../../Shared/dialogs/confirm-dialog/c
 import { MATERIAL } from '../../../Shared/material';
 import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-message/toast-message';
 import { ChiTietDatBan } from './chi-tiet-dat-ban/chi-tiet-dat-ban';
+import { WebsocketService } from '../../../core/services/websocket.service';
 
 @Component({
   selector: 'app-quan-ly-dat-ban',
@@ -35,11 +36,83 @@ export class QuanLyDatBan implements OnInit {
     private dialog: MatDialog,
     private quanlidatban: QuanLyDatBanService,
     private quanlibanan: QuanLyBanAnService,
+    private wsService: WebsocketService
   ) { }
 
   ngOnInit(): void {
     this.loadListDatBan();
     this.loadBanAnMap();
+    this.connectRealtime()
+  }
+
+  connectRealtime() {
+    this.wsService.connect();
+
+    this.wsService.messages$.subscribe((msg: any) => {
+
+      console.log("WS MSG:", msg);
+
+      const type = msg?.type || msg?.Type;
+      const data = msg?.payload;
+
+      if (!data) return;
+
+      switch (type) {
+
+        case 'dat_ban_confirmed':   // 👈 event backend gửi
+
+          this.danhsachdatban = this.danhsachdatban.map(x =>
+            Number(x.id) === Number(data.id)
+              ? { ...x, trang_thai: data.trang_thai ?? 'da_xac_nhan' }
+              : x
+          );
+          break;
+
+        case 'dat_ban_cancelled_user':   // 👈 event backend gửi
+
+          this.danhsachdatban = this.danhsachdatban.map(x =>
+            Number(x.id) === Number(data.id)
+              ? { ...x, trang_thai: data.trang_thai ?? 'da_huy' }
+              : x
+          );
+
+          // ✅ TOAST thông báo
+          this.showToast('Đặt bàn đã được hủy', 'success');
+
+          break;
+
+        case 'dat_ban_cancelled': {
+
+          this.danhsachdatban = this.danhsachdatban.map(x =>
+            Number(x.id) === Number(data.id)
+              ? { ...x, trang_thai: 'da_huy' }
+              : x
+          );
+
+          this.showToast('Đặt bàn đã bị hủy', 'warn');
+
+          break;
+        }
+      }
+    });
+  }
+  handleNewDatBan(data: any) {
+
+    const newItem = {
+      id: data.id,
+      ma_ban_an: data.ma_ban_an,
+      ten_khach_hang: data.ten_khach_hang,
+      sdt: data.sdt,
+      email: data.email,
+      ghi_chu: data.ghi_chu,
+      ngay: data.ngay,
+      gio: data.gio,
+      trang_thai: data.trang_thai,
+      ma_nguoi_dung: data.ma_nguoi_dung
+    };
+
+    // 🔥 giống HoaDon: unshift + spread để trigger UI
+    this.danhsachdatban = [newItem, ...this.danhsachdatban];
   }
 
   loadListDatBan() {
@@ -113,5 +186,9 @@ export class QuanLyDatBan implements OnInit {
         });
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.wsService.disconnect();
   }
 }

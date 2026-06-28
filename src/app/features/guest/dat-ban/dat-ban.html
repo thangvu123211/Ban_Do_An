@@ -96,18 +96,59 @@
     <!-- TIME -->
     <mat-card class="p-4 sm:p-6 w-full home-card bg-white shadow-xl rounded-2xl border border-slate-150">
 
-      <div class="text-center mb-6">
-        <h2
-          class="text-2xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight flex items-center justify-center gap-2">
-          <svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          Chọn Thời Gian
-        </h2>
-        <p class="text-sm text-slate-500 mt-1.5 font-medium">
-          Vui lòng chọn ngày và giờ đặt bàn mong muốn
-        </p>
+      <div class="mb-6 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+
+          <div class="text-center md:text-left">
+            <h2
+              class="text-2xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight flex items-center justify-center md:justify-start gap-2">
+              <svg class="w-7 h-7 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Chọn Thời Gian
+            </h2>
+            <p class="text-sm text-slate-500 mt-1.5 font-medium">
+              Vui lòng chọn ngày và giờ đặt bàn mong muốn
+            </p>
+          </div>
+
+          <div *ngIf="selectedTableId" class="flex justify-center md:justify-end w-full">
+            <div
+              class="relative w-full max-w-md p-4 rounded-2xl bg-white border border-emerald-500/30 flex items-center gap-4 shadow-md">
+
+              <div
+                class="absolute inset-0 rounded-2xl border-2 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)] animate-pulse pointer-events-none z-0">
+              </div>
+
+              <div class="relative flex-shrink-0 z-10">
+                <img [src]="selectedTable?.anh_ban?.[0]?.url || 'https://via.placeholder.com/100'"
+                  class="w-14 h-14 rounded-xl object-cover border border-slate-100 shadow-sm" />
+              </div>
+
+              <div class="text-left flex-1 min-w-0 pr-2 z-10">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">
+                  Bàn đang chọn
+                </p>
+                <p class="text-lg sm:text-xl font-black text-slate-800 tracking-tight truncate">
+                  {{ selectedTable?.ten_ban }}
+                </p>
+              </div>
+
+              <button type="button" (click)="selectedTableId = null; selectedHour = null; khungGio = []"
+                class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-bold text-red-600 bg-red-50 hover:bg-red-500 hover:text-white border border-red-100 hover:border-red-500 shadow-sm transition-all duration-200 flex-shrink-0 z-10">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                  </path>
+                </svg>
+                Hủy
+              </button>
+
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <div class="space-y-5">
@@ -143,18 +184,22 @@
           </div>
 
           <div class="grid grid-cols-4 sm:grid-cols-6 gap-2.5">
-            <button type="button" *ngFor="let g of khungGio" (click)="chonGio(g.gio, g.da_dat)" [disabled]="g.da_dat"
+            <button type="button" *ngFor="let g of khungGio" (click)="chonGio(g.gio, g.da_dat, g.qua_gio ?? false)"
+              [disabled]="g.da_dat || g.qua_gio"
               class="relative overflow-hidden text-center py-2 rounded-xl transition-all duration-200 select-none border flex flex-col items-center justify-center min-h-[60px]"
               [ngClass]="{
-        'bg-slate-50/80 text-slate-400 border-slate-200/60 cursor-not-allowed': g.da_dat,
-        'bg-white text-slate-700 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40': !g.da_dat && selectedHour !== g.gio,
-        'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-100 scale-[1.03]': selectedHour === g.gio
-      }">
+              'bg-slate-50/80 text-slate-400 border-slate-200/60 cursor-not-allowed': g.da_dat || g.qua_gio,
 
+              'bg-white text-slate-700 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40':
+                !g.da_dat && !g.qua_gio && selectedHour !== g.gio,
+
+              'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-100 scale-[1.03]':
+                selectedHour === g.gio
+            }">
               <span class="text-sm sm:text-base font-bold leading-tight" [ngClass]="{
-          'opacity-40 text-slate-500 line-through': g.da_dat,
-          'text-white': selectedHour === g.gio
-        }">
+                'opacity-40 text-slate-500 line-through': g.da_dat || g.qua_gio,
+                'text-white': selectedHour === g.gio
+              }">
                 {{ g.gio }}
               </span>
 
@@ -163,16 +208,20 @@
                 Đã đặt
               </span>
 
-              <span *ngIf="!g.da_dat && selectedHour !== g.gio"
+              <span *ngIf="!g.da_dat && g.qua_gio"
+                class="text-[9px] font-extrabold tracking-wider text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded mt-1 uppercase border">
+                Hết giờ
+              </span>
+
+              <span *ngIf="!g.da_dat && !g.qua_gio && selectedHour !== g.gio"
                 class="text-[9px] font-extrabold tracking-wider text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-1 uppercase border border-emerald-100">
                 Còn trống
               </span>
 
-              <span *ngIf="!g.da_dat && selectedHour === g.gio"
+              <span *ngIf="!g.da_dat && !g.qua_gio && selectedHour === g.gio"
                 class="text-[9px] font-extrabold tracking-wider text-emerald-100 bg-emerald-700/50 px-1.5 py-0.5 rounded mt-1 uppercase">
                 Đang chọn
               </span>
-
             </button>
           </div>
 
