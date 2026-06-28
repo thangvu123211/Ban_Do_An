@@ -37,7 +37,7 @@
             gap-4 sm:gap-6
             mb-8 mt-4">
 
-      <div *ngFor="let table of BanAn">
+      <div *ngFor="let table of BanAn ; trackBy: trackByTable">
 
         <mat-card
           class="relative transition duration-200 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl home-card"
@@ -94,77 +94,125 @@
 
 
     <!-- TIME -->
-    <mat-card class="p-4 sm:p-6 w-full home-card">
+    <mat-card class="p-4 sm:p-6 w-full home-card bg-white shadow-xl rounded-2xl border border-slate-150">
 
-      <h2 class="text-2xl font-bold mb-2 text-center text-green-500">
-        Chọn Thời Gian
-      </h2>
+      <div class="text-center mb-6">
+        <h2
+          class="text-2xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight flex items-center justify-center gap-2">
+          <svg class="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          Chọn Thời Gian
+        </h2>
+        <p class="text-sm text-slate-500 mt-1.5 font-medium">
+          Vui lòng chọn ngày và giờ đặt bàn mong muốn
+        </p>
+      </div>
 
-      <p class="mb-6 text-center">
-        Vui lòng chọn ngày và giờ đặt bàn
-      </p>
+      <div class="space-y-5">
 
-      <div class="flex flex-col md:flex-row gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">1. Chọn ngày đặt
+            bàn</label>
+          <mat-form-field appearance="outline" class="w-full custom-datepicker mt-2">
+            <mat-label>Bấm vào đây để chọn ngày</mat-label>
 
-        <!-- DATE -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Chọn ngày</mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate"
+              (ngModelChange)="handleDateChange($event)" name="selectedDate" required [min]="minDate"
+              #dateCtrl="ngModel">
 
-          <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" name="selectedDate" required
-            [min]="minDate" #dateCtrl="ngModel">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
 
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="dateCtrl.touched && dateCtrl.errors?.['required']">
+              Vui lòng chọn ngày đặt bàn cụ thể.
+            </mat-error>
+            <mat-error *ngIf="dateCtrl.touched && dateCtrl.errors?.['min']">
+              Không được lựa chọn ngày trong quá khứ.
+            </mat-error>
+          </mat-form-field>
 
-          <mat-error *ngIf="dateCtrl.touched && dateCtrl.errors?.['required']">
-            Vui lòng chọn ngày đặt bàn
-          </mat-error>
 
-          <mat-error *ngIf="dateCtrl.touched && dateCtrl.errors?.['min']">
-            Không được chọn ngày quá khứ
-          </mat-error>
+        </div>
 
-        </mat-form-field>
+        <div *ngIf="khungGio.length" class="pt-2">
+          <div class="flex items-center justify-between mb-2.5">
+            <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">2. Chọn khung giờ đến</label>
+            <span class="text-xs text-slate-400 font-normal italic">(Giờ mở cửa: 08:00 - 22:00)</span>
+          </div>
 
-        <!-- HOUR -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Chọn giờ</mat-label>
+          <div class="grid grid-cols-4 sm:grid-cols-6 gap-2.5">
+            <button type="button" *ngFor="let g of khungGio" (click)="chonGio(g.gio, g.da_dat)" [disabled]="g.da_dat"
+              class="relative overflow-hidden text-center py-2 rounded-xl transition-all duration-200 select-none border flex flex-col items-center justify-center min-h-[60px]"
+              [ngClass]="{
+        'bg-slate-50/80 text-slate-400 border-slate-200/60 cursor-not-allowed': g.da_dat,
+        'bg-white text-slate-700 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40': !g.da_dat && selectedHour !== g.gio,
+        'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-100 scale-[1.03]': selectedHour === g.gio
+      }">
 
-          <mat-select [(ngModel)]="selectedHour" name="selectedHour" required #hourCtrl="ngModel">
+              <span class="text-sm sm:text-base font-bold leading-tight" [ngClass]="{
+          'opacity-40 text-slate-500 line-through': g.da_dat,
+          'text-white': selectedHour === g.gio
+        }">
+                {{ g.gio }}
+              </span>
 
-            <mat-option *ngFor="let hour of GIODATBAN" [value]="hour">
-              {{ hour }}:00
-            </mat-option>
+              <span *ngIf="g.da_dat"
+                class="text-[9px] font-extrabold tracking-wider text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded mt-1 uppercase border border-rose-100">
+                Đã đặt
+              </span>
 
-          </mat-select>
+              <span *ngIf="!g.da_dat && selectedHour !== g.gio"
+                class="text-[9px] font-extrabold tracking-wider text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mt-1 uppercase border border-emerald-100">
+                Còn trống
+              </span>
 
-          <mat-error *ngIf="hourCtrl.touched && hourCtrl.errors?.['required']">
-            Vui lòng chọn giờ
-          </mat-error>
+              <span *ngIf="!g.da_dat && selectedHour === g.gio"
+                class="text-[9px] font-extrabold tracking-wider text-emerald-100 bg-emerald-700/50 px-1.5 py-0.5 rounded mt-1 uppercase">
+                Đang chọn
+              </span>
 
-        </mat-form-field>
+            </button>
+          </div>
+
+          <div *ngIf="selectedHour === null"
+            class="flex items-center gap-1.5 mt-3 text-amber-600 bg-amber-50/70 px-3 py-2 rounded-xl text-xs font-medium border border-amber-100">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+              </path>
+            </svg>
+            Vui lòng chọn một khung giờ còn trống ở trên.
+          </div>
+        </div>
 
       </div>
 
-      <!-- RESULT -->
-      <div *ngIf="selectedDate && selectedHour" class="mt-6 p-4 text-center space-y-2 text-white">
-
-        <p class="text-green-500 font-medium">Ngày đặt:</p>
-        <p class="text-red-500 font-bold text-lg">
-          {{ selectedDate | date:'dd/MM/yyyy' }}
-        </p>
-
-        <p class="text-green-500 font-medium">Giờ đặt:</p>
-        <p class="text-red-500 font-bold text-lg">
-          {{ selectedHour }}:00
-        </p>
-
+      <div *ngIf="selectedDate && selectedHour"
+        class="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-100 grid grid-cols-2 gap-4 text-center">
+        <div class="border-r border-slate-200">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Ngày đặt bàn</p>
+          <p class="text-base font-bold text-emerald-600">
+            {{ selectedDate | date:'dd / MM / yyyy' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Giờ nhận bàn</p>
+          <p class="text-base font-bold text-emerald-600">
+            {{ selectedHour }}
+          </p>
+        </div>
       </div>
 
-      <!-- BUTTON -->
-      <div class="text-center mt-4">
-        <button matButton="filled" (click)="openQuickView()">
-          {{ isLoggedIn ? 'Đặt Bàn Ngay' : 'Đăng nhập để đặt bàn' }}
+      <div class="text-center mt-6">
+        <button matButton="filled" (click)="openQuickView()"
+          class="w-full sm:w-auto min-w-[240px] py-3.5 px-6 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
+          [ngClass]="{
+            'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-200': isLoggedIn,
+            'bg-slate-800 hover:bg-slate-900 text-white shadow-slate-200': !isLoggedIn
+          }">
+          Xác Nhận Đặt Bàn
         </button>
       </div>
 

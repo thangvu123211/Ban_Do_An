@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [
     MATERIAL,
-    ToastMessageComponent
+    ToastMessageComponent,
   ],
   templateUrl: './dat-ban.html',
   styleUrls: ['./dat-ban.scss']
@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
 export class DatBan implements OnInit {
   BanAn: any[] = [];
   selectedDate: Date | null = null;
-  selectedHour: number | null = null;
+  selectedHour: string | null = null;
   selectedTableId: number | null = null;
   readonly panelOpenState = signal(false);
   minDate!: Date;
@@ -41,6 +41,8 @@ export class DatBan implements OnInit {
   get isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
+  khungGio: { gio: string; da_dat: boolean }[] = [];
+
 
   constructor(
     private http: HttpClient,
@@ -86,97 +88,177 @@ export class DatBan implements OnInit {
     });
   }
 
+  loadKhungGio(ngay: string, maBan: number) {
+    this.QuanLyDatBanService.getKhungGioBan(ngay, maBan).subscribe({
+      next: (res) => {
+
+        this.khungGio = res.data;
+
+        // 🔥 FIX QUAN TRỌNG NHẤT CÒN THIẾU
+        const stillValid = this.khungGio.some(g => g.gio === this.selectedHour);
+
+        if (!stillValid) {
+          this.selectedHour = null;
+        }
+
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  updateKhungGio() {
+    if (!this.selectedDate || !this.selectedTableId) return;
+
+    this.selectedHour = null;
+
+    this.QuanLyDatBanService.getKhungGioBan(
+      this.formatDate(this.selectedDate),
+      this.selectedTableId
+    ).subscribe({
+      next: (res) => {
+        this.khungGio = res.data;
+      }
+    });
+  }
+  handleDateChange(date: Date) {
+    this.selectedDate = date;
+
+    this.tryLoadKhungGio();
+  }
+  tryLoadKhungGio() {
+    if (!this.selectedDate || !this.selectedTableId) return;
+
+    this.selectedHour = null;
+
+    this.QuanLyDatBanService.getKhungGioBan(
+      this.formatDate(this.selectedDate),
+      this.selectedTableId
+    ).subscribe({
+      next: (res) => {
+        this.khungGio = res.data;
+      }
+    });
+  }
+
   // Giờ từ 12h trưa -> 12h đêm
   GIODATBAN: number[] = Array.from({ length: 12 }, (_, i) => i + 12);
 
   getFullDateTime(): Date | null {
     if (!this.selectedDate || this.selectedHour === null) return null;
 
+    const [hour] = this.selectedHour.split(':');
+
     const NGAYDATBAN = new Date(this.selectedDate);
-    NGAYDATBAN.setHours(this.selectedHour, 0, 0);
+    NGAYDATBAN.setHours(Number(hour), 0, 0);
+
     return NGAYDATBAN;
   }
 
   selectTable(tableId: number) {
     this.selectedTableId = tableId;
-  }
-
-openQuickView() {
-
-  // ❌ CHƯA ĐĂNG NHẬP
-  if (!this.authService.isLoggedIn()) {
-    this.showToast('Vui lòng đăng nhập để đặt bàn!', 'warn');
-    this.router.navigate(['/login']);
-    return;
-  }
-
-  // ❌ CHƯA CHỌN BÀN
-  if (!this.selectedTableId) {
-    this.showToast('Vui lòng chọn bàn trước khi đặt!', 'warn');
-    return;
-  }
-
-  // ❌ CHƯA CHỌN NGÀY
-  if (!this.selectedDate) {
-    this.showToast('Vui lòng chọn ngày đặt bàn!', 'warn');
-    return;
-  }
-
-  // ❌ CHƯA CHỌN GIỜ (check NULL, không dùng !selectedHour)
-  if (this.selectedHour === null) {
-    this.showToast('Vui lòng chọn giờ đặt bàn!', 'warn');
-    return;
+    this.tryLoadKhungGio();
   }
 
 
-  // ================== OK → MỞ DIALOG ==================
-  const dialogRef = this.dialog.open(BookingDialog, {
-    width: '900px',
-    maxWidth: '95vw',
-    maxHeight: '95vh',
-    panelClass: 'custom-dialog',
-    autoFocus: false,
-    data: {
-      ngay: this.selectedDate,
-      gio: this.selectedHour,
-      table: this.BanAn.find(t => t.ma_ban === this.selectedTableId)
-    }
-  });
+  openQuickView() {
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (!result) {
-      this.showToast('Bạn đã hủy đặt bàn', 'warn');
+    // ❌ CHƯA ĐĂNG NHẬP
+    if (!this.authService.isLoggedIn()) {
+      this.showToast('Vui lòng đăng nhập để đặt bàn!', 'warn');
       return;
     }
 
-    const user = this.authService.getUser();
+    // ❌ CHƯA CHỌN BÀN
+    if (!this.selectedTableId) {
+      this.showToast('Vui lòng chọn bàn trước khi đặt!', 'warn');
+      return;
+    }
 
-    const payload = {
-      ten_khach_hang: result.ten_khach_hang ?? user?.ho_ten,
-      email: user?.email,
-      sdt: result.sdt ?? user?.sdt,
-      ghi_chu: result.ghi_chu,
-      ma_ban_an: this.selectedTableId,
-      ngay: result.ngay,
-      gio: result.gio
-    };
+    // ❌ CHƯA CHỌN NGÀY
+    if (!this.selectedDate) {
+      this.showToast('Vui lòng chọn ngày đặt bàn!', 'warn');
+      return;
+    }
 
-    this.QuanLyDatBanService.TaoDatBan(payload).subscribe({
-      next: () => {
-        this.showToast('Đặt bàn thành công!', 'success');
-        this.selectedTableId = null;
-        this.selectedDate = null;
-        this.selectedHour = null;
-        this.loadBanAn();
-      },
-      error: err => {
-        console.error(err);
-        this.showToast(err?.error?.error || 'Đặt bàn thất bại!', 'error');
+    // ❌ CHƯA CHỌN GIỜ (check NULL, không dùng !selectedHour)
+    if (this.selectedHour === null) {
+      this.showToast('Vui lòng chọn giờ đặt bàn!', 'warn');
+      return;
+    }
+
+
+    // ================== OK → MỞ DIALOG ==================
+    const dialogRef = this.dialog.open(BookingDialog, {
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+      panelClass: 'custom-dialog',
+      autoFocus: false,
+      data: {
+        ngay: this.selectedDate,
+        gio: this.selectedHour,
+        table: this.BanAn.find(t => t.ma_ban === this.selectedTableId)
       }
     });
-  });
-}
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) {
+        this.showToast('Bạn đã hủy đặt bàn', 'warn');
+        return;
+      }
 
+      const user = this.authService.getUser();
+
+      const payload = {
+        ten_khach_hang: result.ten_khach_hang ?? user?.ho_ten,
+        email: user?.email,
+        sdt: result.sdt ?? user?.sdt,
+        ghi_chu: result.ghi_chu,
+        ma_ban_an: this.selectedTableId,
+        ngay: result.ngay,
+        gio: result.gio
+      };
+
+      this.QuanLyDatBanService.TaoDatBan(payload).subscribe({
+        next: () => {
+          this.showToast('Đặt bàn thành công!', 'success');
+          this.selectedTableId = null;
+          this.selectedDate = null;
+          this.selectedHour = null;
+          this.loadBanAn();
+        },
+        error: err => {
+          console.error(err);
+          this.showToast(err?.error?.error || 'Đặt bàn thất bại!', 'error');
+        }
+      });
+    });
+  }
+
+  onDateChange(date: Date) {
+    this.selectedDate = date;
+
+    if (this.selectedTableId) {
+      this.updateKhungGio();
+    }
+  }
+
+  chonGio(gio: string, daDat: boolean) {
+    if (daDat) return;
+    this.selectedHour = gio;
+  }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  trackByTable(index: number, item: any) {
+    return item.ma_ban;
+  }
 
 }

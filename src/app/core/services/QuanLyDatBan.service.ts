@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment.prod';
 })
 export class QuanLyDatBanService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /** 🔹 Lấy token từ localStorage để thêm vào Header */
   private getAuthHeaders(): HttpHeaders {
@@ -76,5 +76,17 @@ export class QuanLyDatBanService {
 
   HuyDatBan(id: number): Observable<any> {
     return this.http.put(`${environment.apiUrl}/dat-ban/huy-dat-ban/${id}`, {});
+  }
+
+  getBanDaDat(ngay: string, gio: string) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/dat-ban/da-dat?ngay=${ngay}&gio=${gio}`
+    );
+  }
+
+  getKhungGioBan(ngay: string, maBan: number) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/dat-ban/khung-gio?ngay=${ngay}&ma_ban=${maBan}`
+    );
   }
 }

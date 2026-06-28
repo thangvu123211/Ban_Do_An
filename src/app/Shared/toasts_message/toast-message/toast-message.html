@@ -1,8 +1,33 @@
-<div 
-  *ngIf="show" 
-  class="fixed top-32 right-4 flex items-center gap-3 text-white p-4 rounded-lg shadow-lg animate-fadeIn z-[9999]"
-  [ngClass]="bgColor">
-  <mat-icon>{{ icon }}</mat-icon>
-  <span class="font-medium">{{ message }}</span>
-  <button class="ml-auto text-white font-bold" (click)="close()">✖</button>
+<div
+  *ngIf="show"
+  class="fixed top-32 right-4
+         flex items-center
+         gap-3
+         text-white
+         px-5 py-4
+         rounded-xl shadow-2xl
+         z-[9999]
+         animate-fadeIn
+         w-auto min-w-[320px] max-w-md sm:max-w-lg"
+  [ngClass]="bgColor"
+>
+  <!-- Icon -->
+  <mat-icon
+    class="text-2xl flex-shrink-0 leading-none flex items-center justify-center"
+  >
+    {{ icon }}
+  </mat-icon>
+
+  <!-- Message -->
+  <span class="text-base font-medium leading-none flex-1 flex items-center">
+    {{ message }}
+  </span>
+
+  <!-- Close -->
+  <button
+    class="ml-2 text-white/80 hover:text-white text-lg leading-none flex items-center justify-center"
+    (click)="close()"
+  >
+    ✖
+  </button>
 </div>
