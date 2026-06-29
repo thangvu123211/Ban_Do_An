@@ -15,6 +15,14 @@ export class QuanLyGiamGiaService {
         return this.http.get(`${environment.apiUrl}/giam-gia/`);
     }
 
+    LayTatCaGiamGiaGuest(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}/giam-gia/guest`);
+    }
+
+    LayTatCaGiamGiaUser(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}/giam-gia/user`);
+    }
+
     LayGiamGiaTheoID(id: number): Observable<any> {
         return this.http.get(`${environment.apiUrl}/giam-gia/${id}`);
     }

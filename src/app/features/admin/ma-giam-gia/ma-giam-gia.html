@@ -50,6 +50,7 @@
                             <th class="px-4 py-4 text-center border">Loại</th>
                             <th class="px-4 py-4 text-center border">Giá trị</th>
                             <th class="px-4 py-4 text-center border">Đơn tối thiểu</th>
+                            <th class="px-4 py-4 text-center border">Đối tượng</th>
                             <th class="px-4 py-4 text-center border">Hiệu lực</th>
                             <th class="px-4 py-4 text-center border">Trạng thái</th>
                             <th class="px-4 py-4 text-center border">Hành động</th>
@@ -86,6 +87,7 @@
                             <td class="px-4 py-4 text-center border">
                                 {{ gg.don_toi_thieu ? money.formatVND(gg.don_toi_thieu) + 'đ' : '-' }}
                             </td>
+                            <td class="px-4 py-4 text-center border">{{ gg.doi_tuong_su_dung}}</td>
                             <td class="px-4 py-4 text-center border">
                                 {{ gg.ngay_bat_dau | date:'dd/MM/yyyy' }}
                                 <br>

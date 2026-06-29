@@ -82,7 +82,7 @@ export class HomeComponents implements OnInit, OnDestroy {
   }
 
   loadGiamGia() {
-    this.giamGiaService.LayTatCaGiamGia().subscribe({
+    this.giamGiaService.LayTatCaGiamGiaUser().subscribe({
       next: (res: any) => {
         this.danhSachGiamGia = (res.data || []).filter((x: any) => x.is_active);
       },

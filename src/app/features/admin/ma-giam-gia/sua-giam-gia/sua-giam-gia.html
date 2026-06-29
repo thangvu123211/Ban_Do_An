@@ -47,6 +47,14 @@
         placeholder="VD: 100.000đ">
     </mat-form-field>
 
+    <mat-form-field appearance="outline">
+        <mat-label>Đối tượng sử dụng</mat-label>
+        <mat-select [(ngModel)]="giamGia.doi_tuong_su_dung">
+          <mat-option value="guest">Guest</mat-option>
+          <mat-option value="user">User</mat-option>
+        </mat-select>
+      </mat-form-field>
+
     <!-- Ngày bắt đầu -->
     <div class="grid grid-cols-2 gap-3 col-span-full">
       <mat-form-field appearance="outline">

@@ -57,6 +57,16 @@
             <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
             <mat-datepicker #pickerEnd></mat-datepicker>
         </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Đối tượng sử dụng</mat-label>
+            <mat-select [(ngModel)]="giamGia.doi_tuong_su_dung">
+                <mat-option value="guest">Guest</mat-option>
+                <mat-option value="user">User</mat-option>
+            </mat-select>
+        </mat-form-field>
+        
+
     </div>
 
     <div class="flex justify-end gap-4 mt-6">

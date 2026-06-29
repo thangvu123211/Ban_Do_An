@@ -79,9 +79,9 @@ export class DonHang implements OnInit {
         return this.hoaDons;
 
       case 'CHO_XAC_NHAN':
-        return this.hoaDons.filter(
+        return this.hoaDons.filter(          
           x => x.trang_thai === 'cho_xac_nhan' &&
-            x.trang_thai_thanh_toan === 'da_thanh_toan'
+          x.trang_thai_thanh_toan === 'da_thanh_toan'
         );
 
       case 'CHUA_THANH_TOAN':

@@ -32,7 +32,8 @@ export class ThemGiamGia {
     gioi_han_moi_user: 1,
     ngay_bat_dau: null as Date | null,
     ngay_ket_thuc: null as Date | null,
-    is_active: true
+    is_active: true,
+    doi_tuong_su_dung:'guest',
   };
 
   isLoading = false;
