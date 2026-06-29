@@ -94,6 +94,23 @@ export class DatBan implements OnInit {
           this.showToast('Có một khung giờ vừa được khách hàng đặt mới', 'success');
           break;
         }
+
+        case 'ban_an_updated': {
+
+          this.BanAn = this.BanAn.map(x =>
+            Number(x.ma_ban ?? x.ma_ban_an ?? x.id) === Number(data.id)
+              ? {
+                ...x,
+                ten_ban: data.ten_ban,
+                so_cho_ngoi: data.so_cho_ngoi,
+                trang_thai: data.trang_thai
+              }
+              : x
+          );
+
+          this.showToast('Có bàn ăn vừa được cập nhật', 'success');
+          break;
+        }
       }
     });
   }
@@ -356,7 +373,7 @@ export class DatBan implements OnInit {
     return this.BanAn.find(b => b.ma_ban === this.selectedTableId);
   }
 
-  
+
 
   ngOnDestroy() {
     this.wsService.disconnect();
