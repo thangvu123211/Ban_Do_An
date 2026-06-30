@@ -2,8 +2,8 @@
 <div *ngIf="mon; else noData" class="h-full flex flex-col bg-white">
 
   <!-- ===== HEADER ===== -->
-  <div class="flex items-center justify-between px-6 py-4 border-b">
-    <h2 class="text-gray-800">
+  <div class="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b">
+    <h2 class="text-gray-800 text-base md:text-lg font-medium">
       Thêm vào giỏ hàng
     </h2>
 
@@ -15,125 +15,128 @@
   <!-- ===== BODY ===== -->
   <div class="flex flex-col md:flex-row flex-1 overflow-hidden">
 
-    <!-- LEFT: IMAGE -->
-    <div class="w-full md:w-5/12
-      bg-gray-50
-      flex items-center justify-center
-      p-4 sm:p-6">
-      <img [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'" class="w-full
-      max-h-60 sm:max-h-72 md:max-h-full
-      object-contain
-      rounded-xl
-      shadow-sm" />
+    <!-- LEFT -->
+    <div class="w-full md:w-5/12 bg-gray-50 flex items-center justify-center p-3 md:p-6">
+
+      <img
+        [src]="mon.anh_mon_an?.length ? mon.anh_mon_an[0].url : 'assets/no-image.png'"
+        class="w-full max-h-44 sm:max-h-60 md:max-h-full object-contain rounded-xl shadow-sm" />
+
     </div>
 
-    <!-- RIGHT: CONTENT -->
-    <div class="w-full md:w-7/12
-      px-4 sm:px-6 md:px-8
-      py-4 sm:py-6
-      overflow-y-auto
-      pb-28 md:pb-32
-      space-y-6">
+    <!-- RIGHT -->
+    <div class="w-full md:w-7/12 px-3 md:px-8 py-3 md:py-6 overflow-y-auto pb-24 md:pb-32 space-y-4 md:space-y-6">
 
       <!-- INFO -->
       <div>
-        <p class="text-xl font-semibold text-gray-900">
+        <p class="text-lg md:text-xl font-semibold text-gray-900">
           {{ mon.ten_mon_an }}
         </p>
 
         <div *ngIf="mon.gia_giam > 0" class="flex items-center gap-2 mt-1">
-          <span class="text-gray-400 text-sm line-through">
+          <span class="text-gray-400 text-xs md:text-sm line-through">
             {{ mon.gia_tien | number }} đ
           </span>
 
-          <span class="
-        inline-flex items-center justify-center
-        text-[11px] font-bold
-        px-2 py-1
-        min-w-[50px]
-        rounded-md
-        bg-red-50 text-red-600
-        border border-red-200
-        h-5
-        leading-none
-      ">
+          <span class="text-[10px] md:text-xs px-2 py-0.5 rounded bg-red-50 text-red-600 border border-red-200">
             -{{ mon.gia_giam | number }}đ
           </span>
         </div>
 
-        <p class="text-green-600 text-2xl font-bold mt-1">
+        <p class="text-green-600 text-xl md:text-2xl font-bold mt-1">
           {{ mon.gia_ban | number }} đ
         </p>
       </div>
 
       <!-- ===== SỐ LƯỢNG ===== -->
       <div class="flex items-center justify-between">
-        <span class="font-medium text-gray-700">Số lượng</span>
 
-        <div class="flex items-center gap-2 bg-gray-100 rounded-full px-2 py-1">
-          <button mat-icon-button (click)="giamSoLuong()" [disabled]="soLuong === 1"
-            class="w-7 h-7 rounded-full bg-white shadow flex items-center justify-center">
-            <mat-icon class="text-base">remove</mat-icon>
+        <span class="text-sm md:text-base font-medium text-gray-700">
+          Số lượng
+        </span>
+
+        <div class="flex items-center bg-gray-100 rounded-full px-2 py-1 gap-2">
+
+          <!-- - -->
+          <button
+            (click)="giamSoLuong()"
+            [disabled]="soLuong === 1"
+            class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-white shadow">
+
+            <mat-icon class="text-sm md:text-base">remove</mat-icon>
           </button>
 
-          <span class="w-6 text-center font-semibold text-sm">
+          <!-- number -->
+          <span class="w-5 md:w-6 text-center font-semibold text-sm">
             {{ soLuong }}
           </span>
 
-          <button mat-icon-button (click)="tangSoLuong()"
-            class="w-7 h-7 rounded-full bg-green-500 text-white shadow flex items-center justify-center">
-            <mat-icon class="text-base">add</mat-icon>
+          <!-- + -->
+          <button
+            (click)="tangSoLuong()"
+            class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-green-500 text-white shadow">
+
+            <mat-icon class="text-sm md:text-base">add</mat-icon>
           </button>
+
         </div>
       </div>
 
-      <!-- ===== TOPPING ===== -->
-      <!-- ===== OPTION ===== -->
-      <div class="space-y-6">
+      <!-- ===== OPTIONS ===== -->
+      <div class="space-y-3 md:space-y-5">
 
-        <div *ngFor="let nhom of data.options" class="border rounded-2xl p-4 bg-gray-50 shadow-sm">
+        <div *ngFor="let nhom of data.options"
+             class="border rounded-xl md:rounded-2xl p-3 md:p-4 bg-gray-50 shadow-sm">
 
-          <!-- HEADER NHÓM -->
-          <div class="flex justify-between items-center mb-3">
+          <!-- HEADER -->
+          <div class="flex justify-between items-center mb-2 md:mb-3">
 
-            <p class="font-bold text-gray-800">
+            <p class="font-semibold text-gray-800 text-sm md:text-base">
               {{ nhom.ten_nhom }}
             </p>
 
-            <span class="text-xs px-3 py-1 rounded-full" [ngClass]="{
-              'bg-red-100 text-red-600': nhom.bat_buoc,
-              'bg-gray-200 text-gray-600': !nhom.bat_buoc
-            }">
-
+            <span class="text-[10px] md:text-xs px-2 py-1 rounded-full"
+              [ngClass]="{
+                'bg-red-100 text-red-600': nhom.bat_buoc,
+                'bg-gray-200 text-gray-600': !nhom.bat_buoc
+              }">
               {{ nhom.chon_nhieu ? 'Chọn nhiều' : 'Chọn 1' }}
-
             </span>
 
           </div>
 
-          <!-- OPTION LIST -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <!-- OPTIONS -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 md:gap-2">
 
-            <label *ngFor="let opt of nhom.option_items" class="flex items-center justify-between gap-2 px-3 py-2 rounded-xl border bg-white
-                    hover:border-green-400 cursor-pointer transition">
+            <label *ngFor="let opt of nhom.option_items"
+              class="flex items-center justify-between gap-2
+                     px-2 py-2 md:px-3 md:py-2 rounded-lg border bg-white
+                     hover:border-green-400 transition cursor-pointer">
 
               <div class="flex items-center gap-2">
 
-                <input *ngIf="!nhom.chon_nhieu" type="radio" [name]="'group_' + nhom.ma_nhom_option"
-                  [checked]="isChecked(nhom, opt)" (change)="toggleOption(nhom, opt, $event)"
-                  class="accent-green-500 w-4 h-4" />
+                <input
+                  *ngIf="!nhom.chon_nhieu"
+                  type="radio"
+                  [name]="'group_' + nhom.ma_nhom_option"
+                  [checked]="isChecked(nhom, opt)"
+                  (change)="toggleOption(nhom, opt, $event)"
+                  class="accent-green-500 w-3 h-3 md:w-4 md:h-4" />
 
-                <!-- CHECKBOX -->
-                <input *ngIf="nhom.chon_nhieu" type="checkbox" [checked]="isChecked(nhom, opt)"
-                  (change)="toggleOption(nhom, opt, $event)" class="accent-green-500 w-4 h-4" />
+                <input
+                  *ngIf="nhom.chon_nhieu"
+                  type="checkbox"
+                  [checked]="isChecked(nhom, opt)"
+                  (change)="toggleOption(nhom, opt, $event)"
+                  class="accent-green-500 w-3 h-3 md:w-4 md:h-4" />
 
-                <span class="text-gray-700 text-sm">
+                <span class="text-xs md:text-sm text-gray-700">
                   {{ opt.ten_option }}
                 </span>
 
               </div>
 
-              <span class="text-green-600 font-semibold text-sm">
+              <span class="text-green-600 text-[10px] md:text-sm font-semibold">
                 +{{ opt.gia_them | number }}đ
               </span>
 
@@ -142,14 +145,12 @@
           </div>
 
         </div>
-
       </div>
 
-
       <!-- ===== TỔNG TIỀN ===== -->
-      <div class="flex justify-between items-center pt-4 border-t">
-        <span class="text-lg font-semibold">Tổng tiền</span>
-        <span class="text-2xl font-bold text-green-600">
+      <div class="flex justify-between items-center pt-3 md:pt-4 border-t">
+        <span class="text-base md:text-lg font-semibold">Tổng tiền</span>
+        <span class="text-xl md:text-2xl font-bold text-green-600">
           {{ tongTien | number }} đ
         </span>
       </div>
@@ -157,26 +158,28 @@
     </div>
   </div>
 
-  <!-- ===== FOOTER ===== -->
-  <div class="sticky bottom-0
-  flex flex-col sm:flex-row
-  justify-between items-center
-  gap-3
-  px-4 sm:px-6
-  py-3 sm:py-4
-  border-t
-  bg-white">
-    <span class="text-gray-600 text-sm">
+  <!-- ===== FOOTER (MOBILE GỌN LẠI) ===== -->
+  <div class="sticky bottom-0 flex flex-col sm:flex-row justify-between items-center
+              gap-2 px-3 md:px-6 py-3 border-t bg-white">
+
+    <span class="text-gray-500 text-xs md:text-sm text-center sm:text-left">
       Giá đã bao gồm topping
     </span>
 
-    <div class="flex gap-3">
-      <button mat-stroked-button (click)="huy()">Hủy</button>
-      <button mat-flat-button color="primary" (click)="xacNhan()">
-        Thêm vào giỏ hàng
+    <div class="flex gap-2 w-full sm:w-auto">
+
+      <button mat-stroked-button class="flex-1 sm:flex-none text-xs md:text-sm py-1.5">
+        Hủy
       </button>
+
+      <button mat-flat-button color="primary"
+              class="flex-1 sm:flex-none text-xs md:text-sm py-1.5">
+        Thêm vào giỏ
+      </button>
+
     </div>
   </div>
+
 </div>
 
 <!-- FALLBACK -->

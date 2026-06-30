@@ -39,25 +39,23 @@
             px-2 py-1 shadow-sm scale-90 md:scale-100 gap-2">
 
         <!-- GIẢM -->
-        <button (click)="giamSoLuong()" [disabled]="soLuong === 1" class="w-8 h-8 flex items-center justify-center rounded-full
-           hover:bg-gray-100 active:bg-gray-200 disabled:opacity-40">
+        <button (click)="giamSoLuong()" [disabled]="soLuong === 1" class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-white shadow">
 
-          <mat-icon class="text-base leading-none flex items-center justify-center mt-2">
+          <mat-icon class="text-sm md:text-base mt-1">
             remove
           </mat-icon>
         </button>
 
         <!-- SỐ LƯỢNG -->
-        <span class="w-6 text-center font-semibold text-sm md:text-base leading-none">
+        <span class="w-5 md:w-6 text-center font-semibold text-sm">
           {{ soLuong }}
         </span>
-        
+
 
         <!-- TĂNG -->
-        <button (click)="tangSoLuong()" class="w-8 h-8 flex items-center justify-center rounded-full
-           hover:bg-gray-100 active:bg-gray-200">
+        <button (click)="tangSoLuong()" class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-green-500 text-white shadow">
 
-          <mat-icon class="text-base leading-none flex items-center justify-center mt-2">
+          <mat-icon class="text-sm md:text-base mt-1">
             add
           </mat-icon>
         </button>
