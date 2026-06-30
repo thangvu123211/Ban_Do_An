@@ -1,21 +1,23 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MATERIAL } from '../material';
-import { CartService } from '../../core/services/cart.service';
 import { ToastMessageComponent } from '../toasts_message/toast-message/toast-message';
 import { AIChatService } from '../../core/services/AIServiceChat';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-chat-bot',
   standalone: true,
-  imports: [MATERIAL, ToastMessageComponent],
+  imports: [MATERIAL, ToastMessageComponent, FormsModule, CommonModule],
   templateUrl: './chat-bot.html'
 })
-export class ChatBotComponent {
+export class ChatBotComponent implements OnInit {
 
   input = '';
-  isTyping = false; // 👈 bot đang gõ
+  isTyping = false;
 
+  threadId: string | null = null; // 🔥 IMPORTANT
 
   toast = {
     show: false,
@@ -27,7 +29,7 @@ export class ChatBotComponent {
     {
       from: 'bot',
       type: 'text',
-      message: 'Xin chào! Rất vui được phục vụ bạn hôm nay. Bạn muốn khám phá thực đơn đặc sắc hay cần mình giúp gì ạ?'
+      message: 'Xin chào! Bạn cần mình hỗ trợ gì hôm nay?'
     }
   ];
 
@@ -35,7 +37,19 @@ export class ChatBotComponent {
     private dialogRef: MatDialogRef<ChatBotComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private aiChatService: AIChatService,
-  ) { }
+  ) {}
+
+  ngOnInit() {
+    // 🔥 reset mỗi lần mở chat
+    this.threadId = null;
+    this.messages = [
+      {
+        from: 'bot',
+        type: 'text',
+        message: 'Xin chào! Bạn cần mình hỗ trợ gì hôm nay?'
+      }
+    ];
+  }
 
   showToast(message: string, type: 'success' | 'warn' | 'error') {
     this.toast.show = true;
@@ -45,6 +59,8 @@ export class ChatBotComponent {
   }
 
   close() {
+    // 🔥 reset khi đóng
+    this.threadId = null;
     this.dialogRef.close();
   }
 
@@ -53,7 +69,7 @@ export class ChatBotComponent {
 
     const userText = this.input;
 
-    // USER MESSAGE
+    // add user message
     this.messages.push({
       from: 'user',
       type: 'text',
@@ -61,32 +77,34 @@ export class ChatBotComponent {
     });
 
     this.input = '';
-
-    // BOT ĐANG GÕ
     this.isTyping = true;
 
-    this.aiChatService.chat('user-1', userText).subscribe({
+    // 🔥 gửi threadId hiện tại (null nếu mới)
+    this.aiChatService.chat(this.threadId, userText).subscribe({
       next: (res) => {
+
+        // 🔥 lưu threadId từ backend
+        this.threadId = res.threadId;
+
         setTimeout(() => {
           this.isTyping = false;
-          //res.assistantMessage = "messages /n test /n test 2"
 
           this.messages.push({
             from: 'bot',
             type: 'text',
-            message: res.assistantMessage.replaceAll(/\n/g, '</br>') // 👈 QUAN TRỌNG
+            message: res.assistantMessage.replace(/\n/g, '<br>')
           });
-        }, 1200);
+        }, 800);
       },
+
       error: () => {
         this.isTyping = false;
         this.messages.push({
           from: 'bot',
           type: 'text',
-          message: '⚠️ Hệ thống đang bận'
+          message: '⚠️ Hệ thống đang bận, thử lại sau'
         });
       }
     });
   }
-
 }

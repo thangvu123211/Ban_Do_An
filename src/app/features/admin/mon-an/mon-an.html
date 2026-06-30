@@ -78,7 +78,10 @@
                             <td class="px-4 py-7 text-center border">
                                 {{ LoaiMonAnMap[monan.ma_loai_mon_an] || '---' }}
                             </td>
-                            <td class="px-4 py-7 text-center border">{{ monan.mo_ta }}</td>
+                            <td class="px-4 py-7 text-center border 
+                                whitespace-nowrap overflow-hidden text-ellipsis max-w-[300px]">
+                                {{ monan.mo_ta }}
+                            </td>
                             <td class="px-4 py-4 text-center border">
                                 <span *ngIf="monan.trang_thai == 1"
                                     class="inline-block bg-green-600 text-white font-semibold text-sm px-2 py-1 rounded-full shadow">
