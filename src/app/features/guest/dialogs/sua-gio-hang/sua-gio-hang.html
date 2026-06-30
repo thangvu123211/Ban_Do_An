@@ -12,84 +12,95 @@
     </button>
   </div>
 
-  <!-- ===== BODY (NGANG STRONGER) ===== -->
+  <!-- ===== BODY ===== -->
   <div class="flex flex-col md:flex-row flex-1 overflow-hidden">
 
-    <!-- ================= LEFT (NHỎ LẠI) ================= -->
+    <!-- LEFT -->
     <div class="w-full md:w-4/12 bg-gray-50 flex flex-col items-center justify-start 
-            p-3 md:p-4 gap-3 md:gap-4">
+            p-2 md:p-4 gap-2 md:gap-4">
 
-      <!-- IMAGE -->
-      <img [src]="mon.anh || 'assets/no-image.png'"
-        class="w-full h-40 md:h-64 object-cover rounded-lg md:rounded-xl shadow" />
+      <!-- IMAGE (FIX KHÔNG BỊ CẮT) -->
+      <img [src]="mon.anh || 'assets/no-image.png'" class="w-full h-32 md:h-64 object-contain md:object-cover 
+           rounded-lg md:rounded-xl shadow bg-white" />
 
       <!-- INFO -->
       <div class="text-center">
-        <p class="text-base md:text-lg font-semibold text-gray-900">
+        <p class="text-sm md:text-lg font-semibold text-gray-900">
           {{ mon.ten_mon_an }}
         </p>
 
-        <p class="text-green-600 text-lg md:text-xl font-bold mt-1">
+        <p class="text-green-600 text-base md:text-xl font-bold mt-1">
           {{ mon.gia_goc | number }} đ
         </p>
       </div>
 
-      <!-- QUANTITY -->
-      <div class="flex items-center gap-2 bg-white border rounded-full 
-              px-2 md:px-3 py-1 shadow-sm">
+      <!-- QUANTITY (FIX BUTTON NHỎ LẠI) -->
+      <div class="flex items-center bg-white border rounded-full 
+            px-2 py-1 shadow-sm scale-90 md:scale-100 gap-2">
 
-        <button mat-icon-button (click)="giamSoLuong()" [disabled]="soLuong === 1">
-          <mat-icon class="text-sm md:text-base">remove</mat-icon>
+        <!-- GIẢM -->
+        <button (click)="giamSoLuong()" [disabled]="soLuong === 1" class="w-8 h-8 flex items-center justify-center rounded-full
+           hover:bg-gray-100 active:bg-gray-200 disabled:opacity-40">
+
+          <mat-icon class="text-base leading-none flex items-center justify-center mt-2">
+            remove
+          </mat-icon>
         </button>
 
-        <span class="w-6 text-center font-semibold text-sm md:text-base">
+        <!-- SỐ LƯỢNG -->
+        <span class="w-6 text-center font-semibold text-sm md:text-base leading-none">
           {{ soLuong }}
         </span>
 
-        <button mat-icon-button (click)="tangSoLuong()">
-          <mat-icon class="text-sm md:text-base">add</mat-icon>
+        <!-- TĂNG -->
+        <button (click)="tangSoLuong()" class="w-8 h-8 flex items-center justify-center rounded-full
+           hover:bg-gray-100 active:bg-gray-200">
+
+          <mat-icon class="text-base leading-none flex items-center justify-center mt-2">
+            add
+          </mat-icon>
         </button>
 
       </div>
 
     </div>
 
-    <!-- ================= RIGHT (RỘNG HƠN) ================= -->
-    <div class="w-full md:w-8/12 px-4 md:px-6 py-4 md:py-6 overflow-y-auto space-y-6">
+    <!-- RIGHT -->
+    <div class="w-full md:w-8/12 px-3 md:px-6 py-3 md:py-6 overflow-y-auto space-y-4 md:space-y-6">
 
       <!-- OPTIONS -->
-      <div class="space-y-5">
+      <div class="space-y-4 md:space-y-5">
 
-        <div *ngFor="let nhom of optionsData" class="border rounded-xl p-4 bg-gray-50">
+        <div *ngFor="let nhom of optionsData" class="border rounded-xl p-3 md:p-4 bg-gray-50">
 
           <!-- HEADER NHÓM -->
-          <div class="flex justify-between items-center mb-3">
-            <p class="font-bold text-gray-800">
+          <div class="flex justify-between items-center mb-2 md:mb-3">
+            <p class="font-bold text-gray-800 text-sm md:text-base">
               {{ nhom.ten_nhom }}
             </p>
 
-            <span class="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-600">
+            <span class="text-[10px] md:text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-600">
               {{ nhom.chon_nhieu ? 'Chọn nhiều' : 'Chọn 1' }}
             </span>
           </div>
 
           <!-- OPTIONS -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 md:gap-2">
 
             <label *ngFor="let opt of nhom.option_items" class="flex items-center justify-between
-                          px-3 py-2 rounded-lg border bg-white
-                          hover:border-green-400 cursor-pointer">
+                     px-2 py-2 md:px-3 md:py-2 rounded-lg border bg-white
+                     hover:border-green-400 cursor-pointer">
 
               <div class="flex items-center gap-2">
                 <input [type]="nhom.chon_nhieu ? 'checkbox' : 'radio'" [name]="'nhom_' + nhom.ma_nhom_option"
                   [checked]="isChecked(opt)" (change)="toggleOption(nhom, opt)" class="accent-green-500 w-4 h-4" />
 
-                <span class="text-sm text-gray-800">
+                <span class="text-xs md:text-sm text-gray-800">
                   {{ opt.ten_option }}
                 </span>
               </div>
 
-              <span class="text-green-600 text-xs font-semibold">
+              <span class="text-green-600 text-[10px] md:text-xs font-semibold">
                 +{{ opt.gia_them | number }}đ
               </span>
 
@@ -100,12 +111,10 @@
         </div>
       </div>
 
-
-
       <!-- TỔNG TIỀN -->
-      <div class="flex justify-between items-center pt-4 border-t">
-        <span class="text-lg font-semibold">Tổng tiền</span>
-        <span class="text-2xl font-bold text-green-600">
+      <div class="flex justify-between items-center pt-3 md:pt-4 border-t">
+        <span class="text-base md:text-lg font-semibold">Tổng tiền</span>
+        <span class="text-xl md:text-2xl font-bold text-green-600">
           {{ tongTien | number }} đ
         </span>
       </div>
@@ -113,21 +122,25 @@
     </div>
   </div>
 
-  <!-- ===== FOOTER ===== -->
-  <div
-    class="flex flex-col sm:flex-row gap-3 sm:gap-0 justify-between items-stretch sm:items-center px-4 md:px-6 py-4 border-t bg-white">
+  <!-- ===== FOOTER (FIX MOBILE 2 NÚT NGANG) ===== -->
+  <div class="flex flex-col sm:flex-row justify-between items-center 
+              px-3 sm:px-6 py-3 border-t bg-white gap-2">
 
-    <span class="text-gray-600 text-sm">
+    <span class="text-gray-500 text-xs sm:text-sm text-center sm:text-left">
       Giá đã bao gồm topping
     </span>
 
-    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-      <button mat-stroked-button class="w-full sm:w-auto" (click)="huy()">Hủy</button>
-      <button mat-flat-button class="w-full sm:w-auto" (click)="xacNhan()">
-        Cập nhật giỏ hàng
-      </button>
-    </div>
+    <div class="flex flex-row w-full sm:w-auto gap-2">
 
+      <button mat-stroked-button class="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 sm:py-2">
+        Hủy
+      </button>
+
+      <button mat-flat-button class="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 sm:py-2">
+        Cập nhật
+      </button>
+
+    </div>
   </div>
 
 </div>
