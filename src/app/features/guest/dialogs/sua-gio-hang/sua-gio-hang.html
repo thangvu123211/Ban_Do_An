@@ -39,7 +39,8 @@
             px-2 py-1 shadow-sm scale-90 md:scale-100 gap-2">
 
         <!-- GIẢM -->
-        <button (click)="giamSoLuong()" [disabled]="soLuong === 1" class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-white shadow">
+        <button (click)="giamSoLuong()" [disabled]="soLuong === 1"
+          class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-white shadow">
 
           <mat-icon class="text-sm md:text-base mt-1">
             remove
@@ -53,7 +54,8 @@
 
 
         <!-- TĂNG -->
-        <button (click)="tangSoLuong()" class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-green-500 text-white shadow">
+        <button (click)="tangSoLuong()"
+          class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-green-500 text-white shadow">
 
           <mat-icon class="text-sm md:text-base mt-1">
             add
@@ -131,11 +133,11 @@
 
     <div class="flex flex-row w-full sm:w-auto gap-2">
 
-      <button mat-stroked-button class="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 sm:py-2">
+      <button mat-stroked-button class="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 sm:py-2" (click)="huy()">
         Hủy
       </button>
 
-      <button mat-flat-button class="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 sm:py-2">
+      <button mat-flat-button class="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 sm:py-2" (click)="xacNhan()">
         Cập nhật
       </button>
 
