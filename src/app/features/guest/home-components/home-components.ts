@@ -62,7 +62,7 @@ export class HomeComponents implements OnInit, OnDestroy {
     private router: Router,
     private giamGiaService: QuanLyGiamGiaService,
     private optionService: OptionService,
-    private danhGiaService:DanhGiaService
+    private danhGiaService: DanhGiaService
   ) { }
 
   showToast(message: string, type: 'success' | 'warn' | 'error') {
@@ -140,73 +140,72 @@ export class HomeComponents implements OnInit, OnDestroy {
     const token = localStorage.getItem('token');
     const userId = Number(localStorage.getItem('ma_nguoi_dung'));
 
-    // ❌ CHƯA LOGIN → LOCAL
+    // ❌ GUEST → LOCAL
     if (!token) {
       const local = this.yeuThichService.getLocal();
       this.danhSach = local;
 
-      // 🔥 QUAN TRỌNG: set lại favoriteIds
-      this.favoriteIds = new Set(local.map(x => x.ma_mon_an));
-
+      this.yeuThichService.setFavorites(local);
       return;
     }
 
-    // 🔥 LOGIN → DB
-    this.yeuThichService.getByUser(userId).subscribe((res: any[]) => {
+    // ✅ USER → DB
+    this.yeuThichService.getByUser(userId).subscribe(res => {
+      const monAns = res
+        .filter(x => x.mon_an)
+        .map(x => ({
+          ma_mon_an: Number(x.mon_an.ma_mon_an),
+          ten_mon_an: x.mon_an.ten_mon_an,
+          gia_tien: x.mon_an.gia_ban,
+          anh_mon_an: x.mon_an.anh_mon_an
+        }));
 
-      this.danhSach = res.map(x => ({
-        ma_mon_an: x.mon_an?.ma_mon_an,
-        ten_mon_an: x.mon_an?.ten_mon_an,
-        gia_tien: x.mon_an?.gia_tien,
-        anh_mon_an: x.mon_an?.anh_mon_an
-      }));
-
-      // 🔥 fix luôn case undefined + đồng bộ kiểu number
-      this.favoriteIds = new Set(
-        res.map(x => Number(x.mon_an?.ma_mon_an))
-      );
+      this.danhSach = monAns;
+      this.yeuThichService.setFavorites(monAns);
     });
   }
 
   isFavorite(maMonAn: number): boolean {
-    return this.favoriteIds.has(maMonAn);
+    return this.yeuThichService.isFavorite(maMonAn);
   }
+
+
+
   toggleYeuThich(mon: any) {
     const token = localStorage.getItem('token');
     const maMonAn = Number(mon.ma_mon_an);
     const tenMon = mon.ten_mon_an || 'món ăn';
 
-    const isFav = this.favoriteIds.has(maMonAn);
+    const isFav = this.yeuThichService.isFavorite(maMonAn);
 
-    // ================= CHƯA LOGIN → LOCAL =================
+    // ================= GUEST =================
     if (!token) {
       if (isFav) {
-        this.favoriteIds.delete(maMonAn);
         this.yeuThichService.removeLocal(maMonAn);
         this.showToast(`Đã bỏ yêu thích ${tenMon}`, 'warn');
       } else {
-        this.favoriteIds.add(maMonAn);
         this.yeuThichService.addLocal(mon);
         this.showToast(`Đã thêm ${tenMon} vào yêu thích`, 'success');
       }
-
-      // 🔥 badge update NGAY
-      this.yeuThichService.setCount(this.favoriteIds.size);
       return;
     }
 
-    // ================= LOGIN =================
+    // ================= USER =================
     if (this._loadingFav) return;
     this._loadingFav = true;
 
-    // 🔥🔥🔥 UPDATE UI + BADGE NGAY
+    const currentIds = new Set(this.yeuThichService.getFavoriteIds());
+
+    // 🔥 Optimistic update
     if (isFav) {
-      this.favoriteIds.delete(maMonAn);
-      this.yeuThichService.setCount(this.favoriteIds.size);
+      currentIds.delete(maMonAn);
     } else {
-      this.favoriteIds.add(maMonAn);
-      this.yeuThichService.setCount(this.favoriteIds.size);
+      currentIds.add(maMonAn);
     }
+
+    this.yeuThichService.setFavorites(
+      Array.from(currentIds).map(id => ({ ma_mon_an: id }))
+    );
 
     const req$ = isFav
       ? this.yeuThichService.removeDB(maMonAn)
@@ -223,14 +222,8 @@ export class HomeComponents implements OnInit, OnDestroy {
         );
       },
       error: () => {
-        // 🔥 ROLLBACK nếu API fail
-        if (isFav) {
-          this.favoriteIds.add(maMonAn);
-        } else {
-          this.favoriteIds.delete(maMonAn);
-        }
-
-        this.yeuThichService.setCount(this.favoriteIds.size);
+        // 🔥 rollback
+        this.yeuThichService.initFavorites();
         this._loadingFav = false;
 
         this.showToast(

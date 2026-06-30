@@ -10,7 +10,7 @@
       </h2>
 
       <span class="mt-1 px-3 py-1 rounded-full bg-red-100 text-red-700 text-sm w-fit">
-        Tổng số món: {{ tongSoYeuThich  }}
+        Tổng số món: {{ tongSoYeuThich }}
       </span>
     </div>
 
@@ -24,17 +24,22 @@
   <!-- ===== BODY ===== -->
   <div class="flex-1 overflow-y-auto space-y-4 pr-2">
 
-    <div *ngIf="danhSach.length === 0"
-         class="text-gray-400 text-center py-16 text-lg">
+    <div *ngIf="danhSach.length === 0" class="text-gray-400 text-center py-16 text-lg">
       Chưa có món yêu thích
     </div>
 
+    <!-- CARD ITEM -->
     <div *ngFor="let item of danhSach"
-         class="flex items-center gap-6 p-4 rounded-2xl bg-gray-50 border hover:shadow-md transition">
+      class="relative w-full flex items-center gap-6 p-4 rounded-2xl bg-gray-50 border hover:shadow-md transition overflow-hidden">
 
-      <img
-        [src]="item.anh_mon_an?.[0]?.url || 'assets/no-image.png'"
-        class="w-24 h-24 rounded-xl object-cover">
+      <!-- NÚT XÓA (FIX CHUẨN 100%) -->
+      <button type="button" class="absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center rounded-full
+           text-gray-900 hover:text-red-500" (click)="xoaYeuThich(item); $event.stopPropagation()">
+        <mat-icon class="text-[18px]">close</mat-icon>
+      </button>
+
+      <!-- CONTENT -->
+      <img [src]="item.anh_mon_an?.[0]?.url || 'assets/no-image.png'" class="w-24 h-24 rounded-xl object-cover">
 
       <div class="flex-1">
         <p class="font-semibold text-lg">
@@ -42,7 +47,7 @@
         </p>
 
         <p class="text-green-600 font-medium mt-1">
-          {{ item.gia_tien | number }} đ
+          {{ item.gia_ban | number }} đ
         </p>
       </div>
 
@@ -57,5 +62,3 @@
   </div>
 
 </div>
-
-<!-- oke -->

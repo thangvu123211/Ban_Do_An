@@ -66,6 +66,7 @@ export class HeaderComponent implements OnInit {
 
     // ================= YEUTHICH =================
     this.tongYeuThich$ = this.yeuThichService.count$;
+    this.yeuThichService.initFavorites();
 
     if (token && userId) {
       this.cartService.loadCountFromDB(userId);
@@ -75,7 +76,6 @@ export class HeaderComponent implements OnInit {
         0
       ));
     }
-    this.initYeuThich();
     this.checkScreen();
 
     window.addEventListener('resize', () => {
@@ -130,6 +130,8 @@ export class HeaderComponent implements OnInit {
     if (!token) {
       const list = this.yeuThichService.getLocal();
 
+      this.yeuThichService.setFavorites(list);
+
       if (list.length === 0) {
         this.showToast('Chưa có món yêu thích', 'warn');
         return;
@@ -145,19 +147,25 @@ export class HeaderComponent implements OnInit {
     }
 
     // ✅ ĐÃ LOGIN → DB
-    this.yeuThichService.getByUser(userId).subscribe((res: any) => {
+    this.yeuThichService.getByUser(userId).subscribe(res => {
       if (!res || res.length === 0) {
         this.showToast('Chưa có món yêu thích', 'warn');
         return;
       }
 
+      const monAns = res
+        .filter(x => x.mon_an)
+        .map(x => ({
+          ma_mon_an: Number(x.mon_an.ma_mon_an)
+        }));
+
+      this.yeuThichService.setFavorites(monAns);
+
       this.dialog.open(YeuThich, {
         width: '85vw',
         maxWidth: '900px',
         height: '80vh',
-        data: res
-          .filter((x: any) => x.mon_an)
-          .map((x: any) => x.mon_an)
+        data: res.map(x => x.mon_an)
       });
     });
   }

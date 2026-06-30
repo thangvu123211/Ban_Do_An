@@ -11,6 +11,9 @@ export class YeuThichService {
   private _count$ = new BehaviorSubject<number>(0);
   count$ = this._count$.asObservable();
 
+  private _favoriteIds$ = new BehaviorSubject<Set<number>>(new Set());
+  favoriteIds$ = this._favoriteIds$.asObservable();
+
   constructor(private http: HttpClient) { }
 
   /* ================= LOCAL ================= */
@@ -41,16 +44,15 @@ export class YeuThichService {
     if (!list.find(x => x.ma_mon_an === mon.ma_mon_an)) {
       list.push(mon);
       this.saveLocal(list);
-      this._count$.next(list.length); // 🔥 FIX QUAN TRỌNG
+
+      const ids = new Set(this._favoriteIds$.value);
+      ids.add(Number(mon.ma_mon_an));
+
+      this._favoriteIds$.next(ids);
+      this._count$.next(ids.size);
     }
   }
 
-  removeLocal(maMonAn: number) {
-    const list = this.getLocal().filter(x => x.ma_mon_an !== maMonAn);
-
-    this.saveLocal(list);
-    this._count$.next(list.length); // 🔥 FIX QUAN TRỌNG
-  }
 
   /* ================= DB ================= */
   getByUser(userId: number): Observable<any[]> {
@@ -65,9 +67,6 @@ export class YeuThichService {
     });
   }
 
-  removeDB(maMonAn: number) {
-    return this.http.delete(`${environment.apiUrl}/yeu-thich/${maMonAn}`);
-  }
 
   loadCountFromDB(userId: number) {
     this.getByUser(userId).subscribe(res => {
@@ -108,5 +107,64 @@ export class YeuThichService {
     setTimeout(() => {
       this.loadCountFromDB(userId);
     }, 500);
+  }
+
+  removeLocal(maMonAn: number) {
+    const list = this.getLocal().filter(x => x.ma_mon_an !== maMonAn);
+    this.saveLocal(list);
+
+    const ids = new Set(this._favoriteIds$.value);
+    ids.delete(maMonAn);
+
+    this._favoriteIds$.next(ids);
+    this._count$.next(ids.size);
+  }
+
+  removeDB(maMonAn: number): Observable<any> {
+    return this.http
+      .delete(`${environment.apiUrl}/yeu-thich/${maMonAn}`)
+      .pipe(
+        tap(() => {
+          const ids = new Set(this._favoriteIds$.value);
+          ids.delete(maMonAn);
+
+          this._favoriteIds$.next(ids);
+          this._count$.next(ids.size);
+        })
+      );
+  }
+  setFavorites(list: any[]) {
+    const ids = new Set<number>(list.map(x => x.ma_mon_an));
+    this._favoriteIds$.next(ids);
+    this._count$.next(ids.size);
+  }
+
+  isFavorite(maMonAn: number): boolean {
+    return this._favoriteIds$.value.has(maMonAn);
+  }
+
+  initFavorites() {
+    const token = localStorage.getItem('token');
+    const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+    if (!token) {
+      const local = this.getLocal();
+      this.setFavorites(local);
+      return;
+    }
+
+    this.getByUser(userId).subscribe(res => {
+      const list = res
+        .filter(x => x.mon_an)
+        .map(x => ({
+          ma_mon_an: Number(x.mon_an.ma_mon_an)
+        }));
+
+      this.setFavorites(list);
+    });
+  }
+
+  getFavoriteIds(): Set<number> {
+    return this._favoriteIds$.value;
   }
 }
