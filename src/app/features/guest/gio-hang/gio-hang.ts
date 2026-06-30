@@ -340,6 +340,19 @@ export class GioHang implements OnInit, OnDestroy {
 
         this.maHoaDonDangThanhToan = null as any;
       });
+
+    this.cartService.refreshCart$.subscribe(() => {
+      const token = localStorage.getItem('token');
+      const userId = Number(localStorage.getItem('ma_nguoi_dung'));
+
+      if (token && userId) {
+        this.loadCartFromDB(userId);
+      } else {
+        const local = this.cartService.getLocal();
+        this.gioHang = local.map(x => this.normalizeCartItem(x));
+        this.tinhTong();
+      }
+    });
   }
 
   loadCartFromDB(userId: number) {

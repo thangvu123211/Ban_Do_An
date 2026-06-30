@@ -56,9 +56,15 @@
 
   <!-- ===== FOOTER ===== -->
   <div class="border-t pt-4 mt-4 flex justify-end gap-3">
+
+    <button matButton="filled" class="w-full mb-2" (click)="addAllToCart()">
+      Thêm tất cả vào giỏ hàng
+    </button>
     <button mat-raised-button color="primary" (click)="close()">
       Đóng
     </button>
   </div>
 
 </div>
+
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

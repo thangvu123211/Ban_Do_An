@@ -53,6 +53,23 @@ export class YeuThichService {
     }
   }
 
+  clearAllLocal() {
+    localStorage.removeItem(this.STORAGE_KEY);
+    this._favoriteIds$.next(new Set());
+    this._count$.next(0);
+  }
+
+  clearAllDB(): Observable<any> {
+  return this.http.delete(
+    `${environment.apiUrl}/yeu-thich/clear-all`
+  ).pipe(
+    tap(() => {
+      this._favoriteIds$.next(new Set());
+      this._count$.next(0);
+    })
+  );
+}
+
 
   /* ================= DB ================= */
   getByUser(userId: number): Observable<any[]> {

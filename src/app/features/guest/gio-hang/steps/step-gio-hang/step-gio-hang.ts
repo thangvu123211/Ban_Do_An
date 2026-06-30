@@ -22,6 +22,7 @@ export class StepGioHangComponent {
   @Output() ghiChuChange = new EventEmitter<string>();
   @Output() change = new EventEmitter<{ item: any, type: string }>();
   @Output() sua = new EventEmitter<{ item: any }>
+  @Output() cartUpdated = new EventEmitter<void>();
 
   onClickSua(item: any) {
     this.sua.emit(item);

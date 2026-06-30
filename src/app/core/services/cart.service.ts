@@ -11,6 +11,9 @@ export class CartService {
   private _count$ = new BehaviorSubject<number>(0);
   count$ = this._count$.asObservable();
 
+  private refreshCartSubject = new BehaviorSubject<void>(undefined);
+  refreshCart$ = this.refreshCartSubject.asObservable();
+
   private emitLocalCount(list: any[]) {
     this._count$.next(this.total(list));
   }
@@ -99,7 +102,7 @@ export class CartService {
     this._count$.next(0);
   }
 
-  
+
 
   /* ================= DB ================= */
 
@@ -135,10 +138,10 @@ export class CartService {
   }
 
   clearDB(userId: number) {
-  return this.http.delete(
-    `${environment.apiUrl}/gio-hang/clear?userId=${userId}`
-  );
-}
+    return this.http.delete(
+      `${environment.apiUrl}/gio-hang/clear?userId=${userId}`
+    );
+  }
 
   loadCountFromDB(userId: number) {
     this.getByUser(userId).subscribe({
@@ -192,5 +195,9 @@ export class CartService {
       }),
       map(() => true) // ⭐ ÉP OUTPUT VỀ boolean
     );
+  }
+
+  triggerRefresh() {
+    this.refreshCartSubject.next();
   }
 }
