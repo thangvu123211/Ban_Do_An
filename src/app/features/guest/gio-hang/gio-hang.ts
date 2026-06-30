@@ -987,7 +987,8 @@ export class GioHang implements OnInit, OnDestroy {
         this.cartService.updateCartItem(item.ma_gio_hang, {
           so_luong: result.soLuong,
           options: result.options.map((o: any) => ({
-            ma_option_item: o.ma_option_item
+            ma_option_item: o.ma_option_item,
+            ma_nhom_option: o.ma_nhom_option
           }))
         }).subscribe({
           next: () => {
@@ -1002,8 +1003,9 @@ export class GioHang implements OnInit, OnDestroy {
         });
       } else {
         // LOCAL
-        this.cartService.updateLocal({
+        this.cartService.updateLocalItem({
           cartLocalId: item.cartLocalId,
+          ma_mon_an: item.ma_mon_an,
           soLuong: result.soLuong,
           options: result.options
         });

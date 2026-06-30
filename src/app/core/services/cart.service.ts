@@ -59,18 +59,64 @@ export class CartService {
     this.saveLocal(list);
   }
 
+  updateLocalItem(item: {
+    cartLocalId: string;
+    ma_mon_an: number;
+    soLuong: number;
+    options: any[];
+  }) {
+    const list = this.getLocal();
+
+    const newKey = this.buildOptionKey(item.options);
+
+    const currentIndex = list.findIndex(
+      x => x.cartLocalId === item.cartLocalId
+    );
+    if (currentIndex === -1) return;
+
+    // 🔍 TÌM ITEM KHÁC TRÙNG OPTION
+    const duplicateIndex = list.findIndex(
+      (x, idx) =>
+        idx !== currentIndex &&
+        x.ma_mon_an === item.ma_mon_an &&
+        this.buildOptionKey(x.options) === newKey
+    );
+
+    // 👉 CÓ ITEM TRÙNG → GỘP
+    if (duplicateIndex !== -1) {
+      list[duplicateIndex].soLuong += item.soLuong;
+      list.splice(currentIndex, 1); // ❌ xóa item cũ
+    } else {
+      // 👉 KHÔNG TRÙNG → update bình thường
+      list[currentIndex] = {
+        ...list[currentIndex],
+        soLuong: item.soLuong,
+        options: item.options
+      };
+    }
+
+    this.saveLocal(list);
+  }
+
+  private buildOptionKey(options: any[] = []): string {
+    return (options || [])
+      .map(o => `${o.ma_nhom_option}-${o.ma_option_item}`)
+      .sort()
+      .join('|');
+  }
+
   addLocal(mon: any) {
 
     const list = this.getLocal();
-
     const qty = mon.soLuong ?? 1;
+
+    const newKey = this.buildOptionKey(mon.options);
 
     const found = list.find(x =>
       x.ma_mon_an === mon.ma_mon_an &&
-      JSON.stringify(x.options || []) === JSON.stringify(mon.options || [])
+      this.buildOptionKey(x.options) === newKey
     );
 
-    // ⭐ FIX GIÁ Ở ĐÂY
     const giaGoc = mon.gia_ban ?? mon.gia ?? mon.price ?? 0;
 
     if (found) {
@@ -80,10 +126,8 @@ export class CartService {
         cartLocalId: this.generateId(),
         ma_mon_an: mon.ma_mon_an,
         ten_mon_an: mon.ten_mon_an,
-
         anh: mon.anh || mon.anh_mon_an?.[0]?.url,
-
-        gia_goc: giaGoc,   // ⭐ QUAN TRỌNG
+        gia_goc: giaGoc,
         soLuong: qty,
         options: mon.options || []
       });
