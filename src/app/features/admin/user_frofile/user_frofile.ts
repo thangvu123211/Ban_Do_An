@@ -97,7 +97,7 @@ export class UserFrofileComponents implements OnInit {
     const dialogRef = this.dialog.open(SuaNhanVien, {
       width: '900px',
       maxWidth: '95vw',
-      maxHeight: '90vh',
+      maxHeight: '95vh',
       data: {
         ma_nguoi_dung
       },

@@ -1,20 +1,32 @@
+<div class="fixed inset-0 flex flex-col items-center justify-center text-center
+            bg-gradient-to-br from-green-50 via-green-100 to-green-50">
 
-<div class="fixed inset-0 flex flex-col items-center justify-center text-center">
     <!-- Logo -->
-    <img src="assets/Logo/FoodHub.png" alt="Logo" class="w-30 h-30 animate-pulse" />
+    <img src="assets/Logo/FoodHub.png" class="w-80 h-80 md:w-52 md:h-52 object-contain animate-pulse drop-shadow-md"
+        alt="Logo" />
 
-    <!-- 404 Text -->
-    <h1 class="text-7xl font-extrabold text-yellow-500 animate-bounce">404</h1>
-    <h2 class="text-2xl font-semibold mt-2">Trang không tồn tại</h2>
-    <p class="mt-3">
-        Có vẻ bạn đã truy cập vào một đường dẫn không hợp lệ.
+    <!-- 404 -->
+    <h1 class="text-8xl font-extrabold text-green-600 animate-bounce mt-6">
+        404
+    </h1>
+
+    <!-- Title -->
+    <h2 class="mt-7 text-green-700 text-2xl font-semibold tracking-wide">
+        TRANG KHÔNG TỒN TẠI
+    </h2>
+
+    <!-- Description -->
+    <p class="mt-2 text-green-600 text-l font-semibold tracking-wide">
+        Có vẻ bạn đã truy cập vào một đường dẫn không hợp lệ hoặc trang đã bị xoá.
     </p>
 
-    <!-- Nút quay lại -->
-    <a routerLink="/"
-        class="mt-8 px-6 py-3 bg-yellow-500 text-gray-900 font-semibold rounded-xl hover:bg-yellow-400 transition-all">
+    <!-- Button -->
+    <a routerLink="/" class="mt-8 inline-flex items-center justify-center
+          px-10 py-3 w-64
+          bg-green-600 text-white font-medium
+          rounded-xl shadow-sm
+          hover:bg-green-500 transition-all duration-200
+          tracking-wide">
         ⬅ Quay lại trang chủ
     </a>
-
-
 </div>
