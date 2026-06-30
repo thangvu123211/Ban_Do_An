@@ -169,4 +169,11 @@ export class AdminService {
       ma_shipper: maShipper
     });
   }
+
+  getDoanhThu7Ngay(): Observable<any> {
+    return this.http.get(
+      `${environment.apiUrl}/admin/doanh-thu-7-ngay`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
 }

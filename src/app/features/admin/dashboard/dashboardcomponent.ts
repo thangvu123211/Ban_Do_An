@@ -102,7 +102,7 @@ export type AreaBasicChartOptions = {
 @Component({
   selector: 'app-dashboardcomponent',
   standalone: true,
-  imports: [MATERIAL, NgApexchartsModule ],
+  imports: [MATERIAL, NgApexchartsModule],
   templateUrl: './dashboardcomponent.html',
   styleUrls: ['./dashboardcomponent.scss']
 })
@@ -476,31 +476,21 @@ export class Dashboardcomponent implements OnInit {
   }
 
   loadAreaChartDoanhThuNgay() {
-    const today = new Date();
-    const days = 7;
+    this.adminService.getDoanhThu7Ngay().subscribe({
+      next: (res) => {
+        const labels = res.data.map((x: any) => {
+          const d = new Date(x.ngay);
+          return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')
+            }/${d.getFullYear()}`;
+        });
 
-    const requests = [];
-    const labels: string[] = [];
-
-    for (let i = days - 1; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-
-      const ngay = d.toISOString().split('T')[0]; // yyyy-mm-dd
-      labels.push(ngay);
-
-      requests.push(this.adminService.LayDoanhThuNgay(ngay));
-    }
-
-    forkJoin(requests).subscribe({
-      next: (responses) => {
-        const doanhThuData = responses.map(res => res.data.doanh_thu);
+        const values = res.data.map((x: any) => x.doanh_thu);
 
         this.areaChartOptions = {
           series: [
             {
               name: 'Doanh thu',
-              data: doanhThuData
+              data: values
             }
           ],
           chart: {
@@ -511,9 +501,7 @@ export class Dashboardcomponent implements OnInit {
           stroke: {
             curve: 'smooth'
           },
-          dataLabels: {
-            enabled: false
-          },
+          dataLabels: { enabled: false },
           xaxis: {
             categories: labels
           },
@@ -526,7 +514,7 @@ export class Dashboardcomponent implements OnInit {
         };
       },
       error: (err) => {
-        console.error('Lỗi load area chart doanh thu ngày', err);
+        console.error('Lỗi load chart admin', err);
       }
     });
   }
