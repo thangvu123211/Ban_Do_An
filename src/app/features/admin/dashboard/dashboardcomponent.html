@@ -212,15 +212,21 @@
 <div class="container mx-auto px-4 mt-8">
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Sales Value Chart -->
-    <mat-card>
-      <h3 class="font-bold mb-2 mt-2 ml-4">Món ăn được yêu thích nhất</h3>
-      <apx-chart [series]="pieChartOptions.series" [chart]="pieChartOptions.chart" [labels]="pieChartOptions.labels"
-        [responsive]="pieChartOptions.responsive">
-      </apx-chart>
+    <mat-card class="flex flex-col ">
+      <h1 class="text-xs font-semibold uppercase tracking-wider mb-2 mt-2 ml-2">
+        Món ăn được yêu thích nhất
+      </h1>
+
+      <!-- TĂNG KHOẢNG CÁCH Ở ĐÂY -->
+      <div class="w-full flex justify-center mt-16">
+        <apx-chart [series]="pieChartOptions.series" [chart]="pieChartOptions.chart" [labels]="pieChartOptions.labels"
+          [responsive]="pieChartOptions.responsive">
+        </apx-chart>
+      </div>
     </mat-card>
 
     <mat-card>
-      <h3 class="font-bold mb-2 mt-2 ml-4">% Đơn hoàn thành trong ngày hôm nay</h3>
+      <h1 class="text-xs font-semibold uppercase tracking-wider mb-2 mt-2 ml-4">% Đơn hoàn thành trong ngày hôm nay</h1>
       <apx-chart [series]="RadialbarChartOptions.series" [chart]="RadialbarChartOptions.chart"
         [plotOptions]="RadialbarChartOptions.plotOptions" [labels]="RadialbarChartOptions.labels">
       </apx-chart>
@@ -228,7 +234,7 @@
 
     <!-- Area Chart (full width) -->
     <mat-card class="lg:col-span-2 shadow rounded-lg p-4 mt-6">
-      <h3 class="font-bold mb-2 mt-2 ml-4">Doanh thu theo từng ngày</h3>
+      <h1 class="text-xs font-semibold uppercase tracking-wider mb-2 mt-2 ml-4">Doanh thu theo từng ngày</h1>
       <apx-chart [series]="areaChartOptions.series" [chart]="areaChartOptions.chart" [xaxis]="areaChartOptions.xaxis"
         [stroke]="areaChartOptions.stroke" [tooltip]="areaChartOptions.tooltip"
         [dataLabels]="areaChartOptions.dataLabels">
@@ -265,6 +271,7 @@
       <div class="mb-4 flex items-center justify-between">
         <h2 class="text-lg font-semibold">Đơn hàng đã giao
         </h2>
+        
 
         <span class="text-s">
           Hôm nay

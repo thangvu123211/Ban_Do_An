@@ -76,23 +76,7 @@
         </mat-error>
       </mat-form-field>
 
-      <!-- MÔ TẢ -->
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Mô tả</mat-label>
-
-        <input matInput [(ngModel)]="MonAn.mo_ta" name="mo_ta" required minlength="5" #moTa="ngModel" />
-
-        <mat-error *ngIf="moTa.touched && moTa.errors?.['required']">
-          Vui lòng nhập mô tả
-        </mat-error>
-
-        <mat-error *ngIf="moTa.touched && moTa.errors?.['minlength']">
-          Mô tả tối thiểu 5 ký tự
-        </mat-error>
-      </mat-form-field>
-
-      <!-- GIÁ TIỀN -->
-      <mat-form-field appearance="outline" class="w-full col-span-2">
+      <mat-form-field appearance="outline" class="flex flex-col">
         <mat-label>Giá tiền</mat-label>
 
         <input matInput type="number" [(ngModel)]="MonAn.gia_tien" name="gia_tien" required min="1"
@@ -107,32 +91,57 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-full col-span-2">
-        <mat-label>Giảm giá</mat-label>
+      <div class="flex flex-col col-span-2">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Mô tả</mat-label>
 
-        <input matInput type="number" [(ngModel)]="MonAn.gia_giam" name="gia_giam" required min="0"
-          [max]="MonAn.gia_tien" #giamGia="ngModel" />
+          <textarea matInput rows="4" [(ngModel)]="MonAn.mo_ta" name="mo_ta" required minlength="5" #moTa="ngModel"
+            placeholder="Nhập mô tả món ăn">
+        </textarea>
 
-        <mat-error *ngIf="giamGia.touched && giamGia.errors?.['required']">
-          Vui lòng nhập giá tiền giảm
-        </mat-error>
+          <mat-error *ngIf="moTa.touched && moTa.errors?.['required']">
+            Vui lòng nhập mô tả
+          </mat-error>
 
-        <mat-error *ngIf="giamGia.touched && giamGia.errors?.['min']">
-          Giá giảm phải ≥ 0
-        </mat-error>
+          <mat-error *ngIf="moTa.touched && moTa.errors?.['minlength']">
+            Mô tả tối thiểu 5 ký tự
+          </mat-error>
+        </mat-form-field>
+      </div>
 
-        <mat-error *ngIf="giamGia.touched && giamGia.errors?.['max']">
-          Giá giảm không được lớn hơn giá tiền
-        </mat-error>
-      </mat-form-field>
+      <!-- MÔ TẢ -->
+
+
+
+      <!-- GIÁ TIỀN -->
+      <div class="flex flex-col col-span-2">
+        <mat-form-field appearance="outline" class="w-full col-span-2">
+          <mat-label>Giảm giá</mat-label>
+
+          <input matInput type="number" [(ngModel)]="MonAn.gia_giam" name="gia_giam" required min="0"
+            [max]="MonAn.gia_tien" #giamGia="ngModel" />
+
+          <mat-error *ngIf="giamGia.touched && giamGia.errors?.['required']">
+            Vui lòng nhập giá tiền giảm
+          </mat-error>
+
+          <mat-error *ngIf="giamGia.touched && giamGia.errors?.['min']">
+            Giá giảm phải ≥ 0
+          </mat-error>
+
+          <mat-error *ngIf="giamGia.touched && giamGia.errors?.['max']">
+            Giá giảm không được lớn hơn giá tiền
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+
 
     </div>
   </div>
 
   <!-- BUTTON -->
   <div class="flex justify-end gap-4 mt-8">
-
-
 
     <button matButton="filled" type="button" (click)="capNhat()" [disabled]="editMonForm.invalid || isLoading">
 

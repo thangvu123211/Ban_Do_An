@@ -36,21 +36,12 @@ export class SuaGioHang implements OnInit {
     this.soLuong = item.soLuong || 1;
 
     // 🔥 CHỈ LẤY OPTION CŨ → ĐỔ VÀO selectedOptions
-    this.selectedOptions = [];
-
-    (item.options || []).forEach((o: any) => {
-      const exists = this.selectedOptions.some(
-        x => x.ma_nhom_option === o.ma_nhom_option
-      );
-      if (!exists) {
-        this.selectedOptions.push({
-          ma_option_item: o.ma_option_item,
-          gia_them: o.gia_them || 0,
-          ma_nhom_option: o.ma_nhom_option,
-          ten_option: o.ten_option
-        });
-      }
-    });
+    this.selectedOptions = (item.options || []).map((o: any) => ({
+      ma_option_item: o.ma_option_item,
+      gia_them: o.gia_them || 0,
+      ma_nhom_option: o.ma_nhom_option,
+      ten_option: o.ten_option
+    }));
 
     // ❌ TUYỆT ĐỐI KHÔNG DÙNG item.options SAU DÒNG NÀY
 
@@ -182,10 +173,11 @@ export class SuaGioHang implements OnInit {
     // 🔵 LOGIN → chỉ trả ma_option_item
     if (this.isLoggedIn) {
       this.dialogRef.close({
-        cartLocalId: this.mon.cartLocalId, // ⭐ THÊM CÁI NÀY
-        ma_mon_an: this.mon.ma_mon_an,
         soLuong: this.soLuong,
-        options: this.selectedOptions
+        options: this.selectedOptions.map(o => ({
+          ma_option_item: o.ma_option_item,
+          ma_nhom_option: o.ma_nhom_option
+        }))
       });
       return;
     }

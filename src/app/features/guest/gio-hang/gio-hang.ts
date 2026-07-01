@@ -988,7 +988,7 @@ export class GioHang implements OnInit, OnDestroy {
           so_luong: result.soLuong,
           options: result.options.map((o: any) => ({
             ma_option_item: o.ma_option_item,
-            ma_nhom_option: o.ma_nhom_option
+            ma_nhom_option: o.ma_nhom_option,
           }))
         }).subscribe({
           next: () => {
