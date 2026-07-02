@@ -101,10 +101,7 @@ export class ThongTinNhaHang implements OnInit {
   // SUBMIT
   // =============================
   submit() {
-    if (!this.nhaHang.ten_nha_hang) {
-      this.showToast('Tên nhà hàng không được để trống', 'warn');
-      return;
-    }
+    if (!this.validateForm()) return;
 
     this.loading = true;
 
@@ -119,24 +116,30 @@ export class ThongTinNhaHang implements OnInit {
           this.showToast('Cập nhật thành công', 'success');
           this.loading = false;
         },
-        error: () => this.loading = false
+        error: () => {
+          this.showToast('Cập nhật thất bại', 'error');
+          this.loading = false;
+        }
       });
       return;
     }
 
     // CREATE
-    this.nhaHangService.createNhaHang(this.nhaHang, this.selectedFile).subscribe({
+    this.nhaHangService.createNhaHang(
+      this.nhaHang,
+      this.selectedFile
+    ).subscribe({
       next: () => {
         this.showToast('Tạo nhà hàng thành công', 'success');
-
-        // reset trạng thái
         this.showCreateForm = false;
         this.resetForm();
         this.loadNhaHangByUser();
-
         this.loading = false;
       },
-      error: () => this.loading = false
+      error: () => {
+        this.showToast('Tạo nhà hàng thất bại', 'error');
+        this.loading = false;
+      }
     });
   }
 
@@ -156,6 +159,59 @@ export class ThongTinNhaHang implements OnInit {
     this.previewImage = undefined;
     this.selectedFile = undefined;
     this.currentNhaHangId = undefined;
+  }
+
+  private validateForm(): boolean {
+    if (!this.nhaHang.ten_nha_hang?.trim()) {
+      this.showToast('Vui lòng nhập tên nhà hàng', 'warn');
+      return false;
+    }
+
+    if (!this.nhaHang.dia_chi?.trim()) {
+      this.showToast('Vui lòng nhập địa chỉ nhà hàng', 'warn');
+      return false;
+    }
+
+    if (!this.nhaHang.ngan_hang?.trim()) {
+      this.showToast('Vui lòng nhập tên ngân hàng', 'warn');
+      return false;
+    }
+
+    if (
+      !this.nhaHang.so_tai_khoan ||
+      isNaN(this.nhaHang.so_tai_khoan)
+    ) {
+      this.showToast('Số tài khoản không hợp lệ', 'warn');
+      return false;
+    }
+
+    if (!this.nhaHang.ten_nguoi_nhan?.trim()) {
+      this.showToast('Vui lòng nhập tên người nhận', 'warn');
+      return false;
+    }
+
+    if (!this.nhaHang.gio_mo_cua) {
+      this.showToast('Vui lòng chọn giờ mở cửa', 'warn');
+      return false;
+    }
+
+    if (!this.nhaHang.gio_dong_cua) {
+      this.showToast('Vui lòng chọn giờ đóng cửa', 'warn');
+      return false;
+    }
+
+    if (this.nhaHang.gio_mo_cua >= this.nhaHang.gio_dong_cua) {
+      this.showToast('Giờ đóng cửa phải sau giờ mở cửa', 'warn');
+      return false;
+    }
+
+    // ⚠️ Khi tạo mới → bắt buộc có ảnh
+    if (!this.currentNhaHangId && !this.selectedFile) {
+      this.showToast('Vui lòng tải ảnh đại diện nhà hàng', 'warn');
+      return false;
+    }
+
+    return true;
   }
 
   showToast(message: string, type: 'success' | 'warn' | 'error') {

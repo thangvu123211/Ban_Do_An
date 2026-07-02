@@ -123,11 +123,18 @@
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Email</mat-label>
 
-            <input matInput type="email" #emailInput="ngModel" [(ngModel)]="form.email" name="email" required email
-              required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+            <input matInput type="text" name="email" [(ngModel)]="form.email" #emailInput="ngModel" required
+              pattern="^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$" autocomplete="off" autocorrect="off" autocapitalize="off"
+              spellcheck="false" />
 
-            <mat-error *ngIf="emailInput.invalid && emailInput.touched">
-              Email không hợp lệ
+            <!-- Bỏ trống -->
+            <mat-error *ngIf="emailInput.touched && emailInput.errors?.['required']">
+              Vui lòng nhập email
+            </mat-error>
+
+            <!-- Sai định dạng -->
+            <mat-error *ngIf="emailInput.touched && emailInput.errors?.['pattern']">
+              Email không đúng định dạng (vd: abc@gmail.com)
             </mat-error>
           </mat-form-field>
 

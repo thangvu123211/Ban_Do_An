@@ -4,6 +4,8 @@ import { ToastMessageComponent } from '../../../Shared/toasts_message/toast-mess
 import { MatDialog } from '@angular/material/dialog';
 import { DoiMatKhau } from './doi-mat-khau/doi-mat-khau';
 import { MATERIAL } from '../../../Shared/material';
+import { UserService } from '../../../core/services/user.service';
+import { QuanLyNhanVienService } from '../../../core/services/QuanLyNhanVien.service';
 
 @Component({
   selector: 'app-account',
@@ -17,15 +19,21 @@ export class Account_admincomponent implements OnInit {
   selectedFile?: File;
   previewUrl: string = 'assets/user.jpg';
   isLoading = false;
+  isUploading = false;
   toast = {
     show: false,
     message: '',
     type: 'success' as 'success' | 'warn' | 'error'
   };
 
+  Anhnguoidung: string = 'assets/user.jpg';
+
+  maxNgaySinh!: Date;
+
   constructor(
     private adminService: AdminService,
-    private doimatkhau: MatDialog
+    private doimatkhau: MatDialog,
+    private userService: QuanLyNhanVienService
   ) { }
 
   ngOnInit(): void {
@@ -67,63 +75,52 @@ export class Account_admincomponent implements OnInit {
 
   /** 🖼️ Chọn ảnh mới */
   onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.previewUrl = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
+  const file = event.target.files[0];
+  if (!file) return;
+
+  this.selectedFile = file;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    this.previewUrl = reader.result as string; // ✅ đúng biến HTML đang dùng
+  };
+  reader.readAsDataURL(file);
+}
+
+  formatDateToYMD(date: any): string {
+    if (!date) return '';
+
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = ('0' + (d.getMonth() + 1)).slice(-2);
+    const day = ('0' + d.getDate()).slice(-2);
+
+    return `${year}-${month}-${day}`;
   }
 
   /** ✅ Cập nhật thông tin admin */
   capNhatAdmin() {
-    if (!this.validateAdmin()) {
-      return;
-    }
+    const ma = Number(localStorage.getItem('ma_nguoi_dung'));
+    const formData = new FormData();
 
-    this.isLoading = true;
+    formData.append('ho_ten', this.admin.ho_ten || '');
+    formData.append('email', this.admin.email || '');
+    formData.append('sdt', this.admin.sdt || '');
+    formData.append(
+      'ngay_sinh',
+      this.formatDateToYMD(this.admin.ngay_sinh)
+    );
 
-    const updatedAdmin: any = {
-      ho_ten: this.admin.ho_ten,
-      email: this.admin.email,
-      loai_nguoi_dung: this.admin.loai_nguoi_dung,
-      gioi_tinh: this.admin.gioi_tinh,
-      ngay_sinh: this.admin.ngay_sinh,
-      dia_chi: this.admin.dia_chi,
-    };
-
-    if (this.admin.mat_khau_moi) {
-      if (this.admin.mat_khau_moi !== this.admin.xac_nhan_mat_khau_moi) {
-        this.isLoading = false;
-        this.showToast('Mật khẩu xác nhận không khớp!', 'error');
-        return;
-      }
-      updatedAdmin.mat_khau = this.admin.mat_khau_moi;
-    }
-
-    this.adminService.CapNhatNhanVien(
-      this.admin.ma_nguoi_dung,
-      updatedAdmin,
-      this.selectedFile
-    ).subscribe({
-      next: () => {
-        this.isLoading = false;
-
-        this.showToast('Cập nhật thành công!', 'success');
-
-        this.loadAdmin();
-        this.selectedFile = undefined;
-
-        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
+    this.userService.updateThongTinCaNhanUserShipper(formData).subscribe({
+      next: (res) => {
+        this.showToast(res.message || 'Cập nhật thành công', 'success');
+        this.loadAdmin(); // load lại từ /me
       },
-
-      error: () => {
-        this.isLoading = false;
-        this.showToast('Cập nhật thất bại!', 'error');
+      error: (err) => {
+        this.showToast(
+          err?.error?.error || 'Cập nhật thất bại',
+          'error'
+        );
       }
     });
   }
@@ -160,6 +157,37 @@ export class Account_admincomponent implements OnInit {
 
     return true;
   }
+
+  uploadAvatar() {
+  if (!this.selectedFile) return;
+
+  const ma = Number(localStorage.getItem('ma_nguoi_dung'));
+
+  const formData = new FormData();
+  formData.append('image', this.selectedFile);
+
+  this.isUploading = true;
+
+  this.userService.doiAnhDaiDien(ma, formData).subscribe({
+    next: (res: any) => {
+      this.showToast(res.message || 'Cập nhật ảnh thành công', 'success');
+
+      // ✅ cập nhật avatar ngay
+      this.previewUrl =
+        res.data?.anh_nhan_vien?.[0]?.url || this.previewUrl;
+
+      this.selectedFile = undefined;
+      this.isUploading = false;
+    },
+    error: (err) => {
+      this.showToast(
+        err?.error?.error || 'Upload ảnh thất bại',
+        'error'
+      );
+      this.isUploading = false;
+    }
+  });
+}
 
 
   /** 🔑 Mở dialog đổi mật khẩu */

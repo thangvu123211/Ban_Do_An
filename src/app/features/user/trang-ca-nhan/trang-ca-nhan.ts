@@ -15,6 +15,9 @@ export class TrangCaNhan implements OnInit {
   Thongtinnguoidung: any = null;
   Anhnguoidung: string = 'assets/user.jpg';
 
+  maxNgaySinh!: Date;
+  isUploading = false;
+
   danhSachDiaChi: any[] = [];
   diaChiMacDinh: any = null;
 
@@ -103,19 +106,18 @@ export class TrangCaNhan implements OnInit {
   doiMatKhau() {
     if (!this.validatePassword()) return;
 
-    const ma = Number(localStorage.getItem('ma_nguoi_dung'));
+    const formData = new FormData();
+    formData.append('mat_khau_cu', this.doiMatKhauForm.mat_khau_cu);
+    formData.append('mat_khau_moi', this.doiMatKhauForm.mat_khau_moi);
+    formData.append(
+      'xac_nhan_mat_khau_moi',
+      this.doiMatKhauForm.xac_nhan_mat_khau_moi
+    );
 
-    const payload = {
-      mat_khau_cu: this.doiMatKhauForm.mat_khau_cu,
-      mat_khau_moi: this.doiMatKhauForm.mat_khau_moi,
-      xac_nhan_mat_khau_moi: this.doiMatKhauForm.xac_nhan_mat_khau_moi
-    };
-
-    this.userService.CapNhatThongTinNguoiDung(ma, payload).subscribe({
+    // ✅ GỌI ĐÚNG API
+    this.userService.doiMatKhau(formData).subscribe({
       next: () => {
         this.showToast('Đổi mật khẩu thành công', 'success');
-
-        // clear form
         this.doiMatKhauForm = {
           mat_khau_cu: '',
           mat_khau_moi: '',
@@ -123,10 +125,13 @@ export class TrangCaNhan implements OnInit {
         };
       },
       error: (err) => {
-        this.showToast(
-          err?.error?.error || 'Đổi mật khẩu thất bại',
-          'error'
-        );
+        const msg =
+          err?.error?.error ||          // backend trả { error: "..." }
+          err?.error ||                 // backend trả string
+          err?.message ||               // Angular message
+          'Đổi mật khẩu thất bại';
+
+        this.showToast(msg, 'error');
       }
     });
   }
@@ -137,7 +142,7 @@ export class TrangCaNhan implements OnInit {
 
     this.selectedFile = file;
 
-    // preview ngay lập tức
+    // Preview ngay
     const reader = new FileReader();
     reader.onload = () => {
       this.Anhnguoidung = reader.result as string;
@@ -164,75 +169,111 @@ export class TrangCaNhan implements OnInit {
   themDiaChi() {
     const ma = Number(localStorage.getItem('ma_nguoi_dung'));
 
+    // ===== 1. Validate họ tên =====
+    if (!this.newDiaChi.ho_ten || this.newDiaChi.ho_ten.trim() === '') {
+      this.showToast('Vui lòng nhập họ tên người nhận', 'error');
+      return;
+    }
+
+    // ===== 2. Validate số điện thoại =====
+    if (!this.newDiaChi.sdt || this.newDiaChi.sdt.trim() === '') {
+      this.showToast('Vui lòng nhập số điện thoại', 'error');
+      return;
+    }
+
+    const phoneRegex = /^0[0-9]{9}$/;
+    if (!phoneRegex.test(this.newDiaChi.sdt)) {
+      this.showToast('Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0', 'error');
+      return;
+    }
+
+    // ===== 3. Validate địa chỉ =====
+    if (!this.newDiaChi.dia_chi || this.newDiaChi.dia_chi.trim() === '') {
+      this.showToast('Vui lòng nhập địa chỉ chi tiết', 'error');
+      return;
+    }
+
+    // // ===== 4. (Tuỳ chọn) Validate toạ độ =====
+    // if (this.openMap && (!this.newDiaChi.latitude || !this.newDiaChi.longitude)) {
+    //   this.showToast('Vui lòng chọn vị trí trên bản đồ', 'error');
+    //   return;
+    // }
+
+    // ===== 5. Payload =====
     const payload = {
-      ...this.newDiaChi,
-      ma_nguoi_dung: ma
+      ho_ten: this.newDiaChi.ho_ten.trim(),
+      sdt: this.newDiaChi.sdt.trim(),
+      dia_chi: this.newDiaChi.dia_chi.trim(),
+      mac_dinh: this.newDiaChi.mac_dinh,
+      latitude: this.newDiaChi.latitude,
+      longitude: this.newDiaChi.longitude,
+      ma_nguoi_dung: this.newDiaChi.ma_nguoi_dung
     };
 
+    // ===== 6. Gọi API =====
     this.diaChiService.ThemDiaChi(payload).subscribe({
       next: () => {
         this.showToast('Thêm địa chỉ thành công', 'success');
-
         this.LayDiaChi(ma);
-
-        this.newDiaChi = {
-          ho_ten: '',
-          sdt: '',
-          dia_chi: '',
-          mac_dinh: false
-        };
-
-        this.showAdd = false;
       },
       error: () => {
-        this.showToast('Thêm địa chỉ thất bại', 'error');
+        this.showToast('Không thể thêm địa chỉ, vui lòng thử lại', 'error');
       }
     });
   }
 
   capNhatNguoiDung() {
     const ma = Number(localStorage.getItem('ma_nguoi_dung'));
+    const formData = new FormData();
 
-    const payload = {
-      ho_ten: this.Thongtinnguoidung.ho_ten,
-      email: this.Thongtinnguoidung.email,
-      sdt: this.Thongtinnguoidung.sdt,
-      ngay_sinh: this.formatDateToYMD(this.Thongtinnguoidung.ngay_sinh),
-    };
+    formData.append('ho_ten', this.Thongtinnguoidung.ho_ten || '');
+    formData.append('email', this.Thongtinnguoidung.email || '');
+    formData.append('sdt', this.Thongtinnguoidung.sdt || '');
+    formData.append(
+      'ngay_sinh',
+      this.formatDateToYMD(this.Thongtinnguoidung.ngay_sinh)
+    );
 
-    this.userService.CapNhatThongTinNguoiDung(ma, payload, this.selectedFile || undefined)
-      .subscribe({
-        next: () => {
-          this.showToast('Cập nhật thành công', 'success');
-          this.loadUser(ma);
-        },
-        error: (err) => {
-          this.showToast(err?.error?.error || 'Cập nhật thất bại', 'error');
-        }
-      });
+    this.userService.updateThongTinCaNhanUserShipper(formData).subscribe({
+      next: (res) => {
+        this.showToast(res.message || 'Cập nhật thành công', 'success');
+        this.loadUser(ma); // load lại từ /me
+      },
+      error: (err) => {
+        this.showToast(
+          err?.error?.error || 'Cập nhật thất bại',
+          'error'
+        );
+      }
+    });
   }
 
   uploadAvatar() {
-    if (!this.selectedFile) {
-      this.showToast('Vui lòng chọn ảnh trước', 'warn');
-      return;
-    }
+    if (!this.selectedFile) return;
 
     const ma = Number(localStorage.getItem('ma_nguoi_dung'));
 
-    this.userService.CapNhatThongTinNguoiDung(
-      ma,
-      {}, // hoặc null / undefined tùy backend
-      this.selectedFile
-    ).subscribe({
-      next: () => {
-        this.showToast('Cập nhật ảnh đại diện thành công', 'success');
+    const formData = new FormData();
+    formData.append('image', this.selectedFile);
 
-        this.loadUser(ma);
+    this.isUploading = true;
+
+    this.userService.doiAnhDaiDien(ma, formData).subscribe({
+      next: (res: any) => {
+        this.showToast(res.message, 'success');
+
+        // ảnh từ backend
+        this.Anhnguoidung = res.data?.anh_nhan_vien?.[0]?.url || this.Anhnguoidung;
+
         this.selectedFile = null;
+        this.isUploading = false;
       },
       error: (err) => {
-        this.showToast(err?.error?.error || 'Upload ảnh thất bại', 'error');
+        this.showToast(
+          err?.error?.error || 'Upload ảnh thất bại',
+          'error'
+        );
+        this.isUploading = false;
       }
     });
   }
@@ -254,15 +295,45 @@ export class TrangCaNhan implements OnInit {
   }
 
   capNhatDiaChi() {
+    const ma = Number(localStorage.getItem('ma_nguoi_dung'));
+    if (!this.editingDiaChiId) return;
+
+    // ===== Validate họ tên =====
+    if (!this.editDiaChiForm.ho_ten || this.editDiaChiForm.ho_ten.trim() === '') {
+      this.showToast('Vui lòng nhập họ tên', 'error');
+      return;
+    }
+
+    // ===== Validate số điện thoại =====
+    if (!this.editDiaChiForm.sdt || this.editDiaChiForm.sdt.trim() === '') {
+      this.showToast('Vui lòng nhập số điện thoại', 'error');
+      return;
+    }
+
+    const phoneRegex = /^0[0-9]{9}$/;
+    if (!phoneRegex.test(this.editDiaChiForm.sdt)) {
+      this.showToast('Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0', 'error');
+      return;
+    }
+
+    // ===== Validate địa chỉ =====
+    if (!this.editDiaChiForm.dia_chi || this.editDiaChiForm.dia_chi.trim() === '') {
+      this.showToast('Vui lòng nhập địa chỉ', 'error');
+      return;
+    }
+
+    // ===== Gọi API =====
     this.diaChiService.CapNhatDiaChi(
-      this.editingDiaChiId!,
-      this.editDiaChiForm
+      this.editingDiaChiId,
+      {
+        ...this.editDiaChiForm,
+        ho_ten: this.editDiaChiForm.ho_ten.trim(),
+        sdt: this.editDiaChiForm.sdt.trim(),
+        dia_chi: this.editDiaChiForm.dia_chi.trim()
+      }
     ).subscribe({
       next: () => {
-        const ma = Number(localStorage.getItem('ma_nguoi_dung'));
-
         this.showToast('Cập nhật địa chỉ thành công', 'success');
-
         this.editingDiaChiId = null;
         this.LayDiaChi(ma);
       },

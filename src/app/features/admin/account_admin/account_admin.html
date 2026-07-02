@@ -1,12 +1,10 @@
-
-
 <div class="relative h-80 flex items-center px-10 bg-white">
   <div>
     <h1 class="text-4xl font-bold mb-3 text-gray-800">
-     Hello {{ admin?.ho_ten }}
+      Hello {{ admin?.ho_ten }}
     </h1>
     <p class="text-gray-600 max-w-xl">
-        Đây Là Trang Cá Nhân Của {{ admin?.ho_ten }}
+      Đây Là Trang Cá Nhân Của {{ admin?.ho_ten }}
     </p>
   </div>
 </div>
@@ -30,16 +28,54 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <!-- ===== HỌ TÊN ===== -->
+
+
+
           <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Họ Tên</mat-label>
-            <input matInput placeholder="Nhập họ tên" [(ngModel)]="admin.ho_ten" name="ho_ten" />
+            <mat-label>Họ tên</mat-label>
+            <input matInput [(ngModel)]="admin.ho_ten" name="ho_ten" required minlength="2" #hoTen="ngModel" />
+            <mat-error *ngIf="hoTen.touched && hoTen.errors?.['required']">
+              Họ tên không được để trống
+            </mat-error>
+            <mat-error *ngIf="hoTen.touched && hoTen.errors?.['minlength']">
+              Họ tên phải ≥ 2 ký tự
+            </mat-error>
           </mat-form-field>
+
 
           <!-- ===== EMAIL ===== -->
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Email</mat-label>
-            <input matInput placeholder="Nhập email" [(ngModel)]="admin.email" name="email" />
+            <input matInput [(ngModel)]="admin.email" name="email" required email #email="ngModel" />
+
+            <mat-error *ngIf="email.touched && email.errors?.['required']">
+              Vui lòng nhập email
+            </mat-error>
+
+            <mat-error *ngIf="email.touched && email.errors?.['email']">
+              Email không đúng định dạng
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Số điện thoại</mat-label>
+            <input matInput [(ngModel)]="admin.sdt" name="sdt" required pattern="^0[0-9]{9}$" #sdt="ngModel" />
+
+            <mat-error *ngIf="sdt.touched && sdt.errors?.['required']">
+              Vui lòng nhập số điện thoại
+            </mat-error>
+
+            <mat-error *ngIf="sdt.touched && sdt.errors?.['pattern']">
+              Số điện thoại phải gồm 10 số và bắt đầu bằng 0
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Ngày sinh</mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="admin.ngay_sinh" name="ngay_sinh" required
+              [max]="maxNgaySinh" #ngaySinh="ngModel" />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
 
         </div>
@@ -95,15 +131,15 @@
           Thay Đổi Ảnh Đại Diện
         </button>
 
-        <button matButton="filled" (click)="capNhatAdmin()" *ngIf="selectedFile" [disabled]="f.invalid || isLoading"
-            class="px-4 py-2 flex items-center gap-2">
-            <mat-icon *ngIf="isLoading" class="animate-spin">refresh</mat-icon>
-            <mat-icon *ngIf="!isLoading">check</mat-icon>
+        <button matButton="filled" (click)="uploadAvatar()" *ngIf="selectedFile" [disabled]="isUploading"
+          class="px-4 py-2 flex items-center gap-2">
+          <mat-icon *ngIf="isUploading" class="animate-spin">refresh</mat-icon>
+          <mat-icon *ngIf="!isUploading">check</mat-icon>
 
-            <span>
-              {{ isLoading ? 'Đang cập nhật...' : 'Cập nhật' }}
-            </span>
-          </button>
+          <span>
+            {{ isUploading ? 'Đang cập nhật...' : 'Cập nhật' }}
+          </span>
+        </button>
       </div>
 
     </div>

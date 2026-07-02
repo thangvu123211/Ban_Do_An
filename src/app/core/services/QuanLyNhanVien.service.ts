@@ -45,55 +45,36 @@ export class QuanLyNhanVienService {
   }
 
   /** 🟩 Cập nhật thông tin nhân viên (có token) */
-  CapNhatNhanVien(ma_nguoi_dung: number, userData: any, selectedFile?: File): Observable<any> {
-    const formData = new FormData();
-
-    // Gán tất cả trường, bao gồm mat_khau nếu có
-    Object.entries(userData).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        formData.append(key, value as string);
-      }
-    });
-
-    // Nếu có ảnh mới, thêm vào formData
-    if (selectedFile) {
-      formData.append('image', selectedFile);
-    }
-
-    return this.http.patch(`${environment.apiUrl}/nhanvien/update/${ma_nguoi_dung}`, formData, {
-      headers: this.getAuthHeaders()
-    });
+  CapNhatNhanVien(ma_nguoi_dung: number, formData: FormData): Observable<any> {
+    return this.http.patch(
+      `${environment.apiUrl}/nhanvien/update/${ma_nguoi_dung}`,
+      formData,
+      { headers: this.getAuthHeaders() }
+    );
   }
 
-  CapNhatThongTinNguoiDung(ma_nguoi_dung: number, userData: any, selectedFile?: File): Observable<any> {
-    const formData = new FormData();
-
-    if (userData.ho_ten) formData.append('ho_ten', userData.ho_ten);
-    if (userData.email) formData.append('email', userData.email);
-    if (userData.sdt) formData.append('sdt', userData.sdt);
-
-    if (userData.ngay_sinh) {
-      const date = new Date(userData.ngay_sinh);
-      formData.append('ngay_sinh', date.toISOString().split('T')[0]); // YYYY-MM-DD
-    }
-
-    if (userData.gioi_tinh) formData.append('gioi_tinh', userData.gioi_tinh);
-    if (userData.trang_thai) formData.append('trang_thai', userData.trang_thai);
-
-    if (userData.mat_khau_cu) formData.append('mat_khau_cu', userData.mat_khau_cu);
-    if (userData.mat_khau_moi) formData.append('mat_khau_moi', userData.mat_khau_moi);
-    if (userData.xac_nhan_mat_khau_moi) formData.append('xac_nhan_mat_khau_moi', userData.xac_nhan_mat_khau_moi);
-
-    if (selectedFile) {
-      formData.append('image', selectedFile);
-    }
-
+  CapNhatThongTinNguoiDung(
+    ma_nguoi_dung: number,
+    formData: FormData
+  ) {
     return this.http.patch(
       `${environment.apiUrl}/nhanvien/capNhatThongTinCaNhan/${ma_nguoi_dung}`,
       formData,
-      {
-        headers: this.getAuthHeaders()
-      }
+
+    );
+  }
+
+  updateThongTinCaNhanUserShipper(formData: FormData): Observable<any> {
+    return this.http.put(
+      `${environment.apiUrl}/nhanvien/update_thong_tin_ca_nhan_user_shipper`,
+      formData
+    );
+  }
+
+  doiMatKhau(formData: FormData) {
+    return this.http.put(
+      `${environment.apiUrl}/nhanvien/doi-mat-khau`,
+      formData,
     );
   }
 
@@ -102,5 +83,12 @@ export class QuanLyNhanVienService {
       `${environment.apiUrl}/nhanvien/shippers`
     );
   }
+
+  doiAnhDaiDien(maNguoiDung: number, formData: FormData) {
+  return this.http.patch(
+    `${environment.apiUrl}/nhanvien/doi-anh-dai-dien`,
+    formData,
+  );
+}
 
 }

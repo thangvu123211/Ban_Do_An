@@ -96,6 +96,21 @@
             <!-- ========== LIST COMMENT ========== -->
             <div class="flex-1 overflow-y-auto space-y-4 pr-2">
 
+                <div *ngIf="!binhLuans || binhLuans.length === 0"
+                    class="flex flex-col items-center justify-center h-full text-gray-500 select-none">
+
+                    <!-- ICON FIX KHÔNG BỊ CẮT -->
+                    <div class="w-20 h-20 flex items-center justify-center rounded-full bg-green-50 mb-3">
+                        <mat-icon class="text-green-400"
+                            style="font-size:48px; width:48px; height:48px; line-height:48px;">
+                            chat_bubble_outline
+                        </mat-icon>
+                    </div>
+
+                    <p class="text-sm font-medium">Chưa có bình luận nào</p>
+                    <p class="text-xs text-gray-400 mt-1">Hãy là người đầu tiên bình luận</p>
+                </div>
+
                 <ng-container *ngFor="let c of binhLuans">
 
                     <!-- ===== COMMENT CHA ===== -->
@@ -150,8 +165,10 @@
                             <input [(ngModel)]="replyText[c.id]" placeholder="Viết trả lời..."
                                 class="flex-1 border rounded-xl px-3 py-2 focus:ring-2 focus:ring-green-400 outline-none" />
 
-                            <button mat-flat-button color="primary" (click)="guiBinhLuan(c.id)">
-                                Gửi
+                            <button mat-flat-button color="primary" (click)="guiBinhLuan(c.id)"
+                                [disabled]="isSendingReply[c.id] || !replyText[c.id].trim()">
+                                <mat-icon *ngIf="isSendingReply[c.id]" class="animate-spin">autorenew</mat-icon>
+                                <span *ngIf="!isSendingReply[c.id]">Gửi</span>
                             </button>
 
                         </div>
@@ -215,10 +232,24 @@
             <div class="flex gap-2 p-3 border-t bg-white sticky bottom-0">
 
                 <input [(ngModel)]="noiDungBinhLuan" placeholder="Viết bình luận..." (keyup.enter)="guiBinhLuan()"
-                    class="flex-1 border rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none" />
+                    [disabled]="isSending" class="flex-1 border rounded-xl px-4 py-2
+                        focus:ring-2 focus:ring-green-400
+                        outline-none disabled:bg-gray-100" />
 
-                <button mat-flat-button color="primary" (click)="guiBinhLuan()">
-                    Gửi
+                <button mat-flat-button color="primary" (click)="guiBinhLuan()"
+                    [disabled]="isSending || !noiDungBinhLuan.trim()">
+
+                    <!-- LOADING -->
+                    <ng-container *ngIf="isSending; else sendText">
+                        <mat-progress-spinner diameter="18" mode="indeterminate" color="accent">
+                        </mat-progress-spinner>
+                    </ng-container>
+
+                    <!-- TEXT -->
+                    <ng-template #sendText>
+                        Gửi
+                    </ng-template>
+
                 </button>
 
             </div>
@@ -227,6 +258,19 @@
 
         <!-- ===== RATING ===== -->
         <div *ngIf="activeTab === 'rating'" class="space-y-4 max-w-2xl mx-auto">
+
+            <div *ngIf="!ratings || ratings.length === 0"
+                class="flex flex-col items-center justify-center py-20 text-gray-500 select-none">
+
+                <div class="w-20 h-20 flex items-center justify-center rounded-full bg-amber-50 mb-3">
+                    <mat-icon class="text-amber-400" style="font-size:48px; width:48px; height:48px; line-height:48px;">
+                        star_border
+                    </mat-icon>
+                </div>
+
+                <p class="text-sm font-medium">Chưa có đánh giá nào</p>
+                <p class="text-xs text-gray-400 mt-1">Bạn có thể đặt hàng và thanh toán sau khi trải nghiệm sản phẩm</p>
+            </div>
 
             <div *ngFor="let r of ratings"
                 class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow duration-200">

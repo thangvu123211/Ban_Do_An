@@ -25,19 +25,15 @@
           <div class="flex flex-col items-center gap-4">
 
             <div class="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 rounded-xl overflow-hidden shadow bg-gray-100">
-              <img [src]="previewImage || 'assets/user.jpg'"
-                   class="w-full h-full object-cover" />
+              <img [src]="previewImage || 'assets/user.jpg'" class="w-full h-full object-cover" />
             </div>
 
-            <button matButton="filled" type="button"
-                    class="w-full sm:w-auto px-4"
-                    (click)="fileInput.click()">
+            <button matButton="filled" type="button" class="w-full sm:w-auto px-4" (click)="fileInput.click()">
               <mat-icon>upload</mat-icon>
               <span class="ml-1">Thay ảnh</span>
             </button>
 
-            <input #fileInput type="file" hidden
-                   (change)="onFileSelected($event)" accept="image/*" />
+            <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*" />
           </div>
 
           <!-- FORM -->
@@ -48,9 +44,7 @@
               <!-- Họ tên -->
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Họ tên</mat-label>
-                <input matInput [(ngModel)]="NhanVien.ho_ten"
-                       name="ho_ten" required minlength="2"
-                       #hoTen="ngModel" />
+                <input matInput [(ngModel)]="NhanVien.ho_ten" name="ho_ten" required minlength="2" #hoTen="ngModel" />
                 <mat-error *ngIf="hoTen.touched && hoTen.errors?.['required']">
                   Họ tên không được để trống
                 </mat-error>
@@ -62,21 +56,17 @@
               <!-- Giới tính -->
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Giới tính</mat-label>
-                <mat-select [(ngModel)]="NhanVien.gioi_tinh"
-                            name="gioi_tinh" required #gioiTinh="ngModel">
+                <mat-select [(ngModel)]="NhanVien.gioi_tinh" name="gioi_tinh" required #gioiTinh="ngModel">
                   <mat-option value="Nam">Nam</mat-option>
                   <mat-option value="Nữ">Nữ</mat-option>
                 </mat-select>
               </mat-form-field>
-
+              
               <!-- Ngày sinh -->
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Ngày sinh</mat-label>
-                <input matInput [matDatepicker]="picker"
-                       [(ngModel)]="NhanVien.ngay_sinh"
-                       name="ngay_sinh" required
-                       [max]="maxNgaySinh"
-                       #ngaySinh="ngModel" />
+                <input matInput [matDatepicker]="picker" [(ngModel)]="NhanVien.ngay_sinh" name="ngay_sinh" required
+                  [max]="maxNgaySinh" #ngaySinh="ngModel" />
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
@@ -84,15 +74,21 @@
               <!-- Email -->
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Email</mat-label>
-                <input matInput [(ngModel)]="NhanVien.email"
-                       name="email" required email />
+                <input matInput [(ngModel)]="NhanVien.email" name="email" required email #email="ngModel" />
+
+                <mat-error *ngIf="email.touched && email.errors?.['required']">
+                  Vui lòng nhập email
+                </mat-error>
+
+                <mat-error *ngIf="email.touched && email.errors?.['email']">
+                  Email không đúng định dạng
+                </mat-error>
               </mat-form-field>
 
               <!-- Loại user -->
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Loại người dùng</mat-label>
-                <mat-select [(ngModel)]="NhanVien.loai_nguoi_dung"
-                            name="loai_nguoi_dung" required>
+                <mat-select [(ngModel)]="NhanVien.loai_nguoi_dung" name="loai_nguoi_dung" required>
                   <mat-option value="admin">Admin</mat-option>
                   <mat-option value="user">User</mat-option>
                   <mat-option value="shipper">Shipper</mat-option>
@@ -102,23 +98,27 @@
               <!-- SĐT -->
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Số điện thoại</mat-label>
-                <input matInput [(ngModel)]="NhanVien.sdt"
-                       name="sdt" required pattern="^0[0-9]{9}$" />
+                <input matInput [(ngModel)]="NhanVien.sdt" name="sdt" required pattern="^0[0-9]{9}$" #sdt="ngModel" />
+
+                <mat-error *ngIf="sdt.touched && sdt.errors?.['required']">
+                  Vui lòng nhập số điện thoại
+                </mat-error>
+
+                <mat-error *ngIf="sdt.touched && sdt.errors?.['pattern']">
+                  Số điện thoại phải gồm 10 số và bắt đầu bằng 0
+                </mat-error>
               </mat-form-field>
 
               <!-- Mật khẩu -->
               <mat-form-field appearance="outline" class="w-full md:col-span-2">
                 <mat-label>Mật khẩu</mat-label>
-                <input matInput type="password"
-                       [(ngModel)]="NhanVien.mat_khau_moi"
-                       name="mat_khau_moi" />
+                <input matInput type="password" [(ngModel)]="NhanVien.mat_khau_moi" name="mat_khau_moi" />
               </mat-form-field>
 
               <!-- Trạng thái -->
               <mat-form-field appearance="outline" class="w-full md:col-span-2">
                 <mat-label>Trạng thái tài khoản</mat-label>
-                <mat-select [(ngModel)]="NhanVien.trang_thai"
-                            name="trang_thai" required>
+                <mat-select [(ngModel)]="NhanVien.trang_thai" name="trang_thai" required>
                   <mat-option value="khoa">Bị khóa</mat-option>
                   <mat-option value="hoat_dong">Hoạt động</mat-option>
                 </mat-select>
@@ -134,11 +134,8 @@
     <!-- FOOTER -->
     <div class="border-t bg-white p-3 flex justify-end gap-3 sticky bottom-0">
 
-      <button matButton="filled"
-              type="button"
-              (click)="capNhatNhanVien()"
-              [disabled]="editForm.invalid || loading"
-              class="flex items-center gap-2">
+      <button matButton="filled" type="button" (click)="capNhatNhanVien()" [disabled]="editForm.invalid || loading"
+        class="flex items-center gap-2">
         <mat-icon *ngIf="loading" class="animate-spin">refresh</mat-icon>
         <mat-icon *ngIf="!loading">check</mat-icon>
         {{ loading ? 'Đang cập nhật...' : 'Cập nhật' }}
@@ -152,3 +149,5 @@
 
   </form>
 </div>
+
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

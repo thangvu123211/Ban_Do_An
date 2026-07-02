@@ -3,11 +3,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { QuanLyNhanVienService } from '../../../../core/services/QuanLyNhanVien.service';
 import { MATERIAL } from '../../../../Shared/material';
+import { ToastMessageComponent } from '../../../../Shared/toasts_message/toast-message/toast-message';
 
 @Component({
   selector: 'app-sua-nhan-vien',
   imports: [
-    MATERIAL
+    MATERIAL,
+    ToastMessageComponent
   ],
   templateUrl: './sua-nhan-vien.html',
   styleUrl: './sua-nhan-vien.scss'
@@ -85,31 +87,54 @@ export class SuaNhanVien implements OnInit {
 
   // ✅ Cập nhật nhân viên
   capNhatNhanVien() {
-    if (!this.NhanVien) return;
+  if (!this.NhanVien) return;
 
-    this.loading = true;
+  // ❌ validate ngày sinh FE
+  if (this.NhanVien.ngay_sinh && this.NhanVien.ngay_sinh >= new Date()) {
+    this.showToast('Ngày sinh phải nhỏ hơn ngày hiện tại', 'warn');
+    return;
+  }
 
-    const updatedNhanVien: any = {
-      ho_ten: this.NhanVien.ho_ten,
-      email: this.NhanVien.email,
-      gioi_tinh: this.NhanVien.gioi_tinh,
-      ngay_sinh: this.NhanVien.ngay_sinh,
-      dia_chi: this.NhanVien.dia_chi,
-      loai_nhan_vien: this.NhanVien.loai_nguoi_dung,
-      trang_thai: this.NhanVien.trang_thai,
-      sdt:this.NhanVien.sdt
-    };
+  this.loading = true;
 
-    // ✅ CHỈ THÊM KHI CÓ NHẬP
-    if (this.NhanVien.mat_khau_moi?.trim()) {
-      updatedNhanVien.mat_khau = this.NhanVien.mat_khau_moi;
+  const formData = new FormData();
+
+  Object.entries({
+    ho_ten: this.NhanVien.ho_ten,
+    email: this.NhanVien.email,
+    gioi_tinh: this.NhanVien.gioi_tinh,
+    ngay_sinh: this.NhanVien.ngay_sinh,
+    loai_nhan_vien: this.NhanVien.loai_nguoi_dung,
+    trang_thai: this.NhanVien.trang_thai,
+    sdt: this.NhanVien.sdt,
+  }).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+
+      // 🔥 FORMAT NGÀY
+      if (key === 'ngay_sinh' && value instanceof Date) {
+        formData.append(
+          key,
+          value.toISOString().split('T')[0] // YYYY-MM-DD
+        );
+      } else {
+        formData.append(key, value as string);
+      }
     }
+  });
 
-    this.QuanLyNhanVienService.CapNhatNhanVien(
-      this.data.ma_nguoi_dung,
-      updatedNhanVien,
-      this.selectedFile
-    ).subscribe({
+  // mật khẩu mới
+  if (this.NhanVien.mat_khau_moi?.trim()) {
+    formData.append('mat_khau', this.NhanVien.mat_khau_moi);
+  }
+
+  // ảnh
+  if (this.selectedFile) {
+    formData.append('image', this.selectedFile);
+  }
+
+  this.QuanLyNhanVienService
+    .CapNhatNhanVien(this.data.ma_nguoi_dung, formData)
+    .subscribe({
       next: () => {
         this.loading = false;
         this.showToast('Cập nhật thành công!', 'success');
@@ -117,10 +142,10 @@ export class SuaNhanVien implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        this.showToast(err.error?.error || 'Cập nhật thất bại!', 'error');
+        this.showToast(err?.error?.error || 'Cập nhật thất bại!', 'error');
       }
     });
-  }
+}
 
 
 

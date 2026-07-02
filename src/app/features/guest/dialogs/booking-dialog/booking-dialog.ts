@@ -28,6 +28,8 @@ export class BookingDialog {
     type: 'success' as 'success' | 'warn' | 'error'
   };
 
+  
+
   constructor(
     public dialogRef: MatDialogRef<BookingDialog>,
     private dialog: MatDialog,
@@ -63,8 +65,27 @@ export class BookingDialog {
 
 
   confirm(): void {
-    if (!this.TENKHACHHANG || !this.SDT) {
-      this.showToast('Vui lòng nhập đầy đủ tên khách hàng và số điện thoại!', 'error');
+    if (!this.TENKHACHHANG || !this.SDT || !this.EMAIL) {
+      this.showToast('Vui lòng nhập đầy đủ thông tin khách hàng!', 'error');
+      return;
+    }
+
+    if (!this.TENKHACHHANG || !this.SDT || !this.EMAIL) {
+      this.showToast('Vui lòng nhập đầy đủ thông tin khách hàng!', 'error');
+      return;
+    }
+
+    // ===== Validate SĐT =====
+    const phoneRegex = /^0\d{9}$/;
+    if (!phoneRegex.test(this.SDT)) {
+      this.showToast('Số điện thoại phải gồm 10 số và bắt đầu bằng 0', 'error');
+      return;
+    }
+
+    // ===== Validate Email =====
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.EMAIL)) {
+      this.showToast('Email không đúng định dạng', 'error');
       return;
     }
 

@@ -22,6 +22,13 @@
     <!-- ================= BÌNH LUẬN ================= -->
     <div *ngIf="tab==='comment'" class="space-y-4 max-h-[60vh] overflow-y-auto">
 
+        <div *ngIf="!binhLuans || binhLuans.length === 0"
+            class="flex flex-col items-center justify-center text-gray-500 py-10">
+
+            <mat-icon class="text-xl mb-3">chat_bubble_outline</mat-icon>
+            <p class="text-sm">Chưa có bình luận nào</p>
+        </div>
+
         <div *ngFor="let c of binhLuans" class="border rounded-xl p-4 bg-gray-50">
 
             <!-- Bình luận cha -->
@@ -57,6 +64,13 @@
 
     <!-- ================= ĐÁNH GIÁ ================= -->
     <div *ngIf="tab==='rating'" class="space-y-4 max-h-[60vh] overflow-y-auto">
+
+        <div *ngIf="!danhGias || danhGias.length === 0"
+            class="flex flex-col items-center justify-center text-gray-500 py-10">
+
+            <mat-icon class="text-xl mb-3">star_border</mat-icon>
+            <p class="text-sm">Chưa có đánh giá nào</p>
+        </div>
 
         <div *ngFor="let r of danhGias" class="border rounded-xl p-4 bg-white">
 

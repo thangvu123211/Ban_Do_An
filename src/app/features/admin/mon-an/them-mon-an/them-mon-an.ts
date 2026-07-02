@@ -4,11 +4,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { QuanLyLoaiMonAn } from '../../../../core/services/QuanLyLoaiMonAnService';
 import { QuanLyMonAn } from '../../../../core/services/QuanLyMonAn.service';
 import { MoneyFormatService } from '../../../../core/services/WebService/money-format.service';
+import { ToastMessageComponent } from '../../../../Shared/toasts_message/toast-message/toast-message';
 
 
 @Component({
   selector: 'app-them-mon-an',
-  imports: [MATERIAL],
+  imports: [MATERIAL,ToastMessageComponent],
   templateUrl: './them-mon-an.html',
   styleUrl: './them-mon-an.scss'
 })
@@ -17,7 +18,7 @@ export class ThemMonAn implements OnInit {
     ma_loai_mon_an: '',
     ten_mon_an: '',
     gia_tien: 0,
-    trang_thai: '',
+    trang_thai: 1,
     mo_ta: '',
     gia_giam: 0,
   }
@@ -29,6 +30,12 @@ export class ThemMonAn implements OnInit {
   selectedFile: File | null = null;
   previewUrl: string | null = null;
 
+  toast = {
+    show: false,
+    message: '',
+    type: 'success' as 'success' | 'warn' | 'error'
+  };
+
   constructor(
     private dialogRef: MatDialogRef<ThemMonAn>,
     private QuanLyMonAn: QuanLyMonAn,
@@ -37,38 +44,45 @@ export class ThemMonAn implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
-  addMonAn() {
-    this.loading = true;
-
-    const formData = new FormData();
-
-    formData.append('ma_loai_mon_an', String(this.MonAn.ma_loai_mon_an));
-    formData.append('ten_mon_an', this.MonAn.ten_mon_an);
-    formData.append('gia_tien', String(this.MonAn.gia_tien));
-    formData.append('trang_thai', String(this.MonAn.trang_thai));
-    formData.append('mo_ta', String(this.MonAn.mo_ta));
-    formData.append('gia_giam', String(this.MonAn.gia_giam));
-
-    if (this.selectedFile) {
-      formData.append('image', this.selectedFile);
-    }
-
-    this.QuanLyMonAn.ThemMonAn(formData).subscribe({
-      next: (res: any) => {
-        this.loading = false;
-
-        if (res?.data) {
-          this.dialogRef.close(res.data);
-        } else {
-          this.dialogRef.close(true);
-        }
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error('Lỗi thêm món ăn', err);
-      }
-    });
+  showToast(message: string, type: 'success' | 'warn' | 'error') {
+    this.toast.show = true;
+    this.toast.message = message;
+    this.toast.type = type;
+    setTimeout(() => this.toast.show = false, 3000);
   }
+
+  addMonAn() {
+  this.loading = true;
+
+  const formData = new FormData();
+
+  formData.append('ma_loai_mon_an', String(this.MonAn.ma_loai_mon_an));
+  formData.append('ten_mon_an', this.MonAn.ten_mon_an);
+  formData.append('gia_tien', String(this.MonAn.gia_tien));
+  formData.append('trang_thai', String(this.MonAn.trang_thai));
+  formData.append('mo_ta', this.MonAn.mo_ta);
+  formData.append('gia_giam', String(this.MonAn.gia_giam));
+
+  if (this.selectedFile) {
+    formData.append('image', this.selectedFile);
+  }
+
+  this.QuanLyMonAn.ThemMonAn(formData).subscribe({
+    next: (res: any) => {
+      this.loading = false;
+      this.dialogRef.close(res?.data || true);
+    },
+    error: (err) => {
+      this.loading = false;
+
+      // 🔥 LẤY LỖI BACKEND
+      const msg = err?.error?.error || 'Thêm món ăn thất bại';
+
+      // 👉 TUỲ BẠN DÙNG TOAST GÌ
+      this.showToast(msg, 'error');
+    }
+  });
+}
 
 
   chonAnh(input: HTMLInputElement) {

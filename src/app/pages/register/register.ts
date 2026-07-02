@@ -42,7 +42,7 @@ export class Register {
     this.registerForm = this.fb.group({
       hoten: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      sdt: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
+      sdt: ['', [Validators.required, Validators.pattern(/^0\d{9}$/)]],
       matkhau: ['', [Validators.required, Validators.minLength(6)]],
       confirmMatkhau: ['', Validators.required]
     }, {

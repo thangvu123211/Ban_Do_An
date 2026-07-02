@@ -23,6 +23,9 @@ export class ThongTinMonAn implements OnInit {
     type: 'success' as 'success' | 'warn' | 'error'
   };
 
+  isSending = false;
+  isSendingReply: { [key: number]: boolean } = {};
+
   // ===== TAB =====
   activeTab: 'info' | 'comment' | 'rating' = 'info';
 
@@ -148,31 +151,38 @@ export class ThongTinMonAn implements OnInit {
   // ================= COMMENT =================
   guiBinhLuan(parentId?: number) {
 
-    const token = localStorage.getItem('token');
-    const maNguoiDung = localStorage.getItem('ma_nguoi_dung');
+  const token = localStorage.getItem('token');
+  const maNguoiDung = localStorage.getItem('ma_nguoi_dung');
 
-    if (!token || !maNguoiDung) {
-      this.showToast('Vui lòng đăng nhập', 'warn');
-      return;
-    }
+  if (!token || !maNguoiDung) {
+    this.showToast('Vui lòng đăng nhập', 'warn');
+    return;
+  }
 
-    const text = parentId
-      ? this.replyText[parentId]
-      : this.noiDungBinhLuan;
+  const text = parentId
+    ? this.replyText[parentId]
+    : this.noiDungBinhLuan;
 
-    if (!text?.trim()) {
-      this.showToast('Nội dung trống', 'warn');
-      return;
-    }
+  if (!text || !text.trim()) {
+    this.showToast('Nội dung trống', 'warn');
+    return;
+  }
 
-    const payload = {
-      ma_mon_an: this.data.ma_mon_an,
-      noi_dung: text.trim(),
-      parent_id: parentId || null
-    };
+  // ===== SET SENDING =====
+  if (parentId) {
+    this.isSendingReply[parentId] = true;
+  } else {
+    this.isSending = true;
+  }
 
-    this.binhLuanService.create(payload).subscribe(() => {
+  const payload = {
+    ma_mon_an: this.data.ma_mon_an,
+    noi_dung: text.trim(),
+    parent_id: parentId || null
+  };
 
+  this.binhLuanService.create(payload).subscribe({
+    next: () => {
       if (parentId) {
         this.replyText[parentId] = '';
         this.replyingId = null;
@@ -181,8 +191,19 @@ export class ThongTinMonAn implements OnInit {
       }
 
       this.loadBinhLuan();
-    });
-  }
+    },
+    error: () => {
+      this.showToast('Gửi thất bại', 'error');
+    },
+    complete: () => {
+      if (parentId) {
+        this.isSendingReply[parentId] = false;
+      } else {
+        this.isSending = false;
+      }
+    }
+  });
+}
 
   loadBinhLuan() {
     this.binhLuanService.getByMonAn(this.data.ma_mon_an)

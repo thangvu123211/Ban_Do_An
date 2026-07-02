@@ -668,22 +668,60 @@ export class GioHang implements OnInit, OnDestroy {
   }
 
   themDiaChi() {
+
+    // ===== 1. Validate họ tên =====
+    if (!this.newDiaChi.ho_ten || this.newDiaChi.ho_ten.trim() === '') {
+      this.showToast('Vui lòng nhập họ tên người nhận', 'error');
+      return;
+    }
+
+    // ===== 2. Validate số điện thoại =====
+    if (!this.newDiaChi.sdt || this.newDiaChi.sdt.trim() === '') {
+      this.showToast('Vui lòng nhập số điện thoại', 'error');
+      return;
+    }
+
+    const phoneRegex = /^0[0-9]{9}$/;
+    if (!phoneRegex.test(this.newDiaChi.sdt)) {
+      this.showToast('Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0', 'error');
+      return;
+    }
+
+    // ===== 3. Validate địa chỉ =====
+    if (!this.newDiaChi.dia_chi || this.newDiaChi.dia_chi.trim() === '') {
+      this.showToast('Vui lòng nhập địa chỉ chi tiết', 'error');
+      return;
+    }
+
+    // // ===== 4. (Tuỳ chọn) Validate toạ độ =====
+    // if (this.openMap && (!this.newDiaChi.latitude || !this.newDiaChi.longitude)) {
+    //   this.showToast('Vui lòng chọn vị trí trên bản đồ', 'error');
+    //   return;
+    // }
+
+    // ===== 5. Payload =====
     const payload = {
-      ho_ten: this.newDiaChi.ho_ten,
-      sdt: this.newDiaChi.sdt,
-      dia_chi: this.newDiaChi.dia_chi,
+      ho_ten: this.newDiaChi.ho_ten.trim(),
+      sdt: this.newDiaChi.sdt.trim(),
+      dia_chi: this.newDiaChi.dia_chi.trim(),
       mac_dinh: this.newDiaChi.mac_dinh,
       latitude: this.newDiaChi.latitude,
       longitude: this.newDiaChi.longitude,
       ma_nguoi_dung: this.newDiaChi.ma_nguoi_dung
     };
 
-    this.diaChiService.ThemDiaChi(payload)
-      .subscribe(() => {
+    // ===== 6. Gọi API =====
+    this.diaChiService.ThemDiaChi(payload).subscribe({
+      next: () => {
+        this.showToast('Thêm địa chỉ thành công', 'success');
         this.loadDiaChi();
         this.showAddAddress = false;
         this.openMap = false;
-      });
+      },
+      error: () => {
+        this.showToast('Không thể thêm địa chỉ, vui lòng thử lại', 'error');
+      }
+    });
   }
 
   datMacDinh(id: number) {
@@ -710,9 +748,39 @@ export class GioHang implements OnInit, OnDestroy {
   capNhatDiaChi() {
     if (!this.editingDiaChiId) return;
 
+    // ===== Validate họ tên =====
+    if (!this.editDiaChiForm.ho_ten || this.editDiaChiForm.ho_ten.trim() === '') {
+      this.showToast('Vui lòng nhập họ tên', 'error');
+      return;
+    }
+
+    // ===== Validate số điện thoại =====
+    if (!this.editDiaChiForm.sdt || this.editDiaChiForm.sdt.trim() === '') {
+      this.showToast('Vui lòng nhập số điện thoại', 'error');
+      return;
+    }
+
+    const phoneRegex = /^0[0-9]{9}$/;
+    if (!phoneRegex.test(this.editDiaChiForm.sdt)) {
+      this.showToast('Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0', 'error');
+      return;
+    }
+
+    // ===== Validate địa chỉ =====
+    if (!this.editDiaChiForm.dia_chi || this.editDiaChiForm.dia_chi.trim() === '') {
+      this.showToast('Vui lòng nhập địa chỉ', 'error');
+      return;
+    }
+
+    // ===== Gọi API =====
     this.diaChiService.CapNhatDiaChi(
       this.editingDiaChiId,
-      this.editDiaChiForm
+      {
+        ...this.editDiaChiForm,
+        ho_ten: this.editDiaChiForm.ho_ten.trim(),
+        sdt: this.editDiaChiForm.sdt.trim(),
+        dia_chi: this.editDiaChiForm.dia_chi.trim()
+      }
     ).subscribe({
       next: () => {
         this.showToast('Cập nhật địa chỉ thành công', 'success');
@@ -720,7 +788,7 @@ export class GioHang implements OnInit, OnDestroy {
         this.loadDiaChi();
       },
       error: () => {
-        this.showToast('Cập nhật thất bại', 'error');
+        this.showToast('Cập nhật địa chỉ thất bại', 'error');
       }
     });
   }
@@ -917,6 +985,7 @@ export class GioHang implements OnInit, OnDestroy {
       this.showToast('Đơn hàng chưa đủ điều kiện', 'warn');
       return;
     }
+
 
     this.maGiamGiaChon = found;
     this.tongSauGiam = this.tinhTienSauGiam();

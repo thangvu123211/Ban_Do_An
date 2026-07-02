@@ -143,7 +143,7 @@
   <!-- BUTTON -->
   <div class="flex justify-end gap-4 mt-8">
 
-    <button matButton="filled" type="button" (click)="capNhat()" [disabled]="editMonForm.invalid || isLoading">
+    <button matButton="filled" type="button" (click)="capNhat()" [disabled]="isLoading">
 
       <mat-icon *ngIf="!isLoading">check</mat-icon>
       <mat-icon *ngIf="isLoading" class="animate-spin">refresh</mat-icon>
@@ -160,3 +160,5 @@
   </div>
 
 </form>
+
+<app-toast-message [show]="toast.show" [message]="toast.message" [type]="toast.type"></app-toast-message>

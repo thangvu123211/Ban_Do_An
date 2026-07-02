@@ -95,7 +95,8 @@
                                         <mat-icon>info</mat-icon>
                                     </button>
                                     <button mat-icon-button matTooltip="Hủy đặt bàn" (click)="openDialogHuy(db.id)"
-                                        *ngIf="db.trang_thai !== 'da_xac_nhan'">
+                                        *ngIf="db.trang_thai !== 'da_xac_nhan' && db.trang_thai !== 'da_huy'">
+
                                         <mat-icon color="warn">cancel</mat-icon>
                                     </button>
                                 </div>
@@ -125,6 +126,12 @@
 
                     <button mat-icon-button (click)="xemChiTiet(db)">
                         <mat-icon>info</mat-icon>
+                    </button>
+
+                    <button mat-icon-button matTooltip="Hủy đặt bàn" (click)="openDialogHuy(db.id)"
+                        *ngIf="db.trang_thai !== 'da_xac_nhan' && db.trang_thai !== 'da_huy'">
+
+                        <mat-icon color="warn">cancel</mat-icon>
                     </button>
                 </div>
 
