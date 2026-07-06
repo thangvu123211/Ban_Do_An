@@ -438,15 +438,17 @@ export class Menu implements OnInit {
       this.tongSoMon = count;
     });
 
-    this.route.queryParams.subscribe(params => {
-      const loai = params['loai'];
-      const ten = params['ten'];
+    this.route.paramMap.subscribe(params => {
+      const loai = params.get('loai');
+      const ten = params.get('ten');
 
       if (loai) {
         this.selectedLoai = +loai;
-        this.selectedLoaiName = ten;
+        this.selectedLoaiName = ten
+          ? ten.replace(/-/g, ' ')
+          : '';
 
-        // 🔥 gọi lại filter SAU khi data load xong
+        // 🔥 gọi filter sau khi load data
         this.applyFilterAfterLoad();
       }
     });

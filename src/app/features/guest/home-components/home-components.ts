@@ -73,13 +73,24 @@ export class HomeComponents implements OnInit, OnDestroy {
   }
 
   goToMenuByLoai(loai: any) {
-    this.router.navigate(['/thucdon'], {
-      queryParams: {
-        loai: loai.ma_loai_mon_an,
-        ten: loai.ten_loai_mon_an
-      }
-    });
-  }
+  const slug = this.slugify(loai.ten_loai_mon_an);
+
+  this.router.navigate([
+    '/thucdon',
+    loai.ma_loai_mon_an,
+    slug
+  ]);
+}
+
+  slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // bỏ dấu
+    .replace(/đ/g, 'd')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
   loadGiamGia() {
     this.giamGiaService.LayTatCaGiamGiaUser().subscribe({

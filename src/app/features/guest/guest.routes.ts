@@ -26,6 +26,7 @@ export const guestRoutes: Routes = [
       { path: 'datban', component: DatBan, title: 'Đặt bàn' },
       { path: 'blog', component: Blog, title: 'Thông tin nhà hàng' },
       { path: 'thucdon', component: Menu, title: 'Thực đơn' },
+      { path: 'thucdon/:loai/:ten', component: Menu, title: 'Thực đơn' },
       { path: 'lienhe', component: LienHe, title: 'Liên hệ' },
       { path: 'test', component: Hello, title: 'test' },
       { path: 'doi_tac', component: DoiTacWebsite, title: 'Đối tác website' },
