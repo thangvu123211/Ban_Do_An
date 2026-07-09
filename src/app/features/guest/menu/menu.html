@@ -141,47 +141,50 @@
 
   <div class="max-w-7xl mx-auto px-4 md:px-6 py-10">
 
-    <section class="mb-10 overflow-hidden">
-      <!-- HEADER -->
+    <!-- Bổ sung max-w-full và overflow-x-hidden để khóa chặt layout không cho xé khung trên mobile thật -->
+    <section class="mb-10 max-w-full overflow-x-hidden">
+
       <div class="flex justify-between items-center mb-5 px-4 md:px-0">
-        <h2 class="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2">
+        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
           <span class="w-1.5 h-6 bg-green-500 rounded-full"></span> Danh mục thực đơn:
-          <span class="text-green-600">{{ selectedLoaiName || 'Tất cả món ăn' }}</span>
+          {{ selectedLoaiName || 'Tất cả món ăn' }}
         </h2>
       </div>
 
-      <div class="flex items-center gap-2 md:gap-4">
+      <div class="w-full flex items-center gap-0 md:gap-4">
 
-        <!-- NÚT TRÁI - Ẩn hoàn toàn trên mobile bằng 'hidden md:inline-flex' -->
+        <!-- NÚT TRÁI - Ẩn hoàn toàn trên mobile để tránh tính toán sai lệch lề cuối -->
         <button mat-icon-button (click)="scrollLeft()" class="
       hidden md:inline-flex items-center justify-center
       bg-white text-gray-600 border border-gray-300
       hover:bg-gray-100 hover:text-gray-900
       rounded-full shrink-0 z-10 shadow
-      w-8 h-8 md:w-10 md:h-10
+      w-10 h-10
     ">
-          <mat-icon class="text-base md:text-xl">chevron_left</mat-icon>
+          <mat-icon class="text-xl">chevron_left</mat-icon>
         </button>
 
         <!-- KHUNG SCROLL -->
-        <div class="flex-1 overflow-hidden">
+        <div class="flex-1 w-full overflow-hidden">
           <!-- 
-        - Thêm 'snap-x snap-mandatory' để tự khựng theo điểm khi lướt.
-        - Thêm 'px-4 md:px-0' tạo khoảng đệm hai bên lề trên mobile giúp phần tử đầu/cuối không bị sát mép màn hình.
+        Bí kíp sửa lỗi mobile thật:
+        - -webkit-overflow-scrolling: touch (Bật gia tốc phần cứng vuốt mượt trên Safari/Chrome mobile).
+        - px-4 md:px-0 (Tạo khoảng đệm hai đầu vừa vặn).
+        - snap-x snap-mandatory (Khựng đúng điểm theo chuẩn CSS).
       -->
           <div #scrollContainer class="
         flex
-        gap-4 md:gap-8
+        gap-3 md:gap-8
         overflow-x-auto
         scroll-smooth
         scrollbar-hide
-        py-2
+        py-1 md:py-2
         px-4 md:px-0
         snap-x snap-mandatory
-      ">
+      " style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
 
-            <!-- Thêm 'snap-start' vào từng item danh mục -->
-            <div *ngFor="let loai of loaimonan" class="flex-shrink-0 w-20 md:w-32 cursor-pointer group snap-start"
+            <!-- Thêm snap-start vào từng item -->
+            <div *ngFor="let loai of loaimonan" class="flex-shrink-0 w-20 md:w-32 cursor-pointer snap-start"
               (click)="getMonAnTheoLoai(loai.ma_loai_mon_an, loai.ten_loai_mon_an)">
 
               <!-- ẢNH -->
@@ -191,41 +194,42 @@
             rounded-full
             overflow-hidden
             border-2 md:border-4
-            transition duration-300
+            transition
           " [class.border-green-500]="selectedLoai === loai.ma_loai_mon_an"
-                [class.border-gray-200]="selectedLoai !== loai.ma_loai_mon_an"
-                [class.shadow-md]="selectedLoai === loai.ma_loai_mon_an">
-                <img [src]="loai.anh_loai_mon_an"
-                  class="w-full h-full object-cover transform group-hover:scale-105 transition duration-300" />
+                [class.border-gray-300]="selectedLoai !== loai.ma_loai_mon_an">
+                <img [src]="loai.anh_loai_mon_an" class="w-full h-full object-cover" />
               </div>
 
               <!-- TÊN -->
-              <!-- Sửa nhẹ lỗi chính tả của bạn ở class cũ: loai.ma_lo_mon_an -> loai.ma_loai_mon_an -->
+              <!-- Giữ nguyên logic của bạn (Sửa lỗi chính tả biến loai.ma_lo_mon_an thành loai.ma_loai_mon_an để đúng logic màu sắc) -->
               <p class="
             mt-2 md:mt-3
             text-xs md:text-sm
             text-center
             font-medium
-            transition duration-300 line-clamp-2
+            transition
           " [class.text-green-600]="selectedLoai === loai.ma_loai_mon_an"
-                [class.text-gray-600]="selectedLoai !== loai.ma_loai_mon_an"
-                [class.font-bold]="selectedLoai === loai.ma_loai_mon_an">
+                [class.text-gray-700]="selectedLoai !== loai.ma_loai_mon_an">
                 {{ loai.ten_loai_mon_an }}
               </p>
 
             </div>
+
+            <!-- PHẦN TỬ CHẶN CUỐI VẬT LÝ: Buộc các trình duyệt di dộng ngắt cuộn, không cho trôi sang khoảng trắng -->
+            <div class="w-1 md:hidden flex-shrink-0" style="content: '';"></div>
+
           </div>
         </div>
 
-        <!-- NÚT PHẢI - Ẩn hoàn toàn trên mobile bằng 'hidden md:inline-flex' -->
+        <!-- NÚT PHẢI - Ẩn hoàn toàn trên mobile để tránh tính toán sai lệch lề cuối -->
         <button mat-icon-button (click)="scrollRight()" class="
         hidden md:inline-flex items-center justify-center
         bg-white text-gray-600 border border-gray-300
         hover:bg-gray-100 hover:text-gray-900
         rounded-full shrink-0 z-10 shadow
-        w-8 h-8 md:w-10 md:h-10
+        w-10 h-10
       ">
-          <mat-icon class="text-base md:text-xl">chevron_right</mat-icon>
+          <mat-icon class="text-xl">chevron_right</mat-icon>
         </button>
 
       </div>
