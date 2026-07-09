@@ -144,69 +144,75 @@
 </section>
 
 <!-- ================= DANH MỤC MÓN ĂN ================= -->
-<section class="py-14 bg-gray-50">
+<section class="py-10 md:py-14 bg-gray-50 overflow-hidden">
   <div class="max-w-7xl mx-auto px-4 md:px-6">
 
     <!-- HEADER -->
-    <div class="text-center mb-8">
-      <h2 class="text-2xl font-semibold text-gray-900">
+    <div class="text-center mb-6 md:mb-8">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-900">
         Danh mục món ăn
       </h2>
 
-      <p class="text-sm text-gray-500 mt-1">
-        Chọn món theo từng danh mục để đặt nhanh hơn
+      <p class="text-xs md:text-sm text-gray-500 mt-1">
+        Chọn món theo từng danh mục để khám phá ngay
       </p>
     </div>
 
     <!-- SCROLL AREA -->
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-2 md:gap-4">
 
-      <!-- LEFT -->
-      <button mat-icon-button (click)="scrollLeft()" class="bg-white border border-gray-200 text-gray-600
-               hover:bg-green-50 hover:text-green-700
-               rounded-full shadow-sm shrink-0 transition">
-
+      <!-- LEFT BUTTON: Ẩn hoàn toàn trên mobile (hidden), chỉ hiện từ md trở lên -->
+      <button mat-icon-button (click)="scrollLeft()" 
+              class="hidden md:flex bg-white border border-gray-200 text-gray-600
+                     hover:bg-green-50 hover:text-green-700
+                     rounded-full shadow-sm shrink-0 transition items-center justify-center">
         <mat-icon>chevron_left</mat-icon>
       </button>
 
-      <!-- LIST -->
+      <!-- LIST CONTAINER -->
       <div class="flex-1 overflow-hidden">
-        <div #homeScrollContainer class="flex gap-8 overflow-x-auto scroll-smooth scrollbar-hide py-2">
+        <!-- 
+          Thêm snap-x và snap-mandatory: Tự động khựng/hút đúng vị trí item khi dừng lướt.
+          Thêm px-4 md:px-0: Tạo khoảng đệm hai đầu giúp item đầu và cuối không bị dính sát mép màn hình mobile.
+        -->
+        <div #homeScrollContainer 
+             class="flex gap-4 md:gap-8 overflow-x-auto scroll-smooth scrollbar-hide py-2 px-4 md:px-0 snap-x snap-mandatory">
 
           <div *ngFor="let item of danhSachLoaiMonAn" (click)="goToMenuByLoai(item)"
-            class="flex-shrink-0 w-20 md:w-32 cursor-pointer">
+               class="flex-shrink-0 w-20 md:w-32 cursor-pointer group snap-start">
 
             <!-- IMAGE -->
+            <!-- 
+              Thay hover:border-green-500 để khi khách rê chuột hoặc chạm vào sẽ sáng lên đẹp mắt 
+            -->
             <div class="w-20 h-20 md:w-32 md:h-32
-                mx-auto
-                rounded-full
-                overflow-hidden
-                border-2 md:border-4
-                transition">
-
-              <img [src]="item.anh_loai_mon_an" class="w-full h-full object-cover" />
+                        mx-auto
+                        rounded-full
+                        overflow-hidden
+                        border-2 md:border-4 border-transparent group-hover:border-green-500
+                        shadow-sm transition duration-300">
+              <img [src]="item.anh_loai_mon_an" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-300" />
             </div>
 
             <!-- TEXT -->
             <p class="mt-2 md:mt-3
-                text-xs md:text-sm
-                text-center
-                font-medium
-                transition">
+                      text-xs md:text-sm
+                      text-center
+                      font-medium text-gray-700 group-hover:text-green-600
+                      transition duration-300 line-clamp-2">
               {{ item.ten_loai_mon_an }}
             </p>
 
           </div>
 
-
         </div>
       </div>
 
-      <!-- RIGHT -->
-      <button mat-icon-button (click)="scrollRight()" class="bg-white border border-gray-200 text-gray-600
-               hover:bg-green-50 hover:text-green-700
-               rounded-full shadow-sm shrink-0 transition">
-
+      <!-- RIGHT BUTTON: Ẩn hoàn toàn trên mobile (hidden), chỉ hiện từ md trở lên -->
+      <button mat-icon-button (click)="scrollRight()" 
+              class="hidden md:flex bg-white border border-gray-200 text-gray-600
+                     hover:bg-green-50 hover:text-green-700
+                     rounded-full shadow-sm shrink-0 transition items-center justify-center">
         <mat-icon>chevron_right</mat-icon>
       </button>
 
