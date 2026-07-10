@@ -186,11 +186,11 @@ export class Menu implements OnInit {
     if (!this.MonAn) return;
 
     if (this.sortPrice === 'asc') {
-      this.MonAn.sort((a, b) => a.gia_tien - b.gia_tien);
+      this.MonAn.sort((a, b) => a.gia_ban - b.gia_ban);
     }
 
     if (this.sortPrice === 'desc') {
-      this.MonAn.sort((a, b) => b.gia_tien - a.gia_tien);
+      this.MonAn.sort((a, b) => b.gia_ban - a.gia_ban);
     }
     this.currentPage = 1;
     this.updatePagination();
