@@ -389,7 +389,7 @@
               <div class="flex flex-col justify-end min-h-[4.25rem]">
 
                 <div class="flex flex-col gap-0.5 justify-end flex-1">
-                  
+
                   <div class="text-green-600 font-bold text-base sm:text-lg leading-tight">
                     {{ mon.gia_ban | number }} đ
                   </div>
@@ -449,6 +449,49 @@
 
           </mat-card-content>
         </mat-card>
+      </div>
+
+      <div *ngIf="pagedMonAn.length === 0"
+        class="col-span-full min-h-[500px] flex flex-col items-center justify-center text-center">
+
+        <div class="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center mb-5">
+          <mat-icon class="!text-3xl text-green-600">
+            search_off
+          </mat-icon>
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-800">
+          {{ keyword
+          ? 'Không tìm thấy món ăn'
+          : 'Chưa có món ăn'
+          }}
+        </h2>
+
+        <p class="mt-2 text-gray-500 max-w-md">
+
+          <!-- Khi tìm kiếm -->
+          <ng-container *ngIf="keyword; else emptyCategory">
+            Không có món ăn nào khớp với từ khóa
+            <span class="font-semibold text-green-600">
+              "{{ keyword }}"
+            </span>.
+          </ng-container>
+
+          <!-- Khi chọn loại -->
+          <ng-template #emptyCategory>
+            Hiện chưa có món ăn nào thuộc danh mục
+            <span class="font-semibold text-green-600">
+              "{{ selectedLoaiName }}"
+            </span>.
+          </ng-template>
+
+        </p>
+
+        <button (click)="clearSearch()"
+          class="mt-6 px-6 py-2 rounded-full bg-green-600 text-white hover:bg-green-700 transition">
+          Xem tất cả món ăn
+        </button>
+
       </div>
 
     </section>

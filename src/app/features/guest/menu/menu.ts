@@ -196,6 +196,11 @@ export class Menu implements OnInit {
     this.updatePagination();
   }
 
+  clearSearch() {
+    this.keyword = '';
+    this.onSearch();
+  }
+
   /** Lấy tất cả loại món ăn */
   getAllLoaiMonAn() {
     this.quanliloaimonan.LayTatCaLoaiMonAn().subscribe({
@@ -209,6 +214,7 @@ export class Menu implements OnInit {
         }
       }
     });
+    this.keyword = '';
   }
 
   /** Lấy món ăn theo loại */
@@ -220,6 +226,7 @@ export class Menu implements OnInit {
       mon => mon.ma_loai_mon_an === loaiId && mon.trang_thai == 1
     );
     this.currentPage = 1;
+    this.keyword = '';
     this.updatePagination();
   }
 
