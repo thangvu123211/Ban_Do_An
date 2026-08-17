@@ -4,7 +4,7 @@ export const environment = {
   apiUrl: 'https://chubby-anything-deranged.ngrok-free.dev',
   wsUrl: 'wss://chubby-anything-deranged.ngrok-free.dev/ws',
   wsPublicUrl: 'wss://chubby-anything-deranged.ngrok-free.dev/ws/public',
-   googleMapsApiKey: 'AIzaSyDWz0hIbdR6O-UAf-q7Gy3LkSF0u9cOpTw',
+  googleMapsApiKey: 'AIzaSyDWz0hIbdR6O-UAf-q7Gy3LkSF0u9cOpTw',
 
   payment: {
     qrBaseUrl: 'https://qr.sepay.vn/img',

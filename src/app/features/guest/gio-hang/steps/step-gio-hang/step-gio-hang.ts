@@ -27,6 +27,8 @@ export class StepGioHangComponent {
   onClickSua(item: any) {
     this.sua.emit(item);
   }
+
+  
   getImage(item: any): string {
     // DB
     if (typeof item.anh_mon_an === 'string') {
